@@ -1,0 +1,23 @@
+version: '3.0'
+services:
+  dj1:
+    build: .
+    image: hongchhe/django
+    container_name: dj1
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - 8000:8000
+      - 8088:8088
+    networks:
+      - net_hadoop
+networks:
+  net_hadoop:
+    driver: bridge
