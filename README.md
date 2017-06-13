@@ -16,11 +16,11 @@ How To Start
 -----
 #### 1. download the project into local machine.
 ```
-git clone https://github.com/hongchhe/mypython.git
+git clone https://github.com/yizhiyun/ui.git
 ```
 #### 2. go to django folder
 ```
-cd mypython/django
+cd ui/django
 ```
 #### 3. Start docker image using docker-compose
 ```

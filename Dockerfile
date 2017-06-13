@@ -3,22 +3,19 @@ MAINTAINER Hongchuang <hehongchuang@hotmail.com>
 
 ENV        USER_HOME=/home/django
 
-RUN        pip install django \
-        && useradd -r django
-#        && groupadd -r django \
-#        && useradd -r -g django django \
-#        && mkdir -p ${USER_HOME}
+RUN        pip install django 
+#        && useradd -r django
 
 # note 8088 is for jupyter notebook
 EXPOSE     8000 8088
 
 COPY       scripts/ ${USER_HOME}/scripts/
-COPY       workspace/ ${USER_HOME}/workspace/
+COPY       projects/ ${USER_HOME}/projects/
 
-RUN        chown -R django ${USER_HOME} && chgrp -R django ${USER_HOME}
+#RUN        chown -R django ${USER_HOME} && chgrp -R django ${USER_HOME}
 
 WORKDIR    ${USER_HOME}
 
-USER       django
+#USER       django
 
 ENTRYPOINT ["scripts/entrypoint.sh"]
