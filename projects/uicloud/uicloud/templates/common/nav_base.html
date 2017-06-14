@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pallasdata Desktop</title>
+    {% load static %}
+    <script src={% static "js/calculateRem.js" %} type="text/javascript" charset="utf-8"></script>
+    <script src={% static "js/nav_base.js"%} type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href={% static "css/nav_base.css" %} />
+</head>
+
+<body>
+	<div class="container">
+		<div class="topInfo">
+			<img  id="logo" src={% static "images/logo.png" %}/ >
+			<div id="loginInfo">
+{#				<div class="user child">#}
+					<div class="userHead child"></div>
+					<span class="userName child">郭晓敏</span>
+{#				</div>#}
+                <div class="child sepreate"></div>
+				<img src={% static "images/nav_icon_06.png" %} class="message child"/>
+				<img src={%static "images/nav_icon_08.png" %} alt="" class="question child" />
+				<span class="changeUser child">切换账号</span>
+				<img src={%static "images/X_11.png" %} class="close child"/>
+			</div>
+		</div>
+		<div class="main">
+			<div class="leftNav">
+				<div class="ableFlag" id="first"><div class="active"></div><img src={% static "images/icon_nor_03.png" %} alt="" /></div>
+				<div class="ableFlag"><div></div><img src={% static "images/icon_disable_06.png" %} alt="" /></div>
+				<div class="ableFlag"><div></div><img src={% static "images/icon_disable_08.png" %} alt="" /></div>
+				<div class="ableFlag"><div></div><img src={% static "images/icon_disable_10.png" %} alt="" /></div>
+			</div>
+			<div class="rightConent">
+                {% block  content%}
+
+                {% endblock %}
+            </div>
+		</div>
+	</div>
+</body>
+</html>
