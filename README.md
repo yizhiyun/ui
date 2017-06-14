@@ -62,7 +62,9 @@ docker-compose build
 ```
 docker-compose up -d
 ```
+
 Notes
 -----
 #### 1. admin module
 By default, you can check the admin module using the default username/password(django/aaaa1111). The url is http://127.0.0.1:8000/admin
+
