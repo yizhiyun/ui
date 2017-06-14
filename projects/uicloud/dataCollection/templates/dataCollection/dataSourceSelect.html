@@ -1,0 +1,33 @@
+{% extends "common/nav_base.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href={% static "dataCollection/css/dataSourceSelect.css" %}>
+{% endblock %}
+{% block js %}
+    <script src={% static "dataCollection/js/dataSourceSelect.js"%} type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+
+{% block content %}
+	<div class="dataSourceSelect-content">
+		<div class="dataSourceSelect-welcomeInfo">
+			<p class="welcome">欢迎使用Pallasdata Desktop</p>
+			<p class="guide">需要更多指导?<a href="#">试看教程</a>或<a href="#">观看视频</a></p>
+		</div>
+		<div class="dataSourceSelect-dataSelect">
+            <p>导入或连接数据</p>
+            <div class="panelFile">
+				<p>文件</p>
+				<div>
+					<p>导入 Excel、文本文件、Access、空间文件、传统文件或更多</p>
+					<a href="#">获取</a>
+				</div>
+            </div>
+            <div class="dataBase">
+                
+            </div>
+        </div>
+		<div class="dataSourceSelect-historyUse"></div>
+		<div class="dataSourceSelect-example"></div>
+	</div>
+	
+{% endblock %} 
