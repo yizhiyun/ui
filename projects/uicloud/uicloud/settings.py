@@ -26,11 +26,14 @@ SECRET_KEY = '=rjn@^6pk$6!)9nr!=c!1b^_t%-w-(mh&bf9q9ue)6wyb6ckjn'
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+LOGIN_URL = '/uiaccounts/login/'
+LOGIN_REDIRECT_URL = '/polls/'
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'uiaccounts',
     'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',

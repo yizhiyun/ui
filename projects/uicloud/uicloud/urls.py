@@ -15,11 +15,18 @@ Including another URLconf
 """
 from django.conf.urls import url,include
 from django.contrib import admin
+
+from django.contrib.auth import views as auth_views
+
+from polls import views as polls_views
+=======
 from . import views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^$', polls_views.IndexView.as_view(), name='index'),
+    url(r'^uiaccounts/', include('uiaccounts.urls')),
     url(r'^polls/', include('polls.urls')),
+    url(r'^admin/', admin.site.urls),
     url(r"^dataCollection/",include("dataCollection.urls")),
     url(r"^pallasdata$",views.IndexView.as_view())
 ]

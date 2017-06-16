@@ -7,6 +7,9 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+
 from .models import Question, Choice
 
 """
@@ -51,9 +54,11 @@ def results(request, question_id):
 """
 
 
-class IndexView(generic.ListView):
+class IndexView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
+
+    permission_required = ("polls.view_question")
 
     def get_queryset(self):
         """Return the last five published questions."""
@@ -69,7 +74,7 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
 
-
+@login_required
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
