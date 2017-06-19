@@ -7,6 +7,14 @@ from django.utils import timezone
 
 import datetime
 
+class GlobalAppPermission(models.Model):
+
+    class Meta:
+
+        managed = False  # No database table creation or deletion operations \
+                         # will be performed for this model. 
+        default_permissions = ('add', 'change', 'delete', 'view')
+
 
 @python_2_unicode_compatible  # only if you need to support Python 2
 class Question(models.Model):

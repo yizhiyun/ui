@@ -58,7 +58,7 @@ class IndexView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
-    permission_required = ("polls.view_question")
+    permission_required = ("polls.view_globalapppermission")
 
     def get_queryset(self):
         """Return the last five published questions."""
