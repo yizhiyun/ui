@@ -6,6 +6,9 @@ app_name = 'dataCollection'
 
 urlpatterns = [
     url(r"^pallasdata$",views.IndexView.as_view()),
-    url(r"^pallasdata1$",views.Test.as_view()),
+    url(r"^connectDataBaseHandle$",views.connectDataBaseHandle),
+    url(r"^tablesOfaDB$", views.showAllTablesOfaDabaBase),
+    url(r"^tableFileds$", views.showTableFiledsOFaTable),
+
 ]
 

@@ -14,20 +14,77 @@
 			<p class="guide">需要更多指导?<a href="#">试看教程</a>或<a href="#">观看视频</a></p>
 		</div>
 		<div class="dataSourceSelect-dataSelect">
-            <p>导入或连接数据</p>
-            <div class="panelFile">
-				<p>文件</p>
-				<div>
-					<p>导入 Excel、文本文件、Access、空间文件、传统文件或更多</p>
-					<a href="#">获取</a>
+            <p class="dataSelect-title">导入或连接数据</p>
+           <div class="dataSelect-detail">
+				<div class="panelFile">
+					<p class="title">文件</p>
+					<div class="contentDiv">
+						<p class="contentText">导入 Excel、文本文件、Access、空间文件、传统文件或更多</p>
+						<a href="#" class="getBtn" title="panel">获取</a>
+					</div>
 				</div>
-            </div>
-            <div class="dataBase">
-                
-            </div>
+				<div class="dataBase">
+					<p class="title">数据库</p>
+					<div class="contentDiv">
+						<p class="contentText">连接到数据库以及其他来源的实时数据</p>
+						<a href="#" class="getBtn" title="dataBase">获取</a>
+					</div>
+				</div>
+			</div>
+			<div class="clear"></div>
         </div>
 		<div class="dataSourceSelect-historyUse"></div>
 		<div class="dataSourceSelect-example"></div>
+		
+		<div id="dataList" style="display: none;">
+		        <div class="top">
+		        		<div id="closeDataList">
+		        			<img src={%  static "images/X_11.png" %} alt="" >
+		        		</div>   
+		        </div>
+		        <div class="commonDataDiv">
+		            <p class="commonDataTitle">常用数据平台</p>
+		            <ul class="baseDetail">
+		           	 	<li>朝阳医院平台</li>
+		                <li>MYSQL</li>
+		                <li>ORACLE</li>
+		            </ul>
+		            <div class="line"></div>
+		      	 </div>
+		      	 <div class="moreData">
+		      	 	<p id="moreDataBtn">更多数据平台</p>
+		      	 </div>
+	   		 </div>
 	</div>
-	
-{% endblock %} 
+
+    
+
+{% endblock %}
+
+
+{% block other %}
+    <div id="connectDataBaseInfo" style="display: none;">
+    		<p id="dataBaseName"></p>
+    		<span id="connectDataBaseInfo_close"></span>
+    		<form action="/dataCollection/connectDataBaseHandle" method="post" id="dataBaseConnectForm">
+    			{% csrf_token %}
+			   <input name="dataBaseName" type="hidden" id="formPostDataBaseName"/>
+    			<div class="locationDiv">
+    				<label class="server">服务器: <input type="text" name="location"/></label>
+    				<label class="port">端口:    <input type="text" name="port"/></label>
+    			</div>
+    			<div class="clear"></div>
+    			<div class="userDiv">
+    				<p>输入服务器登录信息:</p>
+    				<label class="userName">用户名: <input type="text" name="userName" /></label>
+    				<label class="userPwd">密码: <input type="password" name="userPwd" /></label>
+    			</div>
+    			
+    			<div class="otherSetting">
+    				<label><input type="checkbox" name="needSSL" id="needSSL" value="1" />需要SSL</label>
+    				<a href="#">自定义配置文件<input type="file" style="opacity: 0;"/></a>
+    			</div>
+    			 <a id="loginBtn">登录</a>
+    		</form>
+    </div>
+{% endblock %}

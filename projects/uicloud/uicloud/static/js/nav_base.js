@@ -7,10 +7,14 @@
 			initWindowSize(doc,win);
 		}
 		initWindowSize(doc,win);
+		
 	}
 })(document,window);
 
-function initWindowSize(doc,win){
+function initWindowSize(doc,win,paHeight){
 		var main = doc.getElementsByClassName("main")[0];
-		main.style.height = (doc.clientHeight | doc.body.clientHeight) - 70 + "px";
+		var leftNav = doc.getElementsByClassName("leftNav")[0];
+		
+		main.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";
+		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";		
 }

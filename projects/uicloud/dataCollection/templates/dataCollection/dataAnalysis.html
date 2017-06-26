@@ -1,0 +1,112 @@
+{% extends "common/nav_base.html" %}
+{% load static %}
+{% block css %}
+	<link rel="stylesheet" type="text/css" href={%static "dataCollection/css/dataAnalysis.css" %}/>
+	<link rel="stylesheet" type="text/css" href={%static "dataCollection/css/tableDrag.css" %}/>
+{% endblock %}
+{% block js %}
+    <script src={% static "dataCollection/js/dataAnalysis.js"%} type="text/javascript" charset="utf-8"></script>
+        <script src={% static "dataCollection/js/jquery.jsPlumb-1.4.0-all.js"%} type="text/javascript" charset="utf-8"></script>
+         <script src={% static "dataCollection/js/dragUI.js"%} type="text/javascript" charset="utf-8"></script>
+       <script src={% static "dataCollection/js/tableDrag.js"%} type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+{% block content %}
+<div id="analysisContainer">
+	
+
+		<div class="leftSlide">
+			<div id="connectDirector">
+				<div class="conn">
+					<span class="text">连接</span>
+					<div class="btn" >
+						<img src={%static "dataCollection/images/add.png" %} alt="" />
+					</div>
+					
+				</div>
+				<ul class="paltFormList">
+					{% for item in paltInfoList %}
+                        <li>
+                        		<img src={%static "dataCollection/images/data.png" %} alt="" />
+                       	 	<span>{{ item.dbPaltName }}</span>
+                        </li>
+                    {% endfor %}
+				</ul>
+				<div class="line"></div>
+			</div>
+			<div id="dataSet">
+				<div class="dataSetTitle">
+					<span>数据集</span>
+					<div><img src= {% static "dataCollection/images/folder.png"%}  alt="" id="newFolder"/></div>
+					<div><img src={% static "dataCollection/images/data_set.png"%} alt="" id="newSet" /></div>
+				</div>
+				<ul class="detailDataSetList">
+					<li>
+						<div class="dataSetItemTitle" openFlag="on">
+							<img src= {% static "dataCollection/images/left_40.png"%} alt="" />
+							<span>Data Set1</span>
+						</div>
+						<div class="theDataSetContent">
+								<div class="dataSetDetail">
+								{% for item in paltInfoList %}
+								
+									<select title={{forloop.counter0}}>
+										{% for op in item.dataBasesRs %}
+										<option value={{op}}>{{op}}</option>
+										{% endfor %}
+									</select>
+								{% endfor %}
+								</div>
+								<div class="tablesOfaData">
+									
+								</div>
+						</div>
+						
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="mainDragArea" id="mainDragArea">
+			<div id="connectModalprompt" style="display: none;">
+				<p class="title">连接</p>
+				<!--<div class="line"></div>-->
+				<div class="btnSelects">
+					<div class="active"><img src={%static "dataCollection/images/inline.png" %} alt="" /><p>内连</p></div>
+					<div><img src={%static "dataCollection/images/left.png"  %} alt="" /><p>左连</p></div>
+					<div><img src={%static "dataCollection/images/right.png"  %} alt="" /><p>右连</p></div>
+					<div><img src={%static "dataCollection/images/Outreach.png"  %} alt="" /><p>全连</p></div>
+					<div><img src={%static "dataCollection/images/breakoff.png" %} alt="" /><p>断开</p></div>
+				</div>
+				<div class="selectInfoDiv">
+					<div class="selectHeader">
+						<p></p>
+						<p>条件</p>
+						<p></p>
+					</div>
+					<div class="selectContent">
+						<div class="selectDiv">
+							<div><span>请选择</span><select name="" class="select_sourceList"></select></div>
+							<div><span>=</span><select name="" class="select_comparison">
+								<option value="=">=</option>
+							</select></div>
+							<div><span>请选择</span><select name="" class="select_targetList"></select></div>
+						</div>
+						
+					</div>
+					<div class="selectFooter">
+						<span id="confirmRelationBtn">确定</span>
+						<span id="cancleRelationBtn">取消</span>
+						
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<div class="clear"></div>
+	
+	<div id="passway">
+		<span id="constructData" class="active">构建数据</span>
+		<span id="dashBoardWay">仪表盘</span>
+	</div>
+
+</div>
+{%endblock%}

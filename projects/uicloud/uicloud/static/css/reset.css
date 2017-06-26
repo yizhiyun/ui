@@ -18,3 +18,6 @@ ul, ol { list-style: none; }
 /* 重置文本格式元素 */
 a { text-decoration: none; }
 a:hover { text-decoration: underline; }
+.clear{clear: both;content: "";display: block;}
+/*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+select::-ms-expand { display: none; }

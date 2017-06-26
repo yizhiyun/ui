@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" scroll="no">
 <head>
     <meta charset="UTF-8">
     <title>Pallasdata Desktop</title>
     {% load static %}
+    <script src={%static "js/jquery.min.js"%} type="text/javascript" charset="utf-8"></script>
+      <script src={%static "js/httpSafe.js"%} type="text/javascript" charset="utf-8"></script>
+    <script src={%static "js/jquery-ui.min.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={% static "js/calculateRem.js" %} type="text/javascript" charset="utf-8"></script>
     <script src={% static "js/nav_base.js"%} type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href={% static "css/nav_base.css" %} />
@@ -13,15 +16,13 @@
     {% endblock %}
 </head>
 
-<body>
+<body scroll="no" style="overflow: hidden;">
 	<div class="container">
 		<div class="topInfo">
 			<img  id="logo" src={% static "images/logo.png" %}/ >
 			<div id="loginInfo">
-{#				<div class="user child">#}
 					<div class="userHead child"></div>
 					<span class="userName child">郭晓敏</span>
-{#				</div>#}
                 <div class="child sepreate"></div>
 				<img src={% static "images/nav_icon_06.png" %} class="message child"/>
 				<img src={%static "images/nav_icon_08.png" %} alt="" class="question child" />
@@ -42,6 +43,11 @@
                 {% endblock %}
             </div>
 		</div>
+		<div class="clear"></div>
 	</div>
+	
+	<div class="maskLayer" style="display: none;"> </div>
+    {% block other %}
+    {% endblock %}
 </body>
 </html>

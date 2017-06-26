@@ -1,20 +1,21 @@
 @import url("reset.css");
-html,body{height:100%;}
-.container{min-height: 100%;height: 100%;background: white;}
-.topInfo{height:3.5rem;background-color: #ffffff;position: relative;}
-#logo{margin-left: 0.75rem;margin-top: 1.1rem;}
-.topInfo #loginInfo{position: absolute;right: 1rem;top: 0;font-size: 0;height: 100%;}
-.topInfo #loginInfo .child{float: left;margin-top: 1.45rem;margin-right: 1rem;}
-.topInfo #loginInfo .message,.question{margin-top: 1.25rem;}
-.topInfo #loginInfo .question{margin-top: 1.25rem;}
-.topInfo #loginInfo .changeUser{color: #0d53a4;font-size: 12px;margin-top: 1.3rem; cursor: pointer;}
-.topInfo #loginInfo .userName{font-size: 16px;float: left;margin-top: 1.25rem;height:16px;}
-.topInfo #loginInfo .userHead{width:30px;height: 30px;border-radius: 50%;background: #f8eaa8;float: left;margin-right:0.5rem; margin-top: 1rem;}
-.topInfo #loginInfo .sepreate{width: 1px;height: 10px;margin-top: 1.5rem;background: #b0b0b0;}
-.main .leftNav{float: left;width: 3rem;background: linear-gradient(#0d53a4,#00bdc9);min-height: 100%;}
-.leftNav .ableFlag{width: 100%;height: 3rem; position: relative;margin-top: 1rem;cursor: pointer}
+html,body{height:100%;min-width: 1000px;}
+.container{height: 100%;background: white;min-width: 1000px;}
+.topInfo{height:70px;background-color: #ffffff;position: relative;}
+#logo{margin-left: 15px;margin-top: 22px;}
+.topInfo #loginInfo{position: absolute;right: 20px;top: 0;font-size: 0;height: 100%;}
+.topInfo #loginInfo .child{float: left;margin-top: 29px;margin-right: 20px;}
+.topInfo #loginInfo .message,.question{margin-top: 25px}
+.topInfo #loginInfo .question{margin-top: 25px}
+.topInfo #loginInfo .changeUser{color: #0d53a4;font-size: 12px;margin-top: 26px; cursor: pointer;}
+.topInfo #loginInfo .userName{font-size: 16px;float: left;margin-top: 25px;height:16px;}
+.topInfo #loginInfo .userHead{width:30px;height: 30px;border-radius: 50%;background: #f8eaa8;float: left;margin-right:10px; margin-top: 20px;}
+.topInfo #loginInfo .sepreate{width: 1px;height: 10px;margin-top: 30px;background: #b0b0b0;}
+.main .leftNav{float: left;width: 60px;background: linear-gradient(#0d53a4,#00bdc9);min-height: 100%;height: 100%;}
+.leftNav .ableFlag{width: 100%;height: 60px; position: relative;margin-top: 20px;cursor: pointer}
 .leftNav #first {margin-top: 0;}
 .ableFlag div{position: absolute;left: 0;top: 0;right: 0;bottom: 0;margin: auto;width: 100%;height: 100%;}
 .ableFlag img{position: absolute;left: 0;top: 0;right: 0;bottom: 0;margin: auto;}
 .ableFlag .active{background: #000000;opacity: 0.2;}
-.main .rightConent{margin-left: 3rem;background: #f1f2f4;min-height:100%;}
+.main .rightConent{margin-left: 60px;background: #f1f2f4;min-height:100%;}
+.maskLayer{position: absolute;top: 0px;left:0px;width: 100%;height: 100%;background: #000000;opacity: 0.3;z-index: 100;}
