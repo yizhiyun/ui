@@ -1,0 +1,89 @@
+
+Description
+-----------
+This document describe the store schema when operator provide the table relationships via UI.
+
+
+Details
+-------------
+1. Support Format: json
+2. Data Schema:
+
+{
+    "tables": [
+        {
+            "source": <sourceName or connectString>,
+            "database": <databaseName>,
+            "tablename": <tableName>,
+            "columes": {
+                "colume1": {
+                    "type": <columeType>,
+                    "nullable": "yes/no",
+                    "primarykey": "yes/no",
+                    "uniquekey": "yes/no",
+                    "foreignkey": "no"
+                },
+                "colume2": {
+                    ...
+                },
+                ...
+            },
+            ...
+        },
+        ...
+    ],
+    "relationships": [
+        {
+            "from": "<databaseName>.<tableName>.<columnName>", # OR <tableName>.<columnName>
+            "to": "<databaseName>.<tableName>.<columnName>", # OR <tableName>.<columnName>
+            "type": <connectionType>
+        },
+        ...
+    ]
+}
+
+3. Examples:
+{
+    "tables": [
+        {
+            "source": "connect string1",
+            "database": "db1",
+            "tablename": "table1",
+            "columes": {
+                "colume1": {
+                    "type": "number(3)",
+                    "nullable": "yes",
+                    "primarykey": "yes",
+                    "uniquekey": "yes"
+                },
+                "colume2": {
+                    "type": "VARCHAR2(3)",
+                    "nullable": "yes",
+                    "primarykey": "no",
+                    "foreignkey": "no"
+                }
+            }
+        },
+        {
+            "source": "source2",
+            "database": "db2",
+            "tablename": "db2.table2",
+            "columes": {}
+        }
+    ],
+    "relationships": [
+        {
+            "from": "db1.table1.col1",
+            "to": "db2.table2.col2",
+            "type": "left join"
+        },
+        {
+            "from": "db1.table3.col2",
+            "to": "db2.table4.col2",
+            "type": "right join"
+        }
+    ]
+}
+
+4. Notes:
+
