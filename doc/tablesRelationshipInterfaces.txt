@@ -4,11 +4,99 @@ Description
 This document describe the store schema when operator provide the table relationships via UI.
 
 
-Details
+The RESTful API Details of Verify those table relationships
 -------------
 1. Support Format: JSON
 2. Request Method: POST
-3. Data Schema:
+3. Request Data Schema:
+
+{
+    "tables": [
+        {
+            "source": <sourceName or connectString>,
+            "database": <databaseName>,
+            "tableName": <tableName>,
+            "columns": {
+                <columnName1>: {
+                    "columnType": <columnType>,
+                    "nullable": "yes/no",
+                    "primaryKey": "yes/no",
+                    "uniqueKey": "yes/no",
+                    "foreignKey": "no"
+                },
+                <columnName2>: {
+                    ...
+                },
+                ...
+            },
+            <otherProperty>:<otherValue>,
+            ...
+        },
+        ...
+    ],
+    "relationships": [
+        {
+            "from": "<databaseName>.<tableName>.<columnName>", # OR <tableName>.<columnName>
+            "to": "<databaseName>.<tableName>.<columnName>", # OR <tableName>.<columnName>
+            "type": <connectionType>
+        },
+        ...
+    ]
+}
+
+4. Request Examples:
+{
+    "tables": [
+        {
+            "source": "connect string1",
+            "database": "db1",
+            "tableName": "table1",
+            "columns": {
+                "column1": {
+                    "columnType": "number(3)",
+                    "nullable": "yes",
+                    "primaryKey": "yes",
+                    "uniqueKey": "yes"
+                },
+                "column2": {
+                    "columnType": "VARCHAR2(3)",
+                    "nullable": "yes",
+                    "primaryKey": "no",
+                    "foreignKey": "no"
+                }
+            }
+        },
+        {
+            "source": "source2",
+            "database": "db2",
+            "tablename": "db2.table2",
+            "columns": {}
+        }
+    ],
+    "relationships": [
+        {
+            "from": "db1.table1.col1",
+            "to": "db2.table2.col2",
+            "type": "left join"
+        },
+        {
+            "from": "db1.table3.col2",
+            "to": "db2.table4.col2",
+            "type": "right join"
+        }
+    ]
+}
+
+5. Response Data: 
+{ "columns": [ "column1", "column2", ...] }
+
+
+
+The RESTful API Details of Generating New Table
+-------------
+1. Support Format: JSON
+2. Request Method: POST
+3. Request Data Schema:
 
 {
     "tables": [
@@ -53,7 +141,7 @@ Details
     }
 }
 
-3. Examples:
+4. Request Examples:
 {
     "tables": [
         {
@@ -104,8 +192,15 @@ Details
     }
 }
 
-4. Notes:
-4.1 Here are the default value lists for the column attribute if you don't provide.
+5. Response Data: 
+{ "status":"success" }
+
+
+
+
+Notes
+-------------
+Here are the default value lists for the column attribute if you don't provide.
 * columnType = VARCHAR2(32)
 * nullable = yes
 * primaryKey = no
