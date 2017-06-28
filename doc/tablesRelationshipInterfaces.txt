@@ -6,28 +6,30 @@ This document describe the store schema when operator provide the table relation
 
 Details
 -------------
-1. Support Format: json
-2. Data Schema:
+1. Support Format: JSON
+2. Request Method: POST
+3. Data Schema:
 
 {
     "tables": [
         {
             "source": <sourceName or connectString>,
             "database": <databaseName>,
-            "tablename": <tableName>,
-            "columes": {
-                "colume1": {
-                    "type": <columeType>,
+            "tableName": <tableName>,
+            "columns": {
+                <columnName1>: {
+                    "columnType": <columnType>,
                     "nullable": "yes/no",
-                    "primarykey": "yes/no",
-                    "uniquekey": "yes/no",
-                    "foreignkey": "no"
+                    "primaryKey": "yes/no",
+                    "uniqueKey": "yes/no",
+                    "foreignKey": "no"
                 },
-                "colume2": {
+                <columnName2>: {
                     ...
                 },
                 ...
             },
+            <otherProperty>:<otherValue>,
             ...
         },
         ...
@@ -39,7 +41,16 @@ Details
             "type": <connectionType>
         },
         ...
-    ]
+    ],
+    "outputs":{
+        "outputTableName": <tableName>,
+        "columnsMapping": {
+            "<tableName>.<columnName>": <renamedColumnName>
+            "<databaseName>.<tableName>.<columnName>": <renamedColumnName>
+        },
+        "removedColumns": ["<databaseName>.<tableName>.<columnName>","<tableName>.<columnName>",...],
+        ...
+    }
 }
 
 3. Examples:
@@ -48,19 +59,19 @@ Details
         {
             "source": "connect string1",
             "database": "db1",
-            "tablename": "table1",
-            "columes": {
-                "colume1": {
-                    "type": "number(3)",
+            "tableName": "table1",
+            "columns": {
+                "column1": {
+                    "columnType": "number(3)",
                     "nullable": "yes",
-                    "primarykey": "yes",
-                    "uniquekey": "yes"
+                    "primaryKey": "yes",
+                    "uniqueKey": "yes"
                 },
-                "colume2": {
-                    "type": "VARCHAR2(3)",
+                "column2": {
+                    "columnType": "VARCHAR2(3)",
                     "nullable": "yes",
-                    "primarykey": "no",
-                    "foreignkey": "no"
+                    "primaryKey": "no",
+                    "foreignKey": "no"
                 }
             }
         },
@@ -68,7 +79,7 @@ Details
             "source": "source2",
             "database": "db2",
             "tablename": "db2.table2",
-            "columes": {}
+            "columns": {}
         }
     ],
     "relationships": [
@@ -82,8 +93,21 @@ Details
             "to": "db2.table4.col2",
             "type": "right join"
         }
-    ]
+    ],
+    "outputs":{
+        "outputTableName": "customizedTable1",
+        "columnsMapping": {
+            "table1.col1": "mycol1",
+            "db2.table2.col2": "mycol2"
+        },
+        "removedColumns": ["db3.table3.col3","db4.table4.col4"]
+    }
 }
 
 4. Notes:
-
+4.1 Here are the default value lists for the column attribute if you don't provide.
+* columnType = VARCHAR2(32)
+* nullable = yes
+* primaryKey = no
+* uniqueKey = no
+* foreignKey = no
