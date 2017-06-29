@@ -40,7 +40,7 @@ The RESTful API Details of Verify those table relationships
             "fromTable": "<databaseName>.<tableName>",
             "toTable": "<databaseName>.<tableName>",
             "joinType": <connectionType>,
-            "columnMapping": [
+            "columnMap": [
                 {
                     "fromCol": <columnName>,
                     "toCol": <columnName>
@@ -94,7 +94,7 @@ The RESTful API Details of Verify those table relationships
             "fromTable": "db1.table1",
             "toTable": "db2.table2",
             "joinType": "left join",
-            "columnMapping": [
+            "columnMap": [
                 {
                     "fromCol": "col1",
                     "toCol": "col1"
@@ -157,7 +157,7 @@ The RESTful API Details of Generating New Table
             "fromTable": "<databaseName>.<tableName>",
             "toTable": "<databaseName>.<tableName>",
             "joinType": <connectionType>,
-            "columnMapping": [
+            "columnMap": [
                 {
                     "fromCol": <columnName>,
                     "toCol": <columnName>
@@ -220,7 +220,7 @@ The RESTful API Details of Generating New Table
             "fromTable": "db1.table1",
             "toTable": "db2.table2",
             "joinType": "left join",
-            "columnMapping": [
+            "columnMap": [
                 {
                     "fromCol": "col1",
                     "toCol": "col1"
