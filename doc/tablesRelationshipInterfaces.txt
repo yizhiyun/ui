@@ -69,7 +69,7 @@ The RESTful API Details of Verify those table relationships
         {
             "source": "source2",
             "database": "db2",
-            "tablename": "db2.table2",
+            "tableName": "db2.table2",
             "columns": {}
         }
     ],
@@ -166,7 +166,7 @@ The RESTful API Details of Generating New Table
         {
             "source": "source2",
             "database": "db2",
-            "tablename": "db2.table2",
+            "tableName": "db2.table2",
             "columns": {}
         }
     ],
