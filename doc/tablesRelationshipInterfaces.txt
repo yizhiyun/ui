@@ -166,7 +166,7 @@ The RESTful API Details of Generating New Table
             ]
         }
         ...
-    ]
+    ],
 
     "outputs":{
         "outputTableName": <tableName>,
