@@ -34,55 +34,76 @@ The RESTful API Details of Verify those table relationships
         },
         ...
     ],
+
     "relationships": [
         {
-            "from": "<databaseName>.<tableName>.<columnName>", # OR <tableName>.<columnName>
-            "to": "<databaseName>.<tableName>.<columnName>", # OR <tableName>.<columnName>
-            "type": <connectionType>
-        },
+            "fromTable": "<databaseName>.<tableName>",
+            "toTable": "<databaseName>.<tableName>",
+            "joinType": <connectionType>,
+            "columnMapping": [
+                {
+                    "fromCol": <columnName>,
+                    "toCol": <columnName>
+                },
+                ...
+            ]
+        }
         ...
     ]
+
 }
 
 4. Request Examples:
 {
     "tables": [
         {
-            "source": "connect string1",
+            "source": "mysqlDB1",
             "database": "db1",
             "tableName": "table1",
             "columns": {
-                "column1": {
+                "col1": {
                     "columnType": "number(3)",
                     "nullable": "yes",
                     "primaryKey": "yes",
                     "uniqueKey": "yes"
                 },
-                "column2": {
-                    "columnType": "VARCHAR2(3)",
-                    "nullable": "yes",
-                    "primaryKey": "no",
-                    "foreignKey": "no"
+                "col2": {
+                    "columnType": "VARCHAR2(64)"
                 }
             }
         },
         {
-            "source": "source2",
+            "source": "mysqlDB2",
             "database": "db2",
-            "tableName": "db2.table2",
-            "columns": {}
+            "tableName": "table2",
+            "columns": {
+                "col1": {
+                    "columnType": "number(3)"
+                },
+                "col2": {
+                    "columnType": "VARCHAR2(64)"
+                },
+                "col3": {
+                    "columnType": "VARCHAR2(64)"
+                }
+            }
         }
     ],
     "relationships": [
         {
-            "from": "db1.table1.col1",
-            "to": "db2.table2.col2",
-            "type": "left join"
-        },
-        {
-            "from": "db1.table3.col2",
-            "to": "db2.table4.col2",
-            "type": "right join"
+            "fromTable": "db1.table1",
+            "toTable": "db2.table2",
+            "joinType": "left join",
+            "columnMapping": [
+                {
+                    "fromCol": "col1",
+                    "toCol": "col1"
+                },
+                {
+                    "fromCol": "col2",
+                    "toCol": "col2"
+                }
+            ]
         }
     ]
 }
@@ -130,11 +151,28 @@ The RESTful API Details of Generating New Table
         },
         ...
     ],
+
+    "relationships": [
+        {
+            "fromTable": "<databaseName>.<tableName>",
+            "toTable": "<databaseName>.<tableName>",
+            "joinType": <connectionType>,
+            "columnMapping": [
+                {
+                    "fromCol": <columnName>,
+                    "toCol": <columnName>
+                },
+                ...
+            ]
+        }
+        ...
+    ]
+
     "outputs":{
         "outputTableName": <tableName>,
         "columnsMapping": {
-            "<tableName>.<columnName>": <renamedColumnName>
-            "<databaseName>.<tableName>.<columnName>": <renamedColumnName>
+            "<databaseName>.<tableName>.<columnName>": <renamedColumnName>,
+            ...
         },
         "removedColumns": ["<databaseName>.<tableName>.<columnName>","<tableName>.<columnName>",...],
         ...
@@ -145,50 +183,64 @@ The RESTful API Details of Generating New Table
 {
     "tables": [
         {
-            "source": "connect string1",
+            "source": "mysqlDB1",
             "database": "db1",
             "tableName": "table1",
             "columns": {
-                "column1": {
+                "col1": {
                     "columnType": "number(3)",
                     "nullable": "yes",
                     "primaryKey": "yes",
                     "uniqueKey": "yes"
                 },
-                "column2": {
-                    "columnType": "VARCHAR2(3)",
-                    "nullable": "yes",
-                    "primaryKey": "no",
-                    "foreignKey": "no"
+                "col2": {
+                    "columnType": "VARCHAR2(64)"
                 }
             }
         },
         {
-            "source": "source2",
+            "source": "mysqlDB2",
             "database": "db2",
-            "tableName": "db2.table2",
-            "columns": {}
+            "tableName": "table2",
+            "columns": {
+                "col1": {
+                    "columnType": "number(3)"
+                },
+                "col2": {
+                    "columnType": "VARCHAR2(64)"
+                },
+                "col3": {
+                    "columnType": "VARCHAR2(64)"
+                }
+            }
         }
     ],
     "relationships": [
         {
-            "from": "db1.table1.col1",
-            "to": "db2.table2.col2",
-            "type": "left join"
-        },
-        {
-            "from": "db1.table3.col2",
-            "to": "db2.table4.col2",
-            "type": "right join"
+            "fromTable": "db1.table1",
+            "toTable": "db2.table2",
+            "joinType": "left join",
+            "columnMapping": [
+                {
+                    "fromCol": "col1",
+                    "toCol": "col1"
+                },
+                {
+                    "fromCol": "col2",
+                    "toCol": "col2"
+                }
+            ]
         }
     ],
-    "outputs":{
+    "outputs": {
         "outputTableName": "customizedTable1",
-        "columnsMapping": {
-            "table1.col1": "mycol1",
+        "columnRenameMapping": {
+            "db1.table1.col1": "mycol1",
             "db2.table2.col2": "mycol2"
         },
-        "removedColumns": ["db3.table3.col3","db4.table4.col4"]
+        "removedColumns": [
+            "db2.table2.col3"
+        ]
     }
 }
 
