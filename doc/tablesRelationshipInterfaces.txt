@@ -49,8 +49,16 @@ The RESTful API Details of Verify those table relationships
             ]
         }
         ...
-    ]
+    ],
 
+    "conditions": [
+        {
+            "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
+            "columnName": "<databaseName>.<tableName>.<columnName>",
+            "value": <value>
+        },
+        ...
+    ]
 }
 
 4. Request Examples:
@@ -105,6 +113,13 @@ The RESTful API Details of Verify those table relationships
                 }
             ]
         }
+    ],
+    "conditions": [
+        {
+            "type":"equal",
+            "columnName": "db1.table1.col1",
+            "value": '1000'
+        }
     ]
 }
 
@@ -143,14 +158,6 @@ The RESTful API Details of Generating New Table
         },
         ...
     ],
-    "relationships": [
-        {
-            "from": "<databaseName>.<tableName>.<columnName>", # OR <tableName>.<columnName>
-            "to": "<databaseName>.<tableName>.<columnName>", # OR <tableName>.<columnName>
-            "type": <connectionType>
-        },
-        ...
-    ],
 
     "relationships": [
         {
@@ -165,6 +172,15 @@ The RESTful API Details of Generating New Table
                 ...
             ]
         }
+        ...
+    ],
+
+    "conditions": [
+        {
+            "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
+            "columnName": "<databaseName>.<tableName>.<columnName>",
+            "value": <value>
+        },
         ...
     ],
 
@@ -230,6 +246,13 @@ The RESTful API Details of Generating New Table
                     "toCol": "col2"
                 }
             ]
+        }
+    ],
+    "conditions": [
+        {
+            "type":"equal",
+            "columnName": "db1.table1.col1",
+            "value": '1000'
         }
     ],
     "outputs": {
