@@ -29,6 +29,13 @@ ALLOWED_HOSTS = ["*"]
 LOGIN_URL = '/uiaccounts/login/'
 LOGIN_REDIRECT_URL = '/polls/'
 
+# REST Framework
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
 
 # Application definition
 
@@ -38,6 +45,8 @@ FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
 INSTALLED_APPS = [
     'uiaccounts',
     'polls.apps.PollsConfig',
+    'rest_framework',
+    'cloudrestapi',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,12 +92,27 @@ WSGI_APPLICATION = 'uicloud.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'sqlite3': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'djangodb',
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': 'mysql1',
+        'PORT': '3306'
+    },
 }
-
+#    'postgresql': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'djangodb',
+#        'USER': 'user',
+#        'PASSWORD': 'password',
+#        'HOST': 'postgre1',
+#        'PORT': '5432'
+#    },
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -132,4 +156,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'uicloud','static'),
 ]
-

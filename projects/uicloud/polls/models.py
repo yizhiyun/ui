@@ -1,11 +1,11 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 
 import datetime
+
+# Create your models here.
+
 
 class GlobalAppPermission(models.Model):
 
@@ -13,8 +13,11 @@ class GlobalAppPermission(models.Model):
 
         managed = False  # No database table creation or deletion operations \
                          # will be performed for this model. 
+        #permissions = ( 
+        #    ('view_polls', 'View Global polls app'),
+        #    ('vendor_rigths', 'View Global polls app'),
+        #)
         default_permissions = ('add', 'change', 'delete', 'view')
-
 
 @python_2_unicode_compatible  # only if you need to support Python 2
 class Question(models.Model):

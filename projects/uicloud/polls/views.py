@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, render_to_response
 from django.urls import reverse
 from django.views import generic
 
@@ -11,6 +11,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.decorators import login_required, permission_required
 
 from .models import Question, Choice
+from django.db import connections
+
+from .schema import schema_info
+from django.utils.decorators import method_decorator
+from django.views.generic.base import View
+from django.views.decorators.clickjacking import xframe_options_sameorigin
+
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 """
 def index(request):
@@ -93,3 +105,30 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
     #return HttpResponse("You're voting on question %s." % question_id)
+
+class DbView(View):
+    connDict = """{
+    'mysql': {
+        'ENGINE': 'django.db.backends.mysql',
+        'host' : '192.168.1.36',
+        'database': 'mysql',
+        'user' : 'root',
+        'password' : 'password',
+        'port' : '3306',
+        'default-character-set' : 'utf8'
+    },
+}"""
+
+    @method_decorator(xframe_options_sameorigin)
+    def dispatch(self, *args, **kwargs):
+        return super(DbView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return render_to_response('polls/dbtest.html',
+                                  {'schema': self.conn})
+
+    def conn(self):
+        conn = connections(self.connDict)
+        logger.warn('LogTest {}'.format(conn))
+        print(conn)
+        return conn
