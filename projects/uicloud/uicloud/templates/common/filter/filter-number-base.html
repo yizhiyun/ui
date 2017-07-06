@@ -1,0 +1,81 @@
+{% load static %}
+<div id="number-filter" style="z-index: 1000;">
+	<div class="topline"></div>
+	<div class="number-filter-head common-filter-head">
+		<span class="logo">筛选器</span>
+		<span class="flag"></span>
+		<div class="close">
+			<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+		</div>
+	</div>
+
+	<div class="number-filter-body">
+		<div class="fixedSelect-model">
+			<div class="fixedSelect-box">
+				<select class="custom-select">
+					<option value="1">总值</option>
+					<option value="2">平均值</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="fold-module common-fold-module">
+			<ul class="fold-select-btns">
+				<li><a href="#value-range-box">值范围</a></li>
+				<li><a href="#at-most-box">至多</a></li>
+				<li><a href="#at-least-box">至少</a></li>
+				<li><a href="#special-value-box">特殊值</a></li>
+			</ul>
+			<div id="value-range-box" class="slider-common-setting">
+				<div class="value-input-box">
+					<input type="text" class="min-value-input"/><input type="text" class="max-value-input"/>
+				</div>
+				<div class="value-slider-box">
+					<div class="slider-ranage"></div>
+					<div class="range-flag">
+						<span class="min-value-flag">0</span>
+						<span class="current-value-flag">250</span>
+						<span class="max-value-flag">500</span>
+					</div>
+				</div>
+			</div>
+			<div id="at-most-box" class="slider-common-setting">
+				<div class="value-input-box">
+					<input type="text" class="min-value-input" value="0" disabled/><input type="text" class="max-value-input" value="0"/>
+				</div>
+				<div class="value-slider-box">
+					<div class="slider-ranage"></div>
+					<div class="range-flag">
+						<span class="min-value-flag">0</span>
+						<span class="current-value-flag">250</span>
+						<span class="max-value-flag">500</span>
+					</div>
+				</div>
+			</div>
+			<div id="at-least-box" class="slider-common-setting">
+				<div class="value-input-box">
+					<input type="text" class="min-value-input" value="0" /><input type="text" class="max-value-input" value="0" disabled/>
+				</div>
+				<div class="value-slider-box">
+					<div class="slider-ranage"></div>
+					<div class="range-flag">
+						<span class="min-value-flag">0</span>
+						<span class="current-value-flag">250</span>
+						<span class="max-value-flag">500</span>
+					</div>
+				</div>
+			</div>
+			<div id="special-value-box">
+				<p class="radio active" belong="filter-number-special">所有值</p><br/>
+				<p class="radio" belong="filter-number-special">Null值</p><br/>
+				<p class="radio" belong="filter-number-special">非Null值</p>
+			</div>
+		</div>	
+	</div>
+	<div class="common-filer-footer number-filter-footer">
+		<a href="javascript:void(0)" class="resetBtn">重置</a>
+		<a href="javascript:void(0)" class="cancleBtn">取消</a>
+		<a href="javascript:void(0)" class="confirmBtn">确定</a>
+	</div>
+
+</div>

@@ -37,7 +37,6 @@ class ConnectDataBase():
 
     #获取某个数据库下所有的表格
     def fetchTableBydataBaseName(self,dataBaseName):
-        print(dataBaseName)
         if(self.con and dataBaseName):
             if  self.tablesOfDataBase.__contains__(dataBaseName):
                 self.con.select_db(dataBaseName)
@@ -58,3 +57,19 @@ class ConnectDataBase():
             cur.execute("show columns from " + tableName)
             rows = cur.fetchall()
             return  rows
+    # 获取某个表格指定字段的所有数据, filedsArr
+    def fetchAllDataOfaTableByFields(self,dataBaseName,tableName):
+        if(self.con):
+            #  选择数据库
+            self.con.select_db(dataBaseName)
+            cur = self.con.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+            # selectStr = ""
+            # for item in filedsArr:
+            #     arr = item.split(",")
+            #     selectStr+=arr[0];
+            #     selectStr += ","
+            # selectStr = selectStr[0:-1]
+            # print(selectStr)
+            cur.execute("select  *from " + tableName)
+            rows = cur.fetchall()
+            return rows

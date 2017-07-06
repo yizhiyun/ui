@@ -10,8 +10,10 @@
 .dataSelect-detail .panelFile{background:white ;}
 .panelFile .title,.dataBase .title{height: 30px;text-align: center;background: #e7e7e7;line-height: 30px;}
 .panelFile .contentDiv,.dataBase .contentDiv{height: 130px;width: 200px;margin-left: 10px;position: relative;top: 10px;}
-.panelFile .contentDiv .getBtn,.dataBase .contentDiv .getBtn{position: absolute;bottom: 0px;width: 100%;text-align: center;background: #0d53a4;color: white;height: 30px;line-height: 30px;border-radius: 2px;}
-#dataList{width: 400px;background: #f1f2f4;position: absolute;top: 0;right: 0px;font-size: 14px;color: 202020;z-index: 200;height: 100%;}
+.panelFile .contentDiv a,.dataBase .contentDiv a{position: absolute;bottom: 0px;width: 100%;text-align: center;background: #0d53a4;color: white;height: 30px;line-height: 30px;border-radius: 2px;cursor: pointer;}
+.panelFile .contentDiv #selectedPanelFile{position: absolute;bottom: 0px;width: 100%;height: 30px;z-index: 10;opacity: 0;cursor: pointer;}
+
+#dataList{width: 400px;background: #f1f2f4;position: absolute;top: 0;right: 0px;font-size: 14px;color: 202020;z-index: 420;height: 100%;}
 #dataList .top{height: 60px;background: #e7e7e7;position:relative;width: 100%;top: 0;left: 0;}
 #closeDataList{height: 100%;width:30px;position: absolute;right: 20px;cursor: pointer;}
 #dataList .top img{position: absolute;right: 0;top: 24px;}
@@ -22,22 +24,4 @@
 #dataList .line{height: 1px;width: 100%;background: #dedede;margin-top: 20px;}
 #dataList .moreData{margin-top: 20px;width: 100%;}
 #dataList #moreDataBtn{margin-left: 20px;color:#808080;cursor: pointer;}
-#connectDataBaseInfo{width: 400px;height:350px;position: absolute;margin: auto;left: 0;top: 0;right: 0;bottom: 0;font-size: 12px;z-index: 201;background: #ffffff;border-radius: 10px;}
-#connectDataBaseInfo #dataBaseName{height: 40px;line-height: 40px;border-bottom: 1px solid #dedede;text-indent: 20px;}
-#connectDataBaseInfo .locationDiv{/*padding: 20px,20px,0px,20px;*/padding-top: 20px;padding-left: 20px;padding-right: 20px;}
-#connectDataBaseInfo .locationDiv .server{float: left;}
-#connectDataBaseInfo .locationDiv .server input{width: 200px;height: 21px;border:1px solid #dedede;border-radius: 2px;}
-#connectDataBaseInfo .locationDiv .port{float: right;text-align:right;}
-#connectDataBaseInfo .locationDiv .port input{width: 40px;border:1px solid #dedede;height: 21px;border-radius: 2px;}
 
-#connectDataBaseInfo .userDiv{padding-top: 20px;padding-left: 20px;padding-right: 20px;}
-#connectDataBaseInfo .userDiv .userName{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
-#connectDataBaseInfo .userDiv .userName input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 309px;}
-#connectDataBaseInfo .userDiv .userPwd{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
-#connectDataBaseInfo .userDiv .userPwd input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 309px;margin-left: 12px;}
-
-#connectDataBaseInfo .otherSetting{padding-top: 20px;padding-left: 20px;padding-right: 20px;}
-#connectDataBaseInfo .otherSetting label{display: block;cursor: pointer;}
-#connectDataBaseInfo .otherSetting a{display: block;padding-top: 10px;cursor: pointer;}
-#connectDataBaseInfo .otherSetting a input{position: absolute;left: 0;}
-#connectDataBaseInfo  #loginBtn{margin-left: 20px;background: #0d53a4;display: inline-block;height: 30px;color: white;font-size: 14px;border: 1px solid #0d53a20px4;border-radius: 2px;cursor: pointer;line-height: 30px;width: 360px;margin-top: 20px;text-align: center;}

@@ -32,6 +32,9 @@ LOGIN_REDIRECT_URL = '/polls/'
 
 # Application definition
 
+FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
+                        "django_excel.TemporaryExcelFileUploadHandler")
+
 INSTALLED_APPS = [
     'uiaccounts',
     'polls.apps.PollsConfig',
@@ -111,6 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
+# TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -127,3 +131,4 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'uicloud','static'),
 ]
+

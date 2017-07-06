@@ -27,16 +27,30 @@ def connectDataBaseHandle(req):
 
 # 选择具体数据库下的表格
 def showAllTablesOfaDabaBase(req):
-    # print(req.POST)
     Singleton().currentDBObjIndex = int(req.POST["dbObjIndex"])
     return HttpResponse(json.dumps({
         "status":"ok",
-        "data":Singleton().dataPaltForm[Singleton().currentDBObjIndex].fetchTableBydataBaseName(req.POST["theDBName"])
+        "data":Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchTableBydataBaseName(req.POST["theDBName"])
     }))
 
 # 返回某个表格下的具体字段
 def showTableFiledsOFaTable(req):
     return HttpResponse(json.dumps({
         "status":"ok",
-        "data":Singleton().dataPaltForm[Singleton().currentDBObjIndex].fetchFiledsOfATable(req.POST["tableName"])
+        "data":Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchFiledsOfATable(req.POST["tableName"])
+    }))
+
+# 返回这个表格指定字段的所有的数据
+def showTableDetailDataOfFileds(req):
+    dbInfoArr = req.POST["dbInfo"].split("_YZYPD_")
+    dbindex = dbInfoArr[0][1:]
+    dbName = dbInfoArr[1]
+    tbName = dbInfoArr[2]
+    Singleton().currentDBObjIndex = int(dbindex);
+    # print(req.POST["dataFields"])
+
+    # filedsArr = req.POST.getlist("dataFields")
+    return HttpResponse(json.dumps({
+        "status":"ok",
+        "data":Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchAllDataOfaTableByFields(dbName,tbName)
     }))

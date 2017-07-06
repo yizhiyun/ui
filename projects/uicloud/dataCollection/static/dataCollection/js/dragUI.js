@@ -2,7 +2,8 @@ function dragUIHandle (sourceEle,targetEle,callBack){
 	
 	$(sourceEle).draggable({
 		helper: "clone",
-		scope: sourceEle+targetEle
+		scope: sourceEle+targetEle,
+//		stack:targetEle
 	});
 	
 	

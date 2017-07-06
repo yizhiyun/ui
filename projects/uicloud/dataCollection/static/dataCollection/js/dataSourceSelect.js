@@ -1,14 +1,11 @@
 $(function () {
-    $(".dataSelect-detail .getBtn").click(function(event){
-		if (this.title == "panel") {
-		}else if(this.title == "dataBase"){
+    $(".dataSelect-detail #getBtn").click(function(event){
 			$("#dataList").show("explode",500,BindProgressToDetailBase);
 			$(".maskLayer").show();
 			$("#closeDataList").click(function(){
 				$("#dataList").hide();
 				$(".maskLayer").hide();
 			});
-		}
    })
     var dataBaseName = null;
     // 给具体的数据库平台按钮绑定事件函数
@@ -29,4 +26,15 @@ $(function () {
     			$("#dataList").hide();
     		})
     }
+    
+   
+  // 点击选择平面文件，选中一个或者多个文件后
+  $("#selectedPanelFile").change(function(){
+  	
+  		
+  		$("#panelForm").submit();
+  		 
+  })
+    
+    
 })

@@ -1,0 +1,119 @@
+{% load static %}
+<div id="date-filter" style="z-index: 1000;">
+	<div class="topline"></div>
+	<div class="date-filter-head common-filter-head">
+		<span class="logo">筛选器</span>
+		<span class="flag"></span>
+		<div class="close">
+			<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+		</div>
+	</div>
+	
+	<div class="date-filter-body common-fold-module">
+		<ul class="fold-select-btns">
+				<li><a href="#relative-date-box">相对日期</a></li>
+				<li><a href="#range-date-box">日期范围</a></li>
+				<li><a href="#date-start-box">开始</a></li>
+				<li><a href="#date-finish-box">结束</a></li>
+		</ul>
+		<div id="relative-date-box">
+			<div class="date-unit-btns">
+				<a href="javascript:void(0)" class="year active">年</a>
+				<a href="javascript:void(0)" class="season">季</a>
+				<a href="javascript:void(0)" class="month">月</a>
+				<a href="javascript:void(0)" class="week">周</a>
+				<a href="javascript:void(0)" class="day">天</a>
+			</div>
+			<div class="date-detail-range-radios">
+				<div class="radio-group">
+					<p class="radio active" belong="filter-date-relative">本年</p>
+					<p class="radio" belong="filter-date-relative">本年至今</p>
+				</div>
+				<div class="radio-group">
+					<p class="radio" belong="filter-date-relative">前一年</p>
+					<p class="radio number-select-radio" belong="filter-date-relative">
+						<span>前</span>
+						<select name="">
+						<option value="">3</option>
+					</select><span>年</span></p>
+				</div>
+				<div class="radio-group">
+					<p class="radio" belong="filter-date-relative">后一年</p>
+					<p class="radio" belong="filter-date-relative">
+						<span>后</span>
+					<select name="">
+						<option value="">3</option>
+					</select>
+					<span>年</span>
+					</p>
+				</div>
+				
+			</div>
+			
+		</div>
+		<div id="range-date-box" class="common-date-settering">
+			<div class="date-input-select-box">
+				<div class="min-date-input-box input-box">
+					<input type="text" />
+					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
+				</div>
+				<div class="max-date-input-box input-box">
+					<input type="text" />
+					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
+				</div>
+			</div>		
+			<div class="date-slider-box">
+				<div class="slider-ranage"></div>
+				<div class="range-flag">
+					<span class="min-date-flag">2017/1/2</span>
+					<span class="max-date-flag">2017/11/3</span>
+				</div>
+			</div>
+		</div>
+		<div id="date-start-box" class="common-date-settering">
+			<div class="date-input-select-box">
+				<div class="min-date-input-box input-box">
+					<input type="text" />
+					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
+				</div>
+				<div class="max-date-input-box input-box" >
+					<input type="text" disabled/>
+					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
+				</div>
+			</div>		
+			<div class="date-slider-box">
+				<div class="slider-ranage"></div>
+				<div class="range-flag">
+					<span class="min-date-flag">2017/1/2</span>
+					<span class="max-date-flag">2017/11/3</span>
+				</div>
+			</div>
+		</div>
+		<div id="date-finish-box" class="common-date-settering">
+			<div class="date-input-select-box">
+				<div class="min-date-input-box input-box">
+					<input type="text" disabled/>
+					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
+				</div>
+				<div class="max-date-input-box input-box" >
+					<input type="text" />
+					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
+				</div>
+			</div>		
+			<div class="date-slider-box">
+				<div class="slider-ranage"></div>
+				<div class="range-flag">
+					<span class="min-date-flag">2017/1/2</span>
+					<span class="max-date-flag">2017/11/3</span>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
+	<div class="common-filer-footer date-filter-footer">
+		<a href="javascript:void(0)" class="resetBtn">重置</a>
+		<a href="javascript:void(0)" class="cancleBtn">取消</a>
+		<a href="javascript:void(0)" class="confirmBtn">确定</a>
+	</div>
+</div>
