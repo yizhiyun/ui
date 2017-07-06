@@ -26,11 +26,17 @@ SECRET_KEY = '=rjn@^6pk$6!)9nr!=c!1b^_t%-w-(mh&bf9q9ue)6wyb6ckjn'
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+LOGIN_URL = '/uiaccounts/login/'
+LOGIN_REDIRECT_URL = '/polls/'
 
 
 # Application definition
 
+FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
+                        "django_excel.TemporaryExcelFileUploadHandler")
+
 INSTALLED_APPS = [
+    'uiaccounts',
     'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -109,6 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
+# TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -125,3 +132,4 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'uicloud','static'),
 ]
+

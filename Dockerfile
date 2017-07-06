@@ -1,9 +1,9 @@
-From hongchhe/python:3.6.1
+FROM hongchhe/python:3.6.1
 MAINTAINER Hongchuang <hehongchuang@hotmail.com>
 
 ENV        USER_HOME=/home/django
 
-RUN        pip install django 
+RUN        pip install django mysqlclient
 #        && useradd -r django
 
 # note 8088 is for jupyter notebook
