@@ -21,7 +21,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^polls/', include('polls.urls')),
     url(r"^dataCollection/",include("dataCollection.urls")),
-    url(r"^pallasdata$",views.IndexView.as_view())
+    url(r"^pallasdata$",views.IndexView.as_view()),
+    url(r"^dashboard/", include("dashboard.urls")),
 ]
 
 

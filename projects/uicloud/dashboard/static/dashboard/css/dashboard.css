@@ -1,0 +1,140 @@
+.clear:after{content:"";display: block;clear: both;}
+.topInfo{height:70px !important;}
+/*仪表板操作区域*/
+html,body{-webkit-user-select: none;overflow: hidden;}
+
+#dashboard_content{width:auto;position: relative;}
+#new_view{;height:30px;width: auto;}
+#new_view ul{width: 100%;height: 100%;}
+#new_view ul li{float: left;}
+.table_name{font-size:12px;background: white;height:30px;line-height:30px;text-align: center;border-top: 2px solid #ff7e00;min-height: 25.5px;min-width: 57.5px;cursor: pointer;box-sizing: border-box;}
+.table_name span{padding: 0 0.6rem;}
+
+
+/*操作栏*/
+#action_box{width:auto;height:50px;background: white;box-shadow:0 4px 5px -3px #DEDEDE;position: relative;z-index: 11;}
+#action_box #action_box_ul{height: 50px;float: left;}
+#action_box #action_box_ul li{float: left;width: 26px;height: 26px;cursor: pointer;margin-top: 13px;margin-left:0.6rem;}
+#action_box #action_box_ul li img{width: 26px;height: 26px;}
+#action_box #action_box_ul #cell_tra{width:6px;height: 3px;float: left;margin-top:-21px;margin-left:27px;}
+#action_box #action_box_ul li:hover{background:#DEDEDE;}
+
+#buildBoard{width: 100px;height: 22px;background: white;cursor: pointer;float: left;margin: 14px 0 0 12px;}
+#build_show{width:100px;height:22px;border: 1px solid #E1E1E1;}
+#buildBoard_content{width: 90px;height:22px;margin: 0 auto;}
+#buildBoard_buildOpa{width:100px;border: 1px solid #E1E1E1;border-top: none;display: none;}
+.buildOpa_wrap{width: 100px;height: 22px;background: white;}
+#buildBoard_content p{line-height: 22px;font-size: 12px;}
+#buildBoard_content img{float: right;margin-top: -12px;}
+#buildBoard_buildOpa p{font-size: 12px;width:90px;height: 22px;line-height: 22px;margin: 0 auto;}
+/*单元格弹出*/
+#cell_wrap{width: 100px;border-bottom: 1px solid #E1E1E1;margin-top: -5px;display: none;}
+.cell_wrap_content p{font-size: 12px;border: 1px solid #E1E1E1;height: 22px;line-height:22px;text-align: center;background: white;border-bottom: none;}
+
+
+/*侧边栏*/
+#lateral_bar{width:200px;background: white;float: left;}
+#lateral_title{width: 100%;height: 40px;}
+#lateral_title h4{font-size: 14px;font-weight: 550;line-height: 40px;padding-left: 12px;}
+/*维度*/
+#dimensionality_show,#measure_show,#index_show,#parameter_show{width:100%;overflow-y: scroll;}
+#dimensionality,#measurement,#indicator,#parameter{border-top: 1px solid #DEDEDE;}
+#dimensionality_title,#measurement_title,#indicator_title,#parameter_title{width:176px;margin: 0 auto;height: 32px;}
+#dimensionality_title p,#measurement_title p,#indicator_title p,#parameter_title p{font-size: 12px;color: #808080;line-height: 32px;float: left;}
+.funcation,.search,.dimensionality_hanble{float: right;height: 32px;}
+.funcation img,.search img,.dimensionality_hanble img{margin-left: 10px;display: block;cursor: pointer;}
+.funcation img{margin-top:11px;}
+.search img{margin-top: 11px;}
+.dimensionality_hanble img{margin-top:16px;}
+
+/*视图区域*/
+#operational_view{width:51rem;min-height:152px;float: left;box-sizing: border-box;background:#f1f2f4;}
+.drag_main{width:23.3%;height:100%;background: white;min-width: 188px;min-height: 152px;box-shadow: 0px 3px 3px 3px #DEDEDE;float: left;}
+#drag_wrap_content{width:100%;min-height:152px;box-sizing: border-box;padding: 0.75rem;height: 152px;}
+.drag_main_title{width: 100%;height:30px;background: #fafafa;min-height: 30px;cursor: move;}
+.drap_row_title_content{width:91.6%;margin: 0 auto;height:30px;height:100%;}
+.drap_row_title_content span{height:30px;font-size: 12px;color: #808080;margin-left:-5px;vertical-align: middle;}
+.drag_main_title_icon{float: left;min-height: 30px;height:30px;}
+.drag_main_icon_second{float: right;min-height: 30px;height:30px;}
+.drag_main_title_icon img{vertical-align: middle;margin-top:-1px;}
+.drag_main_icon_second img{cursor: pointer;vertical-align: middle;margin-top: -1px;}
+
+
+/*注释文字*/
+.annotation_text{font-size: 12px;text-align: center;color: #808080;height: 122px;line-height: 122px;overflow-x: visible;overflow-y:auto;}
+#colorHandle{width: 91.6%;margin: 0.2rem auto 0;}
+.handle_one{width:29.2%;height:25px;box-sizing;border: 1px solid #DEDEDE;border-radius: 3px;float: left;line-height:25px;min-width: 50px;min-height: 25px;cursor: pointer;}
+.handle_one span{font-size: 12px;padding-left:18%;float: left;line-height:26px;}
+.handle_one img{vertical-align: middle;margin-left:6px;margin-top:-5px;}
+#handle_color{float: left;}
+#information{margin-left: 5.2%;}
+#reminder{float: right;}
+#handle_color_text{line-height:90px;height:90px;}
+#drag_row{float: left;}
+#drag_date{float: right;}
+#drag_col{margin: 0 2.27%;}
+
+/*视图展示区域*/
+#view_show_area{width:51rem;height:auto;background:#F1F2F4;float:left;margin-top: 0.75rem;}
+#view_show_area_content{width:97.2%;box-sizing: border-box;background:white;margin-left: 0.75rem;box-shadow: 0px 3px 3px 3px #DEDEDE;position: relative;}
+#view_show_empty{width:100px;height:20px;line-height:20px;font-size: 12px;color: #808080;position:absolute;top: 0;right: 0;bottom: 0;left: 0;margin:auto;}
+#view_show_wrap{width: 90%;height: 90%;position: absolute;top: 0;right: 0;bottom: 0;left: 0;margin: auto;overflow-y: auto;}
+
+
+
+body th{font-size: 14px  !important;background:rgba(0,0,0,0.2) !important; white-space: nowrap;}
+body td{font-size: 12px !important;text-align: center !important; white-space: nowrap;}
+.dataTables_wrapper .ui-toolbar{padding: 0px !important;}
+
+
+
+
+
+
+/*筛选器*/
+#sizer{width: 210px;position: absolute;top:30px;right: 0;box-sizing:border-box;border: 1px solid #DEDEDE;border-bottom: none;}
+#sizer_wrap .sizer_line{background:#0d53a4}
+
+#sizer_wrap,#project{width: 105px;height:50px;position: absolute;cursor: pointer;}
+#project{right: 0;}
+#sizer_wrap img,#project img{position: absolute;top: 0;right: 0;bottom: 0;left: 0;margin: auto;}
+.sizer_line{width: 100%;height:1px;background: #DEDEDE;position: absolute;bottom: 0;}
+#sizer_place{width: 100%;position: absolute;top: 50px;overflow-y: auto;}
+#sizer_mpt{width: 100%;text-align: center;margin-top:250px;}
+#sizer_mpt img{width: 26px;height: 26px;}
+#sizer_mpt p{font-size: 12px;color:#fc9d3f;margin-top: 10px;}
+
+
+/*设计样式*/
+/*#project_style{width: 100%;height:280px;}*/
+#sizer_content{display: none;}
+
+
+/*筛选器 设计 icon*/
+#sizer_icon,#project_icon{float: right;margin-top: 13px;cursor:pointer;width:26px;height: 26px;border: 1px solid #DEDEDE;}
+#sizer_icon:hover{background: #F1F2F4;}
+#project_icon:hover{background: #F1F2F4;}
+#project_icon{margin-right: 21px;margin-left: 12px;}
+#project_chart{width: 100%;height: 810px;position: relative;display: none;} /*height:410*/
+#project_chart_title{width:100%;height: 34px;}
+#project_chart_title h5{font-size: 14px;color: #808080;line-height: 34px;margin-left:10px;}
+#project_show_line{width: 190px;height: 1px;background: #DEDEDE;position: absolute;bottom: 0;}
+
+
+
+
+
+
+
+
+/*拖拉拽样式*/
+.ui-state-default_z{border:1px solid #4169E1}
+.ui-state-hover_z{background:#DEDEDE;}
+
+
+/*侧边栏点击更换数据类型*/
+.change_type{background: url(../img/selected.png) no-repeat center center;width: 13px;height: 12px;}
+.change_type_num{background: url(../img/succeed.png) no-repeat center center;width: 13px;height: 12px;}
+
+/*标记icon展示替换*/
+.change_lable_icon{width:25px;height: 23px;background: #FF7E00;float: left;}
