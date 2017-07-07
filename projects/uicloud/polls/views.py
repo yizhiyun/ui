@@ -13,7 +13,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .models import Question, Choice
 from django.db import connections
 
-from .schema import schema_info
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
