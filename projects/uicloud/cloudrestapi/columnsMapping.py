@@ -4,6 +4,7 @@ import pprint
 import requests
 import textwrap
 import time
+import os
 
 
 # Get an instance of a logger
@@ -119,7 +120,7 @@ def getOutputColumns(jsonData):
     return outputColumnsDict
 
 
-def getDbSource():
+def getDbSource(sourcesMappingFile = os.path.dirname(os.path.realpath(__file__)) + "/tmp/sources.json"):
     '''
     return a dict which include the db source mapping information like below
     {
@@ -134,15 +135,12 @@ def getDbSource():
         ...
     }
     '''
-    dbSourceDict = {
-        "mysqlDB1": {
-            "dbtype":"mysql",
-            "dbserver": "mysql1",
-            "dbport": "3306",
-            "user": "root",
-            "password": "password"
-        }
-    }
+    try:
+        sourceF = open(sourcesMappingFile)
+        dbSourceDict = json.load(sourceF)
+    except:
+        logger.error("Cannot get the db sources mapping!")
+        return False
 
     return dbSourceDict
     
@@ -166,7 +164,10 @@ def getSparkCode(jsonData, url="hdfs://spark-master0:9000/users", folders="myfol
     #     },
     #     ...
     # }
-    jsonData["dbsources"] = getDbSource();
+    dbSourceDict = getDbSource();
+    if not dbSourceDict:
+        return False
+    jsonData["dbsources"] = dbSourceDict;
 
     return """
     import sys

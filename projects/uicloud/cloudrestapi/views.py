@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .columnsMapping import *
+from django.http import HttpResponseBadRequest
 
 import json
 import logging
@@ -131,5 +132,10 @@ def generateNewTable(request):
     if request.method == 'POST':
 
         # response all valid columns
-        return Response( executeSpark(getSparkCode(jsonData)) )
+        sparkCode = getSparkCode(jsonData)
+        
+        if not sparkCode:
+            return HttpResponseBadRequest( "Cannot get the db sources mapping." )
+
+        return Response( executeSpark( sparkCode ) )
 
