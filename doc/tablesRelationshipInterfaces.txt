@@ -57,6 +57,10 @@ The RESTful API Details of Verify those table relationships
             "columnName": "<databaseName>.<tableName>.<columnName>",
             "value": <value>
         },
+        {
+            "type":"limit",
+            "value": <value>
+        },
         ...
     ]
 }
@@ -124,8 +128,10 @@ The RESTful API Details of Verify those table relationships
 }
 
 5. Response Data: 
+5.1 if successful, it will response as follows
 { "columns": [ "column1", "column2", ...] }
-
+5.2 if failed, it will response as follows
+{ "status":"failed" }
 
 
 The RESTful API Details of Generating New Table
@@ -179,6 +185,10 @@ The RESTful API Details of Generating New Table
         {
             "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
             "columnName": "<databaseName>.<tableName>.<columnName>",
+            "value": <value>
+        },
+        {
+            "type":"limit",
             "value": <value>
         },
         ...
@@ -267,9 +277,11 @@ The RESTful API Details of Generating New Table
     }
 }
 
-5. Response Data: 
+5. Response Data:
+5.1 if successful, it will response as follows
 { "status":"success" }
-
+5.2 if failed, it will response as follows
+{ "status":"failed" }
 
 
 

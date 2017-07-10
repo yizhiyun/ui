@@ -65,7 +65,13 @@ def checkTableMapping(request):
 
         outputColumnsDict = getOutputColumns(jsonData)
 
+        if not outputColumnsDict:
+            failObj = {"status": "failed", \
+                "reason": "the request data didn't meet the required format. Please check it again."}
+            return HttpResponseBadRequest( json.dumps(failObj) )
+
         # response all valid columns
+        successobj = {"columns": outputColumnsDict}
         return Response( json.dumps(outputColumnsDict) )
 
 @api_view(['POST'])
@@ -135,7 +141,20 @@ def generateNewTable(request):
         sparkCode = getSparkCode(jsonData)
         
         if not sparkCode:
-            return HttpResponseBadRequest( "Cannot get the db sources mapping." )
-
-        return Response( executeSpark( sparkCode ) )
+            failObj = {"status": "failed", \
+                "reason": "Cannot get the db sources mapping."}
+            return HttpResponseBadRequest( failObj )
+        
+        output = executeSpark( sparkCode )
+        if not output:
+            failObj = {"status": "failed", \
+                "reason": "Please see the detailed logs."}
+            return HttpResponseBadRequest( failObj )
+        elif output["status"] !="ok":
+            failObj = {"status": "failed", \
+                "reason": output}
+            return HttpResponseBadRequest( failObj )
+        else:
+            sucessObj = { "status": "sucess" }
+            return Response( sucessObj )
 

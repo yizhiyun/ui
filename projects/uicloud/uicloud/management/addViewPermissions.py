@@ -22,4 +22,3 @@ def add_view_permissions():
 
 if __name__ == "__main__":
     add_view_permissions()
-

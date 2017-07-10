@@ -57,7 +57,6 @@ def executeSpark(sparkCode, pyFiles = [], sparkHost = 'http://spark-master0:8998
 
     return results
 
-
 def getReqFromDesiredReqState(reqUrl, headers = {'Content-Type': 'application/json'}, \
         desiredState = 'idle', maxReqCount = 60, eachSleepDuration = 2):
     '''
@@ -195,7 +194,7 @@ def getSparkCode(jsonData, url="hdfs://spark-master0:9000/users", folders="myfol
     
         #get user information, especially username.
         
-        newDF.write.parquet(savedPathUrl)
+        newDF.write.parquet(savedPathUrl, mode='overwrite')
         return True
     
     def generateNewDataFrame(jsonData):
