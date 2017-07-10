@@ -41,7 +41,9 @@ def executeSpark(sparkCode, pyFiles = [], sparkHost = 'http://spark-master0:8998
     pprint.pprint(sparkCodesReq.json())
     pprint.pprint(sparkCodesReq.headers)
 
-    resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'], eachSleepDuration=10)
+    resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'], desiredState = 'available', \
+        eachSleepDuration=5)
+
     if not resultReqJson:
         requests.delete(sessionUrl, headers=headers)
         return False
@@ -57,16 +59,25 @@ def executeSpark(sparkCode, pyFiles = [], sparkHost = 'http://spark-master0:8998
 
 
 def getReqFromDesiredReqState(reqUrl, headers = {'Content-Type': 'application/json'}, \
-        desiredState = 'idle', maxReqCount = 30, eachSleepDuration = 5):
+        desiredState = 'idle', maxReqCount = 60, eachSleepDuration = 2):
     '''
     '''
     reqCount = 0
     reqJson = requests.get(reqUrl, headers=headers).json()
+    logger.debug("Step:{0}, response:{1}".format(reqCount, reqJson))
     while reqCount < maxReqCount and reqJson['state'] != desiredState:
+        if reqJson['state'] == 'error':
+            loggger.error("There is an error in Step-{0}, see the details for the response:{1}".format(reqCount, reqJson))
+            return False
+        if reqJson['state'] in ['cancelled', 'cancelling']:
+            loggger.error("the job has been cancelled in Step-{0}, see the details for the response:{1}".format(reqCount, reqJson))
+            return False
         # sleep half a second
         time.sleep(eachSleepDuration)
         reqCount = reqCount + 1
         reqJson = requests.get(reqUrl, headers=headers).json()
+
+        logger.debug("Step:{0}, response:{1}".format(reqCount, reqJson))
 
     if reqCount >= 60:
         return False;
@@ -138,6 +149,7 @@ def getDbSource(sourcesMappingFile = os.path.dirname(os.path.realpath(__file__))
     try:
         sourceF = open(sourcesMappingFile)
         dbSourceDict = json.load(sourceF)
+        logger.debug("dbSourceDict: {}".format(dbSourceDict))
     except:
         logger.error("Cannot get the db sources mapping!")
         return False
