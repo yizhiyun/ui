@@ -155,6 +155,6 @@ def generateNewTable(request):
                 "reason": output}
             return HttpResponseBadRequest( failObj )
         else:
-            sucessObj = { "status": "sucess" }
+            sucessObj = { "status": "success" }
             return Response( sucessObj )
 
