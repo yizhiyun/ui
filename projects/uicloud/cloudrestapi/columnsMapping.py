@@ -20,40 +20,43 @@ def executeSpark(sparkCode, pyFiles = [], sparkHost = 'http://spark-master0:8998
         }
     headers = {'Content-Type': 'application/json'}
     
-    # create a session to be used
+    # check if there is a session to be used, if not or the last session kind is not pyspark, create one.
     rootSessionsUrl = host + '/sessions'
-    sessionReq = requests.post(rootSessionsUrl, data=json.dumps(sessionData), headers=headers)
-    pprint.pprint(sessionReq.json())
-    sessionUrl = host + sessionReq.headers['location']
-
-    reqJsonTmp = getReqFromDesiredReqState( sessionUrl )
-    if not reqJsonTmp:
-        requests.delete(sessionUrl, headers=headers)
-        return False
+    curSessionsReqJson = requests.get(rootSessionsUrl, headers=headers).json()
+    if (curSessionsReqJson['total'] > 0) and (curSessionsReqJson['sessions'][-1]['kind'] == 'pyspark') :
+        sessionUrl = "{0}/{1}".format(rootSessionsUrl, curSessionsReqJson['sessions'][-1]['id'])
+    else:
+        newSessionReqJson = requests.post(rootSessionsUrl, data=json.dumps(sessionData), headers=headers).json()
+        pprint.pprint(newSessionReqJson)
+        sessionUrl = "{0}/{1}".format(rootSessionsUrl, newSessionReqJson['sessions'][-1]['id'])
+        
+        reqJsonTmp = getReqFromDesiredReqState( sessionUrl )
+        if not reqJsonTmp:
+#            requests.delete(sessionUrl, headers=headers)
+            return False
 
     # execute spark codes
     runData = {
       'code': textwrap.dedent(sparkCode)
     }
-    sessionUrl = host + sessionReq.headers['location']
     statementsUrl = sessionUrl + '/statements'
     sparkCodesReq = requests.post(statementsUrl, data=json.dumps(runData), headers=headers)
-    pprint.pprint(sparkCodesReq.json())
-    pprint.pprint(sparkCodesReq.headers)
+    logger.debug("sparkCodesReq:{0}, headers:{1}".format(sparkCodesReq.json(), sparkCodesReq.headers))
 
     resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'], desiredState = 'available', \
         eachSleepDuration=5)
 
     if not resultReqJson:
-        requests.delete(sessionUrl, headers=headers)
+#        requests.delete(sessionUrl, headers=headers)
         return False
 
     pprint.pprint(resultReqJson)
+    logger.debug("resultReqJson:{0}".format(resultReqJson))
 
     results = resultReqJson['output']
 
-    # close the session url.
-    requests.delete(sessionUrl, headers=headers)
+#    # close the session url.
+#    requests.delete(sessionUrl, headers=headers)
 
     return results
 
