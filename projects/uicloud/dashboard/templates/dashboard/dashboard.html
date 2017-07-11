@@ -1,17 +1,13 @@
 {% extends "common/nav_base.html" %}
 {% load static %}
 {% block css %}
-	
 
-	<link rel="stylesheet" href={% static "dashboard/css/jquery-ui.min.css" %}>
 	<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/jqueryui/dataTables.jqueryui.css" />
 	<link rel="stylesheet" href={% static "dashboard/css/dashboard.css" %}>
 	
 	
 {% endblock %}
 {% block js %}
-    <script src={% static "js/jquery.min.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "dashboard/js/jquery-ui.min.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/jquery.dataTables.min.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/dataTables_select.js"%} type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" language="javascript" src="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/jqueryui/dataTables.jqueryui.js"></script>
