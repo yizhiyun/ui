@@ -3,7 +3,7 @@
 /*仪表板操作区域*/
 html,body{-webkit-user-select: none;overflow: hidden;}
 
-#dashboard_content{width:auto;position: relative;}
+#dashboard_content{width:auto;position: absolute;}
 #new_view{;height:30px;width: auto;}
 #new_view ul{width: 100%;height: 100%;}
 #new_view ul li{float: left;}
@@ -85,8 +85,8 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 body th{font-size: 14px  !important;background:rgba(0,0,0,0.2) !important; white-space: nowrap;}
 body td{font-size: 12px !important;text-align: center !important; white-space: nowrap;}
 .dataTables_wrapper .ui-toolbar{padding: 0px !important;}
-
-
+.fg-toolbar{display: none;}
+table{border: 1px solid #DEDEDE;}
 
 
 

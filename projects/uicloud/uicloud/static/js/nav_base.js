@@ -95,7 +95,7 @@ $(function(){
 /*-------------- 数值选择器--折叠切换,-----------------------、*/
 	$("#filter-model .common-fold-module").tabs();
 	// select选项卡问题
-	$('.custom-select').comboSelect();
+//	$('.custom-select').comboSelect();
 
 	// 选择器单选按钮
 	$("#filter-model .radio").click(function(){

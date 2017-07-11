@@ -82,3 +82,25 @@
 #tableDataDetailListPanel .mainContent table tbody td{border: 1px solid #dedede;min-width: 148px;height: 28px;}
 #tableDataDetailListPanel .mainContent table tbody tr:nth-of-type(odd){background: white;}
 #tableDataDetailListPanel .mainContent table tbody tr:nth-of-type(even){background: #f5f5f5;}
+
+/* 构建数据集弹框*/
+#buildDataPanelView{width: 400px;border-radius: 5px;position: absolute;background: white;font-size: 12px;height: 300px;z-index: 410;}
+#buildDataPanelView .build-body{padding-top: 10px;border-top: 1px solid #DEDEDE;}
+#buildDataPanelView .build-body .cube-name-radio .radio:nth-of-type(1){margin-left: 20px;}
+#buildDataPanelView .build-body .cube-name-radio .radio:nth-of-type(2){margin-left: 40px;}
+
+#buildDataPanelView .build-body .cube-name-input-div{padding-left: 32px;height: 23px;line-height: 23px;padding-top: 20px;}
+#buildDataPanelView .build-body .cube-name-input-div input{height: 21px;border:1px solid #dedede;text-indent: 5px;width: 250px;border-radius: 2px;}
+
+#buildDataPanelView .build-body .build-options{padding-top: 10px;}
+#buildDataPanelView .build-body .build-options .title{background: #e7e7e7;height: 25px;line-height: 25px;padding-left: 20px;}
+#buildDataPanelView .build-body .build-options .save-type .global-save{margin-left: 20px;}
+#buildDataPanelView .build-body .build-options .more-content-div{padding-left: 20px;padding-top: 20px;}
+#buildDataPanelView .build-body .build-options .more-content-div p{color: #a5a5a5;}
+#buildDataPanelView .build-body .build-options .more-content-div .text-label input{border:1px solid #dedede;border-radius: 2px;height: 23px;width: 150px;margin-left: 10px;text-indent: 5px;}
+#buildDataPanelView .build-body .build-options .more-content-div .check-label input{margin-right: 10px;}
+#buildDataPanelView .build-footer{height: 50px;background: #f5f5f5;position: absolute;bottom: 0;width: 100%;}
+#buildDataPanelView .build-footer a{width: 70px;height: 30px;position: absolute;border-radius: 2px;line-height:30px;text-align: center;}
+#buildDataPanelView .build-footer .moreSetting{left: 20px;top: 10px;border:1px solid #0d53a4; color: #0d53a4;}
+#buildDataPanelView .build-footer .confirmBtn{background: #0D53A4;color: white;right: 20px;top: 10px;}
+#buildDataPanelView .build-footer .cancleBtn{top: 10px;right: 110px;border:1px solid #0d53a4; color: #0d53a4;}

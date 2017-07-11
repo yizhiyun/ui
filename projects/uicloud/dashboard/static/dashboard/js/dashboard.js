@@ -50,31 +50,31 @@ $(function() {
 	$("#project").on("click", function() {
 		$("#sizer_wrap .sizer_line").css("background", "#DEDEDE");
 		$("#project .sizer_line").css("background", "#0d53a4");
-		$("#sizer_content").css("display","none");
-		
-		$("#project_chart").css("display","block");
+		$("#sizer_content").css("display", "none");
+
+		$("#project_chart").css("display", "block");
 		$("#sizer_mpt").css("display", "none")
-		
+
 	})
 
 	$("#sizer_wrap").on("click", function() {
 		$("#project .sizer_line").css("background", "#DEDEDE");
 		$("#sizer_wrap .sizer_line").css("background", "#0d53a4");
-			$("#sizer_content").css("display","block");
-			$("#project_chart").css("display","none");
-			
+		$("#sizer_content").css("display", "block");
+		$("#project_chart").css("display", "none");
+
 		if($(".drog_row_list").length == "0") {
-				$("#sizer_mpt").css("display", "block")
-				$("#view_show_empty").css("display", "block");
-				$("#sizer_content").css("display","none");
-			}
+			$("#sizer_mpt").css("display", "block")
+			$("#view_show_empty").css("display", "block");
+			$("#sizer_content").css("display", "none");
+		}
 	})
-	$("#view_show_wrap").data("table","false");
+	$("#view_show_wrap").data("table", "false");
 	//ajax请求
 	$.ajax({
 		type: "get",
 		contentType: "application/json; charset=utf-8",
-		url: "http://127.0.0.1:8000/dashboard/ajax-list/",
+		url: "/dashboard/ajax-list",
 		async: true,
 		success: function(data) {
 			//遍历数据
@@ -270,9 +270,9 @@ $(function() {
 				var mark_dict = {};
 				//记录行列里放置的元素
 				var drop_text_arr = [];
-				
+
 				//记录行列里元素存放的数据
-				
+
 				var drop_list_save_arr = [];
 				$("#parameter_icon_tra").on("click", function() {
 					mark_dict = {};
@@ -413,8 +413,7 @@ $(function() {
 						})
 					})
 				}
-				
-				
+
 				var lock = false;
 				$(".drop_view").each(function(index, ele) {
 					$(ele).droppable({
@@ -427,18 +426,17 @@ $(function() {
 							$("#handle_color_text").removeClass("ui-state-default_z")
 						},
 						drop: function(event, ui) {
-							
+
 							$("#sizer_mpt").css("display", "none");
 							$("#view_show_empty").css("display", "none");
-							if($("#project_chart").css("display") == "none"){
-								$("#sizer_content").css("display","block");
+							if($("#project_chart").css("display") == "none") {
+								$("#sizer_content").css("display", "block");
 							}
 							$(this).find(".drag_text").css("display", "none");
 							$("<li class='drog_row_list'></li>").html($(ui.draggable).parent().html()).appendTo(this);
 
 							$(".drog_row_list").each(function(index, ele) {
-							
-								
+
 								if($(ele).parent().attr("class") != "list_wrap") {
 									$(ele).wrap("<div class='list_wrap'></div>");
 								}
@@ -606,7 +604,7 @@ $(function() {
 								$(this).find("img").css("display", "")
 								//判断标记里是否有图标
 								$($(this).find(".list_wrap")).each(function(index, ele) {
-							
+
 									if(!$(ele).find("img").hasClass("color_icon")) {
 										var zb_icon = $("<div class='color_icon_wrap'><img class='color_icon'></div>");
 										$(zb_icon).find("img").attr("src", color_dict[$(this).parent().find(".handle_bj").text()]).attr("alt", $(this).parent().find(".handle_bj").text());
@@ -650,90 +648,79 @@ $(function() {
 								markShow();
 
 							}
-							
+
 							//记录拖入维度的字段
 							var drop_row_view_arr = [];
-							
+
 							var drop_col_view_arr = [];
-							
-							
-							var random = Math.round(Math.random()*2+1);
-							
-							//判断拖入列里行里
-							
-							var drop_or;
-							
-							var request_data = data["ceshi"+random+""];
-							
+
+							var random = Math.round(Math.random() * 2 + 1);
+
+							var request_data = data["ceshi" + random + ""];
+
+							//表头数量
+							var title_num = request_data.length;
+
 							//判断拖入的区域
 							switch($(this).attr("id")) {
 								//判断拖入行
 								case 'drop_row_view':
-									$(this).find(".list_wrap").find("li").each(function(index,ele){
-										
+									$(this).find(".list_wrap").find("li").each(function(index, ele) {
+
 										drop_row_view_arr.push($(ele).find("p").find("span").text());
 										drop_text_arr["drop_row_view"] = drop_row_view_arr;
 										var the_name = $(ele).find("p").find("span").text();
 										//遍历添加数据
-									
-									
-										if(lock == false){
+
+										if(lock == false) {
 											console.log("1")
-											for(var i =0;i<request_data.length;i++){	
-											var request_dict = new Object();	
-											drop_list_save_arr.push(request_dict);
+											for(var i = 0; i < request_data.length; i++) {
+												var request_dict = new Object();
+												drop_list_save_arr.push(request_dict);
 
 											}
 											lock = true;
 										}
-										
-										
-										for(var j = 0; j <drop_list_save_arr.length;j++){
-											temp  = request_data[j];
+
+										for(var j = 0; j < drop_list_save_arr.length; j++) {
+											temp = request_data[j];
 											drop_list_save_arr[j][the_name] = temp;
 										}
-//										console.log(drop_list_save_arr)
-//								
-										
+										//										console.log(drop_list_save_arr)
+										//								
+
 									})
-									drop_or = "row";
-								break;
-								
-								//判断拖入列
-								
+
+									break;
+
+									//判断拖入列
+
 								case 'drop_col_view':
-									$(this).find(".list_wrap").find("li").each(function(index,ele){
-											drop_row_view_arr.push($(ele).find("p").find("span").text());
-											drop_text_arr["drop_col_view"] = drop_row_view_arr;
-											var the_name = $(ele).find("p").find("span").text();
-											
-											
-											
-											
-											if(lock == false){
-											console.log("1")
-											for(var i =0;i<request_data.length;i++){	
-											var request_dict = new Object();	
-											drop_list_save_arr.push(request_dict);
+									$(this).find(".list_wrap").find("li").each(function(index, ele) {
+										drop_row_view_arr.push($(ele).find("p").find("span").text());
+										drop_text_arr["drop_col_view"] = drop_row_view_arr;
+										var the_name = $(ele).find("p").find("span").text();
+
+										if(lock == false) {
+
+											for(var i = 0; i < request_data.length; i++) {
+
+												var request_dict = new Object();
+												drop_list_save_arr.push(request_dict);
 
 											}
 											lock = true;
 										}
-										
-										
-										for(var j = 0; j <drop_list_save_arr.length;j++){
-											temp  = request_data[j];
+
+										for(var j = 0; j < drop_list_save_arr.length; j++) {
+											var temp = request_data[j];
+
 											drop_list_save_arr[j][the_name] = temp;
 										}
-									})	
-									
-									drop_or = "col";
-								break;
-								
-								
-								
-								
-								
+									})
+
+									break;
+
 								case 'handle_color_text':
 
 									//标记两边间距
@@ -746,10 +733,10 @@ $(function() {
 
 									});
 									//存放拖放的元素和放置的位置
-									
+
 									//判断标记里是否有图标
 									$($(this).find(".list_wrap")).each(function(index, ele) {
-										
+
 										if(!$(ele).find("img").hasClass("color_icon")) {
 											var zb_icon = $("<div class='color_icon_wrap'><img alt='详细' class='color_icon'></div>");
 											$(zb_icon).find("img").attr("src", "/static/dashboard/img/details.png").addClass("label_detailedness");
@@ -793,13 +780,11 @@ $(function() {
 								default:
 									break;
 							}
-							
-				
-							
+
 							$("#example_wrapper").remove();
-							$("#view_show_wrap").data("table","false");
+							$("#view_show_wrap").data("table", "false");
 							//表格展示
-							table_Show(drop_text_arr,drop_list_save_arr,drop_or);
+							table_Show(drop_text_arr, drop_list_save_arr, title_num);
 						}
 
 					}).sortable({
@@ -809,7 +794,8 @@ $(function() {
 						tolerance: "pointer",
 
 						sort: function() {
-							$(".drop_view").addClass("ui-state-default_z")
+							$(".drop_view").not($("#view_show_area_content")).addClass("ui-state-default_z")
+							$("#view_show_area_content").css("border","1px solid #000")
 							if($(this).attr("id") == "handle_color_text") {
 								$(this).find("li").css({
 									width: view_show * 0.85 + "px",
@@ -823,14 +809,15 @@ $(function() {
 							});
 						},
 						beforeStop: function() {
-							$(".drop_view").removeClass("ui-state-default_z")
+							$(".drop_view").removeClass("ui-state-default_z");
+							$("#view_show_area_content").css("border","")
 						},
 						over: function() {
 							$(this).css("background", "#DEDEDE")
 						},
 						out: function() {
 							$(this).css("background", "");
-							
+
 							console.log($(this).attr("id"))
 
 						},
@@ -1144,8 +1131,12 @@ $(function() {
 
 									break;
 								
+								//拖拽区域外消失
+									
+								case "view_show_area_content":
+									$(this).find("li").remove();
 								default:
-							
+
 									break;
 							}
 
@@ -1181,9 +1172,9 @@ $(function() {
 					drop: function(event, ui) {
 						$("#sizer_mpt").css("display", "none");
 						$("#view_show_empty").css("display", "none");
-					
-						$("#sizer_content").css("display","block");
-						
+
+						$("#sizer_content").css("display", "block");
+
 						var disabled = $(".drop_view").droppable("option", "disabled");
 						$(".drop_view").droppable("option", "disabled", true);
 
@@ -1456,13 +1447,13 @@ $(function() {
 	//设计视图icon
 	var project_icon = ["文本表", "指标卡", "饼图", "仪表盘", "环形图", "折线图", "柱状图", "堆积柱状图", "瀑布图", "对比柱状图", "百分比堆积柱状图", "条形图", "堆积条形图", "对比条形图", "百分比堆积条形图", "组合图", "面积图", "堆积面积图", "百分比堆积面积图", "范围图", "矩阵散点图", "气泡图", "矩阵图", "甘特图", "地图(面积)", "地图(气泡)", "地标", "雷达图", "树状图"];
 	//title  dimensionality
-	var dimensionality_arr = {"文本表":"1个或多个维度","指标卡":"0个维度","饼图":"1个维度","仪表盘":"0个维度","环形图":"2个或多个维度","折线图":"1个或多个维度","柱状图":"0个或多个维度","堆积柱状图":"1个或多个维度","瀑布图":"1个维度","对比柱状图":"0个或2个维度","百分比堆积柱状图":"1个或多个维度","条形图":"0个或多个维度","堆积条形图":"1个或多个维度","对比条形图":"1个维度","百分比堆积条形图":"1个或多个维度","组合图":"1个或多个维度","面积图":"1个维度","堆积面积图":"2个维度","百分比堆积面积图":"2个维度","范围图":"1个维度","矩阵散点图":"0个或1个维度","气泡图":"0个维度","矩阵图":"1个或多个维度","甘特图":"2个维度","地图(面积)":"1个地理位置","地图(气泡)":"1个地理位置","地标":"1个地理位置","雷达图":"1个或多个维度","树状图":"1个或多个维度"};
+	var dimensionality_arr = { "文本表": "1个或多个维度", "指标卡": "0个维度", "饼图": "1个维度", "仪表盘": "0个维度", "环形图": "2个或多个维度", "折线图": "1个或多个维度", "柱状图": "0个或多个维度", "堆积柱状图": "1个或多个维度", "瀑布图": "1个维度", "对比柱状图": "0个或2个维度", "百分比堆积柱状图": "1个或多个维度", "条形图": "0个或多个维度", "堆积条形图": "1个或多个维度", "对比条形图": "1个维度", "百分比堆积条形图": "1个或多个维度", "组合图": "1个或多个维度", "面积图": "1个维度", "堆积面积图": "2个维度", "百分比堆积面积图": "2个维度", "范围图": "1个维度", "矩阵散点图": "0个或1个维度", "气泡图": "0个维度", "矩阵图": "1个或多个维度", "甘特图": "2个维度", "地图(面积)": "1个地理位置", "地图(气泡)": "1个地理位置", "地标": "1个地理位置", "雷达图": "1个或多个维度", "树状图": "1个或多个维度" };
 
 	//title measure
-	var measure_arr = {"文本表":"1个或多个度量","指标卡":"1个或2个度量","饼图":"1个度量","仪表盘":"1个度量","环形图":"1个度量","折线图":"1个或多个度量","柱状图":"1个或多个度量","堆积柱状图":"1个或多个度量","瀑布图":"1个度量","对比柱状图":"2个或多个度量","百分比堆积柱状图":"1个或多个度量","条形图":"1个或多个度量","堆积条形图":"1个或多个度量","对比条形图":"2个度量","百分比堆积条形图":"1个或多个度量","组合图":"2个度量","面积图":"1个度量","堆积面积图":"1个度量","百分比堆积面积图":"1个度量","范围图":"1个度量","矩阵散点图":"1个或多个度量","气泡图":"2个度量","矩阵图":"1个或2个度量","甘特图":"1个度量","地图(面积)":"0个或多个维度","地图(气泡)":"0个或多个维度","地标":"0个或多个维度","雷达图":"1个或多个度量","树状图":"1个或多个度量"};
-	
+	var measure_arr = { "文本表": "1个或多个度量", "指标卡": "1个或2个度量", "饼图": "1个度量", "仪表盘": "1个度量", "环形图": "1个度量", "折线图": "1个或多个度量", "柱状图": "1个或多个度量", "堆积柱状图": "1个或多个度量", "瀑布图": "1个度量", "对比柱状图": "2个或多个度量", "百分比堆积柱状图": "1个或多个度量", "条形图": "1个或多个度量", "堆积条形图": "1个或多个度量", "对比条形图": "2个度量", "百分比堆积条形图": "1个或多个度量", "组合图": "2个度量", "面积图": "1个度量", "堆积面积图": "1个度量", "百分比堆积面积图": "1个度量", "范围图": "1个度量", "矩阵散点图": "1个或多个度量", "气泡图": "2个度量", "矩阵图": "1个或2个度量", "甘特图": "1个度量", "地图(面积)": "0个或多个维度", "地图(气泡)": "0个或多个维度", "地标": "0个或多个维度", "雷达图": "1个或多个度量", "树状图": "1个或多个度量" };
+
 	//title map
-	var map_measure = {"地图(面积)":"0个或多个度量","地图(气泡)":"0个或多个度量","地标":"0个或多个度量"}
+	var map_measure = { "地图(面积)": "0个或多个度量", "地图(气泡)": "0个或多个度量", "地标": "0个或多个度量" }
 	for(var i = 0; i < project_icon.length; i++) {
 		var project_icon_list = $("<li class='project_icon_hover'><img alt=" + project_icon[i] + "></li>");
 
@@ -1481,7 +1472,7 @@ $(function() {
 	}
 
 	$(".project_icon_hover").each(function(index, ele) {
-			
+
 		$(ele).on("mouseenter", function() {
 			$(ele).css("background", "white")
 			//动态创建提示框
@@ -1505,9 +1496,9 @@ $(function() {
 			project_icon_hint.find("p").eq(2).text(measure_arr[project_icon[index]]).css({
 				color: "#808080",
 				paddingTop: "7px",
-				
+
 			});
-			
+
 			project_icon_hint.find("p").eq(3).text(map_measure[project_icon[index]]).css({
 				color: "#808080",
 				paddingTop: "7px",
@@ -1550,17 +1541,17 @@ $(function() {
 		$(ele).on("click", function() {
 			$(".annotation_text").eq(index).find(".list_wrap").remove();
 			$(".annotation_text").eq(index).find("li").remove();
-			
-			$(".drag_text").eq(index).css("display","block");
-//			if($("#project_chart").css("display") == "none"){
-//				$("#sizer_mpt").css("display", "block");
-//				console.log("123")
-//			}
-			
+
+			$(".drag_text").eq(index).css("display", "block");
+			//			if($("#project_chart").css("display") == "none"){
+			//				$("#sizer_mpt").css("display", "block");
+			//				console.log("123")
+			//			}
+
 			if($(".drog_row_list").length == "0" && $("#project_chart").css("display") == "none") {
 				$("#sizer_mpt").css("display", "block");
 				$("#view_show_empty").css("display", "block");
-				$("#sizer_content").css("display","none");
+				$("#sizer_content").css("display", "none");
 			}
 
 		})
@@ -1569,7 +1560,7 @@ $(function() {
 	$("#index_icon_tra").on("click", function() {
 		if($(".drog_row_list ").length == "0" && $("#project_chart").css("display") == "none") {
 			$("#sizer_mpt").css("display", "block");
-			$("#sizer_content").css("display","none");
+			$("#sizer_content").css("display", "none");
 		}
 		var disabled = $(".drop_view").droppable("option", "disabled");
 		$(".drop_view").droppable("option", "disabled", false);
@@ -1605,7 +1596,7 @@ $(function() {
 	//筛选器高度
 	$("#sizer").height($("#lateral_bar").height() + 50);
 	$("#sizer_place").height($("#sizer").height());
-	
+
 	//浏览器高度
 	var bodyHeight = $("body").height();
 

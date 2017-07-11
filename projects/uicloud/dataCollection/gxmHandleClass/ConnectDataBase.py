@@ -1,5 +1,6 @@
 import MySQLdb
-
+import logging
+logger = logging.getLogger(__name__)
 class ConnectDataBase():
     def __init__(self,dbPaltName=None,dbLocation=None,dbPort=None,dbUserName=None,dbUserPwd=None):
         self.dbPaltName = dbPaltName
@@ -15,14 +16,12 @@ class ConnectDataBase():
     # 连接到数据库
     def connectDB(self):
         # 转化数据平台 name 小写
-        print(self.dbPaltName.lower())
+        # print(self.dbPaltName.lower())
         if(self.dbPaltName.lower() == "mysql"):
             try:
-                print(self.dbLocation,self.dbPort,self.dbUserName,self.dbUserPwd)
                 self.con = MySQLdb.connect(host=self.dbLocation,port=self.dbPort,user=self.dbUserName,passwd=self.dbUserPwd)
             except Exception:
                 self.con = False;
-
     #获取当前数据库平台所有的数据库
     def fetchAllDabaBase(self):
         if(self.con):
@@ -30,8 +29,10 @@ class ConnectDataBase():
             rs = self.con.store_result()
             result = rs.fetch_row(0)
             self.dataBasesRs = [];
+
             for obj in result:
                 self.dataBasesRs.append(obj[0])
+
             return self.dataBasesRs
         return  None
 
@@ -53,9 +54,10 @@ class ConnectDataBase():
     # 获取某个表格下面的所有字段
     def fetchFiledsOfATable(self,tableName):
         if(self.con):
-            cur = self.con.cursor()
+            cur = self.con.cursor(cursorclass = MySQLdb.cursors.DictCursor)
             cur.execute("show columns from " + tableName)
             rows = cur.fetchall()
+            logger.warn(rows)
             return  rows
     # 获取某个表格指定字段的所有数据, filedsArr
     def fetchAllDataOfaTableByFields(self,dataBaseName,tableName):
@@ -63,13 +65,6 @@ class ConnectDataBase():
             #  选择数据库
             self.con.select_db(dataBaseName)
             cur = self.con.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-            # selectStr = ""
-            # for item in filedsArr:
-            #     arr = item.split(",")
-            #     selectStr+=arr[0];
-            #     selectStr += ","
-            # selectStr = selectStr[0:-1]
-            # print(selectStr)
             cur.execute("select  *from " + tableName)
             rows = cur.fetchall()
             return rows
