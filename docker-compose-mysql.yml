@@ -1,9 +1,8 @@
 version: '3.0'
 services:
-  dj1:
-    build: .
-    image: hongchhe/django
-    container_name: dj1
+  mysql1:
+    image: mysql:5.7
+    container_name: mysql1
     ulimits:
       memlock:
         soft: -1
@@ -13,11 +12,15 @@ services:
         hard: 65536
     cap_add:
       - IPC_LOCK
+    environment:
+      - COMPOSE_PROJECT_NAME=spark
+      - MYSQL_ROOT_PASSWORD=password
     ports:
-      - 8000:8000
-      - 8018:8018
+      - 3306:3306
     networks:
       - net_hadoop
+
+
 networks:
   net_hadoop:
     driver: bridge

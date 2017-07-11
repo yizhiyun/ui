@@ -24,7 +24,7 @@ cd ui/django
 ```
 #### 3. Start docker image using docker-compose
 ```
-docker-compose up -d
+./start.sh
 ```
 Note: it might spend a long time to download and build image at the first time.
 
@@ -46,22 +46,13 @@ curl http://127.0.0.1:8000
 
 How To Restart if some file has been modified
 -----
-#### 1. stop the docker images
+#### 1. stop the docker images and remove the old docker container
 ```
-docker-compose stop dj1
+./stop.sh
 ```
-#### 2. remove the old docker container
-```
-docker-compose rm -f dj1
-```
-#### 3. re-build the docker images
-```
-docker-compose build
-```
-#### 4. Start the docker container
-```
-docker-compose up -d
-```
+#### 2. restart the docker containers
+./start.sh
+
 
 Notes
 -----

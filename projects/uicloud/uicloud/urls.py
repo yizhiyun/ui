@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.conf.urls import url,include
 from django.contrib import admin
-
 from django.contrib.auth import views as auth_views
 
 from polls import views as polls_views
@@ -29,7 +28,10 @@ urlpatterns = [
     url(r"^dataCollection/",include("dataCollection.urls")),
     url(r"^pallasdata$",views.IndexView.as_view()),
     url(r"^dashboard/", include("dashboard.urls")),
-    url(r"^filterConditionAdd$",views.filterConditionAdd)
+    url(r"^filterConditionAdd$",views.filterConditionAdd),
+    url(
+        r'^api-auth/',
+        include('rest_framework.urls', namespace='rest_framework')
+    ),
+    url(r'^', include('cloudrestapi.urls')),  
 ]
-
-

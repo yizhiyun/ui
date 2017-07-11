@@ -3,7 +3,9 @@ MAINTAINER Hongchuang <hehongchuang@hotmail.com>
 
 ENV        USER_HOME=/home/django
 
-RUN        pip install django mysqlclient
+# refer to http://www.django-rest-framework.org, djangorestframework markdown and django-filter is used for django REST API
+# django-sql-explorer is a single app,
+RUN        pip install django requests psycopg2 mysqlclient djangorestframework markdown django-filter django-excel
 #        && useradd -r django
 
 # note 8088 is for jupyter notebook
