@@ -159,7 +159,7 @@ def getDbSource(sourcesMappingFile = os.path.dirname(os.path.realpath(__file__))
     return dbSourceDict
     
 
-def getSparkCode(jsonData, url="hdfs://spark-master0:9000/users", folders="myfolder" ):
+def getGenNewTableSparkCode(jsonData, url="hdfs://spark-master0:9000/users", folders="myfolder" ):
     '''
     return the running spark code which write the New table into hdfs by default
     '''

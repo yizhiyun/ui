@@ -138,7 +138,7 @@ def generateNewTable(request):
     if request.method == 'POST':
 
         # response all valid columns
-        sparkCode = getSparkCode(jsonData)
+        sparkCode = getGenNewTableSparkCode(jsonData)
         
         if not sparkCode:
             failObj = {"status": "failed", \
