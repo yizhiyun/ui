@@ -289,20 +289,20 @@ function connectDetailSelect(conInfo,originalEvent){
 	for (var i = 0; i < didShowDragAreaTableInfo[conInfo.sourceId].length;i++) {
 		// 具体的字段
 		var dataInfo =  didShowDragAreaTableInfo[conInfo.sourceId][i];
-		if (dataInfo[dataInfo.length - 1] == "disable") {
+		if (dataInfo["isable"] == "no") {
 			continue
 		}
-		var op = $("<option value="+dataInfo[0]+">"+dataInfo[0]+"</option>")
+		var op = $("<option value="+dataInfo["Field"]+">"+dataInfo["Field"]+"</option>")
 		$("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div .select_sourceList").append(op);
 		
 	}
 	
 	for (var i = 0; i < didShowDragAreaTableInfo[conInfo.targetId].length;i++) {
 		var dataInfo =  didShowDragAreaTableInfo[conInfo.targetId][i];
-		if (dataInfo[dataInfo.length - 1] == "disable") {
+		if (dataInfo["isable"] == "no") {
 			continue
 		}
-		var op = $("<option value="+dataInfo[0]+">"+dataInfo[0]+"</option>")
+		var op = $("<option value="+dataInfo["Field"]+">"+dataInfo["Field"]+"</option>")
 		$("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div .select_targetList").append(op);
 		
 	}

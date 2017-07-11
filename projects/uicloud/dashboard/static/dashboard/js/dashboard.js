@@ -74,7 +74,7 @@ $(function() {
 	$.ajax({
 		type: "get",
 		contentType: "application/json; charset=utf-8",
-		url: "http://127.0.0.1:8000/dashboard/ajax-list/",
+		url: "/dashboard/ajax-list",
 		async: true,
 		success: function(data) {
 			//遍历数据

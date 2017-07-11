@@ -34,10 +34,10 @@
 					</div>
 				</div>
 				<ul class="paltFormList">
-					{% for item in paltInfoList.db %}
+					{% for item,value in paltInfoList.db.items %}
                         <li>
                         		<img src={%static "dataCollection/images/data.png" %} alt="" />
-                       	 	<span>{{ item.dbPaltName }}</span>
+                       	 	<span>{{ value.dbPaltName }}</span>
                         </li>
                     {% endfor %}
                     
@@ -67,10 +67,10 @@
 						</div>
 						<div class="theDataSetContent">
 								<div class="dataSetDetail">
-								{% for item in paltInfoList.db %}
+								{% for key,value in paltInfoList.db.items %}
 									<div class="dbDataShow">
-										<select dbIndex={{forloop.counter0}}>
-										{% for op in item.dataBasesRs %}
+										<select dbIndex={{key}}>
+										{% for op in value.dataBasesRs %}
 										<option value={{op}}>{{op}}</option>
 										{% endfor %}
 										</select>
@@ -229,7 +229,37 @@
 {%endblock%}
  {% block other %}
  <!-- 构建数据弹框-->
- 	<div class="buildDataPanelView">
- 		
+ 	<div class="buildDataPanelView" id="buildDataPanelView" style="display: none;">
+ 		<div class="topline"></div>
+		<div class="common-head">
+			<span class="logo">筛选器</span>
+			<div class="close">
+				<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+			</div>
+		</div>
+ 		<div class="build-body">
+ 			<div class="cube-name-radio">
+ 				<p class="cover-original-cube radio">覆盖</p>
+ 				<p class="new-cube radio">新建cube</p>
+ 			</div>
+ 			<div class="cube-name-input-div">
+ 				<span>数据cube名称:</span><input type="text" placeholder="请输入数据Cube名称"/>
+ 			</div>
+ 			<div class="build-options">
+ 				<p class="title">构建选项</p>
+ 				<div class="save-type">
+ 					<p class="radio active lcoal-save">全部保存</p>
+ 					<p class="radio global-save">局部保存</p>
+ 				</div>
+ 				<div class="more-content-div" style="display: none;">
+ 					<p>更多设置(单个表数据量)</p>
+ 					<label class="check-label"><input type="checkbox"/>行数</label><label class="text-label"><input type="text" /></label>
+ 				</div>
+ 			</div>
+ 			
+ 		</div>	
+ 		<div class="build-footer">
+ 			<a href="javascript:void(0)" class="moreSetting">更多设置</a><a href="javascript:void(0)" class="cancleBtn">取消</a><a href="javascript:void(0)" class="confirmBtn">确定</a>
+ 		</div>
  	</div>
  {% endblock %}
