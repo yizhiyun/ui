@@ -129,7 +129,8 @@ The RESTful API Details of Verify those table relationships
 
 5. Response Data: 
 5.1 if successful, it will response as follows
-{ "columns": [ "column1", "column2", ...] }
+{ "status": "success", 
+"columns": [ "column1", "column2", ...] }
 5.2 if failed, it will response as follows
 { "status":"failed" }
 

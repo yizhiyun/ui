@@ -66,12 +66,13 @@ def checkTableMapping(request):
         outputColumnsDict = getOutputColumns(jsonData)
 
         if not outputColumnsDict:
-            failObj = {"status": "failed", \
+            failObj = { "status": "failed", \
                 "reason": "the request data didn't meet the required format. Please check it again."}
             return HttpResponseBadRequest( json.dumps(failObj) )
 
         # response all valid columns
-        successobj = {"columns": outputColumnsDict}
+        successobj = { "status": "success", \
+            "columns": outputColumnsDict }
         return Response( json.dumps(outputColumnsDict) )
 
 @api_view(['POST'])
