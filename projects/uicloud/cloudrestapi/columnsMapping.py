@@ -9,6 +9,7 @@ import os
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG);
 
 def executeSpark(sparkCode, pyFiles = [], sparkHost = 'http://spark-master0:8998'):
     '''
@@ -23,12 +24,15 @@ def executeSpark(sparkCode, pyFiles = [], sparkHost = 'http://spark-master0:8998
     # check if there is a session to be used, if not or the last session kind is not pyspark, create one.
     rootSessionsUrl = host + '/sessions'
     curSessionsReqJson = requests.get(rootSessionsUrl, headers=headers).json()
-    if (curSessionsReqJson['total'] > 0) and (curSessionsReqJson['sessions'][-1]['kind'] == 'pyspark') :
+    if (curSessionsReqJson['total'] > 0) and \
+        (curSessionsReqJson['sessions'][-1]['kind'] == 'pyspark') and \
+        (curSessionsReqJson['sessions'][-1]['state'] == 'idle') :
         sessionUrl = "{0}/{1}".format(rootSessionsUrl, curSessionsReqJson['sessions'][-1]['id'])
     else:
         newSessionReqJson = requests.post(rootSessionsUrl, data=json.dumps(sessionData), headers=headers).json()
-        pprint.pprint(newSessionReqJson)
-        sessionUrl = "{0}/{1}".format(rootSessionsUrl, newSessionReqJson['sessions'][-1]['id'])
+        #pprint.pprint(newSessionReqJson)
+        logger.debug("newSessionReqJson:{0}".format(newSessionReqJson))
+        sessionUrl = "{0}/{1}".format(rootSessionsUrl, newSessionReqJson['id'])
         
         reqJsonTmp = getReqFromDesiredReqState( sessionUrl )
         if not reqJsonTmp:
@@ -43,14 +47,14 @@ def executeSpark(sparkCode, pyFiles = [], sparkHost = 'http://spark-master0:8998
     sparkCodesReq = requests.post(statementsUrl, data=json.dumps(runData), headers=headers)
     logger.debug("sparkCodesReq:{0}, headers:{1}".format(sparkCodesReq.json(), sparkCodesReq.headers))
 
-    resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'], desiredState = 'available', \
-        eachSleepDuration=5)
+    resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'], \
+         desiredState = 'available', eachSleepDuration=5)
 
     if not resultReqJson:
 #        requests.delete(sessionUrl, headers=headers)
         return False
 
-    pprint.pprint(resultReqJson)
+    #pprint.pprint(resultReqJson)
     logger.debug("resultReqJson:{0}".format(resultReqJson))
 
     results = resultReqJson['output']
@@ -72,7 +76,7 @@ def getReqFromDesiredReqState(reqUrl, headers = {'Content-Type': 'application/js
             loggger.error("There is an error in Step-{0}, see the details for the response:{1}".format(reqCount, reqJson))
             return False
         if reqJson['state'] in ['cancelled', 'cancelling']:
-            loggger.error("the job has been cancelled in Step-{0}, see the details for the response:{1}".format(reqCount, reqJson))
+            loggger.error("The job has been cancelled in Step-{0}, see the details for the response:{1}".format(reqCount, reqJson))
             return False
         # sleep half a second
         time.sleep(eachSleepDuration)
@@ -159,11 +163,12 @@ def getDbSource(sourcesMappingFile = os.path.dirname(os.path.realpath(__file__))
     return dbSourceDict
     
 
-def getGenNewTableSparkCode(jsonData, url="hdfs://spark-master0:9000/users", folders="myfolder" ):
+def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", folder="myfolder" ):
     '''
     return the running spark code which write the New table into hdfs by default
     '''
-    savedPathUrl = "{0}/{1}/{2}".format(url, folders, jsonData["outputs"]["outputTableName"])
+    userUrl = "hdfs://{0}:{1}/users".format(hdfsHost, port)
+    savedPathUrl = "{0}/{1}/{2}".format(userUrl, folder, jsonData["outputs"]["outputTableName"])
 
     # add dbsources information into jsonData whose format like below.
     # "dbsources": 
@@ -386,4 +391,62 @@ def getGenNewTableSparkCode(jsonData, url="hdfs://spark-master0:9000/users", fol
     
     print(writeDataFrame({0}, "{1}"))
     """.format(jsonData, savedPathUrl)
+
+def getTableInfoSparkCode( userName, tableName, mode="schema", hdfsHost="spark-master0", port="9000" ):
+    '''
+    return the running spark code which will get a specified table schema from hdfs,
+    mode can be 'schema', 'data' and 'both'
+    '''
+    userUrl = "hdfs://{0}:{1}/users/{2}/{3}".format(hdfsHost, port, userName, tableName)
+
+    sparkCode = """
+    import sys
+    import logging
+    # Get an instance of a logger
+    logger = logging.getLogger("sparkCodeExecutedBylivy")
+    def getTableSchema( url, mode ):
+        '''
+        get the specified table schema,
+        note, the table format is parquet.
+        '''
+        t1 = spark.read.parquet(url)
+        #output = []
+        #for colItem in t1.schema.fields:
+        #    output.append( "{{0}}:{{1}}".format(colItem.name, colItem.dataType) )
+
+        outputDict = {{"schema":[],"data":[]}}
+        if mode == 'both' or mode == 'schema':
+            for colItem in t1.schema.fields:
+                outputDict["schema"].append( "{{0}}:{{1}}".format(colItem.name, colItem.dataType) )
+        if mode == 'both' or mode == 'schema':
+            for rowItem in t1.collect():
+                outputDict["data"].append( rowItem.asDict() )
+
+        return outputDict
+    getTableSchema("{0}", "{1}")
+    """.format(userUrl, mode)
+
+    return sparkCode
+
+
+def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", fileType='DIRECTORY'):
+    '''
+    list a specified directory from HDFS using webHDFS.
+    '''
+
+    rootUrl = "http://{0}:{1}/webhdfs/v1".format(hdfsHost, port)
+    headers = {'Content-Type': 'application/json'}
+    listUrl = rootUrl + path + "?op=LISTSTATUS"
+    resp1 = requests.get( listUrl )
+
+    outputList = []
+    if resp1.status_code<300:
+        for item in resp1.json()['FileStatuses']['FileStatus']:
+            if fileType == item['type']:
+                outputList.append(item['pathSuffix'])
+    else:
+        logger.error("response Code:{0}, response Content:{1}".format(resp1.status_code, resp1.json()))
+        return False
+
+    return outputList
 

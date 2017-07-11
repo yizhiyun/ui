@@ -9,6 +9,7 @@ import logging
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 @api_view(['POST'])
 def checkTableMapping(request):
@@ -133,9 +134,9 @@ def generateNewTable(request):
     }
     '''
 
-    logger.info("type(request.data): {0}, \n request.data: {1}".format(type(request.data), request.data))
     jsonData=request.data
-
+    
+    logger.debug("type(request.data): {0}, \n request.data: {1}".format(type(jsonData), jsonData))
     if request.method == 'POST':
 
         # response all valid columns
@@ -159,3 +160,70 @@ def generateNewTable(request):
             sucessObj = { "status": "success" }
             return Response( sucessObj )
 
+
+
+@api_view(['GET'])
+def getAllTablesFromUser(request):
+    '''
+    GET:
+    Get all table from the current user.
+    '''
+    if request.method == 'GET':
+        userPath = "/users/{}".format("myfolder")
+        outputList = listDirectoryFromHdfs(path=userPath)
+        if not outputList:
+            failObj = {"status": "failed", \
+                "reason": "Please see the logs for details."}
+            return HttpResponseBadRequest( failObj )
+        successObj = { "status": "success", "results": outputList }
+        return Response( successObj )
+
+
+@api_view(['GET'])
+def getTableViaSpark(request, tableName):
+    '''
+    GET:
+    Get all table from the current user.
+    '''
+
+    jsonData=request.data
+    logger.info("request.data: {0}, tableName: {1}".format(jsonData, tableName))
+    if request.method == 'GET':
+
+        # response all valid columns
+        curUserName = "myfolder"
+        sparkCode = getTableInfoSparkCode( curUserName, tableName )
+        
+        output = executeSpark( sparkCode )
+        if not output:
+            failObj = {"status": "failed", \
+                "reason": "Please see the logs for details."}
+            return Response( failObj )
+        elif output["status"] !="ok":
+            failObj = {"status": "failed", \
+                "reason": output}
+            return Response( failObj )
+        else:
+            #results = []
+
+            # Here is the sample output. 
+            # {
+            #   'data': 
+            #     {
+            #       'text/plain': "['db1_table1_col2:StringType', 
+            #                        'mycol1:IntegerType', 'mycol2:StringType',
+            #                        'db2_table2_col1:IntegerType']"
+            #     },
+            #   'execution_count': 1,
+            #   'status': 'ok'
+            # }
+
+#            for item in output["data"]["text/plain"][1:-1].split(","):
+#                itemlt = item[1:-1].split(":")
+#                results.append({"name":itemlt[0].strip(), "type":itemlt[1].strip()})
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+
+            results = json.loads(data.replace("': u'", "': '").replace("'", "\""))
+            sucessObj = { "status": "success", "results": results}
+            return Response( sucessObj )

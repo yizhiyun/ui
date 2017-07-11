@@ -12,5 +12,15 @@ urlpatterns = [
         r'^cloudapi/v1/mergetables/generate$',
         views.generateNewTable,
         name='generateNewTable'
-    )
+    ),
+    url(
+        r'^cloudapi/v1/mergetables/tables$',
+        views.getAllTablesFromUser,
+        name='getAllTablesFromUser'
+    ),
+    url(
+        r'^cloudapi/v1/mergetables/tables/(?P<tableName>\w+)$',
+        views.getTableViaSpark,
+        name='getTableViaSpark'
+    ),
 ]
