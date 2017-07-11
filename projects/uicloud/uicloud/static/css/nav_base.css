@@ -53,11 +53,11 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 #filter-model .common-filer-footer .cancleBtn{top: 10px;right: 110px;border:1px solid #0d53a4; color: #0d53a4;}
 
 /*头部*/
-#filter-model .topline{background:linear-gradient(to right,#0d53a4,#00bdc9);height: 5px;border-top-left-radius: 5px;border-top-right-radius: 5px;}
-#filter-model .common-filter-head{height: 45px;line-height: 45px;position: relative;}
-#filter-model .common-filter-head span{margin-left: 20px;}
-#filter-model .common-filter-head .logo{color: #808080;}
-#filter-model .common-filter-head .close{position: absolute;right: 10px;height: 100%;width: 45px;top: 0;text-align: right;cursor: pointer;}
+.topline{background:linear-gradient(to right,#0d53a4,#00bdc9);height: 5px;border-top-left-radius: 5px;border-top-right-radius: 5px;}
+.common-head{height: 45px;line-height: 45px;position: relative;}
+.common-head span{margin-left: 20px;}
+.common-head .logo{color: #808080;}
+.common-head .close{position: absolute;right: 10px;height: 100%;width: 45px;top: 0;text-align: right;cursor: pointer;}
 
 /*折叠框*/
 #filter-model .ui-tabs{border:0px;border-radius: 0;background: white;padding: 0;}
@@ -73,8 +73,8 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 
 
 /*单选按钮*/
-#filter-model .radio{display: inline-block;cursor: pointer;background: url(../../../static/images/contentFilter/selecte-not.png) no-repeat 0px -12px; padding-left: 12px;height: 12px;line-height: 12px;border-top: 5px solid white;border-bottom: 5px solid white;}
-#filter-model .radio.active{background-position: 0 0;}
+.radio{display: inline-block;cursor: pointer;background: url(../../../static/images/contentFilter/selecte-not.png) no-repeat 0px -12px; padding-left: 12px;height: 12px;line-height: 12px;border-top: 5px solid white;border-bottom: 5px solid white;}
+.radio.active{background-position: 0 0;}
 
 
 /*-------------------------公共部分-----------------------------*/
@@ -209,4 +209,5 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 #date-filter .date-filter-body #date-start-box .date-input-select-box .max-date-input-box{background: #dedede;color: #808080;}
 /*结束部分*/
 #date-filter .date-filter-body #date-finish-box .date-input-select-box .min-date-input-box{background: #dedede;color: #808080;}
+
 
