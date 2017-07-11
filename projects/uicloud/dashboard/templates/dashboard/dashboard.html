@@ -13,6 +13,7 @@
     <script src={% static "js/jquery.min.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/jquery-ui.min.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/jquery.dataTables.min.js"%} type="text/javascript" charset="utf-8"></script>
+	<script src={% static "dashboard/js/dataTables_select.js"%} type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" language="javascript" src="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/jqueryui/dataTables.jqueryui.js"></script>
 	<script src={% static "dashboard/js/table.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/dashboard.js"%} type="text/javascript" charset="utf-8"></script>
@@ -220,7 +221,7 @@
 		<div id="operational_view">
 			<div id="drag_wrap_content">
 					<!--行列拖拽区域-->
-			<div id="drag_row" style="margin-left: 0;" class="drag_main clear">
+			<div id="drag_row" style="margin-left: 0;" class="drag_main">
 				<div id="drap_row_title" class="drag_main_title">
 					<div class="drap_row_title_content">
 						<div id="row_icon" class="drag_main_title_icon">
@@ -240,7 +241,7 @@
 			</div>
 			
 			<!--行列拖拽区域-->
-			<div id="drag_col" class="drag_main clear">
+			<div id="drag_col" class="drag_main ">
 				<div id="drap_row_title" class="drag_main_title">
 					<div class="drap_row_title_content">
 						<div id="row_icon" class="drag_main_title_icon">
@@ -257,7 +258,7 @@
 				<div class="annotation_text drop_view droptrue" id="drop_col_view"><span class="drag_text">请拖入左边的字段</span></div>
 			</div>
 			<!--行列拖拽区域-->
-			<div id="drag_zb" class="drag_main clear">
+			<div id="drag_zb" class="drag_main ">
 				<div id="drap_row_title" class="drag_main_title">
 					<div class="drap_row_title_content">
 						<div id="row_icon" class="drag_main_title_icon">
@@ -274,7 +275,7 @@
 				<div class="annotation_text" id="drop_zb_view"><span class="drag_text">请拖入左边的字段</span></div>
 			</div>
 			<!--行列拖拽区域-->
-			<div id="drag_date" class="drag_main clear">
+			<div id="drag_date" class="drag_main ">
 				<div id="drap_row_title" class="drag_main_title">
 					<div class="drap_row_title_content">
 						<div id="row_icon" class="drag_main_title_icon">
@@ -325,7 +326,7 @@
 		
 		<!--视图展示区域-->
 		<div id="view_show_area">
-			<div id="view_show_area_content">
+			<div id="view_show_area_content" class="drop_view">
 			
 			
 				<!--提示框-->
