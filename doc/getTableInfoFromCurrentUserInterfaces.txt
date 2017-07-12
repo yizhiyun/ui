@@ -165,4 +165,19 @@ Get Table From Current User Via Spark
 
 Notes
 -------------
-
+1. Here are all column types
+StringType
+BinaryType
+BooleanType
+DateType
+TimestampType
+DecimalType
+DoubleType
+FloatType
+ByteType
+IntegerType
+LongType
+ShortType
+ArrayType
+MapType
+NullType
