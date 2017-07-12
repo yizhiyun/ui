@@ -392,7 +392,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     print(writeDataFrame({0}, "{1}"))
     """.format(jsonData, savedPathUrl)
 
-def getTableInfoSparkCode( userName, tableName, mode="schema", hdfsHost="spark-master0", port="9000" ):
+def getTableInfoSparkCode( userName, tableName, mode="all", hdfsHost="spark-master0", port="9000" ):
     '''
     return the running spark code which will get a specified table schema from hdfs,
     mode can be 'schema', 'data' and 'both'
@@ -414,11 +414,13 @@ def getTableInfoSparkCode( userName, tableName, mode="schema", hdfsHost="spark-m
         #for colItem in t1.schema.fields:
         #    output.append( "{{0}}:{{1}}".format(colItem.name, colItem.dataType) )
 
-        outputDict = {{"schema":[],"data":[]}}
-        if mode == 'both' or mode == 'schema':
+        outputDict = {{}}
+        if mode == 'all' or mode == 'schema':
+            outputDict["schema"] = []
             for colItem in t1.schema.fields:
                 outputDict["schema"].append( "{{0}}:{{1}}".format(colItem.name, colItem.dataType) )
-        if mode == 'both' or mode == 'schema':
+        if mode == 'all' or mode == 'data':
+            outputDict["data"] = []
             for rowItem in t1.collect():
                 outputDict["data"].append( rowItem.asDict() )
 

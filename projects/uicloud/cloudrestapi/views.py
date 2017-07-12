@@ -180,7 +180,7 @@ def getAllTablesFromUser(request):
 
 
 @api_view(['GET'])
-def getTableViaSpark(request, tableName):
+def getTableViaSpark(request, tableName, modeName):
     '''
     GET:
     Get all table from the current user.
@@ -190,9 +190,14 @@ def getTableViaSpark(request, tableName):
     logger.info("request.data: {0}, tableName: {1}".format(jsonData, tableName))
     if request.method == 'GET':
 
+        modeList = ['all', 'data', 'schema']
+        if modeName not in modeList:
+            failObj = {"status": "failed", \
+                "reason": "the mode must one of {0}".format(modeList)}
+            return Response( failObj )
         # response all valid columns
         curUserName = "myfolder"
-        sparkCode = getTableInfoSparkCode( curUserName, tableName )
+        sparkCode = getTableInfoSparkCode( curUserName, tableName, mode=modeName)
         
         output = executeSpark( sparkCode )
         if not output:
@@ -204,23 +209,6 @@ def getTableViaSpark(request, tableName):
                 "reason": output}
             return Response( failObj )
         else:
-            #results = []
-
-            # Here is the sample output. 
-            # {
-            #   'data': 
-            #     {
-            #       'text/plain': "['db1_table1_col2:StringType', 
-            #                        'mycol1:IntegerType', 'mycol2:StringType',
-            #                        'db2_table2_col1:IntegerType']"
-            #     },
-            #   'execution_count': 1,
-            #   'status': 'ok'
-            # }
-
-#            for item in output["data"]["text/plain"][1:-1].split(","):
-#                itemlt = item[1:-1].split(":")
-#                results.append({"name":itemlt[0].strip(), "type":itemlt[1].strip()})
             logger.debug("output: {}".format(output))
             data = output["data"]["text/plain"]
 
