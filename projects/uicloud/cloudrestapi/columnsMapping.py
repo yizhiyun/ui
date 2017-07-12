@@ -204,9 +204,9 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         
         newDF.write.parquet(savedPathUrl, mode='overwrite')
         return True
-    
+
     def generateNewDataFrame(jsonData):
-    
+
         # check the json format
         if ( "tables" not in jsonData.keys() ) or \
            ( "relationships" not in jsonData.keys() ) or \
@@ -215,15 +215,13 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             logger.error(errMsg)
             print(errMsg)
             return False;
-        
+
         dfDict = {{}}
 
         try:
             tables = jsonData["tables"]
             tableNum = len(tables)
-            
-        
-            
+
             for seq in range(0,tableNum):
                 # get the table connection information
                 dbSourceDict = jsonData["dbsources"][tables[seq]["source"]]
@@ -232,19 +230,19 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 dbPort = dbSourceDict["dbport"]
                 user = dbSourceDict["user"]
                 password = dbSourceDict["password"]
-            
+
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
                 columnList = list(tables[seq]['columns'].keys())
-        
+
                 connUrl = "jdbc:{{0}}://{{1}}:{{2}}".format(dbType, dbServer, dbPort)
                 dbTable = "{{0}}.{{1}}".format(dbName, tableName)
-        
+
                 if dbType=="oracle":
                     connUrl = "jdbc:{{0}}:thin:@{{1}}:{{2}}:{{3}}".format(dbType, dbServer, dbPort, sid)
                 elif dbType == "postgresql":
                     connUrl = "jdbc:{{0}}://{{1}}".format(dbType, dbServer)
-                
+
                 try:
                     dfDict[dbTable] = spark.read \
                         .format("jdbc") \
@@ -402,6 +400,8 @@ def getTableInfoSparkCode( userName, tableName, mode="all", hdfsHost="spark-mast
     sparkCode = """
     import sys
     import logging
+    import json
+
     # Get an instance of a logger
     logger = logging.getLogger("sparkCodeExecutedBylivy")
     def getTableSchema( url, mode ):
@@ -410,22 +410,19 @@ def getTableInfoSparkCode( userName, tableName, mode="all", hdfsHost="spark-mast
         note, the table format is parquet.
         '''
         t1 = spark.read.parquet(url)
-        #output = []
-        #for colItem in t1.schema.fields:
-        #    output.append( "{{0}}:{{1}}".format(colItem.name, colItem.dataType) )
 
         outputDict = {{}}
         if mode == 'all' or mode == 'schema':
-            outputDict["schema"] = []
+            outputDict['schema'] = []
             for colItem in t1.schema.fields:
-                outputDict["schema"].append( "{{0}}:{{1}}".format(colItem.name, colItem.dataType) )
+                outputDict['schema'].append( '{{0}}:{{1}}'.format(colItem.name, colItem.dataType) )
         if mode == 'all' or mode == 'data':
-            outputDict["data"] = []
+            outputDict['data'] = []
             for rowItem in t1.collect():
-                outputDict["data"].append( rowItem.asDict() )
+                outputDict['data'].append( rowItem.asDict() )
 
-        return outputDict
-    getTableSchema("{0}", "{1}")
+        return json.dumps(outputDict)
+    print(getTableSchema("{0}", "{1}"))
     """.format(userUrl, mode)
 
     return sparkCode
