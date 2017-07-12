@@ -57,7 +57,7 @@ def executeSpark(sparkCode, pyFiles=[], sparkHost='http://spark-master0:8998'):
                                               desiredState='available', eachSleepDuration=5)
 
     if not resultReqJson:
-        #        requests.delete(sessionUrl, headers=headers)
+        #requests.delete(sessionUrl, headers=headers)
         return False
 
     # pprint.pprint(resultReqJson)
