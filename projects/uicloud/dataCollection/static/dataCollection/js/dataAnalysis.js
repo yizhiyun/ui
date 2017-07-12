@@ -10,6 +10,10 @@ $(function(){
 //		}
 //	}); // 提示框
 	
+// select选项卡问题
+	$('.custom-select').comboSelect();	
+	
+	
 	function ElementAutoSize(){
 		$("#analysisContainer .leftSlide").css("height",(document.offsetHeight | document.body.offsetHeight) - 70 + "px");
 $("#analysisContainer .mainDragArea").css({"margin-left":$("#analysisContainer .leftSlide").width() + "px","height":(document.offsetHeight | document.body.offsetHeight) - 70 + "px"});
@@ -342,8 +346,9 @@ getTablesOfaDataBase($(".dataSetDetail select"));
 			async: true,
 			data:JSON.stringify(postData),
 			success:function(data){
-				var rs = $.parseJSON(data);
-				if(rs["status"] == "failed"){
+//				console.log(data);
+//				var rs = data;
+				if(data["status"] == "failed"){
 					alert("请检查表格之间的联系")
 					return;
 				}
@@ -424,9 +429,9 @@ $("#buildDataPanelView .build-footer .confirmBtn").click(function(){
 			$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).css("border","1px solid red");
 			return;
 		}
-		postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val()};
+		postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val(),"removedColumns":[],"columnRenameMapping":{}};
 	}else{
-		postData["outputs"] = {"outputTableName":preBuildDataName};
+		postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":{}};
 	}
 	// 记录
 	preBuildDataName = postData["outputs"]["outputTableName"];
@@ -444,6 +449,7 @@ $("#buildDataPanelView .build-footer .confirmBtn").click(function(){
 			data:JSON.stringify(postData),
 			success:function(data){
 				// 构建。。。。完成
+				console.log(data);
 			}
 	});	
 	

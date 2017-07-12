@@ -36,6 +36,20 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 #lateral_bar{width:200px;background: white;float: left;}
 #lateral_title{width: 100%;height: 40px;}
 #lateral_title h4{font-size: 14px;font-weight: 550;line-height: 40px;padding-left: 12px;}
+
+.dimensionality_li,.index_li,.parameter_li,.measure_li{list-style: none;width: 100%;height: 23px;font-size: 12px}
+.dimensionality_datatype,.measure_datatype{padding: 0px 5px;width: 18px;height: 23px;float: left;text-align: 
+center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
+.dimensionality_li img,.index_li img,.parameter_li img,.measure_li img{vertical-align: middle;}
+.set_style{float: left;width: 135px;height: 23px;line-height: 23px;padding:  0px 5px;cursor: pointer;border-radius: 2px;font-size: 12px}
+.set_style img{float: right;margin-top: 9.5px;display: none;}
+.drop_list_main {width: 135px;height: 23px;float: left;}
+
+
+
+
+
+
 /*维度*/
 #dimensionality_show,#measure_show,#index_show,#parameter_show{width:100%;overflow-y: scroll;}
 #dimensionality,#measurement,#indicator,#parameter{border-top: 1px solid #DEDEDE;}
@@ -46,6 +60,11 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 .funcation img{margin-top:11px;}
 .search img{margin-top: 11px;}
 .dimensionality_hanble img{margin-top:16px;}
+
+
+
+
+
 
 /*视图区域*/
 #operational_view{width:51rem;min-height:152px;float: left;box-sizing: border-box;background:#f1f2f4;}
@@ -63,7 +82,7 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 /*注释文字*/
 .annotation_text{font-size: 12px;text-align: center;color: #808080;height: 122px;line-height: 122px;overflow-x: visible;overflow-y:auto;}
 #colorHandle{width: 91.6%;margin: 0.2rem auto 0;}
-.handle_one{width:29.2%;height:25px;box-sizing;border: 1px solid #DEDEDE;border-radius: 3px;float: left;line-height:25px;min-width: 50px;min-height: 25px;cursor: pointer;}
+.handle_one{width:29.2%;height:25px;border: 1px solid #DEDEDE;border-radius: 3px;float: left;line-height:25px;min-width: 50px;min-height: 25px;cursor: pointer;}
 .handle_one span{font-size: 12px;padding-left:18%;float: left;line-height:26px;}
 .handle_one img{vertical-align: middle;margin-left:6px;margin-top:-5px;}
 #handle_color{float: left;}
@@ -138,3 +157,4 @@ table{border: 1px solid #DEDEDE;}
 
 /*标记icon展示替换*/
 .change_lable_icon{width:25px;height: 23px;background: #FF7E00;float: left;}
+
