@@ -19,7 +19,7 @@ urlpatterns = [
         name='getAllTablesFromUser'
     ),
     url(
-        r'^cloudapi/v1/mergetables/tables/(?P<tableName>\w+)$',
+        r'^cloudapi/v1/mergetables/tables/(?P<tableName>\w+)/(?P<modeName>\w+)$',
         views.getTableViaSpark,
         name='getTableViaSpark'
     ),
