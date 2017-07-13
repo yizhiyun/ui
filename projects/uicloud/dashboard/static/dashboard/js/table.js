@@ -89,7 +89,7 @@ function table_Show(drop_text_arr, drop_list_save_arr,title_num) {
 	
 	have_row_col = col_have_row_col.concat(row_have_row_col);
 	
-	console.log(have_row_col)
+//	console.log(have_row_col)
 	
 	for(key in drop_text_arr) {
 		save_come_data = (drop_text_arr[key]);
@@ -193,7 +193,7 @@ function table_Show(drop_text_arr, drop_list_save_arr,title_num) {
 					}
 				}else{
 					$("tbody").html("");
-					console.log(have_row_col)
+//					console.log(have_row_col)
 					for(var i = 0; i < have_row_col.length; i++) {
 						t.row.add(have_row_col[i]).draw();
 					}

@@ -8,6 +8,7 @@
 	
 {% endblock %}
 {% block js %}
+ <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/jquery.dataTables.min.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/dataTables_select.js"%} type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" language="javascript" src="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/jqueryui/dataTables.jqueryui.js"></script>
@@ -126,8 +127,10 @@
 		<!--侧边栏-->
 		<div id="lateral_bar">
 			<div id="lateral_title">
-				<h4>数据块N</h4>
+				<select class="custom-select">
+				</select>
 			</div>
+			
 			
 			<!--维度-->
 			<div id="dimensionality">
