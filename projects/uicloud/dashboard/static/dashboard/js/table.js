@@ -1,4 +1,20 @@
 //表格展示
+function showTable_by_dragData(drag_row_column_data){
+	//drag_row_column_data 拖到行列 列名
+	//current_cube_name  当前操作的表名
+	//_cube_all_data 所有表的数据
+	
+	
+}
+
+
+
+
+
+
+
+
+
 //同时拥有行和列的时候保存数据
 	var have_row_col = [];
 	
@@ -216,3 +232,6 @@ function table_Show(drop_text_arr, drop_list_save_arr,title_num) {
 		
 	
 }
+
+
+

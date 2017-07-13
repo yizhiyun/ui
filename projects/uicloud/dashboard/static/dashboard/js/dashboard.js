@@ -1,5 +1,17 @@
+
+// 记录拖拽到行列等的数据
+var drag_row_column_data = {
+	"row":[],
+	"column":[]
+}
+
+// 记录当前操作的数据块数据
+var current_cube_name = null;
+// 对象中以表名作为 key 值存储，表的数据
+var _cube_all_data = {};
+
+
 $(function() {
-	
 	
 	
 	/*视图大小调整  select 下拉框*/
@@ -106,16 +118,24 @@ $(function() {
 		}	
 		// select选项卡
 		cube_select.comboSelect();
+		
 		// 展示维度和度量等
 		load_measurement_module(cube_select.val())
 		
 	}
 	
-	
-	// 当前数据块所有的数据,里面 schema是列名，data 是具体的一行一行数据
-	var current_cube_all_data = null;
+
 	// 加载维度、度量等，需要在 select 加载完毕之后
 	function load_measurement_module(current_cube){
+		// 之前选择过的数据块  内存保存一份
+		// 记录当前操作数据块的名称
+		current_cube_name = current_cube;
+		if (_cube_all_data[current_cube_name]) {
+			var schema = _cube_all_data[current_cube_name]["schema"];	
+			factory_create_li_to_measurement_module(schema);
+			return;
+		}
+		
 		//1、需要加载这个表格的 column schema
 		$.ajax({
 			url:"/cloudapi/v1/mergetables/tables/" +current_cube+"/all",
@@ -124,9 +144,11 @@ $(function() {
 			success:function(data){
 				console.log(data);
 				if (data["status"] == "success") {
-					 current_cube_all_data = data["results"];
-					var schema = current_cube_all_data["schema"];	
-						factory_create_li_to_measurement_module(schema);
+					var cube_all_data = data["results"];
+					var schema = cube_all_data["schema"];	
+					_cube_all_data[current_cube_name] = cube_all_data;
+					factory_create_li_to_measurement_module(schema);
+					
 				}
 			
 			}
@@ -134,6 +156,7 @@ $(function() {
 		
 		//2、工厂，根据数据去创建 维度和度量等的 Li
 		function factory_create_li_to_measurement_module(schema){
+			
 			for (var i = 0; i < schema.length;i++) {
 				var column_name_info = schema[i];
 				var arr = column_name_info.split(":");
@@ -143,16 +166,18 @@ $(function() {
 				var type_indictot_img_path = _data_type.image_Name_Find();	 // 数据类型指示图片的路径
 				
 				var aLi = $("<li class=" + _show_type+"_li>"+"<div class=" + _show_type+"_datatype><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><p class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + ">"+_name+"</span><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></p></div></li>");
+				// 用来记录数据类型
+				aLi.find(".drop_main").eq(0).data("type",_data_type);
 				
-				$("#"+_show_type+"_show ul").append(aLi);	
+				
+				$("#"+_show_type+"_show ul").append(aLi);
+				
+				
 			}
-			
+			// 启动拖拽功能
 			drag();
 		}
-		
-		//3、
 			
-		
 	}
 	
 	
@@ -370,10 +395,6 @@ $(function() {
 											break;
 									}
 
-									//						if($("#handle_color_text").find(".color_icon_wrap").find("img").not($(ele).find("img")).attr("src") == bj_dict[$(this).find(".label_right_text").text()]){
-									//							$(ele).parent().remove();
-									//							
-									//						}
 									$(ele).parent().find("li").data("show_num", index)
 									mark_dict[$(ele).parent().find("li").find("p").text() + $(ele).parent().find("li").data("show_num")] = $(ele).find("img").attr("src");
 								})
@@ -398,6 +419,7 @@ $(function() {
 							$("#handle_color_text").removeClass("ui-state-default_z")
 						},
 						drop: function(event, ui) {
+//							console.log(ui);
 
 							$("#sizer_mpt").css("display", "none");
 							$("#view_show_empty").css("display", "none");
@@ -621,75 +643,89 @@ $(function() {
 
 							}
 
-							//记录拖入维度的字段
-							var drop_row_view_arr = [];
+//							记录拖入维度的字段
+//							var drop_row_view_arr = [];
+//
+//							var drop_col_view_arr = [];
+//
+//							var random = Math.round(Math.random() * 2 + 1);
+//
+//							var request_data = ["1","2","3"];
+//
+//							//表头数量
+//							var title_num = request_data.length;
 
-							var drop_col_view_arr = [];
-
-							var random = Math.round(Math.random() * 2 + 1);
-
-							var request_data = ["1","2","3"];
-
-							//表头数量
-							var title_num = request_data.length;
-
+							var dragObj = ui["draggable"];// 拖动的元素
+							var _dataType = dragObj.data("type");// 元素数据类型
+//							var _wd_type = _dataType.w_d_typeCat();// 维度还是度量。。。
+							var _field_name =dragObj.children("span").eq(0).html(); // 字段名
 							//判断拖入的区域
 							switch($(this).attr("id")) {
+								
 								//判断拖入行
 								case 'drop_row_view':
-									$(this).find(".list_wrap").find("li").each(function(index, ele) {
-
-										drop_row_view_arr.push($(ele).find("p").find("span").text());
-										drop_text_arr["drop_row_view"] = drop_row_view_arr;
-										var the_name = $(ele).find("p").find("span").text();
-										//遍历添加数据
-
-										if(lock == false) {
-//											console.log("1")
-											for(var i = 0; i < request_data.length; i++) {
-												var request_dict = new Object();
-												drop_list_save_arr.push(request_dict);
-
-											}
-											lock = true;
-										}
-
-										for(var j = 0; j < drop_list_save_arr.length; j++) {
-											temp = request_data[j];
-											drop_list_save_arr[j][the_name] = temp;
-										}
-										//										console.log(drop_list_save_arr)
-										//								
-
-									})
+								// 判断是维度还是度量	
+								drag_row_column_data["row"].push(current_cube_name+":"+ _field_name + ":" + _dataType);
+								
+									
+									
+									
+//									$(this).find(".list_wrap").find("li").each(function(index, ele) {
+//
+////										drop_row_view_arr.push($(ele).find("p").find("span").text());
+//										drop_text_arr["drop_row_view"] = drop_row_view_arr;
+//										var the_name = $(ele).find("p").find("span").text();
+//										//遍历添加数据
+//
+//										if(lock == false) {
+////											console.log("1")
+//											for(var i = 0; i < request_data.length; i++) {
+//												var request_dict = new Object();
+//												drop_list_save_arr.push(request_dict);
+//
+//											}
+//											lock = true;
+//										}
+//
+//										for(var j = 0; j < drop_list_save_arr.length; j++) {
+//											temp = request_data[j];
+//											drop_list_save_arr[j][the_name] = temp;
+//										}
+//										//										console.log(drop_list_save_arr)
+//										//								
+//
+//									})
 
 									break;
 
 									//判断拖入列
 
 								case 'drop_col_view':
-									$(this).find(".list_wrap").find("li").each(function(index, ele) {
-										drop_row_view_arr.push($(ele).find("p").find("span").text());
-										drop_text_arr["drop_col_view"] = drop_row_view_arr;
-										var the_name = $(ele).find("p").find("span").text();
-
-										if(lock == false) {
-
-											for(var i = 0; i < request_data.length; i++) {
-
-												var request_dict = new Object();
-												drop_list_save_arr.push(request_dict);
-
-											}
-											lock = true;
-										}
-
-										for(var j = 0; j < drop_list_save_arr.length; j++) {
-											var temp = request_data[j];
-
-											drop_list_save_arr[j][the_name] = temp;
-										}
-									})
+								
+									drag_row_column_data["column"].push(_field_name + ":" + _dataType);
+									
+//									$(this).find(".list_wrap").find("li").each(function(index, ele) {
+//										drop_row_view_arr.push($(ele).find("p").find("span").text());
+//										drop_text_arr["drop_col_view"] = drop_row_view_arr;
+//										var the_name = $(ele).find("p").find("span").text();
+//
+//										if(lock == false) {
+//
+//											for(var i = 0; i < request_data.length; i++) {
+//
+//												var request_dict = new Object();
+//												drop_list_save_arr.push(request_dict);
+//
+//											}
+//											lock = true;
+//										}
+//
+//										for(var j = 0; j < drop_list_save_arr.length; j++) {
+//											var temp = request_data[j];
+//
+//											drop_list_save_arr[j][the_name] = temp;
+//										}
+//									})
 
 									break;
 
@@ -754,9 +790,10 @@ $(function() {
 							}
 
 							$("#example_wrapper").remove();
-							$("#view_show_wrap").data("table", "false");
-							//表格展示
-//							table_Show(drop_text_arr, drop_list_save_arr, title_num);
+							$("#view_show_wrap").data("table", "false");					
+							// 展现 table
+							showTable_by_dragData(drag_row_column_data);
+
 						}
 
 					}).sortable({
