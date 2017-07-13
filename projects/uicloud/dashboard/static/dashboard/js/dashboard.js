@@ -12,8 +12,7 @@ var _cube_all_data = {};
 
 
 $(function() {
-	
-	
+
 	/*视图大小调整  select 下拉框*/
 	$(".buildOpa").each(function(index, ele) {
 		$(ele).on("mouseenter", function() {
@@ -165,13 +164,17 @@ $(function() {
 				var _show_type = _data_type.w_d_typeCat(); // 维度还是度量，返回值是一个字符串		
 				var type_indictot_img_path = _data_type.image_Name_Find();	 // 数据类型指示图片的路径
 				
-				var aLi = $("<li class=" + _show_type+"_li>"+"<div class=" + _show_type+"_datatype><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><p class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + ">"+_name+"</span><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></p></div></li>");
+	var aLi = $("<li class=" + _show_type+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><p class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + ">"+_name+"</span><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></p></div></li>");
+				
 				// 用来记录数据类型
 				aLi.find(".drop_main").eq(0).data("type",_data_type);
 				
 				
 				$("#"+_show_type+"_show ul").append(aLi);
 				
+
+				
+
 				
 			}
 			// 启动拖拽功能
@@ -297,45 +300,11 @@ $(function() {
 								//					console.log($(ele).parent().data("data-show"))
 								//样式
 								$(labelIcon).find(".label_icon_wrap").css({
-									width: "100px",
-									height: "auto",
-									border: "1px solid #DEDEDE",
-									position: "absolute",
 									top: $(ele).parent().offset().top - 70 + 22 + "px",
-									background: "white"
 								});
 
-								$(labelIcon).find(".label_icon_wrap").find("li").css({
-									width: "100px",
-									height: "23px",
-									borderBottom: "1px solid #DEDEDE"
 
-								})
-								$(labelIcon).find(".label_icon_wrap").find("li").find(".label_left_img").css({
-									width: "25px",
-									height: "23px",
-									position: "absolute",
-									left: "0px"
-								});
-
-								$(labelIcon).find(".label_icon_wrap").find("li").find(".label_right_text").css({
-									width: "75px",
-									height: "23px",
-									position: "absolute",
-									left: "25px",
-									textAlign: "center",
-									lineHeight: "25px",
-
-								});
-
-								$(labelIcon).find(".label_icon_wrap").find("li").find(".label_left_img").find("img").attr("src", "/static/dashboard/img/color.png").css({
-									position: "absolute",
-									top: "0px",
-									right: "0px",
-									bottom: "0px",
-									left: "0px",
-									margin: "auto"
-								});
+								$(labelIcon).find(".label_icon_wrap").find("li").find(".label_left_img").find("img").attr("src", "/static/dashboard/img/color.png");
 
 								//移入移出事件
 								$(labelIcon).find(".label_icon_wrap").find("li").on("mouseenter", function() {
@@ -493,36 +462,14 @@ $(function() {
 										$(ele).find("li").data("show_num", index);
 										mark_dict[$(ele).find("li").find("p").text() + $(ele).find("li").data("show_num")] = $(ele).find(".color_icon_wrap").find("img").attr("src");
 										$("#handle_color_text").find(".drag_text").css("display", "none");
-										$(".color_icon_wrap").css({
-											width: "13px",
-											height: "13px",
-											lineHeight: "13px",
-											float: "left",
-											marginTop: "4px",
-											marginLeft: "5px",
-										});
 
-										$(".color_icon").css({
-											marginTop: "5px",
-											cursor: "pointer",
-											//												verticalAlign: "middle",
 
-										});
 									}
+
 									$(this).find("li").css({
 										width: view_show * 0.85 + "px",
-										height: "23px",
-										lineHeight: "23px",
-										float: "right",
-										listStyle: "none",
-										marginTop: "0px",
-
 									}).addClass("date_list").addClass("bj_color");
-									$(this).find("p").css({
-										boxSizing: "border-box",
-										width: "100%",
-										float: "right"
-									})
+									
 								})
 
 								markShow();
@@ -551,36 +498,12 @@ $(function() {
 										$(ele).find("li").data("show_num", index);
 										mark_dict[$(ele).find("li").find("p").text() + $(ele).find("li").data("show_num")] = $(ele).find(".color_icon_wrap").find("img").attr("src");
 										$("#handle_color_text").find(".drag_text").css("display", "none");
-										$(".color_icon_wrap").css({
-											width: "13px",
-											height: "13px",
-											lineHeight: "13px",
-											float: "left",
-											marginTop: "4px",
-											marginLeft: "5px",
-										});
-
-										$(".color_icon").css({
-											marginTop: "5px",
-											cursor: "pointer",
-											//												verticalAlign: "middle",
-
-										});
+										
 									}
 									$(this).find("li").css({
 										width: view_show * 0.85 + "px",
-										height: "23px",
-										lineHeight: "23px",
-										float: "right",
-										listStyle: "none",
-										marginTop: "0px",
-
-									}).addClass("date_list").addClass("bj_prompt")
-									$(this).find("p").css({
-										boxSizing: "border-box",
-										width: "100%",
-										float: "right"
-									})
+									}).addClass("date_list").addClass("bj_prompt");
+						
 								})
 
 								markShow();
@@ -607,36 +530,14 @@ $(function() {
 										$(ele).find("li").data("show_num", index);
 
 										$("#handle_color_text").find(".drag_text").css("display", "none");
-										$(".color_icon_wrap").css({
-											width: "13px",
-											height: "13px",
-											lineHeight: "13px",
-											float: "left",
-											marginTop: "4px",
-											marginLeft: "5px",
-										});
-
-										$(".color_icon").css({
-											marginTop: "5px",
-											cursor: "pointer",
-											//												verticalAlign: "middle",
-
-										});
+										
 									}
+
+
 									$(this).find("li").css({
 										width: view_show * 0.85 + "px",
-										height: "23px",
-										lineHeight: "23px",
-										float: "right",
-										listStyle: "none",
-										marginTop: "0px",
-
 									}).addClass("date_list").addClass("bj_information");
-									$(this).find("p").css({
-										boxSizing: "border-box",
-										width: "100%",
-										float: "right"
-									})
+						
 								})
 
 								markShow();
@@ -749,40 +650,19 @@ $(function() {
 											var zb_icon = $("<div class='color_icon_wrap'><img alt='详细' class='color_icon'></div>");
 											$(zb_icon).find("img").attr("src", "/static/dashboard/img/details.png").addClass("label_detailedness");
 											zb_icon.prependTo($(ele));
-											$(".color_icon_wrap").css({
-												width: "13px",
-												height: "13px",
-												lineHeight: "13px",
-												float: "left",
-												marginTop: "4px",
-												marginLeft: "5px",
-											});
-
-											$(".color_icon").css({
-												marginTop: "5px",
-												cursor: "pointer",
-												//												verticalAlign: "middle",
-
-											});
+											
 										}
 									})
 
 									markShow();
 
+
 									$(this).find("li").css({
 										width: view_show * 0.85 + "px",
-										height: "23px",
-										lineHeight: "23px",
-										float: "right",
-										listStyle: "none",
-										marginTop: "0px",
-
 									}).addClass("date_list").addClass("bj_information");
-									$(this).find("p").css({
-										boxSizing: "border-box",
-										width: "100%",
-										float: "right"
-									})
+						
+
+									
 
 									break;
 								default:
@@ -831,6 +711,8 @@ $(function() {
 
 						},
 						update: function() {
+							var ceshi = $(this).sortable("toArray");
+					
 
 							//判断展示窗是否为空
 							if($(this).find("li").length == 0) {
@@ -904,36 +786,12 @@ $(function() {
 											$(ele).find("li").data("show_num", index);
 											mark_dict[$(ele).find("li").find("p").text() + $(ele).find("li").data("show_num")] = $(ele).find(".color_icon_wrap").find("img").attr("src");
 											$("#handle_color_text").find(".drag_text").css("display", "none");
-											$(".color_icon_wrap").css({
-												width: "13px",
-												height: "13px",
-												lineHeight: "13px",
-												float: "left",
-												marginTop: "4px",
-												marginLeft: "5px",
-											});
-
-											$(".color_icon").css({
-												marginTop: "5px",
-												cursor: "pointer",
-												//												verticalAlign: "middle",
-
-											});
+											
 										}
 										$(this).find("li").css({
-											width: view_show * 0.85 + "px",
-											height: "23px",
-											lineHeight: "23px",
-											float: "right",
-											listStyle: "none",
-											marginTop: "0px",
-
-										}).addClass("date_list").addClass("bj_color");
-										$(this).find("p").css({
-											boxSizing: "border-box",
-											width: "100%",
-											float: "right"
-										})
+										width: view_show * 0.85 + "px",
+									}).addClass("date_list").addClass("bj_color");
+						
 									})
 
 									markShow();
@@ -960,36 +818,12 @@ $(function() {
 											$(ele).find("li").data("show_num", index);
 											mark_dict[$(ele).find("li").find("p").text() + $(ele).find("li").data("show_num")] = $(ele).find(".color_icon_wrap").find("img").attr("src");
 											$("#handle_color_text").find(".drag_text").css("display", "none");
-											$(".color_icon_wrap").css({
-												width: "13px",
-												height: "13px",
-												lineHeight: "13px",
-												float: "left",
-												marginTop: "4px",
-												marginLeft: "5px",
-											});
-
-											$(".color_icon").css({
-												marginTop: "5px",
-												cursor: "pointer",
-												//												verticalAlign: "middle",
-
-											});
+											
 										}
 										$(this).find("li").css({
-											width: view_show * 0.85 + "px",
-											height: "23px",
-											lineHeight: "23px",
-											float: "right",
-											listStyle: "none",
-											marginTop: "0px",
-
-										}).addClass("date_list").addClass("bj_prompt")
-										$(this).find("p").css({
-											boxSizing: "border-box",
-											width: "100%",
-											float: "right"
-										})
+										width: view_show * 0.85 + "px",
+									}).addClass("date_list").addClass("bj_prompt");
+						
 									})
 
 									markShow();
@@ -1015,45 +849,26 @@ $(function() {
 											$(ele).find("li").data("show_num", index);
 
 											$("#handle_color_text").find(".drag_text").css("display", "none");
-											$(".color_icon_wrap").css({
-												width: "13px",
-												height: "13px",
-												lineHeight: "13px",
-												float: "left",
-												marginTop: "4px",
-												marginLeft: "5px",
-											});
-
-											$(".color_icon").css({
-												marginTop: "5px",
-												cursor: "pointer",
-												//												verticalAlign: "middle",
-
-											});
-										}
-										$(this).find("li").css({
-											width: view_show * 0.85 + "px",
-											height: "23px",
-											lineHeight: "23px",
-											float: "right",
-											listStyle: "none",
-											marginTop: "0px",
-
-										}).addClass("date_list").addClass("bj_information");
-										$(this).find("p").css({
-											boxSizing: "border-box",
-											width: "100%",
-											float: "right"
-										})
+											
+											}
+											$(this).find("li").css({
+										width: view_show * 0.85 + "px",
+									}).addClass("date_list").addClass("bj_information");
+						
 									})
 
 									markShow();
 
 									break;
-								case "drop_zb_view":
-									$(this).find("li").addClass("zb_list");
-
+								case "drop_row_view":
+									$(this).find("li").removeClass().addClass("drog_row_list date_list bj_information");
 									break;
+
+								case "drop_col_view":
+									$(this).find("li").removeClass().addClass("drog_row_list date_list bj_information");
+									break;
+
+
 								case "handle_color_text":
 
 									$(ele).find("li").each(function(index, ele) {
@@ -1102,21 +917,7 @@ $(function() {
 											$(ele).find("li[class='drog_row_list date_list bj_information bj_color']").parent().find($(".color_icon_wrap")).find("img").attr("src", "/static/dashboard/img/color.png").attr("alt", "颜色");
 											$(ele).find("li[class='drog_row_list date_list bj_information bj_prompt']").parent().find($(".color_icon_wrap")).find("img").attr("src", "/static/dashboard/img/prompt.png").attr("alt", "提示");
 
-											$(".color_icon_wrap").css({
-												width: "13px",
-												height: "13px",
-												lineHeight: "13px",
-												float: "left",
-												marginTop: "4px",
-												marginLeft: "5px",
-											});
-
-											$(".color_icon").css({
-												marginTop: "5px",
-												cursor: "pointer",
-												//												verticalAlign: "middle",
-
-											});
+											
 										}
 
 									})
@@ -1152,6 +953,8 @@ $(function() {
 						}
 
 					}).disableSelection();
+
+					
 
 				})
 			});
@@ -1201,26 +1004,7 @@ $(function() {
 						})
 						$(this).find("li").css({
 							width: view_show + "px",
-							height: "23px",
-							lineHeight: "23px",
-							margin: "5px auto 0",
-							listStyle: "none",
-							background: "#a7eff4",
 						});
-						$(this).find("p").css({
-							width: "94%",
-							height: "23px",
-							background: "",
-							padding: "0px 5px",
-							color: "black"
-						});
-						$(this).find("p").find("span").css({
-							float: "left",
-							display: "block"
-						});
-						$(this).find("img").css({
-							display: "block",
-						})
 					}
 
 				}).sortable().disableSelection();
@@ -1265,7 +1049,7 @@ $(function() {
 				imgMouse();
 			})
 			//创建一个类型弹窗			
-			$(".dimensionality_img_type").each(function(index, ele) {
+			$(".dimensionality_datatype").each(function(index, ele) {
 				$(ele).on("click", function(event) {
 					//...
 					$(".dimensionality_datatype").css("background", "");
@@ -1283,31 +1067,18 @@ $(function() {
 						type_wicket.appendTo($(ele).parent());
 
 						$(type_wicket).find("span").css({
-							float: "left",
-							width: "25px",
-							height: "22px"
+							width:"25px",
+							height:"22px",
+							floa:"left",
 						});
 
 						type_wicket.find(".click_type").css({
-							width: "100px",
-							position: "absolute",
 							top: $(ele).offset().top - 45 + "px",
 							left: "5px",
-							zIndex: "9999",
-							background: "white",
-							border: "1px solid #DEDEDE",
-						});
-						type_wicket.find("ul").css({
-							width: "100px",
-						});
+						}).addClass("type_wic_click_type");
+						type_wicket.find("ul").addClass("type_wic_ul");
 
-						type_wicket.find("li").css({
-							borderBottom: "1px solid #DEDEDE",
-							height: "22px",
-							lineHeight: "22px",
-							fontSize: "12px",
-							cursor: "pointer"
-						});
+						type_wicket.find("li").addClass("type_wic_li");
 
 						type_wicket.find("li").on("click", function() {
 							//点击更换类型
