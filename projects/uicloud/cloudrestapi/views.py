@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view
-#from rest_framework.response import Response
+# from rest_framework.response import Response
 from .data_handler import *
 from django.http import JsonResponse
 
@@ -55,6 +55,19 @@ def checkTableMapping(request):
                 ]
             }
             ...
+        ],
+
+        "conditions": [
+            {
+                "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
+                "columnName": "<databaseName>.<tableName>.<columnName>",
+                "value": <value>
+            },
+            {
+                "type":"limit",
+                "value": <value>
+            },
+            ...
         ]
     }
     '''
@@ -70,12 +83,12 @@ def checkTableMapping(request):
         if not outputColumnsDict:
             failObj = {"status": "failed",
                        "reason": "the request data didn't meet the required format. Please check it again."}
-            return JsonResponse(failObj)
+            return JsonResponse(failObj, status=400)
 
         # response all valid columns
         successObj = {"status": "success",
                       "columns": outputColumnsDict}
-        return JsonResponse( successObj )
+        return JsonResponse(successObj)
 
 
 @api_view(['POST'])
@@ -124,6 +137,19 @@ def generateNewTable(request):
             ...
         ],
 
+        "conditions": [
+            {
+                "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
+                "columnName": "<databaseName>.<tableName>.<columnName>",
+                "value": <value>
+            },
+            {
+                "type":"limit",
+                "value": <value>
+            },
+            ...
+        ],
+
         "outputs":{
             "outputTableName": <tableName>,
             "columnsMapping": {
@@ -148,17 +174,17 @@ def generateNewTable(request):
         if not sparkCode:
             failObj = {"status": "failed",
                        "reason": "Cannot get the db sources mapping."}
-            return JsonResponse(failObj)
+            return JsonResponse(failObj, status=400)
 
         output = executeSpark(sparkCode)
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the detailed logs."}
-            return JsonResponse(failObj)
+            return JsonResponse(failObj, status=400)
         elif output["status"] != "ok":
             failObj = {"status": "failed",
                        "reason": output}
-            return JsonResponse(failObj)
+            return JsonResponse(failObj, status=400)
         else:
             sucessObj = {"status": "success"}
             return JsonResponse(sucessObj)
@@ -176,7 +202,7 @@ def getAllTablesFromUser(request):
         if not outputList:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
-            return JsonResponse(failObj)
+            return JsonResponse(failObj, status=400)
         successObj = {"status": "success", "results": outputList}
         return JsonResponse(successObj)
 
@@ -197,7 +223,7 @@ def getTableViaSpark(request, tableName, modeName):
         if modeName not in modeList:
             failObj = {"status": "failed",
                        "reason": "the mode must one of {0}".format(modeList)}
-            return JsonResponse(failObj)
+            return JsonResponse(failObj, status=400)
         # response all valid columns
         curUserName = "myfolder"
         sparkCode = getTableInfoSparkCode(
@@ -207,11 +233,11 @@ def getTableViaSpark(request, tableName, modeName):
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
-            return JsonResponse(failObj)
+            return JsonResponse(failObj, status=400)
         elif output["status"] != "ok":
             failObj = {"status": "failed",
                        "reason": output}
-            return JsonResponse(failObj)
+            return JsonResponse(failObj, status=400)
         else:
             logger.debug("output: {}".format(output))
             data = output["data"]["text/plain"]
