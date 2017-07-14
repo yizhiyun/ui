@@ -6,6 +6,7 @@ import textwrap
 import time
 import os
 
+from dataCollection.gxmHandleClass.Singleton import Singleton
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -162,15 +163,30 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
         ...
     }
     '''
+
+    palts = Singleton().dataPaltForm['db']
+    dbSourceDict = {}
+    if palts:
+        for key, value in palts.items():
+
+            dbSourceDict[key] = {
+                    "dbtype": "mysql",
+                    "dbserver": value.dbLocation,
+                    "source": value.dbPaltName,
+                    "dbport": value.dbPort,
+                    "user": value.dbUserName,
+                    "password": value.dbUserPwd
+            }
+        return dbSourceDict
+
     try:
-        sourceF = open(sourcesMappingFile)
-        dbSourceDict = json.load(sourceF)
-        logger.debug("dbSourceDict: {}".format(dbSourceDict))
+        with open(sourcesMappingFile) as f:
+            dbSourceDict = json.load(f)
+            logger.debug("dbSourceDict: {}".format(dbSourceDict))
+            return dbSourceDict
     except:
         logger.error("Cannot get the db sources mapping!")
         return False
-
-    return dbSourceDict
 
 
 def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", folder="myfolder"):
