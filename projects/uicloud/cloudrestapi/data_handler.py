@@ -170,12 +170,12 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
         for key, value in palts.items():
 
             dbSourceDict[key] = {
-                    "dbtype": "mysql",
-                    "dbserver": value.dbLocation,
-                    "source": value.dbPaltName,
-                    "dbport": value.dbPort,
-                    "user": value.dbUserName,
-                    "password": value.dbUserPwd
+                "dbtype": "mysql",
+                "dbserver": value.dbLocation,
+                "source": value.dbPaltName,
+                "dbport": value.dbPort,
+                "user": value.dbUserName,
+                "password": value.dbUserPwd
             }
         return dbSourceDict
 
@@ -235,21 +235,33 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     def generateNewDataFrame(jsonData):
 
         # check the json format
-        if ( "tables" not in jsonData.keys() ) or \
-           ( "relationships" not in jsonData.keys() ) or \
-           ( "outputs"  not in jsonData.keys() ):
+        if (("tables" not in jsonData.keys()) or
+            ("relationships" not in jsonData.keys()) or
+                ("outputs" not in jsonData.keys())):
             errMsg = "ERROR, The jsonData don't include 'tables', 'relationships' or 'outputs'."
             logger.error(errMsg)
             print(errMsg)
-            return False;
+            return False
 
-        dfDict = {{}}
+        dfDict = {}
 
         try:
             tables = jsonData["tables"]
             tableNum = len(tables)
 
-            for seq in range(0,tableNum):
+            # change the removedColumn list to dict for comparing by table.
+            removedColsDict = {}
+            if "removedColumns" in jsonData["outputs"].keys():
+                for item in jsonData["outputs"]["removedColumns"]:
+                    (db, table, col) = item.split(".")
+                    dbTable = "{0}.{1}".format(db, table)
+                    if dbTable in removedColsDict.keys():
+                        removedColsDict[dbTable].append(col)
+                    else:
+                        removedColsDict[dbTable] = [col]
+
+            # get data from those db sources
+            for seq in range(0, tableNum):
                 # get the table connection information
                 dbSourceDict = jsonData["dbsources"][tables[seq]["source"]]
                 dbType = dbSourceDict["dbtype"]
@@ -260,15 +272,23 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
+
+                connUrl = "jdbc:{0}://{1}:{2}".format(dbType, dbServer, dbPort)
+                dbTable = "{0}.{1}".format(dbName, tableName)
+
+                # check the "removedColumns" item, remove them from table columns
+                if dbTable in removedColsDict.keys():
+                    for colItem in removedColsDict:
+                        if colItem in tables[seq]['columns'].keys():
+                            tables[seq]['columns'].pop(colItem)
+
                 columnList = list(tables[seq]['columns'].keys())
 
-                connUrl = "jdbc:{{0}}://{{1}}:{{2}}".format(dbType, dbServer, dbPort)
-                dbTable = "{{0}}.{{1}}".format(dbName, tableName)
-
-                if dbType=="oracle":
-                    connUrl = "jdbc:{{0}}:thin:@{{1}}:{{2}}:{{3}}".format(dbType, dbServer, dbPort, sid)
+                if dbType == "oracle":
+                    sid = ""
+                    connUrl = "jdbc:{0}:thin:@{1}:{2}:{3}".format(dbType, dbServer, dbPort, sid)
                 elif dbType == "postgresql":
-                    connUrl = "jdbc:{{0}}://{{1}}".format(dbType, dbServer)
+                    connUrl = "jdbc:{0}://{1}".format(dbType, dbServer)
 
                 try:
                     dfDict[dbTable] = spark.read \
@@ -277,32 +297,41 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                         .option("dbtable", dbTable) \
                         .option("user", user) \
                         .option("password", password) \
-                        .load().select( columnList )
+                        .load().select(columnList)
+                    if "conditions" in tables[seq].keys():
+                        # add the specified conditions in the DataFrame
+                        for condIt in tables[seq]["conditions"]:
+                            if condIt["type"] == "limit" and type(condIt["value"]) == int:
+                                dfDict[dbTable] = dfDict[dbTable].limit(condIt["value"])
+                            elif condIt["type"] in [">", "=", "<"]:
+                                condStr = "{0} {1} {2}".format(condIt["columnName"], condIt["type"], condIt["value"])
+                                dfDict[dbTable] = dfDict[dbTable].filter(condStr)
+                            else:
+                                pass
                 except:
                     print(sys.exc_info())
-                    return False;
+                    return False
 
             # check if all columns is available. BTW, it maybe is unnecessary.
             #
             sortedRelList = sortTableRelationship(jsonData)
             if not sortedRelList:
-                return False;
+                return False
 
             outputDf = joinDF(sortedRelList, dfDict)
             if outputDf is None:
                 return False
 
-            # remove some columns
-            for col in jsonData["outputs"]['removedColumns']:
-                outputDf = outputDf.drop(col.replace('.', '_'))
-
             # rename the new dataframe.
             for key, newCol in jsonData["outputs"]['columnRenameMapping'].items():
                 oldCol = key.replace('.', '_')
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
+        except KeyError:
+            print(sys.exc_info())
+            return False
         except:
             print(sys.exc_info())
-            return False;
+            return False
         return outputDf
 
     def sortTableRelationship(jsonData):

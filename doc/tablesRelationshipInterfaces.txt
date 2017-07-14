@@ -29,6 +29,18 @@ The RESTful API Details of Verify those table relationships
                 },
                 ...
             },
+            "conditions": [
+                {
+                    "type":"=", # type include '=','>', '<', 'like' and so on.
+                    "columnName": "<columnName>",
+                    "value": <value>
+                },
+                {
+                    "type":"limit",
+                    "value": <value>
+                },
+                ...
+            ],
             <otherProperty>:<otherValue>,
             ...
         },
@@ -48,19 +60,6 @@ The RESTful API Details of Verify those table relationships
                 ...
             ]
         }
-        ...
-    ],
-
-    "conditions": [
-        {
-            "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
-            "columnName": "<databaseName>.<tableName>.<columnName>",
-            "value": <value>
-        },
-        {
-            "type":"limit",
-            "value": <value>
-        },
         ...
     ]
 }
@@ -82,7 +81,14 @@ The RESTful API Details of Verify those table relationships
                 "col2": {
                     "columnType": "VARCHAR2(64)"
                 }
-            }
+            },
+            "conditions": [
+                {
+                    "type":"=",
+                    "columnName": "col1",
+                    "value": '1000'
+                }
+            ]
         },
         {
             "source": "mysqlDB2",
@@ -160,6 +166,18 @@ The RESTful API Details of Generating New Table
                 },
                 ...
             },
+            "conditions": [
+                {
+                    "type":"=", # type include '=','>', '<', 'like' and so on.
+                    "columnName": "<columnName>",
+                    "value": <value>
+                },
+                {
+                    "type":"limit",
+                    "value": <value>
+                },
+                ...
+            ],
             <otherProperty>:<otherValue>,
             ...
         },
@@ -182,26 +200,13 @@ The RESTful API Details of Generating New Table
         ...
     ],
 
-    "conditions": [
-        {
-            "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
-            "columnName": "<databaseName>.<tableName>.<columnName>",
-            "value": <value>
-        },
-        {
-            "type":"limit",
-            "value": <value>
-        },
-        ...
-    ],
-
     "outputs":{
         "outputTableName": <tableName>,
         "columnsMapping": {
             "<databaseName>.<tableName>.<columnName>": <renamedColumnName>,
             ...
         },
-        "removedColumns": ["<databaseName>.<tableName>.<columnName>","<tableName>.<columnName>",...],
+        "removedColumns": ["<databaseName>.<tableName>.<columnName>", ...],
         ...
     }
 }
@@ -223,7 +228,14 @@ The RESTful API Details of Generating New Table
                 "col2": {
                     "columnType": "VARCHAR2(64)"
                 }
-            }
+            },
+            "conditions": [
+                {
+                    "type":"=",
+                    "columnName": "col1",
+                    "value": '1000'
+                }
+            ]
         },
         {
             "source": "mysqlDB2",
@@ -257,13 +269,6 @@ The RESTful API Details of Generating New Table
                     "toCol": "col2"
                 }
             ]
-        }
-    ],
-    "conditions": [
-        {
-            "type":"equal",
-            "columnName": "db1.table1.col1",
-            "value": '1000'
         }
     ],
     "outputs": {
