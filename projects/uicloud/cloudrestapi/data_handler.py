@@ -6,6 +6,7 @@ import textwrap
 import time
 import os
 
+from dataCollection.gxmHandleClass.Singleton import Singleton
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -162,15 +163,30 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
         ...
     }
     '''
+
+    palts = Singleton().dataPaltForm['db']
+    dbSourceDict = {}
+    if palts:
+        for key, value in palts.items():
+
+            dbSourceDict[key] = {
+                "dbtype": "mysql",
+                "dbserver": value.dbLocation,
+                "source": value.dbPaltName,
+                "dbport": value.dbPort,
+                "user": value.dbUserName,
+                "password": value.dbUserPwd
+            }
+        return dbSourceDict
+
     try:
-        sourceF = open(sourcesMappingFile)
-        dbSourceDict = json.load(sourceF)
-        logger.debug("dbSourceDict: {}".format(dbSourceDict))
+        with open(sourcesMappingFile) as f:
+            dbSourceDict = json.load(f)
+            logger.debug("dbSourceDict: {}".format(dbSourceDict))
+            return dbSourceDict
     except:
         logger.error("Cannot get the db sources mapping!")
         return False
-
-    return dbSourceDict
 
 
 def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", folder="myfolder"):
@@ -219,13 +235,13 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     def generateNewDataFrame(jsonData):
 
         # check the json format
-        if ( "tables" not in jsonData.keys() ) or \
-           ( "relationships" not in jsonData.keys() ) or \
-           ( "outputs"  not in jsonData.keys() ):
+        if (("tables" not in jsonData.keys()) or
+            ("relationships" not in jsonData.keys()) or
+                ("outputs" not in jsonData.keys())):
             errMsg = "ERROR, The jsonData don't include 'tables', 'relationships' or 'outputs'."
             logger.error(errMsg)
             print(errMsg)
-            return False;
+            return False
 
         dfDict = {{}}
 
@@ -233,7 +249,19 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             tables = jsonData["tables"]
             tableNum = len(tables)
 
-            for seq in range(0,tableNum):
+            # change the removedColumn list to dict for comparing by table.
+            removedColsDict = {{}}
+            if "removedColumns" in jsonData["outputs"].keys():
+                for item in jsonData["outputs"]["removedColumns"]:
+                    (db, table, col) = item.split(".")
+                    dbTable = "{{0}}.{{1}}".format(db, table)
+                    if dbTable in removedColsDict.keys():
+                        removedColsDict[dbTable].append(col)
+                    else:
+                        removedColsDict[dbTable] = [col]
+
+            # get data from those db sources
+            for seq in range(0, tableNum):
                 # get the table connection information
                 dbSourceDict = jsonData["dbsources"][tables[seq]["source"]]
                 dbType = dbSourceDict["dbtype"]
@@ -244,12 +272,20 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
-                columnList = list(tables[seq]['columns'].keys())
 
                 connUrl = "jdbc:{{0}}://{{1}}:{{2}}".format(dbType, dbServer, dbPort)
                 dbTable = "{{0}}.{{1}}".format(dbName, tableName)
 
-                if dbType=="oracle":
+                # check the "removedColumns" item, remove them from table columns
+                if dbTable in removedColsDict.keys():
+                    for colItem in removedColsDict:
+                        if colItem in tables[seq]['columns'].keys():
+                            tables[seq]['columns'].pop(colItem)
+
+                columnList = list(tables[seq]['columns'].keys())
+
+                if dbType == "oracle":
+                    sid = ""
                     connUrl = "jdbc:{{0}}:thin:@{{1}}:{{2}}:{{3}}".format(dbType, dbServer, dbPort, sid)
                 elif dbType == "postgresql":
                     connUrl = "jdbc:{{0}}://{{1}}".format(dbType, dbServer)
@@ -261,33 +297,60 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                         .option("dbtable", dbTable) \
                         .option("user", user) \
                         .option("password", password) \
-                        .load().select( columnList )
+                        .load().select(columnList)
+                    dfDict[dbTable] = filterDF(dfDict[dbTable], tables[seq])
                 except:
                     print(sys.exc_info())
-                    return False;
+                    return False
 
             # check if all columns is available. BTW, it maybe is unnecessary.
             #
             sortedRelList = sortTableRelationship(jsonData)
             if not sortedRelList:
-                return False;
+                return False
 
             outputDf = joinDF(sortedRelList, dfDict)
             if outputDf is None:
                 return False
 
-            # remove some columns
-            for col in jsonData["outputs"]['removedColumns']:
-                outputDf = outputDf.drop(col.replace('.', '_'))
-
             # rename the new dataframe.
             for key, newCol in jsonData["outputs"]['columnRenameMapping'].items():
                 oldCol = key.replace('.', '_')
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
+        except KeyError:
+            print(sys.exc_info())
+            return False
         except:
             print(sys.exc_info())
-            return False;
+            return False
         return outputDf
+
+    def filterDF(inDataFrame, tableDict):
+        '''
+        '''
+        if "conditions" in tableDict.keys():
+            # add the specified conditions in the DataFrame
+            for condIt in tableDict["conditions"]:
+                condType = condIt["type"]
+                colName = condIt["columnName"]
+                if condType == "limit" and type(condIt["value"]) == int:
+                    inDataFrame = inDataFrame.limit(condIt["value"])
+                elif condType in [">","=","<"]:
+                    condStr = "{{0}} {{1}} {{2}}".format(colName, condType, condIt["value"])
+                    inDataFrame = inDataFrame.filter(condStr)
+                elif condType == "like":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].like(condIt["value"]))
+                elif condType == "startswith":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].startswith(condIt["value"]))
+                elif condType == "isin":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isin(condIt["value"]))
+                elif condType == "isnull":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNull())
+                elif condType == "isnotnull":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNotNull())
+                else:
+                    pass
+        return inDataFrame
 
     def sortTableRelationship(jsonData):
         '''
@@ -416,9 +479,17 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     import sys
     import logging
     import json
+    import decimal
 
     # Get an instance of a logger
     logger = logging.getLogger("sparkCodeExecutedBylivy")
+
+    class DecimalEncoder(json.JSONEncoder):
+        def default(self, o):
+            if isinstance(o, decimal.Decimal):
+                return float(o)
+            return super(DecimalEncoder, self).default(o)
+
     def getTableSchema( url, mode ):
         '''
         get the specified table schema,
@@ -436,7 +507,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             for rowItem in t1.collect():
                 outputDict['data'].append( rowItem.asDict() )
 
-        return json.dumps(outputDict)
+        return json.dumps(outputDict, cls = DecimalEncoder)
     print(getTableSchema("{0}", "{1}"))
     """.format(userUrl, mode)
 
