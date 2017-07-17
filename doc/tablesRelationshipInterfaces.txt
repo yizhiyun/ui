@@ -31,13 +31,17 @@ The RESTful API Details of Verify those table relationships
             },
             "conditions": [
                 {
-                    "type":"=", # type include '=','>', '<', 'like' and so on.
+                    "type":"=", # type include '=','>','<','like','startswith' and 'isin'.
                     "columnName": "<columnName>",
                     "value": <value>
                 },
                 {
                     "type":"limit",
                     "value": <value>
+                },
+                {
+                    "type":"isnull", # or 'isnotnull'
+                    "columnName": "<columnName>"
                 },
                 ...
             ],
@@ -168,13 +172,17 @@ The RESTful API Details of Generating New Table
             },
             "conditions": [
                 {
-                    "type":"=", # type include '=','>', '<', 'like' and so on.
+                    "type":"=", # type include '=','>','<','like','startswith' and 'isin'.
                     "columnName": "<columnName>",
                     "value": <value>
                 },
                 {
                     "type":"limit",
                     "value": <value>
+                },
+                {
+                    "type":"isnull", # or 'isnotnull'
+                    "columnName": "<columnName>"
                 },
                 ...
             ],

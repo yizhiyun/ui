@@ -298,16 +298,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                         .option("user", user) \
                         .option("password", password) \
                         .load().select(columnList)
-                    if "conditions" in tables[seq].keys():
-                        # add the specified conditions in the DataFrame
-                        for condIt in tables[seq]["conditions"]:
-                            if condIt["type"] == "limit" and type(condIt["value"]) == int:
-                                dfDict[dbTable] = dfDict[dbTable].limit(condIt["value"])
-                            elif condIt["type"] in [">", "=", "<"]:
-                                condStr = "{0} {1} {2}".format(condIt["columnName"], condIt["type"], condIt["value"])
-                                dfDict[dbTable] = dfDict[dbTable].filter(condStr)
-                            else:
-                                pass
+                    dfDict[dbTable] = filterDF(dfDict[dbTable], tables[seq])
                 except:
                     print(sys.exc_info())
                     return False
@@ -333,6 +324,33 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             print(sys.exc_info())
             return False
         return outputDf
+
+    def filterDF(inDataFrame, tableDict):
+        '''
+        '''
+        if "conditions" in tableDict.keys():
+            # add the specified conditions in the DataFrame
+            for condIt in tableDict["conditions"]:
+                condType = condIt["type"]
+                colName = condIt["columnName"]
+                if condType == "limit" and type(condIt["value"]) == int:
+                    inDataFrame = inDataFrame.limit(condIt["value"])
+                elif condType in [">","=","<"]:
+                    condStr = "{0} {1} {2}".format(colName, condType, condIt["value"])
+                    inDataFrame = inDataFrame.filter(condStr)
+                elif condType == "like":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].like(condIt["value"]))
+                elif condType == "startswith":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].startswith(condIt["value"]))
+                elif condType == "isin":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isin(condIt["value"]))
+                elif condType == "isnull":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNull())
+                elif condType == "isnotnull":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNotNull())
+                else:
+                    pass
+        return inDataFrame
 
     def sortTableRelationship(jsonData):
         '''
@@ -461,9 +479,17 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     import sys
     import logging
     import json
+    import decimal
 
     # Get an instance of a logger
     logger = logging.getLogger("sparkCodeExecutedBylivy")
+
+    class DecimalEncoder(json.JSONEncoder):
+        def default(self, o):
+            if isinstance(o, decimal.Decimal):
+                return float(o)
+            return super(DecimalEncoder, self).default(o)
+
     def getTableSchema( url, mode ):
         '''
         get the specified table schema,
@@ -481,7 +507,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             for rowItem in t1.collect():
                 outputDict['data'].append( rowItem.asDict() )
 
-        return json.dumps(outputDict)
+        return json.dumps(outputDict, cls = DecimalEncoder)
     print(getTableSchema("{0}", "{1}"))
     """.format(userUrl, mode)
 
