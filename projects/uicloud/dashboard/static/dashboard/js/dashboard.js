@@ -585,7 +585,8 @@ $(function() {
 								var data_row_de_num = $(this).find(".dimensionality_list_text").length;
 
 								_drag_message["position"] = "row";
-								_drag_message["type"] = _wd_type;								var all_row_data = [];
+								_drag_message["type"] = _wd_type;							
+								var all_row_data = [];
 								all_row_data.push(data_row_me_num,data_row_de_num);
 								//判断在满足条件下展示条形图或者柱状图
 								if(data_row_me_num == 0 && data_row_de_num > 0 ||data_row_de_num == 0 && data_row_me_num >0){
