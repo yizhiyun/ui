@@ -16,6 +16,14 @@ var current_cube_name = null;
 // 对象中以表名作为 key 值存储，表的数据
 var _cube_all_data = {};
 
+//记录当前当前拖拽的到底是行 还是列
+// 行为：row，列为 column
+var  _drag_message = {
+	"position":null, // 行还是列
+	"type":null, // 维度还是度量
+	"index":null // 拖拽的下标。。可能暂时不用
+};
+
 
 //记录当前当前拖拽的到底是行 还是列
 // 行为：row，列为 column
@@ -151,7 +159,7 @@ $(function() {
 		
 		//1、需要加载这个表格的 column schema
 		$.ajax({
-			url:"/cloudapi/v1/mergetables/tables/" +current_cube+"/all",
+			url:"/cloudapi/v1/tables/" +current_cube+"/all",
 			type:"get",
 			dataType:"json",
 			success:function(data){
@@ -558,27 +566,17 @@ $(function() {
 
 							}
 
-//							记录拖入维度的字段
-//							var drop_row_view_arr = [];
-//
-//							var drop_col_view_arr = [];
-//
-//							var random = Math.round(Math.random() * 2 + 1);
-//
-//							var request_data = ["1","2","3"];
-//
-//							//表头数量
-//							var title_num = request_data.length;
-
 							var dragObj = ui["draggable"];// 拖动的元素
 							var _dataType = dragObj.data("type");// 元素数据类型
 							var _wd_type = _dataType.w_d_typeCat();// 维度还是度量。。。
 							var _field_name =dragObj.children("span").eq(0).html(); // 字段名
+								_drag_message["type"] = _wd_type;
 							//判断拖入的区域
 							switch($(this).attr("id")) {
 								
 								//判断拖入行
 								case 'drop_row_view':
+
 								// 判断是维度还是度量
 								drag_row_column_data["row"][_wd_type].push(_field_name + ":" + _dataType);
 								//行里维度元素的数量
@@ -628,6 +626,7 @@ $(function() {
 									//判断拖入列
 
 								case 'drop_col_view':
+
 								
 									drag_row_column_data["column"][_wd_type].push(_field_name + ":" + _dataType);
 									//行里维度元素的数量
@@ -671,6 +670,7 @@ $(function() {
 //										}
 //									})
 
+
 									break;
 
 								case 'handle_color_text':
@@ -711,13 +711,10 @@ $(function() {
 								default:
 									break;
 							}
-
-							$("#example_wrapper").remove();
-							$("#view_show_wrap").data("table", "false");					
+			
 							// 展现 table
-							// showTable_by_dragData(drag_row_column_data);
+							showTable_by_dragData();
 
-							
 
 						}
 
@@ -979,7 +976,6 @@ $(function() {
 									});
 									$(this).find("p").css({
 										boxSizing: "border-box",
-										//										background: "#c5e0ff",
 										width: "100%",
 										float: "right"
 									})
