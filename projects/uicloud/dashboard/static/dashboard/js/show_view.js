@@ -167,7 +167,7 @@ function histogram(xType,yType,xShow,yShow,yTitle,xText,bar_data_save,ceshiArr){
 }
 
 
-function histogram_show(all_col_data,all_row_data){
+function histogram_show(){
 		var row_data = [],
 
 		col_data = [],
@@ -222,19 +222,19 @@ function histogram_show(all_col_data,all_row_data){
  		
  		//判断拖入行列数据的过滤
  			if(row_if_col == "row" &&  row_col_type == "dimensionality"){
- 				save_row_temp_de.push(cube_temp[row_if_de[all_row_data[1]-1]])
+ 				save_row_temp_de.push(cube_temp[row_if_de[row_data_change_de.length-1]])
  				
  			}else if(row_if_col == "row" && row_col_type == "measure"){
- 				save_row_temp_me.push(cube_temp[row_if_me[all_row_data[0]-1]]);
+ 				save_row_temp_me.push(cube_temp[row_if_me[row_data_change_me.length-1]]);
 
  			}
 	// .......................................
 			// 存储列里的数据
 			if(row_if_col == "column" && row_col_type == "dimensionality"){
-				save_col_temp_de.push(cube_temp[col_if_de[all_col_data[1]-1]]);
+				save_col_temp_de.push(cube_temp[col_if_de[col_data_change_de-1]]);
 
 			}else if(row_if_col == "column" && row_col_type == "measure"){
-				save_col_temp_me.push(cube_temp[col_if_me[all_col_data[0]-1]]);
+				save_col_temp_me.push(cube_temp[col_if_me[col_data_change_me-1]]);
 
 			}
 			
@@ -259,6 +259,7 @@ function histogram_show(all_col_data,all_row_data){
 	//只拖入列里度量的求和 显示条形图
 	col_data = col_row_me_math(save_col_me_wrap,col_if_me);
 
+	//
 	
 
 	
