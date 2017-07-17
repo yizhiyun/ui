@@ -579,21 +579,12 @@ $(function() {
 
 								// 判断是维度还是度量
 								drag_row_column_data["row"][_wd_type].push(_field_name + ":" + _dataType);
-								//行里维度元素的数量
-								var data_row_me_num=$(this).find(".measure_list_text").length;
-								//行里度量元素的数量
-								var data_row_de_num = $(this).find(".dimensionality_list_text").length;
-
-								_drag_message["position"] = "row";
-								_drag_message["type"] = _wd_type;								var all_row_data = [];
-								all_row_data.push(data_row_me_num,data_row_de_num);
+								
 								//判断在满足条件下展示条形图或者柱状图
-								if(data_row_me_num == 0 && data_row_de_num > 0 ||data_row_de_num == 0 && data_row_me_num >0){
-										histogram_show(null,all_row_data);
+								
+										histogram_show();
 									
-								}else{
-									alert("跳转到其他图形")
-								}
+							
 							
 //									$(this).find(".list_wrap").find("li").each(function(index, ele) {
 //
@@ -629,24 +620,15 @@ $(function() {
 
 								
 									drag_row_column_data["column"][_wd_type].push(_field_name + ":" + _dataType);
-									//行里维度元素的数量
-									var data_col_me_num=$(this).find(".measure_list_text").length;
-									//行里度量元素的数量
-									var data_col_de_num = $(this).find(".dimensionality_list_text").length;
-
-									var all_col_data = [];
-									all_col_data.push(data_col_me_num,data_col_de_num);
-
+								
 									_drag_message["position"] = "column";
 									_drag_message["type"] = _wd_type;	
 
 									//判断在满足条件下展示条形图或者柱状图
-								if(data_col_me_num == 0 && data_col_de_num > 0 || data_col_de_num == 0 && data_col_me_num >0){
-										histogram_show(all_col_data,null);
+								
+										histogram_show();
 									
-								}else{
-									alert("跳转到其他图形");
-								}
+								
 //									$(this).find(".list_wrap").find("li").each(function(index, ele) {
 //										drop_row_view_arr.push($(ele).find("p").find("span").text());
 //										drop_text_arr["drop_col_view"] = drop_row_view_arr;
