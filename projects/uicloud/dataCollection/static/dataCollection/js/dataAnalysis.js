@@ -280,6 +280,7 @@ getTablesOfaDataBase($(".dataSetDetail select"));
  
  // 构建数据传递的参数
  var postData = null;
+ var outName_of_check = null;
  // 构建数据点击事件
  	$("#constructData").click(function(event){		
  		var tables = [];
@@ -346,12 +347,14 @@ getTablesOfaDataBase($(".dataSetDetail select"));
 			async: true,
 			data:JSON.stringify(postData),
 			success:function(data){
-//				console.log(data);
+				
+				
 //				var rs = data;
 				if(data["status"] == "failed"){
 					alert("请检查表格之间的联系")
 					return;
 				}
+				outName_of_check = data["columns"];
 				if (preBuildDataName == null) {
 					var ele = $("#buildDataPanelView .build-body .cube-name-radio .new-cube");
 					ele.siblings(".radio").removeClass("active");
@@ -377,7 +380,6 @@ getTablesOfaDataBase($(".dataSetDetail select"));
 				});
 				$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).css("border","1px solid #dedede");
 				$("#buildDataPanelView").show("shake",200);
-				
 			}
 		})
  		
@@ -429,9 +431,9 @@ $("#buildDataPanelView .build-footer .confirmBtn").click(function(){
 			$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).css("border","1px solid red");
 			return;
 		}
-		postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val(),"removedColumns":[],"columnRenameMapping":{}};
+		postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val(),"removedColumns":[],"columnRenameMapping":outName_of_check};
 	}else{
-		postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":{}};
+		postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check};
 	}
 	// 记录
 	preBuildDataName = postData["outputs"]["outputTableName"];

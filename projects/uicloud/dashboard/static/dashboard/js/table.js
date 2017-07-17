@@ -1,237 +1,355 @@
 //表格展示
-function showTable_by_dragData(drag_row_column_data){
+// 记录左侧 table 的宽度
+var left_table_width = 0;
+// 重复合并辅助数组
+var row_repeat_merge_help = [];
+var column_repeat_merge_help = [];
+function showTable_by_dragData(){
 	//drag_row_column_data 拖到行列 列名
 	//current_cube_name  当前操作的表名
 	//_cube_all_data 所有表的数据
 	
-	
-}
-
-
-
-
-
-
-
-
-
-//同时拥有行和列的时候保存数据
-	var have_row_col = [];
-	
-function table_Show(drop_text_arr, drop_list_save_arr,title_num) {
-	
-	
-	//保存传递过来的数据
-	var save_come_data = [];
-	
-	//拖拽行里的元素个数
-	var row_number = !drop_text_arr["drop_row_view"] ? 0 : drop_text_arr["drop_row_view"].length;
-
-	//拖拽列里的元素个数
-	
-	var col_number = !drop_text_arr["drop_col_view"] ? 0 : drop_text_arr["drop_col_view"].length;
-	//转换数据展现方式
-	var dataset = [];
-	
-	
-	//记录拖拽到行里的数据
-	var drag_row_data = [];
-	
-	//记录拖拽到列里的数据
-	var drag_col_data = [];
-	
-	var save_row_data = [];
-	
-	
-	var save_every_data = [];
-	
-	
-	//保存列里的数据
-	var row_have_row_col = [];
-	
-	//保存行里的数据
-	var col_have_row_col = [];
-	
-	//记录拖入行里的数据
-	if(row_number){
-		 row_have_row_col = [];
-		//创建一个二维数组记录每个元素的数据
-			for(var i = 0; i <drop_text_arr["drop_row_view"].length;i++){
-				//记录单个元素的数据
-				var get_row_data = [];
-				get_row_data.unshift(drop_text_arr["drop_row_view"][0]);
-				for(keyr in drop_list_save_arr){
-					var datar = drop_list_save_arr[keyr][drop_text_arr["drop_row_view"][0]].join("");
-					
-					get_row_data.push(datar);
-				}
-				save_row_data.push(get_row_data);
-			}
-			
-			
-			
-		//遍历数组创建行元素的数据让其每行展示
-			for(var i = 0; i < save_row_data.length;i++){
-				var ceshi  = save_row_data[i];
-				for(var j =0; j < ceshi.length;j++){
-					var one_data = ceshi[j].split(",");
-					row_have_row_col.push(one_data)
-				}
-			}
-		
-
-
-	}
-	
-
-	//拖进列里保存数据
-	if(col_number){
-	 col_have_row_col = [];
-		for(var i = 0; i <drop_text_arr["drop_col_view"].length;i++){
-				var get_col_data = [];
-				get_col_data.unshift(drop_text_arr["drop_col_view"][i]);
-					for(keyrol in drop_list_save_arr) {
-					var ac = drop_list_save_arr[keyrol][drop_text_arr["drop_col_view"][i]].join("");
-					get_col_data.push(ac);
-				}
-				col_have_row_col.push(get_col_data)
-				
-			}
-		
-		
-	}
-	
-	//合并行列数据
-	
-	have_row_col = col_have_row_col.concat(row_have_row_col);
-	
-//	console.log(have_row_col)
-	
-	for(key in drop_text_arr) {
-		save_come_data = (drop_text_arr[key]);
-
-	}
-	
-	
-	
-	//只拖入行里
-	if(row_number>"0" && col_number =="0"){
-		//保存行里每条数据
-	
-		for(var i = 0; i < save_come_data.length; i++) {
-				
-				var data_dict = { "data": save_come_data[i], "title": save_come_data[i] };
-
-				dataset.push(data_dict);
-				
-				
-				
-			}
-			
-				
-		
-
-			//创建一个table
-			if($("#view_show_wrap").data("table") == "false") {
-
-				$("#view_show_wrap").html('<table cellpadding="0" cellspacing="0" border="0" class="cell-border hover display table table-striped table-bordered" id="example"></table>');
-
-				$("#view_show_wrap").data("table", "true");
-
-				$("#example").dataTable({
-					"searching": false, //禁止搜索功能
-					"paging": false, //禁止分页器
-					"info": false, //禁止每页显示多少条数据
-					"ordering": false, //禁止排序功能
-					"bAutoWidth": false,
-					select: true, //点击选中行
-					"processing":true, //显示加载效果
-					"data": drop_list_save_arr,
-			
-					"columns": dataset,
-
-				});
-
-			}
-
-	}else{
-		//行列里都存在元素
-			
-			//存放每个字段的数据
-			var save_each_text = [];
-			//动态创建表头
-			var table_head = [];
-			for(var i = 0; i < save_come_data.length; i++) {
-				//获取每个字段数据
-				var get_each_text = [];
-				get_each_text.unshift(save_come_data[i]);
-				for(keyv in drop_list_save_arr) {
-					var ac = drop_list_save_arr[keyv][save_come_data[i]].join("");
-					get_each_text.push(ac);
-				}
-				save_each_text.push(get_each_text)
-				
-				
-			}
-			
-			for(var i = 0; i < title_num+1; i++) {
-
-				var ceshi_dict = { "title": "11111" };
-
-				table_head.push(ceshi_dict)
-			}
-
-			//创建一个table
-			if($("#view_show_wrap").data("table") == "false") {
-
-				$("#view_show_wrap").html('<table cellpadding="0" cellspacing="0" border="0" class="cell-border hover display table table-striped table-bordered" id="example"></table>');
-
-				$("#view_show_wrap").data("table", "true");
-				
-				
-				var t = $("#example").DataTable({
-					"searching": false, //禁止搜索功能
-					"paging": false, //禁止分页器
-					"info": false, //禁止每页显示多少条数据
-					"ordering": false, //禁止排序功能
-					"bAutoWidth": false,
-					select: true,
-					
-					"columns": table_head,
-
-				});
-				$.fn.dataTable.ext.errMode = 'none';  //禁止警告窗
-				//动态创建行
-			
-				if(col_number>"0" && row_number =="0"){
-					for(var i = 0; i < col_number; i++) {
-						t.row.add(save_each_text[i]).draw();
+	// 当前操作表的 数据
+	var current_data = _cube_all_data[current_cube_name];
+	//1、处理列的维度
+	function handle_column_drag_dimensionality(){
+	 	var handle_index =drag_row_column_data["column"]["dimensionality"].length - 1; 
+	 	var need_handle_column =  drag_row_column_data["column"]["dimensionality"][handle_index];
+	 // 创建对应的----”维度“---列
+	 		var co_info = need_handle_column.split(":");
+	 		var co_name = co_info[0];		
+	 		/*全部都是处理列的维度*/
+	 		// 顶部 p 标签显示内容
+	 		var titleArr=[];
+	 		 drag_row_column_data["column"]["dimensionality"].filter(function(ele){
+	 				titleArr.push(ele.split(":")[0]);
+	 				return true;
+	 		});
+	 		$("#text_table_need_show .right_module .top_column_container .top_column_name").eq(0).html(titleArr.join(" / "));
+	 		// 创建列名
+	 		var li = $("<li class="+co_name+"></li>");
+	 		li.data("field_name",co_name);
+	 		$("#text_table_need_show .top_column_container .column_data_list").eq(0).append(li);
+	 		// 清楚 body 区域的竖线
+	 		var span_width = 0;
+	 		$("#text_table_need_show #data_list_for_body .vertical_line").remove();
+	 		
+	 		// 依照列进行排序
+	 		current_data["data"].XMsort(drag_row_column_data["column"]["dimensionality"]);
+	 		
+	 		for (var j = 0;j < current_data["data"].length;j++) {
+	 			var theData = current_data["data"][j];
+	 			var span = $("<span>"+theData[co_name]+"</span>");
+	 			span.attr("index",j);  // 以备后续使用
+	 			li.append(span);		
+	 			if (!column_repeat_merge_help[j]) {
+	 				column_repeat_merge_help[j] = "";
+	 			}
+	 			var isExit = column_repeat_merge_help.indexOf(column_repeat_merge_help[j]+theData[co_name] +"_YZY_");
+	 			if (isExit != -1) {
+	 				span.hide();
+	 				span.css({
+	 					"width":0,
+	 					"height":0,
+	 					"padding":0,
+	 					"border":0
+	 				});
+	 				column_repeat_merge_help[j] += theData[co_name] + "_YZY_";
+	 				
+	 			}else{
+	 				// 记录好对应的条件
+					var pretr = $(li).prev("li").eq(0);
+					if (pretr.length && !pretr.find("span[index=" + j +"]").is(":visible")){
+						$(li).prevAll("li").find("span[index=" + j +"]").each(function(dex,ele){
+							var handle_ele = $(ele).prevAll(".activeShow").eq(0);
+							$(handle_ele).css({
+								"width":$(handle_ele).width() + $(span).outerWidth()
+							})
+						});
 					}
+					column_repeat_merge_help[j] += theData[co_name] + "_YZY_";
+					span.addClass("activeShow");
+					// 竖线 	
+	 				line_for_data_body(span_width);
+	 				span_width+= span.outerWidth();					
+	 			}
+	 			span.addClass(column_repeat_merge_help[j]);
+	 			
+	 		}
+	 		
+	 		line_for_data_body(span_width);
+	 		if (drag_row_column_data["row"]["dimensionality"].length < 1) {
+	 			// 如果没有拖入行		也需要创建 li
+	 			handle_data_body("50px");
+	 		} 		
+	}
+
+	
+	// 2、处理行的维度
+	 function handle_row_drag_dimensionality(){
+		var handle_index =drag_row_column_data["row"]["dimensionality"].length - 1; 
+	 	var need_handle_row =  drag_row_column_data["row"]["dimensionality"][handle_index];
+		// 创建对应的维度行
+		
+			var row_name = need_handle_row.split(":")[0];
+			var table = $("<table cellspacing='0' cellpadding='0' class=" + row_name+"><thead><tr><th>"+row_name+"</th</tr></thead></table>");
+			table.data("field_name",row_name);
+			$("#text_table_need_show .left_row_container").eq(0).append(table);
+			// 清楚 body 区域的li内容
+			$("#text_table_need_show #data_list_for_body li").remove();
+			
+			
+//			// 对数据排序
+			current_data["data"].XMsort(drag_row_column_data["row"]["dimensionality"]);
+			
+			
+			for (var j = 0;j < current_data["data"].length;j++) {
+				
+				var theData = current_data["data"][j];
+				var tr = $("<tr><td>"+theData[row_name]+"</td></tr>");
+				tr.attr("index",j)// 以备后续使用
+				table.append(tr)
+				if (!row_repeat_merge_help[j]) {
+					row_repeat_merge_help[j] = "";
+				}
+				if (row_repeat_merge_help.indexOf(row_repeat_merge_help[j]+theData[row_name] +"_YZY_") != -1) {
+					tr.hide();
+					tr.css({
+						"width":0,
+						"height":0
+					});
+					row_repeat_merge_help[j] += theData[row_name] + "_YZY_";
+					
 				}else{
-					$("tbody").html("");
-//					console.log(have_row_col)
-					for(var i = 0; i < have_row_col.length; i++) {
-						t.row.add(have_row_col[i]).draw();
+					// 记录好对应的条件
+					var preTable = $(table).prev("table").eq(0);
+					
+					if (preTable.length && !preTable.find("tbody tr[index=" + j +"]").is(":visible")) {
+						
+						$(table).prevAll("table").find("tbody tr[index=" + j +"]").each(function(dex,ele){
+							var handle_ele = $(ele).prevAll(".activeShow").eq(0);
+							var the_td = $(handle_ele).find("td").eq(0);			
+							$(the_td).css({
+								"height":$(the_td).height() + $(tr).height()
+							})
+						});
 					}
+					row_repeat_merge_help[j] += theData[row_name] + "_YZY_";
+					tr.addClass("activeShow");
+					
+					handle_data_body(tr.height());
 				}
-
-			}
-
-			$("#view_show_wrap").find("table").find("thead").hide();
-			
+				tr.addClass(row_repeat_merge_help[j]);
 				
-				$("tbody tr:lt("+col_number+")").find("td:eq(0)").css("background", "rgba(0,0,0,0.2)").attr("colspan","4");
-				$("tbody tr").eq(col_number).find("td:eq(0)").css("background", "deepskyblue")
-		
+			}
+			// 如果没有拖入列
+			if (drag_row_column_data["column"]["dimensionality"].length < 1) {
+				line_for_data_body(0);
+				line_for_data_body(49);
+			}
+			left_table_width += table.outerWidth();					
+	 }
+	 
+	
+	//4、处理数据 body
+	function handle_data_body(liHeight){
+		var aLi = $("<li></li>");
+		aLi.css("height",liHeight);
+		$("#text_table_need_show #data_list_for_body").append(aLi);
+	}
+	//5、处理 body 里面的竖线
+	function line_for_data_body(left_position){
+		var vertical_line = $("<div class='vertical_line'></div>");
+		vertical_line.css("left",left_position);
+		$("#text_table_need_show #data_list_for_body").append(vertical_line);	
 	}
 	
+	//6、处理列里面的度量
+	function handle_column_drag_measure(){
+		var handle_index =drag_row_column_data["column"]["measure"].length - 1; 
+		if (handle_index < 0) {
+			return;
+		}
+	 	var need_handle_column =  drag_row_column_data["column"]["measure"][handle_index]; 
+		handle_common_measure(need_handle_column);
+	}
+	//7、处理行里面的度量
+	function handle_row_drag_measure(){
+		var handle_index =drag_row_column_data["row"]["measure"].length - 1; 
+		if (handle_index <0) {
+			return;
+		}
+	 	var need_handle_row =  drag_row_column_data["row"]["measure"][handle_index]; 
+		handle_common_measure(need_handle_row);
+	}
+	
+	//8 目前对于表格来说，不管度量是在列里面还是行里面处理机制是一样的
+	function handle_common_measure(measure_name){
+		measure_name = measure_name.split(":")[0];
+//		 1、首先决定创建多个个 span，也即是多少个条件，即显示多少个度量显示值
+//	var column_obj = $("#text_table_need_show .right_module .top_column_container .column_data_list li:last span:last").attr("index");
+//	var row_obj = $("#text_table_need_show .left_row_container table:last tr:last").attr("index");
+//	column_max = column_obj ? column_obj.intValue() + 1 :0;
+//	row_max =  row_obj  ? row_obj.intValue() + 1 :0;
+//	var num_sum = Math.max(column_max,row_max);
+	
+	
+	var row_filter_condition = [];
+	var column_filter_condition = [];
+	for (var i = 0;i < drag_row_column_data["row"]["dimensionality"].length;i++) {
+		row_filter_condition.push(drag_row_column_data["row"]["dimensionality"][i].split(":")[0]);
+	}
+	for (var i = 0;i < drag_row_column_data["column"]["dimensionality"].length;i++) {
+		column_filter_condition.push(drag_row_column_data["column"]["dimensionality"][i].split(":")[0]);
+	}
+		
+	var needShowSpan = {};
+	for (var i = 0;i < current_data["data"].length;i++) {
+		var theData = current_data["data"][i];
+		var key = "";
+		if (row_filter_condition.length > 0) {
+			for (var j = 0;j < row_filter_condition.length;j++) {
+			key += theData[row_filter_condition[j]]+"_YZY_";
+			}
+		}
+		
+		if (column_filter_condition.length > 0) {
+			key += "_needseprate_"
+			for (var j = 0;j < column_filter_condition.length;j++) {
+			key += theData[column_filter_condition[j]]+"_YZY_";
+			}
+		}	
+		if (needShowSpan[key]) {
+			needShowSpan[key] += theData[measure_name];
+		}else{
+			needShowSpan[key] = theData[measure_name];
+		}	
+		console.log(key);
+	}
+	
+//	if ($("#text_table_need_show .content_body #data_list_for_body span").length > 0) {
+//		$("#text_table_need_show .content_body #data_list_for_body span").remove();
+//	}
+	
+	for(var key in needShowSpan){
+		
+		var span = $("<span class="+measure_name+"></span>");
+		span.html(needShowSpan[key]);
+		var positionInfo = key.split("_needseprate_");
+		var row_info = positionInfo[0];
+		var column_info = positionInfo[1];
+
+		if ($("#text_table_need_show .content_body #data_list_for_body .measureDiv").length && $("#text_table_need_show .content_body #data_list_for_body .measureDiv").length >= allKeys(needShowSpan).length) {
+			$("#text_table_need_show .content_body #data_list_for_body ." + key).append("<span class='seperate'>/</span>");
+			$("#text_table_need_show .content_body #data_list_for_body ." + key).append(span);
+			
+		}else{
+				var div = $("<div class='measureDiv'></div>");
+				$("#text_table_need_show .content_body #data_list_for_body").append(div);
+				div.addClass(key);
+				div.append(span);
+				var top_index = 0;
+				var left_index = 0;
+			if (row_info) {
+				var lastTable = $("#text_table_need_show .left_row_container table");
+				
+				lastTable.find("." + row_info).filter(".activeShow").prevAll("tr").each(function(index,ele){
+					top_index += $(ele).outerHeight();
+				})
+				
+			}
+			if (column_info) {
+				var lastLi = $("#text_table_need_show .right_module .top_column_container .column_data_list li:last");
+				 lastLi.find("."+column_info).filter(".activeShow").prevAll("span").each(function(index,ele){
+				 	left_index += $(ele).outerWidth();
+				 })
+			}
+			div.css({
+				"left":left_index,
+				"top":top_index
+			})
+		}	
+	}			
+					
+}
+		
 	
 
 	
+	//开始函数
+	function init(){
+//		var sort = drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]);
+		if (_drag_message["position"] == "row") {
+			if(_drag_message["type"] == "dimensionality"){
+				handle_row_drag_dimensionality();
+				handle_row_drag_measure();
+				handle_column_drag_measure();
+			}else if(_drag_message["type"] == "measure"){
+				handle_row_drag_measure();
+			}
 		
-		
+		}else if(_drag_message["position"] == "column"){
+			if(_drag_message["type"] == "dimensionality"){
+				handle_column_drag_dimensionality();
+				handle_column_drag_measure();
+				handle_row_drag_measure();
+			}else if(_drag_message["type"] == "measure"){
+				handle_column_drag_measure();
+			}	
+		}
+		// 处理布局
+		layout_table_size();
+	}
+	init();
 	
 }
 
 
+
+//	布局 autoSize
+	function layout_table_size(){
+		// 为了让浮动不换行，动态计算左侧模块的宽度
+		$("#text_table_need_show .left_row_container").eq(0).css("width",left_table_width);
+		// 1、计算左侧行的宽度
+		var left_row_width = $("#text_table_need_show .left_row_container").eq(0).width();
+		$("#text_table_need_show .right_module").css("margin-left",left_row_width + "px");
+		// 左侧行设置 th 的高度
+		var top_height = $("#text_table_need_show .right_module .top_column_container").eq(0).height();
+		$("#text_table_need_show .left_row_container table th").css("height",top_height -1);
+		
+		// 设置 body 区域的  ul 的宽度
+		var ui_width = 0
+		var top_border = 0;
+		if ($("#text_table_need_show .top_column_container .column_data_list").eq(0).find("li").length < 1) {
+			ui_width = "50px";
+			top_border = 1;
+		}else{
+			ui_width = $("#text_table_need_show .top_column_container .column_data_list").eq(0).outerWidth();
+		}
+		$("#text_table_need_show #data_list_for_body").css({"width":ui_width,"border-top":top_border +"px solid #dedede"});
+		
+}
+
+
+
+
+// 数组排序
+Array.prototype.XMsort = function(propertyNameArray){
+		
+	function createComparisonFunction(obj1,obj2){
+		for (var i = 0; i < propertyNameArray.length;i++) {
+			var value1 = obj1[propertyNameArray[i].split(":")[0]];
+			var value2 = obj2[propertyNameArray[i].split(":")[0]];
+			if (value1 > value2) {
+				return true;
+			}else if (value1 <  value2) {
+				return false;
+			}else{
+				continue;
+			}
+		}		
+		return true;
+	}
+	this.sort(createComparisonFunction);
+}
 

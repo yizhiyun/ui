@@ -59,3 +59,13 @@ String.prototype.image_Name_Find = function(){
 		return "/static/dataCollection/images/tableDataDetail/String.png";
 	}
 }
+
+String.prototype.intValue = function(){
+	var value = this.toString();
+	if (value) {
+		return parseInt(value);
+	}else{
+		return 0;
+	}
+	
+}
