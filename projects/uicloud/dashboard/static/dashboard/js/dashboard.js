@@ -580,37 +580,7 @@ $(function() {
 								// 判断是维度还是度量
 								drag_row_column_data["row"][_wd_type].push(_field_name + ":" + _dataType);
 								
-								//判断在满足条件下展示条形图或者柱状图
-								
-										histogram_show();
-									
-							
-							
-//									$(this).find(".list_wrap").find("li").each(function(index, ele) {
-//
-////										drop_row_view_arr.push($(ele).find("p").find("span").text());
-//										drop_text_arr["drop_row_view"] = drop_row_view_arr;
-//										var the_name = $(ele).find("p").find("span").text();
-//										//遍历添加数据
-//
-//										if(lock == false) {
-////											console.log("1")
-//											for(var i = 0; i < request_data.length; i++) {
-//												var request_dict = new Object();
-//												drop_list_save_arr.push(request_dict);
-//
-//											}
-//											lock = true;
-//										}
-//
-//										for(var j = 0; j < drop_list_save_arr.length; j++) {
-//											temp = request_data[j];
-//											drop_list_save_arr[j][the_name] = temp;
-//										}
-//										//										console.log(drop_list_save_arr)
-//										//								
-//
-//									})
+								//判断在满足条件下展示条形图或者柱状图		
 
 									break;
 
@@ -623,36 +593,6 @@ $(function() {
 								
 									_drag_message["position"] = "column";
 									_drag_message["type"] = _wd_type;	
-
-									//判断在满足条件下展示条形图或者柱状图
-								
-										histogram_show();
-									
-								
-//									$(this).find(".list_wrap").find("li").each(function(index, ele) {
-//										drop_row_view_arr.push($(ele).find("p").find("span").text());
-//										drop_text_arr["drop_col_view"] = drop_row_view_arr;
-//										var the_name = $(ele).find("p").find("span").text();
-//
-//										if(lock == false) {
-//
-//											for(var i = 0; i < request_data.length; i++) {
-//
-//												var request_dict = new Object();
-//												drop_list_save_arr.push(request_dict);
-//
-//											}
-//											lock = true;
-//										}
-//
-//										for(var j = 0; j < drop_list_save_arr.length; j++) {
-//											var temp = request_data[j];
-//
-//											drop_list_save_arr[j][the_name] = temp;
-//										}
-//									})
-
-
 									break;
 
 								case 'handle_color_text':
@@ -695,7 +635,7 @@ $(function() {
 							}
 			
 							// 展现 table
-							showTable_by_dragData();
+//							showTable_by_dragData();
 
 
 						}
