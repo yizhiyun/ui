@@ -1,8 +1,14 @@
 
 // 记录拖拽到行列等的数据
 var drag_row_column_data = {
-	"row":[],
-	"column":[]
+	"row":{
+		"dimensionality":[],
+		"measure":[]
+	},
+	"column":{
+		"dimensionality":[],
+		"measure":[]
+	}
 }
 
 // 记录当前操作的数据块数据
@@ -10,6 +16,14 @@ var current_cube_name = null;
 // 对象中以表名作为 key 值存储，表的数据
 var _cube_all_data = {};
 
+
+//记录当前当前拖拽的到底是行 还是列
+// 行为：row，列为 column
+var _drag_message = {
+	"position":null, // 行还是列
+	"type":null, // 维度还是度量
+	"index":null // 拖拽的下标。。可能暂时不用
+};
 
 $(function() {
 
@@ -94,7 +108,7 @@ $(function() {
 	$("#view_show_wrap").data("table", "false");
 	
 	$.ajax({
-		url:"/cloudapi/v1/mergetables/tables",
+		url:"/cloudapi/v1/tables",
 		type:"get",
 		dataType:"json",
 		contentType: "application/json; charset=utf-8",
@@ -264,7 +278,8 @@ $(function() {
 						imgMouse()
 
 						$(".dimensionality_datatype").css("background", "");
-					}
+					},
+
 				});
 				//对象记录标记内容的刷新变化
 				var mark_dict = {};
@@ -378,6 +393,8 @@ $(function() {
 
 				var lock = false;
 				$(".drop_view").each(function(index, ele) {
+
+
 					$(ele).droppable({
 						activeClass: "ui-state-default_z",
 						hoverClass: "ui-state-hover_z",
@@ -388,10 +405,8 @@ $(function() {
 							$("#handle_color_text").removeClass("ui-state-default_z")
 						},
 						drop: function(event, ui) {
-//							console.log(ui);
-
 							$("#sizer_mpt").css("display", "none");
-							$("#view_show_empty").css("display", "none");
+							$("#view_show_empty").css("display", "none")
 							if($("#project_chart").css("display") == "none") {
 								$("#sizer_content").css("display", "block");
 							}
@@ -399,7 +414,6 @@ $(function() {
 							$("<li class='drog_row_list'></li>").html($(ui.draggable).parent().html()).appendTo(this);
 
 							$(".drog_row_list").each(function(index, ele) {
-
 								if($(ele).parent().attr("class") != "list_wrap") {
 									$(ele).wrap("<div class='list_wrap'></div>");
 								}
@@ -558,19 +572,31 @@ $(function() {
 
 							var dragObj = ui["draggable"];// 拖动的元素
 							var _dataType = dragObj.data("type");// 元素数据类型
-//							var _wd_type = _dataType.w_d_typeCat();// 维度还是度量。。。
+							var _wd_type = _dataType.w_d_typeCat();// 维度还是度量。。。
 							var _field_name =dragObj.children("span").eq(0).html(); // 字段名
 							//判断拖入的区域
 							switch($(this).attr("id")) {
 								
 								//判断拖入行
 								case 'drop_row_view':
-								// 判断是维度还是度量	
-								drag_row_column_data["row"].push(current_cube_name+":"+ _field_name + ":" + _dataType);
-								
+								// 判断是维度还是度量
+								drag_row_column_data["row"][_wd_type].push(_field_name + ":" + _dataType);
+								//行里维度元素的数量
+								var data_row_me_num=$(this).find(".measure_list_text").length;
+								//行里度量元素的数量
+								var data_row_de_num = $(this).find(".dimensionality_list_text").length;
+
+								_drag_message["position"] = "row";
+								_drag_message["type"] = _wd_type;								var all_row_data = [];
+								all_row_data.push(data_row_me_num,data_row_de_num);
+								//判断在满足条件下展示条形图或者柱状图
+								if(data_row_me_num == 0 && data_row_de_num > 0 ||data_row_de_num == 0 && data_row_me_num >0){
+										histogram_show(null,all_row_data);
 									
-									
-									
+								}else{
+									alert("跳转到其他图形")
+								}
+							
 //									$(this).find(".list_wrap").find("li").each(function(index, ele) {
 //
 ////										drop_row_view_arr.push($(ele).find("p").find("span").text());
@@ -603,8 +629,25 @@ $(function() {
 
 								case 'drop_col_view':
 								
-									drag_row_column_data["column"].push(_field_name + ":" + _dataType);
+									drag_row_column_data["column"][_wd_type].push(_field_name + ":" + _dataType);
+									//行里维度元素的数量
+									var data_col_me_num=$(this).find(".measure_list_text").length;
+									//行里度量元素的数量
+									var data_col_de_num = $(this).find(".dimensionality_list_text").length;
+
+									var all_col_data = [];
+									all_col_data.push(data_col_me_num,data_col_de_num);
+
+									_drag_message["position"] = "column";
+									_drag_message["type"] = _wd_type;	
+
+									//判断在满足条件下展示条形图或者柱状图
+								if(data_col_me_num == 0 && data_col_de_num > 0 || data_col_de_num == 0 && data_col_me_num >0){
+										histogram_show(all_col_data,null);
 									
+								}else{
+									alert("跳转到其他图形");
+								}
 //									$(this).find(".list_wrap").find("li").each(function(index, ele) {
 //										drop_row_view_arr.push($(ele).find("p").find("span").text());
 //										drop_text_arr["drop_col_view"] = drop_row_view_arr;
@@ -672,7 +715,9 @@ $(function() {
 							$("#example_wrapper").remove();
 							$("#view_show_wrap").data("table", "false");					
 							// 展现 table
-							showTable_by_dragData(drag_row_column_data);
+							// showTable_by_dragData(drag_row_column_data);
+
+							
 
 						}
 
@@ -1069,7 +1114,7 @@ $(function() {
 						$(type_wicket).find("span").css({
 							width:"25px",
 							height:"22px",
-							floa:"left",
+							float:"left",
 						});
 
 						type_wicket.find(".click_type").css({
