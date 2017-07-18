@@ -1,16 +1,9 @@
 {
-            "mysqlDB1": {
-            "dbtype":"mysql",
-            "dbserver": "mysql1",
-            "dbport": "3306",
-            "user": "root",
-            "password": "password"
-        },
-        "e1bb1f67b002996018d05238356f29a2":{
-            "dbtype": "mysql",
-            "dbserver": "192.168.1.11",
-            "dbport": "3310",
-            "user": "gxm",
-            "password": "password"
-        }
+    //        "mysqlDB1": {
+    //        "dbtype":"mysql",
+    //        "dbserver": "mysql1",
+    //        "dbport": "3306",
+    //        "user": "root",
+    //        "password": "password"
+    //    }
 }
