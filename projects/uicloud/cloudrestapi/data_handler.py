@@ -193,6 +193,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     '''
     return the running spark code which write the New table into hdfs by default
     '''
+
     userUrl = "hdfs://{0}:{1}/users".format(hdfsHost, port)
     savedPathUrl = "{0}/{1}/{2}".format(userUrl,
                                         folder, jsonData["outputs"]["outputTableName"])
@@ -218,6 +219,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     return """
     import sys
     import logging
+    import traceback
     # Get an instance of a logger
     logger = logging.getLogger("sparkCodeExecutedBylivy")
     def writeDataFrame( jsonData, savedPathUrl ):
@@ -279,6 +281,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                         .option("password", password) \
                         .load().select( columnList )
                 except:
+                    traceback.print_exc()
                     print(sys.exc_info())
                     return False;
 
@@ -302,6 +305,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
         except:
             print(sys.exc_info())
+            traceback.print_exc()
             return False;
         return outputDf
 
