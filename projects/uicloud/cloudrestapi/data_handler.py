@@ -471,13 +471,13 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     """.format(jsonData, savedPathUrl)
 
 
-def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-master0", port="9000"):
+def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-master0", port="9000", rootFolder="users"):
     '''
     return the running spark code which will get a specified table schema from hdfs,
     mode can be 'schema', 'data' and 'both'
     '''
-    userUrl = "hdfs://{0}:{1}/users/{2}/{3}".format(
-        hdfsHost, port, userName, tableName)
+    userUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+        hdfsHost, port, rootFolder, userName, tableName)
 
     sparkCode = """
     import sys
