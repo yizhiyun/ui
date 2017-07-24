@@ -87,15 +87,31 @@ function allKeys(obj){
 	}
 	return keys;
 }
+// 获取一个对象的所有值
+function allValues(obj){
+	var values = [];
+	for(var key in obj){
+		values.push(obj[key]);
+	}
+	return values;
+}
 
+Array.prototype.hasObject = function(key,value){
+	for(var i = 0;i < this.length;i++){
+
+		if(this[i][key] == value){
+			return i;
+		}
+
+	}
+	return -1;
+}
 
 // 帅选器功能
 $(function(){
 /*-------------- 内容选择器--折叠切换,-----------------------、*/
 /*-------------- 数值选择器--折叠切换,-----------------------、*/
 	$("#filter-model .common-fold-module").tabs();
-	
-
 	// 选择器单选按钮
 	$("#filter-model .radio").click(function(){
 		if ($(this).attr("belong") == "condition") {
