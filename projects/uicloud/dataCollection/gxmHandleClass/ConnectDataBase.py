@@ -19,7 +19,7 @@ class ConnectDataBase():
         # print(self.dbPaltName.lower())
         if(self.dbPaltName.lower() == "mysql"):
             try:
-                self.con = MySQLdb.connect(host=self.dbLocation,port=self.dbPort,user=self.dbUserName,passwd=self.dbUserPwd)
+                self.con = MySQLdb.connect(host=self.dbLocation,port=self.dbPort,user=self.dbUserName,passwd=self.dbUserPwd,charset='utf8')
             except Exception:
                 self.con = False;
     #获取当前数据库平台所有的数据库
@@ -57,7 +57,6 @@ class ConnectDataBase():
             cur = self.con.cursor(cursorclass = MySQLdb.cursors.DictCursor)
             cur.execute("show columns from " + tableName)
             rows = cur.fetchall()
-            logger.warn(rows)
             return  rows
     # 获取某个表格指定字段的所有数据, filedsArr
     def fetchAllDataOfaTableByFields(self,dataBaseName,tableName):
@@ -67,4 +66,5 @@ class ConnectDataBase():
             cur = self.con.cursor(cursorclass = MySQLdb.cursors.DictCursor)
             cur.execute("select  *from " + tableName)
             rows = cur.fetchall()
+
             return rows

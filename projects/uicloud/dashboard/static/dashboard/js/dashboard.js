@@ -579,7 +579,8 @@ $(function() {
 
 								// 判断是维度还是度量
 								drag_row_column_data["row"][_wd_type].push(_field_name + ":" + _dataType);
-								
+								_drag_message["position"] = "row";
+								_drag_message["type"] = _wd_type;	
 								//判断在满足条件下展示条形图或者柱状图		
 
 									break;
@@ -637,6 +638,7 @@ $(function() {
 							// 展现 table
 //							showTable_by_dragData();
 
+			switch_chart_handle_fun();
 
 						}
 

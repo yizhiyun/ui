@@ -181,7 +181,7 @@ def generateNewTable(request):
             failObj = {"status": "failed",
                        "reason": "Please see the detailed logs."}
             return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok":
+        elif output["status"] != "ok" or output["data"]['text/plain'] != "True":
             failObj = {"status": "failed",
                        "reason": output}
             return JsonResponse(failObj, status=400)

@@ -99,8 +99,6 @@ function getTablesOfaDataBase(theSelect){
 	
 getTablesOfaDataBase($(".dataSetDetail select"));
 
-
-
 // 处理表格的拖拽和点击事件
 //dbPaltIndexForBack 主要记录了这个数据库表格在后台属于哪个数据连接平台下的，是一个下标，后台通过这个索引值去寻找
 	function bindEventToPerTable(dataBaseName,dbPaltIndexForBack){
@@ -132,27 +130,6 @@ getTablesOfaDataBase($(".dataSetDetail select"));
 		});
 		
 		// 点击出现表格	
-		 
-//		$(".tablesOfaData pppp").click(function(event){
-//			event.stopPropagation();
-//			event.preventDefault();
-//			tableName = $(this).html();
-//			// 已近存在的表格
-//			if (tableDragsRecords.indexOf(dataBaseName + "_YZYPD_" + tableName) != -1) {
-//				return;
-//				
-//			}
-//			// 请求后端，获取表格的具体信息
-//			$.ajax({
-//				url:"/dataCollection/tableFileds",
-//				type:"post",
-//				data:{"tableName":$(this).html()},
-//				success:function(data){
-//					var rs = $.parseJSON(data);
-//					showDataTables(dataBaseName,tableName,rs.data);
-//				}
-//			})	
-//		})
 	}
 	
  // 创建可视化的表格
@@ -164,9 +141,6 @@ getTablesOfaDataBase($(".dataSetDetail select"));
  					left:(ui.offset.left - $(targetEle).offset().left) < 10 ? 10 : (ui.offset.left - $(targetEle).offset().left),
  					top:(ui.offset.top - $(targetEle).offset().top) < 10 ? 10 :(ui.offset.top - $(targetEle).offset().top)
  				})
- 				
- 				
- 				
  				// 主要为了 ID 不重复---同时给后端去传递相应的数据
  				boxDiv[0].id = dbPaltIndexForBack + "_YZYPD_"+ dataBaseName + "_YZYPD_" + tableName;				
 // 				tableDragsRecords.push(boxDiv[0].id);
@@ -589,6 +563,7 @@ $("#buildDataPanelView .build-footer .confirmBtn").click(function(){
    				async: true,
  				dataType:'json',
  				success:function(data){
+ 					console.log(data);
    					currentTableAllData = data.data;
 					createTableDetailView(dbInfo,currentTableAllData);
 					
@@ -787,8 +762,7 @@ $("#tableDataDetailListPanel .topInfo  #showHiddenEles").click(function(event){
    		}
 		
 		setshowHiddenEles_btn_didSelected(); // 变成选中状态
-		createTableDetailView(dbInfo,currentTableAllData,true);
-		
+		createTableDetailView(dbInfo,currentTableAllData,true);		
 	}
 	
 });

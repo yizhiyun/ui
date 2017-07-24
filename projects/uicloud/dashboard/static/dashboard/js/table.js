@@ -9,9 +9,9 @@ function showTable_by_dragData(){
 	//drag_row_column_data 拖到行列 列名
 	//current_cube_name  当前操作的表名
 	//_cube_all_data 所有表的数据
-	
-	// 当前操作表的 数据
-	var current_data = _cube_all_data[current_cube_name];
+	//
+	$("#text_table_need_show").css('display', 'block');
+
 	//1、处理列的维度
 	function handle_column_drag_dimensionality(){
 	 	var handle_index =drag_row_column_data["column"]["dimensionality"].length - 1; 
@@ -46,7 +46,7 @@ function showTable_by_dragData(){
 	 			if (!column_repeat_merge_help[j]) {
 	 				column_repeat_merge_help[j] = "";
 	 			}
-	 			var isExit = column_repeat_merge_help.indexOf(column_repeat_merge_help[j]+theData[co_name] +"_YZY_");
+	 			var isExit = column_repeat_merge_help.indexOf(column_repeat_merge_help[j]+co_name+ "_equal_"+theData[co_name] +"_YZY_");
 	 			if (isExit != -1) {
 	 				span.hide();
 	 				span.css({
@@ -55,7 +55,7 @@ function showTable_by_dragData(){
 	 					"padding":0,
 	 					"border":0
 	 				});
-	 				column_repeat_merge_help[j] += theData[co_name] + "_YZY_";
+	 				column_repeat_merge_help[j] +=	co_name+ "_equal_"+theData[co_name] + "_YZY_";
 	 				
 	 			}else{
 	 				// 记录好对应的条件
@@ -68,7 +68,7 @@ function showTable_by_dragData(){
 							})
 						});
 					}
-					column_repeat_merge_help[j] += theData[co_name] + "_YZY_";
+					column_repeat_merge_help[j] += co_name+ "_equal_"+theData[co_name] + "_YZY_";
 					span.addClass("activeShow");
 					// 竖线 	
 	 				line_for_data_body(span_width);
@@ -103,7 +103,6 @@ function showTable_by_dragData(){
 //			// 对数据排序
 			current_data["data"].XMsort(drag_row_column_data["row"]["dimensionality"]);
 			
-			
 			for (var j = 0;j < current_data["data"].length;j++) {
 				
 				var theData = current_data["data"][j];
@@ -113,13 +112,13 @@ function showTable_by_dragData(){
 				if (!row_repeat_merge_help[j]) {
 					row_repeat_merge_help[j] = "";
 				}
-				if (row_repeat_merge_help.indexOf(row_repeat_merge_help[j]+theData[row_name] +"_YZY_") != -1) {
+				if (row_repeat_merge_help.indexOf(row_repeat_merge_help[j]+row_name +"_equal_"+theData[row_name] +"_YZY_") != -1) {
 					tr.hide();
 					tr.css({
 						"width":0,
 						"height":0
 					});
-					row_repeat_merge_help[j] += theData[row_name] + "_YZY_";
+					row_repeat_merge_help[j] += row_name +"_equal_"+theData[row_name] + "_YZY_";
 					
 				}else{
 					// 记录好对应的条件
@@ -135,7 +134,7 @@ function showTable_by_dragData(){
 							})
 						});
 					}
-					row_repeat_merge_help[j] += theData[row_name] + "_YZY_";
+					row_repeat_merge_help[j] += row_name +"_equal_"+theData[row_name] + "_YZY_";
 					tr.addClass("activeShow");
 					
 					handle_data_body(tr.height());
@@ -177,7 +176,7 @@ function showTable_by_dragData(){
 	//7、处理行里面的度量
 	function handle_row_drag_measure(){
 		var handle_index =drag_row_column_data["row"]["measure"].length - 1; 
-		if (handle_index <0) {
+		if (handle_index < 0) {
 			return;
 		}
 	 	var need_handle_row =  drag_row_column_data["row"]["measure"][handle_index]; 
@@ -195,52 +194,50 @@ function showTable_by_dragData(){
 //	var num_sum = Math.max(column_max,row_max);
 	
 	
-	var row_filter_condition = [];
-	var column_filter_condition = [];
-	for (var i = 0;i < drag_row_column_data["row"]["dimensionality"].length;i++) {
-		row_filter_condition.push(drag_row_column_data["row"]["dimensionality"][i].split(":")[0]);
-	}
-	for (var i = 0;i < drag_row_column_data["column"]["dimensionality"].length;i++) {
-		column_filter_condition.push(drag_row_column_data["column"]["dimensionality"][i].split(":")[0]);
-	}
-		
-	var needShowSpan = {};
-	for (var i = 0;i < current_data["data"].length;i++) {
-		var theData = current_data["data"][i];
-		var key = "";
-		if (row_filter_condition.length > 0) {
-			for (var j = 0;j < row_filter_condition.length;j++) {
-			key += theData[row_filter_condition[j]]+"_YZY_";
-			}
-		}
-		
-		if (column_filter_condition.length > 0) {
-			key += "_needseprate_"
-			for (var j = 0;j < column_filter_condition.length;j++) {
-			key += theData[column_filter_condition[j]]+"_YZY_";
-			}
-		}	
-		if (needShowSpan[key]) {
-			needShowSpan[key] += theData[measure_name];
-		}else{
-			needShowSpan[key] = theData[measure_name];
-		}	
-		console.log(key);
-	}
-	
-//	if ($("#text_table_need_show .content_body #data_list_for_body span").length > 0) {
-//		$("#text_table_need_show .content_body #data_list_for_body span").remove();
+//	var row_filter_condition = [];
+//	var column_filter_condition = [];
+//	for (var i = 0;i < drag_row_column_data["row"]["dimensionality"].length;i++) {
+//		row_filter_condition.push(drag_row_column_data["row"]["dimensionality"][i].split(":")[0]);
 //	}
+//	for (var i = 0;i < drag_row_column_data["column"]["dimensionality"].length;i++) {
+//		column_filter_condition.push(drag_row_column_data["column"]["dimensionality"][i].split(":")[0]);
+//	}
+//		
+//	var needShowSpan = {};
+//	for (var i = 0;i < current_data["data"].length;i++) {
+//		var theData = current_data["data"][i];
+//		var key = "";
+//		if (row_filter_condition.length > 0) {
+//			for (var j = 0;j < row_filter_condition.length;j++) {
+//			key += row_filter_condition[j] + "_equal_"+theData[row_filter_condition[j]]+"_YZY_";
+//			}
+//		}
+//		
+//		if (column_filter_condition.length > 0) {
+//			key += "_needseprate_"
+//			for (var j = 0;j < column_filter_condition.length;j++) {
+//			key += column_filter_condition[j] + "_equal_"+theData[column_filter_condition[j]]+"_YZY_";
+//			}
+//		}	
+//		if (needShowSpan[key]) {
+//			needShowSpan[key] += theData[measure_name];
+//		}else{
+//			needShowSpan[key] = theData[measure_name];
+//		}	
+//		console.log(key);
+//	}
+	var needShowSpan = measure_Hanlde([measure_name]);
 	
+	console.log(needShowSpan);
 	for(var key in needShowSpan){
 		
 		var span = $("<span class="+measure_name+"></span>");
-		span.html(needShowSpan[key]);
+		span.html(needShowSpan[key][measure_name]["sum"]);
 		var positionInfo = key.split("_needseprate_");
 		var row_info = positionInfo[0];
 		var column_info = positionInfo[1];
 
-		if ($("#text_table_need_show .content_body #data_list_for_body .measureDiv").length && $("#text_table_need_show .content_body #data_list_for_body .measureDiv").length >= allKeys(needShowSpan).length) {
+		if ($("#text_table_need_show .content_body #data_list_for_body .measureDiv").length && $("#text_table_need_show .content_body #data_list_for_body .measureDiv").length >= allKeys(needShowSpan[measure_name]).length) {
 			$("#text_table_need_show .content_body #data_list_for_body ." + key).append("<span class='seperate'>/</span>");
 			$("#text_table_need_show .content_body #data_list_for_body ." + key).append(span);
 			
@@ -334,24 +331,5 @@ function showTable_by_dragData(){
 
 
 
-// 数组排序
-Array.prototype.XMsort = function(propertyNameArray){
-		
-	function createComparisonFunction(obj1,obj2){
-		for (var i = 0; i < propertyNameArray.length;i++) {
-			var value1 = obj1[propertyNameArray[i].split(":")[0]];
-			var value2 = obj2[propertyNameArray[i].split(":")[0]];
-			if (value1 > value2) {
-				return true;
-			}else if (value1 <  value2) {
-				return false;
-			}else{
-				continue;
-			}
-		}		
-		return true;
-	}
-	this.sort(createComparisonFunction);
-}
 
 
