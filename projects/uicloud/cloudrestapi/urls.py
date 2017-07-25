@@ -23,4 +23,14 @@ urlpatterns = [
         views.getTableViaSpark,
         name='getTableViaSpark'
     ),
+    url(
+        r'^cloudapi/v1/customtables$',
+        views.getAllTablesFromCustom,
+        name='getAllTablesFromCustom'
+    ),
+    url(
+        r'^cloudapi/v1/customtables/(?P<tableName>\w+)/(?P<modeName>\w+)$',
+        views.getTableViaSparkCustom,
+        name='getTableViaSparkCustom'
+    ),
 ]

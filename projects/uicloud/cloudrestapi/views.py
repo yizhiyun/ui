@@ -245,3 +245,67 @@ def getTableViaSpark(request, tableName, modeName):
             results = json.loads(data)
             sucessObj = {"status": "success", "results": results}
             return JsonResponse(sucessObj)
+
+
+@api_view(['GET'])
+def getAllTablesFromCustom(request):
+    '''
+    GET:
+    Get all table from the current user.
+    '''
+
+    if request.method == 'GET':
+        jsonData = request.data
+        outputList = listDirectoryFromHdfs(
+            path=jsonData['rootfolder'], hdfsHost=jsonData['host'], port=jsonData['port'])
+        if not outputList:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        successObj = {"status": "success", "results": outputList}
+        return JsonResponse(successObj)
+
+
+@api_view(['GET'])
+def getTableViaSparkCustom(request, tableName, modeName):
+    '''
+    GET:
+    Get all table from the current user.
+    '''
+
+    jsonData = request.data
+    logger.info("request.data: {0}, tableName: {1}".format(
+        jsonData, tableName))
+    if request.method == 'GET':
+
+        modeList = ['all', 'data', 'schema']
+        if modeName not in modeList:
+            failObj = {"status": "failed",
+                       "reason": "the mode must one of {0}".format(modeList)}
+            return JsonResponse(failObj, status=400)
+        # response all valid columns
+        sparkCode = getTableInfoSparkCode(
+            jsonData['subfolder'],
+            tableName,
+            mode=modeName,
+            hdfsHost=jsonData['host'],
+            port=jsonData['port'],
+            rootFolder=jsonData['rootfolder']
+        )
+
+        output = executeSpark(sparkCode)
+        if not output:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        elif output["status"] != "ok":
+            failObj = {"status": "failed",
+                       "reason": output}
+            return JsonResponse(failObj, status=400)
+        else:
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+
+            results = json.loads(data)
+            sucessObj = {"status": "success", "results": results}
+            return JsonResponse(sucessObj)
