@@ -5,7 +5,8 @@ ENV        USER_HOME=/home/django
 
 # refer to http://www.django-rest-framework.org, djangorestframework markdown and django-filter is used for django REST API
 # django-sql-explorer is a single app,
-RUN        pip install django requests psycopg2 mysqlclient djangorestframework markdown django-filter django-excel
+RUN         apt-get install -y freetds-dev
+         && pip install django requests psycopg2 mysqlclient djangorestframework markdown django-filter django-excel pymssql
 #        && useradd -r django
 
 # note 8088 is for jupyter notebook

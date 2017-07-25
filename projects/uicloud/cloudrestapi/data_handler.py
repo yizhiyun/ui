@@ -10,14 +10,15 @@ from dataCollection.gxmHandleClass.Singleton import Singleton
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 
 def executeSpark(sparkCode,
                  pyFiles=[],
                  sparkHost='http://spark-master0:8998',
                  checkDesiredState='available',
-                 reqCheckDuration=5):
+                 maxCheckCount=150,
+                 reqCheckDuration=2):
     '''
     '''
     host = sparkHost
@@ -60,6 +61,7 @@ def executeSpark(sparkCode,
 
     resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'],
                                               desiredState=checkDesiredState,
+                                              maxReqCount=maxCheckCount,
                                               eachSleepDuration=reqCheckDuration)
 
     if not resultReqJson:
@@ -78,7 +80,7 @@ def executeSpark(sparkCode,
 
 
 def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json'},
-                              desiredState='idle', maxReqCount=60, eachSleepDuration=2):
+                              desiredState='idle', maxReqCount=120, eachSleepDuration=1):
     '''
     '''
     reqCount = 0
@@ -189,8 +191,8 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
             dbSourceDict = json.load(f)
             logger.debug("dbSourceDict: {}".format(dbSourceDict))
             return dbSourceDict
-    except:
-        logger.error("Cannot get the db sources mapping!")
+    except Exception as e:
+        logger.error("Cannot get the db sources mapping!\nExcpetion:{0}".format(e))
         return False
 
 
