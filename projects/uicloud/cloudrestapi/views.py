@@ -251,7 +251,7 @@ def getTableViaSpark(request, tableName, modeName):
 def getAllTablesFromCustom(request):
     '''
     GET:
-    Get all table from the current user.
+    Get all table from the custom user.
     '''
 
     if request.method == 'GET':
@@ -270,7 +270,7 @@ def getAllTablesFromCustom(request):
 def getTableViaSparkCustom(request, tableName, modeName):
     '''
     GET:
-    Get all table from the current user.
+    Get all table from the custom user.
     '''
 
     jsonData = request.data
