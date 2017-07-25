@@ -13,7 +13,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def executeSpark(sparkCode, pyFiles=[], sparkHost='http://spark-master0:8998'):
+def executeSpark(sparkCode,
+                 pyFiles=[],
+                 sparkHost='http://spark-master0:8998',
+                 checkDesiredState='available',
+                 reqCheckDuration=5):
     '''
     '''
     host = sparkHost
@@ -55,7 +59,8 @@ def executeSpark(sparkCode, pyFiles=[], sparkHost='http://spark-master0:8998'):
         sparkCodesReq.json(), sparkCodesReq.headers))
 
     resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'],
-                                              desiredState='available', eachSleepDuration=5)
+                                              desiredState=checkDesiredState,
+                                              eachSleepDuration=reqCheckDuration)
 
     if not resultReqJson:
         # requests.delete(sessionUrl, headers=headers)

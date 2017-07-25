@@ -229,7 +229,7 @@ def getTableViaSpark(request, tableName, modeName):
         sparkCode = getTableInfoSparkCode(
             curUserName, tableName, mode=modeName)
 
-        output = executeSpark(sparkCode)
+        output = executeSpark(sparkCode, reqCheckDuration=0.5)
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
@@ -293,7 +293,7 @@ def getTableViaSparkCustom(request, tableName, modeName):
             rootFolder=jsonData['rootfolder']
         )
 
-        output = executeSpark(sparkCode)
+        output = executeSpark(sparkCode, reqCheckDuration=0.5)
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
