@@ -6,12 +6,8 @@ ENV        USER_HOME=/home/django
 # refer to http://www.django-rest-framework.org, djangorestframework markdown and django-filter is used for django REST API
 # django-sql-explorer is a single app,
 RUN         apt-get install -y freetds-dev libaio1 unzip \
-<<<<<<< HEAD
-         && pip install django requests psycopg2 mysqlclient djangorestframework markdown django-filter django-excel pymssql cx_Oracle --pre
-=======
          && pip install django requests psycopg2 mysqlclient djangorestframework markdown django-filter django-excel pymssql \
          && pip install cx_Oracle --pre
->>>>>>> cace66029ea4315df5d38f8b313f0ae23cb45e62
 #        && useradd -r django
 
 
