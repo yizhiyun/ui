@@ -1,4 +1,8 @@
 #!/bin/bash
+<<<<<<< HEAD
+=======
+
+>>>>>>> cace66029ea4315df5d38f8b313f0ae23cb45e62
 source /root/.bashrc
 #django-admin startproject uicloud
 python ${USER_HOME}/projects/uicloud/manage.py makemigrations
