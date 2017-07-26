@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source /root/.bashrc
 #django-admin startproject uicloud
 python ${USER_HOME}/projects/uicloud/manage.py makemigrations
 python ${USER_HOME}/projects/uicloud/manage.py migrate
