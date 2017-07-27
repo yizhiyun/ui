@@ -17,8 +17,8 @@ def executeSpark(sparkCode,
                  pyFiles=[],
                  sparkHost='http://spark-master0:8998',
                  checkDesiredState='available',
-                 maxCheckCount=150,
-                 reqCheckDuration=2):
+                 maxCheckCount=300,
+                 reqCheckDuration=1):
     '''
     '''
     host = sparkHost
@@ -46,7 +46,7 @@ def executeSpark(sparkCode,
 
         reqJsonTmp = getReqFromDesiredReqState(sessionUrl)
         if not reqJsonTmp:
-            #            requests.delete(sessionUrl, headers=headers)
+            # requests.delete(sessionUrl, headers=headers)
             return False
 
     # execute spark codes
@@ -196,7 +196,8 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
         return False
 
 
-def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", folder="myfolder"):
+def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", folder="myfolder",
+                            mode='overwrite', partitionBy=None):
     '''
     return the running spark code which write the New table into hdfs by default
     '''
@@ -229,7 +230,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     import traceback
     # Get an instance of a logger
     logger = logging.getLogger("sparkCodeExecutedBylivy")
-    def writeDataFrame( jsonData, savedPathUrl ):
+    def writeDataFrame( jsonData, savedPathUrl, mode='overwrite', partitionBy=None ):
         '''
         '''
         newDF = generateNewDataFrame(jsonData);
@@ -238,7 +239,14 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
         #get user information, especially username.
 
-        newDF.write.parquet(savedPathUrl, mode='overwrite')
+        # shorten the partition num.
+        # refer to the spark.sql.shuffle.partitions parameter, the default is 200.
+        if partitionBy is not None:
+            newDF.write.parquet(savedPathUrl, mode=mode,  partitionBy=partitionBy)
+        elif newDF.count() < 10000:
+            newDF.coalesce(1).write.parquet(savedPathUrl, mode=mode, partitionBy=partitionBy)
+        else:
+            newDF.write.parquet(savedPathUrl, mode=mode)
         return True
 
     def generateNewDataFrame(jsonData):
@@ -474,8 +482,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
         return outputDf
 
-    print(writeDataFrame({0}, "{1}"))
-    """.format(jsonData, savedPathUrl)
+    print(writeDataFrame({0}, '{1}', mode='{2}', partitionBy={3}))
+    """.format(jsonData, savedPathUrl, mode, partitionBy)
 
 
 def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-master0", port="9000", rootFolder="users"):
@@ -491,15 +499,21 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     import logging
     import json
     import decimal
+    import datetime
 
     # Get an instance of a logger
     logger = logging.getLogger("sparkCodeExecutedBylivy")
 
-    class DecimalEncoder(json.JSONEncoder):
-        def default(self, o):
-            if isinstance(o, decimal.Decimal):
-                return float(o)
-            return super(DecimalEncoder, self).default(o)
+    class SpecialDataTypesEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, decimal.Decimal):
+                return float(obj)
+            elif isinstance(obj, (datetime.datetime, datetime.date)):
+                return obj.isoformat()
+            elif isinstance(obj, datetime.timedelta):
+                return (datetime.datetime.min + obj).time().isoformat()
+            else:
+                return super(SpecialDataTypesEncoder, self).default(obj)
 
     def getTableSchema( url, mode ):
         '''
@@ -518,7 +532,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             for rowItem in t1.collect():
                 outputDict['data'].append( rowItem.asDict() )
 
-        return json.dumps(outputDict, cls = DecimalEncoder)
+        return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     print(getTableSchema("{0}", "{1}"))
     """.format(userUrl, mode)
 
