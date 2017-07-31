@@ -1,10 +1,12 @@
 import MySQLdb
 import logging
 import cx_Oracle
+import pymssql
 logger = logging.getLogger(__name__)
 
 
 class ConnectDataBase():
+    # 新增一个Sid（数据库名称）参数
     def __init__(self, dbPaltName=None, dbLocation=None, dbPort=None, dbUserName=None, dbUserPwd=None, dbSid=None):
         self.dbPaltName = dbPaltName
         self.dbLocation = dbLocation
@@ -35,20 +37,49 @@ class ConnectDataBase():
                     self.dbUserName, self.dbUserPwd, self.dbLocation, self.dbSid))
             except Exception:
                 self.con = False
+
+        elif self.dbPaltName.lower() == 'sqlserver':
+            try:
+                self.con = pymssql.connect(
+                    host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd)
+            except Exception:
+                self.con = False
+
     # 获取当前数据库平台所有的数据库
 
     def fetchAllDabaBase(self):
-        if self.con:
-            # dataBases = self.con.query("show databases")
-            rs = self.con.store_result()
-            result = rs.fetch_row(0)
-            self.dataBasesRs = []
+        if self.dbPaltName.lower() == "mysql":
+            if self.con:
+                # dataBases = self.con.query("show databases")
+                rs = self.con.store_result()
+                result = rs.fetch_row(0)
+                self.dataBasesRs = []
 
-            for obj in result:
-                self.dataBasesRs.append(obj[0])
+                for obj in result:
+                    self.dataBasesRs.append(obj[0])
 
-            return self.dataBasesRs
-        return None
+                return self.dataBasesRs
+            return None
+
+        elif self.dbPaltName.lower() == 'oracle':
+            if self.con:
+                self.dataBasesRs = []
+                self.dataBasesRs.append(self.dbSid)
+                return self.dataBasesRs
+            return None
+
+        elif self.dbPaltName.lower() == 'sqlserver':
+            if self.con:
+                cursor = self.con.cursor()
+                cursor.execute("select Name from Master..SysDatabases")
+                rs = cursor.fetchall()
+                self.dataBasesRs = []
+
+                for obj in rs:
+                    self.dataBasesRs.append(obj[0])
+
+                return self.dataBasesRs
+            return None
 
     # 获取某个数据库下所有的表格
 
@@ -77,11 +108,25 @@ class ConnectDataBase():
                     tables.append(obj[0])
                 self.tablesOfDataBase[dataBaseName] = tables
                 return self.tablesOfDataBase[dataBaseName]
+
+        elif self.dbPaltName.lower() == 'sqlserver':
+            if self.con:
+                self.con = pymssql.connect(
+                    host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd, database=dataBaseName)
+                cursor = self.con.cursor()
+                cursor.execute('select Name from {0}.sys.tables'.format(dataBaseName))
+                rs = cursor.fetchall()
+                tables = []
+                for obj in rs:
+                    tables.append(obj[0])
+                self.tablesOfDataBase[dataBaseName] = tables
+                return self.tablesOfDataBase[dataBaseName]
+
     # 获取某个表格下面的所有字段
 
     def fetchFiledsOfATable(self, tableName):
         if self.dbPaltName.lower() == "mysql":
-            if(self.con):
+            if self.con:
                 cur = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
                 cur.execute("show columns from " + tableName)
                 rows = cur.fetchall()
@@ -90,10 +135,28 @@ class ConnectDataBase():
         elif self.dbPaltName.lower() == 'oracle':
             if self.con:
                 cursor = self.con.cursor()
-                rs = cursor.execute('select * from ' + tableName).description
+                rs = cursor.execute(
+                    "select column_name,data_type From all_tab_columns where table_name='{0}'".format(
+                        tableName)).fetchall()
                 rows = []
                 for obj in rs:
-                    rows.append(obj[0])
+                    rows.append({
+                        'Field': obj[0],
+                        'Type': obj[1]
+                    })
+                return rows
+
+        elif self.dbPaltName.lower() == 'sqlserver':
+            if self.con:
+                cursor = self.con.cursor()
+                cursor.execute('sp_columns ' + tableName)
+                rs = cursor.fetchall()
+                rows = []
+                for obj in rs:
+                    rows.append({
+                        'Field': obj[3],
+                        'Type': obj[5]
+                    })
                 return rows
 
     # 获取某个表格的所有数据, filedsArr
@@ -109,5 +172,31 @@ class ConnectDataBase():
         elif self.dbPaltName.lower() == 'oracle':
             if self.con:
                 cursor = self.con.cursor()
-                rows = cursor.execute('select * from ' + tableName).fetchall()
+                cursor.execute('select * from ' + tableName)
+                dataList = cursor.fetchall()
+                colList = cursor.description
+
+                rows = []
+                for data in dataList:
+                    dic = {}
+                    for i in range(len(colList)):
+                        dic[colList[i][0]] = data[i]
+                    rows.append(dic)
+                return rows
+
+        elif self.dbPaltName.lower() == 'sqlserver':
+            if self.con:
+                cursor = self.con.cursor()
+                cursor.execute('select * from ' + tableName)
+                dataList = cursor.fetchall()
+
+                cursor.execute('sp_columns ' + tableName)
+                colList = cursor.fetchall()
+
+                rows = []
+                for data in dataList:
+                    dic = {}
+                    for i in range(len(colList)):
+                        dic[colList[i][3]] = data[i]
+                    rows.append(dic)
                 return rows
