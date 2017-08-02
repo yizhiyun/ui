@@ -103,7 +103,7 @@ def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json
 
         logger.debug("Step:{0}, response:{1}".format(reqCount, reqJson))
 
-    if reqCount >= 60:
+    if reqCount >= maxReqCount:
         return False
 
     return reqJson
@@ -495,14 +495,9 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
         hdfsHost, port, rootFolder, userName, tableName)
 
     sparkCode = """
-    import sys
-    import logging
     import json
     import decimal
     import datetime
-
-    # Get an instance of a logger
-    logger = logging.getLogger("sparkCodeExecutedBylivy")
 
     class SpecialDataTypesEncoder(json.JSONEncoder):
         def default(self, obj):
@@ -515,7 +510,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             else:
                 return super(SpecialDataTypesEncoder, self).default(obj)
 
-    def getTableSchema( url, mode ):
+    def getTableInfo( url, mode ):
         '''
         get the specified table schema,
         note, the table format is parquet.
@@ -533,7 +528,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
                 outputDict['data'].append( rowItem.asDict() )
 
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
-    print(getTableSchema("{0}", "{1}"))
+    print(getTableInfo("{0}", "{1}"))
     """.format(userUrl, mode)
 
     return sparkCode
