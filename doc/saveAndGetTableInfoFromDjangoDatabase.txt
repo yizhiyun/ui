@@ -1,0 +1,190 @@
+
+Description
+-----------
+This document describe how to get users' tables information from RESTful API.
+
+
+Get All Tables From Current User
+-------------
+1. URI: /dashboard/getAllData
+2. Request Method: POST
+3. Request Data Schema:
+{
+	"username": <username>
+}
+4. Request Example:
+{
+	"username": "yzy"
+}
+5. Support Format: JSON
+6. Response Data:
+{
+    <foldername>: {
+    	"parentfoldername": <parentfoldername>,
+    	"table0": {
+    		"row": <row>,
+            "column" <column>,
+            "username" <username>,
+            "tablename" <tablename>,
+            "viewtype" <viewtype>
+    	},
+    	"table1": {
+    		"row" <row>,
+            "column": <column>,
+            "username": <username>,
+            "tablename": <tablename>,
+            "viewtype": <viewtype>
+    	},
+    	...
+    },
+    <foldername>: {
+    	"parentfoldername": <parentfoldername>,
+    	"table0": {
+    		"row": <row>,
+            "column": <column>,
+            "username": <username>,
+            "tablename": <tablename>,
+            "viewtype": <viewtype>
+    	},
+    	"table1": {
+    		"row": <row>,
+            "column": <column>,
+            "username": <username>,
+            "tablename": <tablename>,
+            "viewtype": <viewtype>
+    	},
+    	...
+    },
+    ...
+}
+7. Response Example:
+{
+    "folder1": {
+    	"parentfoldername": "parentfolder",
+    	"table0": {
+    		"row": "rowdata",
+            "column": "columndata",
+            "username": "yzy",
+            "tablename": "yzydb",
+            "viewtype": "typedata"
+    	},
+    	"table1": {
+    		"row": "rowdata",
+            "column": "columndata",
+            "username": "yzy",
+            "tablename": "yzydb",
+            "viewtype": "typedata"
+    	}
+    },
+    "folder2": {
+    	"parentfoldername": "parentfolder",
+    	"table0": {
+    		"row": "rowdata",
+            "column": "columndata",
+            "username": "yzy",
+            "tablename": "yzydb",
+            "viewtype": "typedata"
+    	},
+    	"table1": {
+    		"row": "rowdata",
+            "column": "columndata",
+            "username": "yzy",
+            "tablename": "yzydb",
+            "viewtype": "typedata"
+    	}
+    }
+}
+
+
+
+Save TableInfo From Current User And Return TableInfo
+-------------
+1. URI: /dashboard/dashboardTableAdd
+2. Request Method: POST
+3. Request Data Schema:
+{
+	"username": <username>,
+	"foldername": <foldername>,
+	"row": <row>,
+	"column": <column>,
+	"tablename": <tablename>,
+	"viewtype": <viewtype>
+}
+4. Request Example:
+{
+	"username": "yzy",
+	"foldername": "folder1",
+	"row": "rowdata",
+	"column": "columndata",
+	"tablename": "yzydb",
+	"viewtype": "typedata"
+}
+5. Support Format: JSON
+6. Response Data:
+{
+    "foldername": <foldername>,
+    "row": <row>,
+    "column": <column>,
+    "username": <username>,
+    "tablename": <tablename>,
+    "viewtype": <viewtype>
+}
+7. Response Example:
+{
+    "foldername": "folder1",
+    "row": "rowdata",
+    "column": "columndata",
+    "username": "yzy",
+    "tablename": "yzydb",
+    "viewtype": "typedata"
+}
+
+
+
+Save Folder From Current User
+-------------
+1. URI: /dashboard/dashboardFolderAdd
+2. Request Method: POST
+3. Request Data Schema:
+{
+	"username": <username>,
+	"foldername": <foldername>
+}
+4. Request Example:
+{
+	"username": "yzy",
+	"foldername": "folder1"
+}
+5. Support Format: JSON
+6. Response Data:
+6.1 if successful, it will response as follows
+{
+    "status": "ok"
+}
+6.2 if failed, it will response as follows
+{
+    "status": "failed",
+    "reason": "the name has been used"
+}
+
+
+
+ Relevance Folder And ParentFolder From Current User
+-------------
+1. URI: /dashboard/RelevanceFolder
+2. Request Method: POST
+3. Request Data Schema:
+{
+	"foldername": <foldername>,
+	"parentfoldername": <parentfoldername>
+}
+4. Request Example:
+{
+	"foldername": "folder1",
+	"parentfoldername": "parentfolder"
+}
+5. Support Format: JSON
+6. Response Data:
+{
+	"status": "ok"
+}

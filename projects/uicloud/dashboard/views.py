@@ -102,7 +102,12 @@ def dashboardFolderAdd(request):
     if request.method == 'POST':
         try:
             DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
-            return HttpResponse('the name has been used')
+            context = {
+                'status': 'failed',
+                "reason": "the name has been used"
+            }
+            return JsonResponse(context)
+
         except Exception:
             folder = DashboardFolderByUser(
                 foldername=jsonData['foldername'],
