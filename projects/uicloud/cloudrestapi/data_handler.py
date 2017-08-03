@@ -286,6 +286,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 dbPort = dbSourceDict["dbport"]
                 user = dbSourceDict["user"]
                 password = dbSourceDict["password"]
+                sid = dbSourceDict["sid"]
 
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
@@ -302,10 +303,11 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 columnList = list(tables[seq]['columns'].keys())
 
                 if dbType == "oracle":
-                    sid = ""
                     connUrl = "jdbc:{{0}}:thin:@{{1}}:{{2}}:{{3}}".format(dbType, dbServer, dbPort, sid)
                 elif dbType == "postgresql":
                     connUrl = "jdbc:{{0}}://{{1}}".format(dbType, dbServer)
+                elif dbType == "sqlserver":
+                    connUrl = "jdbc:{{0}}://{{1}}:{{2}};databaseName={{3}}".format(dbType, dbServer, dbPort, dbName)
 
                 try:
                     dfDict[dbTable] = spark.read \
@@ -361,6 +363,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].like(condIt["value"]))
                 elif condType == "startswith":
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].startswith(condIt["value"]))
+                elif condType == "endswith":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].endswith(condIt["value"]))
                 elif condType == "isin":
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].isin(condIt["value"]))
                 elif condType == "isnull":
