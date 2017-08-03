@@ -33,15 +33,15 @@ class ConnectDataBase():
 
         elif self.dbPaltName.lower() == 'oracle':
             try:
-                self.con = cx_Oracle.connect('{0}/{1}@{2}/{3}'.format(
-                    self.dbUserName, self.dbUserPwd, self.dbLocation, self.dbSid))
+                self.con = cx_Oracle.connect('{0}/{1}@{2}:{3}/{4}'.format(
+                    self.dbUserName, self.dbUserPwd, self.dbLocation, self.dbPort, self.dbSid))
             except Exception:
                 self.con = False
 
         elif self.dbPaltName.lower() == 'sqlserver':
             try:
                 self.con = pymssql.connect(
-                    host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd)
+                    host='{0}:{1}'.format(self.dbLocation, self.dbPort), user=self.dbUserName, password=self.dbUserPwd)
             except Exception:
                 self.con = False
 
