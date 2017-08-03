@@ -177,12 +177,12 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
         for key, value in palts.items():
 
             dbSourceDict[key] = {
-                "dbtype": "mysql",
+                "dbtype": value.dbPaltName,
                 "dbserver": value.dbLocation,
-                "source": value.dbPaltName,
                 "dbport": value.dbPort,
                 "user": value.dbUserName,
-                "password": value.dbUserPwd
+                "password": value.dbUserPwd,
+                'sid': value.dbSid
             }
         return dbSourceDict
 
