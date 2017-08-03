@@ -50,7 +50,7 @@ class ConnectDataBase():
     def fetchAllDabaBase(self):
         if self.dbPaltName.lower() == "mysql":
             if self.con:
-                # dataBases = self.con.query("show databases")
+                self.con.query("show databases")
                 rs = self.con.store_result()
                 result = rs.fetch_row(0)
                 self.dataBasesRs = []

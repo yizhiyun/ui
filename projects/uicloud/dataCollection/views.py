@@ -63,7 +63,7 @@ def showTableFiledsOFaTable(req):
 def showTableDetailDataOfFileds(req):
     dbInfoArr = req.POST["dbInfo"].split("_YZYPD_")
     dbindex = dbInfoArr[0]
-    tbName = dbInfoArr[1]
+    tbName = dbInfoArr[2]
     Singleton().currentDBObjIndex = dbindex
     return HttpResponse(json.dumps({
         "status": "ok",
