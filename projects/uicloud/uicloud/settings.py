@@ -72,7 +72,7 @@ ROOT_URLCONF = 'uicloud.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'uicloud','templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'uicloud', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -158,5 +158,50 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'uicloud','static'),
+    os.path.join(BASE_DIR, 'uicloud', 'static'),
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(pathname)s %(module)s %(lineno)d %(name)s %(levelname)s %(process)d %(message)s'
+        },
+        'normal': {
+            'format': '%(asctime)s %(pathname)s %(module)s %(levelname)s %(message)s'
+        },
+        'simple': {
+            'format': '%(asctime)s %(module)s %(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'basefile': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/home/django/logs/django.log',
+            'formatter': 'normal'
+        },
+        'rotatefile': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '/home/django/logs/uicloud.log',
+            'when': 'D',  # this specifies the interval
+            'interval': 1,  # defaults to 1, only necessary for other values
+            'backupCount': 7,  # how many backup file to keep, 10 days
+            'formatter': 'normal'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['basefile'],
+            'level': 'WARN',
+            'propagate': True,
+        },
+        'uicloud': {
+            'handlers': ['rotatefile'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    },
+}

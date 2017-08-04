@@ -7,7 +7,7 @@ import json
 import logging
 
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("uicloud.cloudrestapi.views")
 logger.setLevel(logging.DEBUG)
 
 
@@ -177,6 +177,7 @@ def generateNewTable(request):
             return JsonResponse(failObj, status=400)
 
         output = executeSpark(sparkCode)
+        logger.debug("output: {0}".format(output))
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the detailed logs."}

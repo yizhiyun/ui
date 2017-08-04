@@ -9,8 +9,7 @@ import os
 from dataCollection.gxmHandleClass.Singleton import Singleton
 
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
+logger = logging.getLogger("uicloud.cloudrestapi.data_handler")
 
 
 def executeSpark(sparkCode,
@@ -118,7 +117,6 @@ def getOutputColumns(jsonData):
     if ("tables" not in jsonData.keys()) or ("relationships" not in jsonData.keys()):
         errMsg = "ERROR, The jsonData don't include 'tables' or 'relationships'."
         logger.error(errMsg)
-        print(errMsg)
         return False
 
     tables = jsonData["tables"]
@@ -286,7 +284,6 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 dbPort = dbSourceDict["dbport"]
                 user = dbSourceDict["user"]
                 password = dbSourceDict["password"]
-                sid = dbSourceDict["sid"]
 
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
@@ -303,6 +300,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 columnList = list(tables[seq]['columns'].keys())
 
                 if dbType == "oracle":
+                    sid = dbSourceDict["sid"]
                     connUrl = "jdbc:{{0}}:thin:@{{1}}:{{2}}:{{3}}".format(dbType, dbServer, dbPort, sid)
                 elif dbType == "postgresql":
                     connUrl = "jdbc:{{0}}://{{1}}".format(dbType, dbServer)
