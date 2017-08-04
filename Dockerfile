@@ -21,7 +21,8 @@ COPY       packages/ ${USER_HOME}/packages/
 #RUN        chown -R django ${USER_HOME} && chgrp -R django ${USER_HOME}
 RUN        cd /opt \
         && unzip ${USER_HOME}/packages/instantclient-basic-linux.x64-12.2.0.1.0.zip \
-        && echo "export LD_LIBRARY_PATH=/opt/instantclient_12_2:$LD_LIBRARY_PATH" >> /root/.bashrc
+        && echo "export LD_LIBRARY_PATH=/opt/instantclient_12_2:$LD_LIBRARY_PATH" >> /root/.bashrc \
+        && mkdir -p ${USER_HOME}/logs
 
 WORKDIR    ${USER_HOME}
 
