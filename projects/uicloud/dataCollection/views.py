@@ -18,12 +18,12 @@ class IndexView(TemplateView):
 
 
 def connectDataBaseHandle(req):
-    dbPaltName = req.POST["dataBaseName"]
+    dbPaltName = req.POST["dataBaseName"].lower()
     dbSid = None
     if dbPaltName == 'oracle':
         dbSid = req.POST["dbSid"]
     dataBaseObj = ConnectDataBase(
-        req.POST["dataBaseName"],
+        dbPaltName,
         req.POST["location"],
         req.POST["port"],
         req.POST["dbuserName"],
