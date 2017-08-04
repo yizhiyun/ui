@@ -12,4 +12,6 @@ urlpatterns = [
     url(r'^dashboardTableAdd$', views.dashboardTableAdd, name='dashboardTableAdd'),
     url(r'^dashboardFolderAdd$', views.dashboardFolderAdd, name='dashboardFolderAdd'),
     url(r'^RelevanceFolder$', views.RelevanceFolder, name='RelevanceFolder'),
+    url(r'^changeViewName$', views.changeViewName, name='changeViewName'),
+    url(r'^deleteFolder$', views.deleteFolder, name='deleteFolder'),
 ]

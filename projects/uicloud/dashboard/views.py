@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from .importTestDataTmp import testDataHandler
 from .models import DashboardFolderByUser, DashboardViewByUser
 
@@ -41,12 +41,15 @@ def getAllData(request):
                 context[folder.foldername] = {}
                 context[folder.foldername]['parentfoldername'] = folder.parentfoldername
                 for i in range(num):
+                    if tablelist[i].row == 'row':
+                        continue
                     context[folder.foldername]['table{0}'.format(tablelist[i].id)] = {
                         'row': tablelist[i].row,
                         'column': tablelist[i].column,
                         'username': tablelist[i].username,
                         'tablename': tablelist[i].tablename,
-                        'viewtype': tablelist[i].viewtype
+                        'viewtype': tablelist[i].viewtype,
+                        'viewname': tablelist[i].viewname
                     }
 
         return JsonResponse(context)
@@ -62,6 +65,9 @@ def dashboardTableAdd(request):
     if request.method == 'POST':
         foldername = jsonData['foldername']
         try:
+            if jsonData['row'] == 'row':
+                folder = DashboardFolderByUser.objects.get(foldername=foldername)
+                return JsonResponse({'status': 'faild'})
             folder = DashboardFolderByUser.objects.get(foldername=foldername)
         except Exception:
             folder = DashboardFolderByUser(
@@ -69,16 +75,15 @@ def dashboardTableAdd(request):
                 foldername=foldername
             )
             folder.save()
-        finally:
-            table = DashboardViewByUser(
-                row=jsonData['row'],
-                column=jsonData['column'],
-                username=jsonData['username'],
-                tablename=jsonData['tablename'],
-                viewtype=jsonData['viewtype'],
-                folder=folder
-            )
-            table.save()
+        table = DashboardViewByUser(
+            row=jsonData['row'],
+            column=jsonData['column'],
+            username=jsonData['username'],
+            tablename=jsonData['tablename'],
+            viewtype=jsonData['viewtype'],
+            folder=folder
+        )
+        table.save()
 
         context = {
             'foldername': folder.foldername,
@@ -138,3 +143,42 @@ def RelevanceFolder(request):
             'status': 'ok'
         }
         return JsonResponse(context)
+
+
+@api_view(['POST'])
+def changeViewName(request):
+    '''
+    用户自定义view的名字
+    '''
+    jsonData = request.data
+
+    if request.method == 'POST':
+        table = DashboardViewByUser.objects.get(id=int(jsonData['viewid'][5:]))
+        table.viewname = jsonData['viewname']
+        table.save()
+        return JsonResponse({'viewname': table.viewname})
+
+
+@api_view(['POST'])
+def deleteFolder(request):
+    '''
+    '''
+    jsonData = request.data
+
+    if request.method == 'POST':
+        foldertype = jsonData['foldertype']
+        if foldertype == 'parentfolder':
+            isDeleteAll = jsonData['isdeleteall']
+            if isDeleteAll == 'yes':
+                folderList = DashboardFolderByUser.objects.filter(parentfoldername=jsonData['foldername'])
+                for folder in folderList:
+                    folder.dashboardviewbyuser_set.all().delete()
+                    folder.delete()
+                parentfolder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
+                parentfolder.delete()
+
+        elif foldertype == 'folder':
+            folder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
+            folder.dashboardviewbyuser_set.all().delete()
+            folder.delete()
+            return JsonResponse({'status': 'ok'})
