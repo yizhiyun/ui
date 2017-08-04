@@ -174,8 +174,8 @@ def deleteFolder(request):
                 for folder in folderList:
                     folder.dashboardviewbyuser_set.all().delete()
                     folder.delete()
-                parentfolder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
-                parentfolder.delete()
+            parentfolder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
+            parentfolder.delete()
 
         elif foldertype == 'folder':
             folder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
