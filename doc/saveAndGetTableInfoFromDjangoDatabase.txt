@@ -10,97 +10,91 @@ Get All Tables From Current User
 2. Request Method: POST
 3. Request Data Schema:
 {
-	"username": <username>
+	"username": <username>,
+    "datasize": <all/partof>
 }
 4. Request Example:
 {
-	"username": "yzy"
+	"username": "yzy",
+    "datasize": "all"
 }
 5. Support Format: JSON
 6. Response Data:
+6.1 if datasize is all:
 {
-    <foldername>: {
-    	"parentfoldername": <parentfoldername>,
-    	"table0": {
-    		"row": <row>,
-            "column": <column>,
-            "username": <username>,
-            "tablename": <tablename>,
-            "viewtype": <viewtype>,
-            "viewname": <viewname>
-    	},
-    	"table1": {
-    		"row" <row>,
-            "column": <column>,
-            "username": <username>,
-            "tablename": <tablename>,
-            "viewtype": <viewtype>,
-            "viewname": <viewname>
-    	},
-    	...
-    },
-    <foldername>: {
-    	"parentfoldername": <parentfoldername>,
-    	"table0": {
-    		"row": <row>,
-            "column": <column>,
-            "username": <username>,
-            "tablename": <tablename>,
-            "viewtype": <viewtype>,
-            "viewname": <viewname>
-    	},
-    	"table1": {
-    		"row": <row>,
-            "column": <column>,
-            "username": <username>,
-            "tablename": <tablename>,
-            "viewtype": <viewtype>,
-            "viewname": <viewname>
-    	},
-    	...
+    <parentfoldername>: {
+        <foldername>: {
+            <tablename>: {
+                "row": <row>,
+                "column": <column>,
+                "username": <username>,
+                "tablename": <tablename>,
+                "viewtype": <viewtype>,
+                "viewname": <viewname>
+            },
+        	<tablename>: {
+        		"row": <row>,
+                "column": <column>,
+                "username": <username>,
+                "tablename": <tablename>,
+                "viewtype": <viewtype>,
+                "viewname": <viewname>
+        	},
+        	<tablename>: {
+        		"row" <row>,
+                "column": <column>,
+                "username": <username>,
+                "tablename": <tablename>,
+                "viewtype": <viewtype>,
+                "viewname": <viewname>
+        	},
+    	   ...
+        },
+        <foldername>: {
+            <tablename>: {
+                "row": <row>,
+                "column": <column>,
+                "username": <username>,
+                "tablename": <tablename>,
+                "viewtype": <viewtype>,
+                "viewname": <viewname>
+            },
+            <tablename>: {
+                "row": <row>,
+                "column": <column>,
+                "username": <username>,
+                "tablename": <tablename>,
+                "viewtype": <viewtype>,
+                "viewname": <viewname>
+            },
+            <tablename>: {
+                "row" <row>,
+                "column": <column>,
+                "username": <username>,
+                "tablename": <tablename>,
+                "viewtype": <viewtype>,
+                "viewname": <viewname>
+            },
+           ...
+        },
+        ...
+
     },
     ...
 }
-7. Response Example:
+6.2 if datasize is partof:
 {
-    "folder1": {
-    	"parentfoldername": "parentfolder",
-    	"table0": {
-    		"row": "rowdata",
-            "column": "columndata",
-            "username": "yzy",
-            "tablename": "yzydb",
-            "viewtype": "typedata",
-            "viewname": null
-    	},
-    	"table1": {
-    		"row": "rowdata",
-            "column": "columndata",
-            "username": "yzy",
-            "tablename": "yzydb",
-            "viewtype": "typedata",
-            "viewname": null
-    	}
-    },
-    "folder2": {
-    	"parentfoldername": "parentfolder",
-    	"table0": {
-    		"row": "rowdata",
-            "column": "columndata",
-            "username": "yzy",
-            "tablename": "yzydb",
-            "viewtype": "typedata",
-            "viewname": null
-    	},
-    	"table1": {
-    		"row": "rowdata",
-            "column": "columndata",
-            "username": "yzy",
-            "tablename": "yzydb",
-            "viewtype": "typedata",
-            "viewname": null
-    	}
-    }
+    <parentfoldername>: [
+        <foldername>,
+        <foldername>,
+        ...
+    ],
+    <parentfoldername>: [
+        <foldername>,
+        <foldername>,
+        ...
+    ],
+    ...
 }
 
 
@@ -116,7 +110,8 @@ Save TableInfo From Current User And Return TableInfo
 	"row": <row>,
 	"column": <column>,
 	"tablename": <tablename>,
-	"viewtype": <viewtype>
+	"viewtype": <viewtype>,
+    "defaultparent": <defaultparentfoldername>
 }
 4. Request Example:
 {
@@ -125,7 +120,8 @@ Save TableInfo From Current User And Return TableInfo
 	"row": "rowdata",
 	"column": "columndata",
 	"tablename": "yzydb",
-	"viewtype": "typedata"
+	"viewtype": "typedata",
+    "defaultparent": "nmnf"
 }
 5. Support Format: JSON
 6. Response Data:
@@ -199,28 +195,32 @@ Save Folder From Current User
 
 
 
-Set View Name From Current User
+update Name From Current User
 -------------
 1. URI: /dashboard/changeViewName
 2. Request Method: POST
 3. Request Data Schema:
 {
-    "viewid": <tablename>,
-    "viewname": <viewname>
+    "objtype": <type>,
+    "oldname": <oldname>,
+    "newname": <new>
 }
 4. Request Example:
 {
+    "objtype": "view/folder/parentfolder",
     "viewid": "table1",
     "viewname": "newviewname"
 }
 5. Support Format: JSON
 6. Response Data:
+if success:
 {
-    "viewname": <viewname>
+    "status": "ok"
 }
-7.Response Example:
+if faild:
 {
-    "viewname": "newviewname"
+    "status": "false", 
+    "reason": "this name has been used"
 }
 
 
@@ -234,7 +234,8 @@ Delete Folder From Current User
 {
     "foldertype": <foldertype>,
     "isdeleteall": <yes/no>,
-    "foldername": <foldername>
+    "foldername": <foldername>,
+    "defaultparent": <defaultparentfoldername>
 }
 3.2 if viewtype is folder
 {
@@ -246,7 +247,8 @@ Delete Folder From Current User
 {
     "foldertype": "parentfolder",
     "isdeleteall": "yes",
-    "foldername": "testfolder"
+    "foldername": "testfolder",
+    "defaultparent": "nmnf"
 }
 4.2 if viewtype is folder
 {
