@@ -32,10 +32,20 @@ def getAllData(request):
     jsonData = request.data
     if request.method == 'POST':
         username = jsonData['username']
-        datasize = jsonData['datasize']
         context = {}
         folderList = DashboardFolderByUser.objects.filter(username=username, parentfoldername=None)
-        if datasize == 'all':
+        if 'datatype' in jsonData.keys():
+            datatype = jsonData['datatype']
+
+            if datatype == 'folder':
+                for folder in folderList:
+                    context[folder.foldername] = []
+                    subfolderList = DashboardFolderByUser.objects.filter(parentfoldername=folder.foldername)
+                    for subfolder in subfolderList:
+                        context[folder.foldername].append(subfolder.foldername)
+                return JsonResponse(context)
+
+        else:
             for folder in folderList:
                 context[folder.foldername] = {}
                 subfolderList = DashboardFolderByUser.objects.filter(parentfoldername=folder.foldername)
@@ -54,13 +64,6 @@ def getAllData(request):
                             'viewtype': tablelist[i].viewtype,
                             'viewname': tablelist[i].viewname
                         }
-            return JsonResponse(context)
-        elif datasize == 'partof':
-            for folder in folderList:
-                context[folder.foldername] = []
-                subfolderList = DashboardFolderByUser.objects.filter(parentfoldername=folder.foldername)
-                for subfolder in subfolderList:
-                    context[folder.foldername].append(subfolder.foldername)
             return JsonResponse(context)
 
 
