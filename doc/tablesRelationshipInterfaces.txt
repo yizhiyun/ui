@@ -31,7 +31,10 @@ The RESTful API Details of Verify those table relationships
             },
             "conditions": [
                 {
-                    "type":"=", # type include '=','>','<','like','startswith' and 'isin'.
+                    # types: ">",">=","=","<","<=",'like','startswith','notstartswith',
+                    # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
+                    # note: if type is 'isin' or 'isnotin', the value should be a list.
+                    "type":"=",
                     "columnName": <columnName>,
                     "value": <value>
                 },

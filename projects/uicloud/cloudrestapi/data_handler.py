@@ -347,6 +347,9 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     def filterDF(inDataFrame, tableDict):
         '''
         '''
+        from pyspark.sql.functions import udf
+        from pyspark.sql.types import BooleanType
+
         if "conditions" in tableDict.keys():
             # add the specified conditions in the DataFrame
             for condIt in tableDict["conditions"]:
@@ -354,17 +357,31 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 colName = condIt["columnName"]
                 if condType == "limit" and type(condIt["value"]) == int:
                     inDataFrame = inDataFrame.limit(condIt["value"])
-                elif condType in [">","=","<"]:
+                elif condType in [">",">=","=","<","<="]:
                     condStr = "{{0}} {{1}} {{2}}".format(colName, condType, condIt["value"])
                     inDataFrame = inDataFrame.filter(condStr)
                 elif condType == "like":
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].like(condIt["value"]))
                 elif condType == "startswith":
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].startswith(condIt["value"]))
+                elif condType == "notstartswith":
+                    inDataFrame = inDataFrame.filter(
+                        udf(lambda column: not column.startswith(condIt["value"]), BooleanType())(inDataFrame[colName]))
                 elif condType == "endswith":
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].endswith(condIt["value"]))
+                elif condType == "notendswith":
+                    inDataFrame = inDataFrame.filter(
+                        udf(lambda column: not column.endswith(condIt["value"]), BooleanType())(inDataFrame[colName]))
+                elif condType == "contains":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].contains(condIt["value"]))
+                elif condType == "notcontains":
+                    inDataFrame = inDataFrame.filter(
+                        udf(lambda column: not column.contains(condIt["value"]), BooleanType())(inDataFrame[colName]))
                 elif condType == "isin":
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].isin(condIt["value"]))
+                elif condType == "isnotin":
+                    inDataFrame = inDataFrame.filter(
+                        udf(lambda column: not column.isin(condIt["value"]), BooleanType())(inDataFrame[colName]))
                 elif condType == "isnull":
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].isNull())
                 elif condType == "isnotnull":
