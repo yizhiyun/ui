@@ -1,14 +1,30 @@
 from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
 # from .DataModels.PaltInfoModel import PaltInfoModel
 from .gxmHandleClass.Singleton import Singleton
 import json
-from django.http import HttpResponse
+import decimal
+import datetime
+
 
 import logging
 logger = logging.getLogger(__name__)
 # Create your views here.
+
+
+class SpecialDataTypesEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        elif isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.isoformat()
+        elif isinstance(obj, datetime.timedelta):
+            return (datetime.datetime.min + obj).time().isoformat()
+        else:
+            return super(SpecialDataTypesEncoder, self).default(obj)
 
 
 class IndexView(TemplateView):
@@ -69,4 +85,4 @@ def showTableDetailDataOfFileds(req):
         "status": "ok",
         "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchAllDataOfaTableByFields(
             tbName)
-    }))
+    }, cls=SpecialDataTypesEncoder))
