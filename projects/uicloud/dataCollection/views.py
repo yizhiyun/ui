@@ -86,3 +86,26 @@ def showTableDetailDataOfFileds(req):
         "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchAllDataOfaTableByFields(
             tbName)
     }, cls=SpecialDataTypesEncoder))
+
+# 根据条件查询. 返回表格数据
+
+
+@api_view(['POST'])
+def filterTable(request):
+    jsonData = request.data
+    if request.method == 'POST':
+        obj = ConnectDataBase(
+            jsonData["dbtype"],
+            jsonData["dbserver"],
+            jsonData["dbport"],
+            jsonData["user"],
+            jsonData["password"],
+            jsonData["sid"]
+        )
+        obj.connectDB()
+        context = {
+            "status": "ok",
+            "data": obj.filterTableData(
+                jsonData["conditions"], jsonData["tableName"], jsonData["sid"])
+        }
+        return JsonResponse(context)

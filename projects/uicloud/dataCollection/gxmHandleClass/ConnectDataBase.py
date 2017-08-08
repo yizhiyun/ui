@@ -200,3 +200,100 @@ class ConnectDataBase():
                         dic[colList[i][3]] = data[i]
                     rows.append(dic)
                 return rows
+
+    # 根据条件查询. 返回表格数据
+
+    def filterTableData(self, conditions, tableName, databaseName=None):
+        sql = 'select * from {0} where 1=1 '.format(tableName)
+        mysqlstr = ''
+        sqlserverstr = ''
+        oraclestr = ''
+
+        for condIt in conditions:
+            condType = condIt['type']
+            colName = condIt['columnName']
+            if condType == 'limit' and type(condIt["value"]) == int:
+                mysqlstr += 'limit {0}'.format(condIt["value"])
+                sqlserverstr += ' top {0}'.format(condIt["value"])
+                oraclestr += 'and rownum<={0} '.format(condIt["value"])
+
+            elif condType in [">", ">=", "=", "<=", "<"]:
+                sql += 'and {0} {1} {2} '.format(colName, condType, condIt["value"])
+
+            elif condType == "like":
+                sql += "and {0} like '{1}' ".format(colName, condIt["value"])
+
+            elif condType == "contains":
+                sql += "and {0} like '%{1}%' ".format(colName, condIt["value"])
+
+            elif condType == "notcontains":
+                sql += "and {0} not like '%{1}%' ".format(colName, condIt["value"])
+
+            elif condType == "isin":
+                sql += 'and {0} in {1} '.format(colName, condIt["value"])
+
+            elif condType == "isnotin":
+                sql += 'and {0} not in {1} '.format(colName, condIt["value"])
+
+            elif condType == "isnull":
+                sql += 'and {0} is null '.format(colName)
+
+            elif condType == "isnotnull":
+                sql += 'and {0} is not null '.format(colName)
+
+            elif condType == "startswith":
+                sql += "and {0} like '{1}%' ".format(colName, condIt["value"])
+
+            elif condType == "notstartswith":
+                sql += "and {0} not like '{1}%' ".format(colName, condIt["value"])
+
+            elif condType == "endswith":
+                sql += "and {0} like '%{1}' ".format(colName, condIt["value"])
+
+            elif condType == "notendswith":
+                sql += "and {0} not like '%{1}' ".format(colName, condIt["value"])
+
+        if self.dbPaltName == "mysql":
+            if self.con and databaseName:
+                self.con.select_db(databaseName)
+                cursor = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+                sql += mysqlstr
+                cursor.execute(sql)
+                rows = cursor.fetchall()
+                return rows
+
+        elif self.dbPaltName == 'sqlserver':
+            if self.con:
+                self.con = pymssql.connect(
+                    host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd, database=databaseName)
+                cursor = self.con.cursor()
+                sql = sql[:6] + sqlserverstr + sql[6:]
+                cursor.execute(sql)
+                dataList = cursor.fetchall()
+
+                cursor.execute('sp_columns ' + tableName)
+                colList = cursor.fetchall()
+
+                rows = []
+                for data in dataList:
+                    dic = {}
+                    for i in range(len(colList)):
+                        dic[colList[i][3]] = data[i]
+                    rows.append(dic)
+                return rows
+
+        elif self.dbPaltName == 'oracle':
+            if self.con:
+                cursor = self.con.cursor()
+                sql += oraclestr
+                cursor.execute(sql)
+                dataList = cursor.fetchall()
+                colList = cursor.description
+
+                rows = []
+                for data in dataList:
+                    dic = {}
+                    for i in range(len(colList)):
+                        dic[colList[i][0]] = data[i]
+                    rows.append(dic)
+                return rows
