@@ -1,14 +1,30 @@
 from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
 # from .DataModels.PaltInfoModel import PaltInfoModel
 from .gxmHandleClass.Singleton import Singleton
 import json
-from django.http import HttpResponse
+import decimal
+import datetime
+
 
 import logging
 logger = logging.getLogger(__name__)
 # Create your views here.
+
+
+class SpecialDataTypesEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        elif isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.isoformat()
+        elif isinstance(obj, datetime.timedelta):
+            return (datetime.datetime.min + obj).time().isoformat()
+        else:
+            return super(SpecialDataTypesEncoder, self).default(obj)
 
 
 class IndexView(TemplateView):
@@ -69,4 +85,27 @@ def showTableDetailDataOfFileds(req):
         "status": "ok",
         "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchAllDataOfaTableByFields(
             tbName)
-    }))
+    }, cls=SpecialDataTypesEncoder))
+
+# 根据条件查询. 返回表格数据
+
+
+@api_view(['POST'])
+def filterTable(request):
+    jsonData = request.data
+    if request.method == 'POST':
+        obj = ConnectDataBase(
+            jsonData["dbtype"],
+            jsonData["dbserver"],
+            jsonData["dbport"],
+            jsonData["user"],
+            jsonData["password"],
+            jsonData["sid"]
+        )
+        obj.connectDB()
+        context = {
+            "status": "ok",
+            "data": obj.filterTableData(
+                jsonData["conditions"], jsonData["tableName"], jsonData["sid"])
+        }
+        return JsonResponse(context)
