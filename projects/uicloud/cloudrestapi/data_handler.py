@@ -299,6 +299,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
                 columnList = list(tables[seq]['columns'].keys())
 
+                connDbTable = dbTable
                 if dbType == "oracle":
                     sid = dbSourceDict["sid"]
                     connUrl = "jdbc:{{0}}:thin:@{{1}}:{{2}}:{{3}}".format(dbType, dbServer, dbPort, sid)
@@ -306,17 +307,18 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                     connUrl = "jdbc:{{0}}://{{1}}".format(dbType, dbServer)
                 elif dbType == "sqlserver":
                     connUrl = "jdbc:{{0}}://{{1}}:{{2}};databaseName={{3}}".format(dbType, dbServer, dbPort, dbName)
+                    connDbTable = tableName
 
                 try:
                     dfDict[dbTable] = spark.read \
                         .format("jdbc") \
                         .option("url", connUrl) \
-                        .option("dbtable", dbTable) \
+                        .option("dbtable", connDbTable) \
                         .option("user", user) \
                         .option("password", password) \
                         .load().select(columnList)
                     dfDict[dbTable] = filterDF(dfDict[dbTable], tables[seq])
-                except:
+                except Exception:
                     traceback.print_exc()
                     print(sys.exc_info())
                     return False
@@ -337,8 +339,9 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
         except KeyError:
             print(sys.exc_info())
+            traceback.print_exc()
             return False
-        except:
+        except Exception:
             print(sys.exc_info())
             traceback.print_exc()
             return False;
