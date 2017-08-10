@@ -3,23 +3,28 @@ Description
 -----------
 This document describe how to get users' tables filter information.
 -------------
-1. URI: /dataCollection/filterTable
+1. URI: /dataCollection/filterTable/['all','schema','data']
 2. Request Method: POST
 3. Request Data Schema: JSON
 4. Request Data:
 {
-    "dbtype" : <dbtype>,
-    "dbserver": <dbhost>,
-    "dbport": <dbport>,
-    "user": <username>,
-    "password": <pwd>,
-    "sid": <dbname>,
+    "database": <databasename>,
     "tableName": <tablename>,
+    "columns": {
+                <columnName1>: {
+                    "columnType": <columnType>,
+                    ...
+                },
+                <columnName2>: {
+                    ...
+                },
+                ...
+            },
     "conditions": [
         {
             # types: "limit",">",">=","=","<","<=",'like','startswith','notstartswith',
             # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
-            # notice! if type is 'isin' or 'isnotin', the value should be a str like "('l')" or "('l', 'o')".
+            # notice! if type is 'isin' or 'isnotin', the value should be a list.
             "type": <type>,
             "value": <value>,
             "columnName": <columnName>
@@ -34,48 +39,87 @@ This document describe how to get users' tables filter information.
 }
 5. Request Example:
 {
-    "dbtype" : "oracle",
-    "dbserver": "192.168.1.250",
-    "dbport": "1521",
-    "user": "yzy_inqu",
-    "password": "yzy",
-    "sid": "YZYNEWDB",
-    "tableName": "test",
-    "databaseName": "YZYNEWDB",
+    "tableName": "table1",
+    "database": "db1",
+    "columns": {
+                "col1": {
+                    "columnType": "VARCHAR2(64)"
+                },
+                "col2": {
+                    "columnType": "number(3)"
+                }
+            },
     "conditions": [
         {
             "type": "limit",
             "value": 5
         },
         {
-            "type": "notendswith",
-            "value": "g",
-            "columnName": "namdsa"
+            "type": ">",
+            "value": 1,
+            "columnName": "col1"
         }
     ]
 }
 
 6. Support Format: JSON
 7. Response Data:
-7.1 if successful, it will response as follows
+7.1 As for /dataCollection/filterTable/all, it will response as follows if successful
 {
-    "status": "ok",
-    "data": <columndatalist>
+    "status": "success",
+    "results": {
+        "data": [
+            {
+                <columnName1>: <column1Value1>,
+                <columnName2>: <column2Value1>,
+                ...
+            },
+            {
+                <columnName1>: <column1Value2>,
+                <columnName2>: <column2Value2>,
+                ...
+            },
+            ...
+        ],
+        "schema": [
+            "<columnName1>:<columnType1>",
+            "<columnName2>:<columnType2>",
+            ...
+        ]
+    }
 }
-
-
-8. Response Example:
-If successful, it will response as follows
+7.2 As for /dataCollection/filterTable/schema, it will response as follows if successful
 {
-    "status": "ok",
-    "data": [
-        {
-            "NAMDSA": "lihaiyang1",
-            "ID": 4
-        },
-        {
-            "NAMDSA": "lihaiyang2",
-            "ID": 5
-        }
-    ]
+    "status": "success",
+    "results": {
+        "schema": [
+            "<columnName1>:<columnType1>",
+            "<columnName2>:<columnType2>",
+            ...
+        ]
+    }
+}
+7.2 As for /dataCollection/filterTable/data, it will response as follows if successful
+{
+    "status": "success",
+    "results": {
+        "data": [
+            {
+                <columnName1>: <column1Value1>,
+                <columnName2>: <column2Value1>,
+                ...
+            },
+            {
+                <columnName1>: <column1Value2>,
+                <columnName2>: <column2Value2>,
+                ...
+            },
+            ...
+        ]
+    }
+}
+8. if failed, it will response as follows
+{
+    "status": "failed",
+    "reason": "the mode must one of ['all', 'data', 'schema']"
 }

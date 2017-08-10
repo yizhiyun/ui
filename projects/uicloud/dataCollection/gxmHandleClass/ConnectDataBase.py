@@ -203,59 +203,64 @@ class ConnectDataBase():
 
     # 根据条件查询. 返回表格数据
 
-    def filterTableData(self, conditions, tableName, databaseName=None):
-        sql = 'select * from {0} where 1=1 '.format(tableName)
+    def filterTableData(self, jsonData):
+        columnstr = ', '.join(jsonData['columns'].keys())
+        if columnstr:
+            sql = 'select {0} from {1} where 1=1 '.format(columnstr, jsonData['tableName'])
+        else:
+            sql = 'select * from {0} where 1=1 '.format(jsonData['tableName'])
         mysqlstr = ''
         sqlserverstr = ''
         oraclestr = ''
 
-        for condIt in conditions:
+        for condIt in jsonData['conditions']:
             condType = condIt['type']
-            colName = condIt['columnName']
             if condType == 'limit' and type(condIt["value"]) == int:
                 mysqlstr += 'limit {0}'.format(condIt["value"])
                 sqlserverstr += ' top {0}'.format(condIt["value"])
                 oraclestr += 'and rownum<={0} '.format(condIt["value"])
 
             elif condType in [">", ">=", "=", "<=", "<"]:
-                sql += 'and {0} {1} {2} '.format(colName, condType, condIt["value"])
+                sql += 'and {0} {1} {2} '.format(condIt['columnName'], condType, condIt["value"])
 
             elif condType == "like":
-                sql += "and {0} like '{1}' ".format(colName, condIt["value"])
+                sql += "and {0} like '{1}' ".format(condIt['columnName'], condIt["value"])
 
             elif condType == "contains":
-                sql += "and {0} like '%{1}%' ".format(colName, condIt["value"])
+                sql += "and {0} like '%{1}%' ".format(condIt['columnName'], condIt["value"])
 
             elif condType == "notcontains":
-                sql += "and {0} not like '%{1}%' ".format(colName, condIt["value"])
+                sql += "and {0} not like '%{1}%' ".format(condIt['columnName'], condIt["value"])
 
             elif condType == "isin":
-                sql += 'and {0} in {1} '.format(colName, condIt["value"])
+                valuestr = '(' + str(condIt["value"])[1:-1] + ')'
+                sql += 'and {0} in {1} '.format(condIt['columnName'], valuestr)
 
             elif condType == "isnotin":
-                sql += 'and {0} not in {1} '.format(colName, condIt["value"])
+                valuestr = '(' + str(condIt["value"])[1:-1] + ')'
+                sql += 'and {0} not in {1} '.format(condIt['columnName'], valuestr)
 
             elif condType == "isnull":
-                sql += 'and {0} is null '.format(colName)
+                sql += 'and {0} is null '.format(condIt['columnName'])
 
             elif condType == "isnotnull":
-                sql += 'and {0} is not null '.format(colName)
+                sql += 'and {0} is not null '.format(condIt['columnName'])
 
             elif condType == "startswith":
-                sql += "and {0} like '{1}%' ".format(colName, condIt["value"])
+                sql += "and {0} like '{1}%' ".format(condIt['columnName'], condIt["value"])
 
             elif condType == "notstartswith":
-                sql += "and {0} not like '{1}%' ".format(colName, condIt["value"])
+                sql += "and {0} not like '{1}%' ".format(condIt['columnName'], condIt["value"])
 
             elif condType == "endswith":
-                sql += "and {0} like '%{1}' ".format(colName, condIt["value"])
+                sql += "and {0} like '%{1}' ".format(condIt['columnName'], condIt["value"])
 
             elif condType == "notendswith":
-                sql += "and {0} not like '%{1}' ".format(colName, condIt["value"])
+                sql += "and {0} not like '%{1}' ".format(condIt['columnName'], condIt["value"])
 
         if self.dbPaltName == "mysql":
-            if self.con and databaseName:
-                self.con.select_db(databaseName)
+            if self.con and jsonData['database']:
+                self.con.select_db(jsonData['database'])
                 cursor = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
                 sql += mysqlstr
                 cursor.execute(sql)
@@ -265,13 +270,13 @@ class ConnectDataBase():
         elif self.dbPaltName == 'sqlserver':
             if self.con:
                 self.con = pymssql.connect(
-                    host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd, database=databaseName)
+                    host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd, database=jsonData['database'])
                 cursor = self.con.cursor()
                 sql = sql[:6] + sqlserverstr + sql[6:]
                 cursor.execute(sql)
                 dataList = cursor.fetchall()
 
-                cursor.execute('sp_columns ' + tableName)
+                cursor.execute('sp_columns ' + jsonData['tableName'])
                 colList = cursor.fetchall()
 
                 rows = []
