@@ -36,6 +36,8 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 #connectDataBaseInfo .userDiv .userName input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 309px;}
 #connectDataBaseInfo .userDiv .userPwd{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
 #connectDataBaseInfo .userDiv .userPwd input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 309px;margin-left: 12px;}
+#connectDataBaseInfo .userDiv .dbSid{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
+#connectDataBaseInfo .userDiv .dbSid input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 309px;margin-left: 21px;}
 
 #connectDataBaseInfo .otherSetting{padding-top: 20px;padding-left: 20px;padding-right: 20px;}
 #connectDataBaseInfo .otherSetting label{display: block;cursor: pointer;}
@@ -62,7 +64,7 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 /*折叠框*/
 #filter-model .ui-tabs{border:0px;border-radius: 0;background: white;padding: 0;}
 #filter-model .ui-tabs-nav{background: #F5F5F5;width: 100%;padding: 0;border: 0px;border-radius: 0;}
-#filter-model .ui-tabs-nav .ui-tabs-tab{border-radius: 0;border: 0;margin: 0;border-top: 1px solid #dedede;width: 100px;background: #f5f5f5;}
+#filter-model .ui-tabs-nav .ui-tabs-tab{border-radius: 0;border: 0;margin: 0;border-top: 1px solid #dedede;background: #f5f5f5;}
 #filter-model .ui-tabs-nav .ui-tabs-anchor{border-radius: 0;color: #808080;width: 100%;padding: 0;text-align: center;height: 30px;line-height: 30px;outline: none;cursor: pointer;}
 #filter-model .ui-tabs-nav .ui-tabs-active{background: white;border-bottom: 0px;border-top:2px solid #0d53a4;}
 #filter-model .ui-tabs .ui-tabs-panel{padding: 0;}
@@ -76,16 +78,22 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 .radio{display: inline-block;cursor: pointer;background: url(../../../static/images/contentFilter/selecte-not.png) no-repeat 0px -12px; padding-left: 12px;height: 12px;line-height: 12px;border-top: 5px solid white;border-bottom: 5px solid white;}
 .radio.active{background-position: 0 0;}
 
+#filter-model .combo-select{height: 21px;}
+#filter-model .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
 
 /*-------------------------公共部分-----------------------------*/
 
-#contentChooser{font-size: 12px;width: 400px;height:580px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;}
+#contentChooser{font-size: 12px;width: 400px;height:440px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;}
+#contentChooser .ui-tabs-nav .ui-tabs-tab{width: 200px;}
 #contentChooser #common{padding-top: 10px;font-size: 10px;}
 #contentChooser #common .commonSearchDiv{width: 360px;margin-left: 20px;}
 #contentChooser #common .commonSearchDiv .outer{border-radius: 21px;height: 21px;border: 1px solid #dedede;position: relative;}
 #contentChooser #common .commonSearchDiv .outer img{position: absolute;right: 5px;top: 5px;cursor: pointer;}
 #contentChooser #common .commonSearchDiv .outer input{height: 100%;width: 340px;margin-left: 5px;}
 #contentChooser #common .detailSearchData{width: 340px;margin-left: 30px;}
+#contentChooser #common .detailSearchData .dataList{overflow-y: auto;max-height: 150px;}
+#contentChooser #common .detailSearchData .dataList li{padding-top: 5px;}
+#contentChooser #common .detailSearchData .dataList li span{margin-left: 5px;}
 #contentChooser #common .handleBtns{padding: 10px 0px 20px 0;height: 18px;}
 #contentChooser #common .handleBtns .all{float: left;}
 #contentChooser #common .handleBtns .not{float: right;}
@@ -93,109 +101,108 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 /* 摘要*/
 #contentChooser #common .summaryPanel{width: 348px;margin-left: 20px;border: 1px solid #dedede;background: #f5f5f5;padding-left: 10px;font-size: 10px;}
 #contentChooser #common .summaryPanel  p{border-bottom: 1px solid #dedede;color: #808080;}
-#contentChooser #common .summaryPanel ul li a{color: #0d53a4;}
-
-/*通配符*/
-#contentChooser #wildcards{padding: 10px 20px 0 20px;font-size: 10px;}
-#contentChooser #wildcards .wildcardLogo{padding-bottom: 10px;}
-#contentChooser #wildcards .matchContentInput{height: 21px;border: 1px solid #dedede;}
-#contentChooser #wildcards .matchContentInput input{height: 100%;width: 100%;text-indent: 2px;}
-#contentChooser #wildcards .radioSelectBtns{padding-top: 10px;}
-#contentChooser #wildcards .handleBtns{height: 20px;padding-top: 10px;}
-#contentChooser #wildcards .handleBtns .emptyCotainAll{float: left;}
-#contentChooser #wildcards .handleBtns .delete{float: right;}
+#contentChooser #common .summaryPanel ul li a{color: #0d53a4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width: 300px;height: 100%;}
+#filter-model #contentChooser #common .summaryPanel .summary-list .filedLi span{color: #808080;}
+#filter-model #contentChooser #common .summaryPanel .summary-list .selectedContentLi span{color: #808080;}
+#filter-model #contentChooser #common .summaryPanel .summary-list .conditionLi span.flag{color: #808080;height: 100%;}
+#filter-model #contentChooser #common .summaryPanel .summary-list .conditionLi a{height: 100%;}
 
 /*条件*/
 #contentChooser #condition{padding: 10px 0px 0 20px;font-size: 10px;}
-#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box{overflow-y: auto;max-height: 240px;padding-right: 20px;}
 #contentChooser #condition .byFiledConditionSelectDiv .topTitle{padding-right: 20px;}
 #contentChooser #condition .byFiledConditionSelectDiv .topTitle .add{float: right;cursor: pointer;}
-#contentChooser #condition .byFiledConditionSelectDiv .byFiledCondition-body{padding-left: 12px;}
-#filter-model .combo-select{height: 21px;}
-#filter-model .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
-#contentChooser #condition .byFiledCondition-body .select-box .boxTwo{height: 21px;padding-top: 10px;}
-#contentChooser #condition .byFiledCondition-body .select-box .boxTwo .toRowLine{float: left;height: 100%;width: 109px;margin-left: 10px;}
-#contentChooser #condition .byFiledCondition-body .select-box .boxTwo .toRowLine:nth-of-type(1){margin-left: 0;}
-#contentChooser #condition .byFiledCondition-body .select-box .boxTwo .toRowLine:nth-of-type(3) .numberInput{border: 1px solid #dedede;width: 100%;height: 100%;border-radius: 2px;text-indent: 5px;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box{overflow-y: auto;height: 240px;padding-right: 20px;position: relative;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .mask_cover{width: 100%;height: 100%;background: white;opacity: 0.5;top: 0;left: 0;position: absolute;z-index: 20;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition{position: relative;height: 53px;margin-top: 10px;}
 
-#contentChooser #condition .byFiledCondition-body .range-box{background: #f5f5f5;border: 1px solid #dedede;margin-top: 10px;border-radius: 2px;padding-bottom: 10px;}
-#contentChooser #condition .byFiledCondition-body .range-box .range-title{border-bottom: 1px solid #dedede;text-indent: 10px;color: #808080;font-size: 10px;height: 21px;line-height: 21px;}
-#contentChooser #condition .byFiledCondition-body .range-box .range-content label{display: inline-block;height: 21px;padding: 10px 0 0 10px}
-#contentChooser #condition .byFiledCondition-body .range-box .range-content label input{height: 21px;border: 1px solid #dedede;margin-left: 10px;border-radius: 2px;width: 250px;}
-#contentChooser #condition .byFiledCondition-footer{padding-top: 10px;}
-#contentChooser #condition .byFiledCondition-footer textarea{display: block;margin-left: 12px;width: 348px;height: 100px;resize: none;border: 1px solid #dedede;border-radius: 2px;background: #F5F5F5;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .first-line-condition{margin-top: 0px;height: 23px;}
 
-/*顶部*/
-#contentChooser #headpiece{padding: 10px 0 0 20px;font-size: 12px;}
-#contentChooser #headpiece .headpiece-body .headpiece-body-filed-title{padding-right: 20px;}
-#contentChooser #headpiece .headpiece-body .headpiece-body-filed-title .add{float: right;cursor: pointer;}
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box{overflow-y: auto;max-height: 208px;}
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxOne{padding-left: 12px;height: 23px;/*padding-top: 10px;*/}
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxOne .boxOne-float{float: left;}
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxOne .needSize{width: 160px;height: 21px;}
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxOne .valueInput{border: 1px solid #dedede;border-radius: 2px;margin-left: 10px;}#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxOne .indictorText{height: 23px;line-height: 23px;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .relation_and_or_div{height: 20px;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .relation_and_or_div span{float: left;width: 20px;height: 20px;border-radius: 50%;background: #b4b4b4;color: white;text-align: center;line-height: 20px;/*cursor: pointer;*/}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .relation_and_or_div span.active{background: #0d53a4;}
+/*#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .relation_and_or_div span.or{margin-left: 10px;}*/
 
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxTwo{padding-top: 10px;height: 23px;padding-left: 12px;}
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxTwo .boxTwo-float{float: left;}
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxTwo .boxTwo-float:nth-of-type(1){width: 160px;}
-#contentChooser #headpiece .headpiece-body .headpiece-scroll-box .boxTwo .boxTwo-float:nth-of-type(2){margin-left: 10px;width: 178px;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .fieldSelctDiv{position: absolute;width: 120px;left: 0;top: 30px;height: 23px;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .first-line-condition .fieldSelctDiv{top: 0;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .conditionSelectDiv{position: absolute;width: 80px;left: 130px;top: 30px;height: 23px;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .first-line-condition .conditionSelectDiv{top: 0;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .detailConditionDiv{position: absolute;width: 120px;left: 220px;top: 30px;height: 23px;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .first-line-condition .detailConditionDiv{top: 0;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .detailConditionDiv .flagUserInputLabel{position: absolute;width: 100%;height: 100%;display: none;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .detailConditionDiv .flagUserInputLabel span{width: 28px;height: 100%;display: inline-block;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .detailConditionDiv .flagUserInputLabel input{border: 1px solid #dedede;border-radius: 2px;width:90px;height: 100%;}
 
-#contentChooser #headpiece .headpiece-footer{padding-top: 10px;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .detailConditionDiv .simpleUserInputLabel{position: absolute;width: 100%;height: 100%;border: 1px solid #dedede;border-radius: 2px;display: none;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .detailConditionDiv .simpleUserInputLabel input{width: 100%;height: 100%;}
 
-#contentChooser #headpiece .headpiece-footer .footer-select-div{padding-left: 12px;height: 23px;/*padding-top: 10px;*/}
-#contentChooser #headpiece .headpiece-footer .footer-select-div .footer-select-div-float{float: left;}
-#contentChooser #headpiece .headpiece-footer .footer-select-div .needSize{width: 160px;height: 21px;}
-#contentChooser #headpiece .headpiece-footer .footer-select-div .valueInput{border: 1px solid #dedede;border-radius: 2px;margin-left: 10px;}
-#contentChooser #headpiece .headpiece-footer .footer-select-div .indictorText{height: 23px;line-height: 23px;}
-#contentChooser #headpiece .headpiece-footer .formulasInput{display: block;margin-left: 12px;width: 348px;height: 100px;resize: none;border: 1px solid #dedede;border-radius: 2px;background: #F5F5F5;margin-top: 10px;}
-
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .close{position: absolute;width: 20px;left: 340px;top: 30px;height: 23px;line-height: 23px;text-align: right;cursor: pointer;}
+#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .first-line-condition .close{top: 0;}
 
 /*------------数值选择器-----------------*/
 #number-filter{width: 400px;height:350px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;font-size: 12px;}
-#filter-model #number-filterr .contentChooser_head{border-bottom: 1px solid #dedede}
+#filter-model #number-filter .number-filter-head{border-bottom: 1px solid #dedede}
 /*数值选择器*/
-#number-filter .number-filter-body .fixedSelect-model{height: 43px;}
-#number-filter .number-filter-body .fixedSelect-model .fixedSelect-box{padding: 10px 20px 10px 20px;}
 /* 主体部分公共部分*/
-#number-filter .fold-module  .slider-common-setting{padding: 40px 20px 0 20px;}
-#number-filter .fold-module  .slider-common-setting .value-input-box input{width: 140px;height: 21px; border:1px solid #dedede;border-radius: 2px;text-indent: 5px;}
-#number-filter .fold-module  .slider-common-setting .value-input-box .max-value-input{margin-left: 75px;}
-#number-filter .fold-module .slider-common-setting .value-slider-box{padding-top: 40px;}
-#number-filter .fold-module  .slider-common-setting .value-slider-box .range-flag{width: 100%;height: 23px;text-align: center;padding-top: 7px;}
-#number-filter .fold-module  .slider-common-setting .value-slider-box .range-flag span{width: 30px;max-width: 100px;height: 23px;background: #dedede;border-radius: 2px;text-align: center;line-height: 23px;font-size: 10px;}
-#number-filter .fold-module  .slider-common-setting .value-slider-box .range-flag .min-value-flag{float: left;}
-#number-filter .fold-module  .slider-common-setting .value-slider-box .range-flag .current-value-flag{display: inline-block;}
-#number-filter .fold-module .slider-common-setting .value-slider-box .range-flag .max-value-flag{float: right;}
 
+#number-filter .number-filter-body{margin-left: 20px;width: 360px;}
+#number-filter .number-filter-body .condition-select-box{position: relative;width: 100%;height: 54px;border-bottom: 1px solid #dedede;}
+#number-filter .number-filter-body .condition-select-box .logic_relation_select_div{position: absolute;top: 10px;height: 23px;width: 90px;}
+#number-filter .number-filter-body .condition-select-box .verticalLine{position: absolute;height: 23px;width: 1px;background: #dedede;top: 10px;left: 115px;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns{position: absolute;top: 10px;left: 130px;height: 23px;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .value-select-float{float: left;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box{width: 105px;height: 100%;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box .radio{float: left;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box input{width: 86px;float: left;border: 1px solid #dedede;border-radius: 2px;height: 21px;margin-left: 5px;text-indent: 5px;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div{margin-left: 20px;width: 105px;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .radio{float: left;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .combo-select{float: left;width: 86px;height: 21px;margin-left: 5px;}
 
-/*至多部分设置*/
-#number-filter .fold-module  #at-most-box .value-input-box .min-value-input{background: #dedede;color: #808080;}
-/*至少部分设置*/
-#number-filter .fold-module  #at-least-box .value-input-box .max-value-input{background: #dedede;color: #808080;}
-/*特殊值部分设置*/
-#number-filter .fold-module #special-value-box{padding-left: 20px;padding-top: 10px;}
+#number-filter .number-filter-body  .slider-common-setting {padding-top: 10px;border-bottom: 1px solid #dedede;padding-bottom: 20px;}
+#number-filter .number-filter-body  .slider-common-setting .value-input-box{height: 23px;}
+#number-filter .number-filter-body  .slider-common-setting .value-input-box span.flag{float: left;height: 100%;line-height: 23px;}
+#number-filter .number-filter-body  .slider-common-setting .value-input-box div.scalesInput-box{float: right;height: 100%;width: 194px;}
 
+#number-filter .number-filter-body  .slider-common-setting .value-input-box div.scalesInput-box input{height: 21px; border:1px solid #dedede;border-radius: 2px;text-indent: 5px;width: 80px;float: left;}
+#number-filter .number-filter-body  .slider-common-setting .value-input-box div.scalesInput-box span{float: left;margin-left: 5px;width: 20px;height: 100%;line-height: 23px;text-align: center;}
+#number-filter .number-filter-body  .slider-common-setting .value-input-box div.scalesInput-box .max-value-input{margin-left: 5px;}
+
+#number-filter .number-filter-body .slider-common-setting .value-slider-box{padding-top: 10px;}
+#number-filter .number-filter-body .slider-common-setting .value-slider-box .range-flag{width: 100%;height: 23px;text-align: center;padding-top: 7px;}
+#number-filter .number-filter-body  .slider-common-setting .value-slider-box .range-flag span{min-width: 30px;max-width: 100px;height: 23px;background: #dedede;border-radius: 2px;text-align: center;line-height: 23px;font-size: 10px;}
+#number-filter .number-filter-body  .slider-common-setting .value-slider-box .range-flag .min-value-flag{float: left;}
+#number-filter .number-filter-body .slider-common-setting .value-slider-box .range-flag .max-value-flag{float: right;}
+#number-filter .number-filter-body .dataLimit_box{margin-top: 10px;}
+#number-filter .number-filter-body .dataLimit_box .limit_float_div{float: left;width: 80px;height: 23px;}
+#number-filter .number-filter-body .dataLimit_box .userInput_div{margin-left: 60px;}
+#number-filter .number-filter-body .dataLimit_box .userInput_div input{text-indent: 5px;border: 1px solid #dedede;width: 78px;height: 21px;}
+#number-filter .number-filter-body .dataLimit_box .unitSelect_div{margin-left: 60px;}
 
 /* 日期选择器*/
 #date-filter{width: 400px;height:350px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;font-size: 12px;}
-#date-filter .date-filter-body #relative-date-box{padding: 30px 20px 0 20px;}
+#date-filter .ui-tabs-nav .ui-tabs-tab{width: 200px;}
+#date-filter .date-filter-body #relative-date-box{padding: 30px 20px 0 20px;position: relative;}
 #date-filter .date-filter-body #relative-date-box .date-unit-btns{height: 23px;}
 #date-filter .date-filter-body #relative-date-box .date-unit-btns a{width: 58px;height: 21px;float: left;margin-left: 15px;border-radius: 2px;border: 1px solid #dedede;text-align: center;line-height: 23px;}
 #date-filter .date-filter-body #relative-date-box .date-unit-btns .year{margin-left: 0;}
 #date-filter .date-filter-body #relative-date-box .date-unit-btns .active{background: #0d53a4;color: white}
 #date-filter .date-filter-body #relative-date-box .date-detail-range-radios{padding-top: 20px;}
-#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .radio-group{padding-bottom: 20px;}
+#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .radio-group{padding-bottom: 10px;}
 #date-filter .date-filter-body #relative-date-box .date-detail-range-radios .radio{width: 100px;}
-#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio{position: relative;}
-#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio select {float: left;margin-top: -3px;}
-#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio span{float: left;}
+#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio{position: relative;width: 150px;}
+#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio input.spinner {width: 50px;height: 18px;}
+#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio span.helpText{float: left;}
+#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio span.ui-spinner{float: left;margin-top: -5px;}
+#date-filter .date-filter-body #relative-date-box .spinnerDownIcon{background-image: url("/static/images/contentFilter/x.png"); margin-left: 2px;width: 11px; height: 11px;margin-top: -5px;}
+#date-filter .date-filter-body #relative-date-box .spinnerUpIcon{ background-image: url("/static/images/contentFilter/s.png"); margin-left: 2px; width: 11px; height: 11px;margin-top: -5px;}
+
+#date-filter .date-filter-body #relative-date-box a.ui-button-icon-only{background: #f5f5f5;}
 
 /*公共设置部分*/
-#date-filter .date-filter-body .common-date-settering {padding: 40px 20px 0 20px;}
+#date-filter .date-filter-body .common-date-settering {padding: 40px 20px 0 20px;position: relative;}
 #date-filter .date-filter-body .common-date-settering .date-input-select-box{height: 23px;}
 #date-filter .date-filter-body .common-date-settering .date-input-select-box .input-box{width: 138px;height: 21px;border: 1px solid #dedede;float: left;}
 #date-filter .date-filter-body .common-date-settering .date-input-select-box .input-box input{height: 100%;width: 120px;text-indent: 5px;}
-#date-filter .date-filter-body .common-date-settering .date-input-select-box .input-box img{float: right;margin-top: 4px;margin-right: 5px;cursor: pointer;}
+/*#date-filter .date-filter-body .common-date-settering .date-input-select-box .input-box img{float: right;margin-top: 4px;margin-right: 5px;cursor: pointer;}*/
 #date-filter .date-filter-body .common-date-settering .date-input-select-box .max-date-input-box{margin-left: 80px;}
 .ui-datepicker{font-size: 12px;}
 #date-filter  .common-date-settering .date-slider-box{padding-top: 40px;}
@@ -204,10 +211,4 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 #date-filter  .common-date-settering .date-slider-box  .range-flag .min-date-flag{float: left;}
 #date-filter  .common-date-settering .date-slider-box  .range-flag .max-date-flag{float: right;}
 
-
-/*开始部分设置*/
-#date-filter .date-filter-body #date-start-box .date-input-select-box .max-date-input-box{background: #dedede;color: #808080;}
-/*结束部分*/
-#date-filter .date-filter-body #date-finish-box .date-input-select-box .min-date-input-box{background: #dedede;color: #808080;}
-
-
+#date-filter .bottomDateIndictor{position: absolute;width: 100%;height: 22px;line-height: 22px;text-indent: 20px;text-align:left; left:0;bottom: 60px;}
