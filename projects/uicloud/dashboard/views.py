@@ -76,7 +76,7 @@ def dashboardTableAdd(request):
         if jsonData['row'] == 'row':
             countlist = DashboardFolderByUser.objects.filter(foldername=foldername)
             if len(countlist) > 0:
-                return JsonResponse({'status': 'faild'})
+                return JsonResponse({'status': 'False'})
 
         defaultfolderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['defaultparent'])
         if len(defaultfolderlist) == 0:
@@ -129,7 +129,7 @@ def dashboardFolderAdd(request):
         folderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['foldername'])
         if len(folderlist) > 0:
             context = {
-                'status': 'failed',
+                'status': 'false',
                 "reason": "the name has been used"
             }
             return JsonResponse(context)
@@ -175,6 +175,9 @@ def changeViewName(request):
     if request.method == 'POST':
         objtype = jsonData['objtype']
         if objtype == 'view':
+            countlist = DashboardViewByUser.objects.filter(viewname=jsonData['newname'])
+            if len(countlist) > 0:
+                return JsonResponse({"status": "false", "reason": "this name has been used"})
             table = DashboardViewByUser.objects.get(id=int(jsonData['oldname'][5:]))
             table.viewname = jsonData['newname']
             table.save()
