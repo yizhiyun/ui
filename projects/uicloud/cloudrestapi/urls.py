@@ -33,4 +33,9 @@ urlpatterns = [
         views.getTableViaSparkCustom,
         name='getTableViaSparkCustom'
     ),
+    url(
+        r'^cloudapi/v1/ml/basicstats$',
+        views.getBasicStats,
+        name='getBasicStats'
+    ),
 ]

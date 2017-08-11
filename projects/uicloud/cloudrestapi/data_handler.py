@@ -6,6 +6,7 @@ import textwrap
 import time
 import os
 
+from .spark_commonlib import *
 from dataCollection.gxmHandleClass.Singleton import Singleton
 
 # Get an instance of a logger
@@ -516,27 +517,12 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     userUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
         hdfsHost, port, rootFolder, userName, tableName)
 
-    sparkCode = """
-    import json
-    import decimal
-    import datetime
-
-    class SpecialDataTypesEncoder(json.JSONEncoder):
-        def default(self, obj):
-            if isinstance(obj, decimal.Decimal):
-                return float(obj)
-            elif isinstance(obj, (datetime.datetime, datetime.date)):
-                return obj.isoformat()
-            elif isinstance(obj, datetime.timedelta):
-                return (datetime.datetime.min + obj).time().isoformat()
-            else:
-                return super(SpecialDataTypesEncoder, self).default(obj)
-
+    sparkCode = specialDataTypesEncoderSparkCode() + '''
     def getTableInfo( url, mode ):
-        '''
+        """
         get the specified table schema,
         note, the table format is parquet.
-        '''
+        """
         t1 = spark.read.parquet(url)
 
         outputDict = {{}}
@@ -551,7 +537,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
 
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     print(getTableInfo("{0}", "{1}"))
-    """.format(userUrl, mode)
+    '''.format(userUrl, mode)
 
     return sparkCode
 
@@ -577,3 +563,4 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
         return False
 
     return outputList
+

@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 # from rest_framework.response import Response
 from .data_handler import *
+from .mllib_handler import *
 from django.http import JsonResponse
 
 import json
@@ -293,6 +294,43 @@ def getTableViaSparkCustom(request, tableName, modeName):
             port=jsonData['port'],
             rootFolder=jsonData['rootfolder']
         )
+
+        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        if not output:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        elif output["status"] != "ok":
+            failObj = {"status": "failed",
+                       "reason": output}
+            return JsonResponse(failObj, status=400)
+        else:
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+
+            results = json.loads(data)
+            sucessObj = {"status": "success", "results": results}
+            return JsonResponse(sucessObj)
+
+
+@api_view(['GET'])
+def getBasicStats(request):
+    '''
+    GET:
+    Get basic Statistics information.
+    '''
+
+    jsonData = request.data
+    logger.debug("request.data: {0}".format(jsonData))
+    if request.method == 'GET':
+
+        # check the request data
+        if ("sourceType" not in jsonData or "opTypes" not in jsonData):
+            failObj = {"status": "failed",
+                       "reason": "Please make sure your request data is valid."}
+            return JsonResponse(failObj, status=400)
+        # response all valid columns
+        sparkCode = getBasicStatsSparkCode(jsonData)
 
         output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
         if not output:
