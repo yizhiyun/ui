@@ -29,17 +29,17 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
         """
         opTypeList might include the following value
         "count","sum","mean","median", "min","max","std","var",
-        "skew","kurt","quarter1","quarter3"
+        "skew","kurt","quarter1","quarter3","range"
         pandasDF1 is a pandas data frame
         it will output json data.
         """
-        opTypeList= opTypeList["opTypes"]
         from pyspark.sql.types import DecimalType, FloatType, NumericType
 
         availTypeList = [
             "count", "sum", "mean", "median",
             "min", "max", "std", "var",
-            "skew", "kurt", "quarter1", "quarter3"
+            "skew", "kurt", "quarter1", "quarter3",
+            "range"
         ]
 
         columnList = []
@@ -81,13 +81,15 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
                 statsDict["quarter1"] = json.loads(pandasDF1.quantile(0.25, interpolation='midpoint').to_json())
             elif "quarter3" == typeItem:
                 statsDict["quarter3"] = json.loads(pandasDF1.quantile(0.75, interpolation='midpoint').to_json())
+            elif "range" == typeItem:
+                statsDict["range"] = json.loads(pandasDF1.apply(lambda x: x.max() - x.min()).to_json())
             else:
                 pass
 
         return statsDict
     df3 = getDataFrameFromSource({0}, '{1}')
     if df3:
-        print(json.dumps(getBasicStats({0}, df3), cls = SpecialDataTypesEncoder))
+        print(json.dumps(getBasicStats({0}["opTypes"], df3), cls = SpecialDataTypesEncoder))
     else:
         print(False)
     '''.format(jsonData, userTableUrl)

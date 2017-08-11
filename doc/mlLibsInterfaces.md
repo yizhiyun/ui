@@ -11,7 +11,7 @@ The RESTful API Details of Getting the basic statistics.
 
 {
     "sourceType": <sourceType>  # "db" or "hdfs"
-    "opTypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3"
+    "opTypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3","range"
     "source": <sourceName>,     # Optional. if sourceType is db, it's useless.
     "database": <databaseName>, # Optional. if sourceType is hdfs and hdfsUrl is provided, it's useless.
     "tableName": <tableName>,   # Optional. if sourceType is hdfs and hdfsUrl is provided, it's useless.
@@ -73,3 +73,19 @@ The RESTful API Details of Getting the basic statistics.
 Notes
 -------------
 
+Method,      Description
+"count",     Number of non-null observations
+"sum",       Sum of values
+"mean",      Mean of values
+"median",    Arithmetic median of values
+"min",       Minimum
+"max",       Maximum
+"std",       Bessel-corrected sample standard deviation
+"var",       Unbiased variance
+"skew",      Sample skewness (3rd moment)
+"kurt",      Sample kurtosis (4th moment)
+"quarter1",  Sample quantile (value at 25%)
+"quarter3",  Sample quantile (value at 75%)
+"range",     max - min
+"cov",       Unbiased covariance (binary)
+"corr",      Correlation (binary)

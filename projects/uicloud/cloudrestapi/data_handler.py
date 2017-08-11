@@ -214,7 +214,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     #         "dbserver": <dbServerName>,
     #         "dbport": <dbPort>,
     #         "user": <userName>,
-    #         "password": <password>
+    #         "password": <password>,
+    #         "sid": <sid>
     #     },
     #     ...
     # }
@@ -361,7 +362,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 colName = condIt["columnName"]
                 if condType == "limit" and type(condIt["value"]) == int:
                     inDataFrame = inDataFrame.limit(condIt["value"])
-                elif condType in [">",">=","=","<","<="]:
+                elif condType in [">",">=","=","<","<=","!="]:
                     condStr = "{{0}} {{1}} {{2}}".format(colName, condType, condIt["value"])
                     inDataFrame = inDataFrame.filter(condStr)
                 elif condType == "like":

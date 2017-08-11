@@ -31,10 +31,10 @@ The RESTful API Details of Verify those table relationships
             },
             "conditions": [
                 {
-                    # types: ">",">=","=","<","<=",'like','startswith','notstartswith',
+                    # types: ">",">=","=","<","<=","!=",'like','startswith','notstartswith',
                     # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
                     # note: if type is 'isin' or 'isnotin', the value should be a list.
-                    "type":"=",
+                    "type":<conditionTypeValue>,
                     "columnName": <columnName>,
                     "value": <value>
                 },
@@ -169,7 +169,10 @@ The RESTful API Details of Generating New Table
             },
             "conditions": [
                 {
-                    "type":"=", # type include '=','>','<','like','startswith' and 'isin'.
+                    # types: ">",">=","=","<","<=","!=",'like','startswith','notstartswith',
+                    # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
+                    # note: if type is 'isin' or 'isnotin', the value should be a list.
+                    "type":<conditionTypeValue>,
                     "columnName": <columnName>,
                     "value": <value>
                 },
