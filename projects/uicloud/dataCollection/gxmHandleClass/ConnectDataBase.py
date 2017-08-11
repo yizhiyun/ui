@@ -216,12 +216,24 @@ class ConnectDataBase():
         for condIt in jsonData['conditions']:
             condType = condIt['type']
             if condType == 'limit' and type(condIt["value"]) == int:
-                mysqlstr += 'limit {0}'.format(condIt["value"])
-                sqlserverstr += ' top {0}'.format(condIt["value"])
-                oraclestr += 'and rownum<={0} '.format(condIt["value"])
+                mysqlstr = mysqlstr + 'limit {0}'.format(condIt["value"])
+                sqlserverstr = sqlserverstr + ' top {0}'.format(condIt["value"])
+                oraclestr += oraclestr + 'and rownum<={0} '.format(condIt["value"])
 
-            elif condType in [">", ">=", "=", "<=", "<", '!=']:
-                sql += 'and {0} {1} {2} '.format(condIt['columnName'], condType, condIt["value"])
+            elif condType in [">", ">=", "=", "<=", "<", "!="]:
+                if 'datatype' in condIt.keys() and condIt['datatype'] == 'date':
+                    mysqlstr = 'and {0} {1} "{2}" '.format(condIt['columnName'], condType, condIt["value"]) + mysqlstr
+
+                    sqlserverstr = 'and {0} {1} "{2}" '.format(
+                        condIt['columnName'], condType, condIt["value"]
+                    ) + sqlserverstr
+
+                    oraclestr = "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
+                        condIt['columnName'], condType, condIt["value"]
+                    ) + oraclestr
+
+                else:
+                    sql += 'and {0} {1} "{2}" '.format(condIt['columnName'], condType, condIt["value"])
 
             elif condType == "like":
                 sql += "and {0} like '{1}' ".format(condIt['columnName'], condIt["value"])
