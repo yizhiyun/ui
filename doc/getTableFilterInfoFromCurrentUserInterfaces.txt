@@ -8,6 +8,7 @@ This document describe how to get users' tables filter information.
 3. Request Data Schema: JSON
 4. Request Data:
 {
+    "source": <sourceName or connectString>,
     "database": <databasename>,
     "tableName": <tablename>,
     "columns": {
@@ -22,10 +23,10 @@ This document describe how to get users' tables filter information.
             },
     "conditions": [
         {
-            # types: "limit",">",">=","=","<","<=",'like','startswith','notstartswith',
+            # types: "limit",">",">=","=","<","<=",'!=',like','startswith','notstartswith',
             # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
             # notice! if type is 'isin' or 'isnotin', the value should be a list.
-            "type": <type>,
+            "type": <typevalue>,
             "value": <value>,
             "columnName": <columnName>
         },
@@ -39,8 +40,9 @@ This document describe how to get users' tables filter information.
 }
 5. Request Example:
 {
-    "tableName": "table1",
+    "source": "mysqlDB1",
     "database": "db1",
+    "tableName": "table1",
     "columns": {
                 "col1": {
                     "columnType": "VARCHAR2(64)"

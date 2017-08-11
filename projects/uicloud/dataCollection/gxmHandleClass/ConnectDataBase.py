@@ -220,7 +220,7 @@ class ConnectDataBase():
                 sqlserverstr += ' top {0}'.format(condIt["value"])
                 oraclestr += 'and rownum<={0} '.format(condIt["value"])
 
-            elif condType in [">", ">=", "=", "<=", "<"]:
+            elif condType in [">", ">=", "=", "<=", "<", '!=']:
                 sql += 'and {0} {1} {2} '.format(condIt['columnName'], condType, condIt["value"])
 
             elif condType == "like":

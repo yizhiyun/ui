@@ -26,7 +26,6 @@ def ajax_list(request):
 
 def getAllDataFunction(username, datatype=None):
     context = {}
-    context['status'] = 'ok'
     folderList = DashboardFolderByUser.objects.filter(username=username, parentfoldername=None)
     if datatype is not None and datatype == 'folder':
         for folder in folderList:
