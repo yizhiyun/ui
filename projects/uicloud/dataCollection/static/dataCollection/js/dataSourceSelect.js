@@ -13,6 +13,11 @@ $(function () {
     		$("#dataList .baseDetail li").click(function(){
     			dataBaseName = $(this).html();
     			$("#dataList").hide();
+    			if(dataBaseName == "ORACLE" && !$("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").is(":visible")){
+    				$("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").show();
+    			}else{
+    				$("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").hide();
+    			}
     			$("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);
     		})
     }

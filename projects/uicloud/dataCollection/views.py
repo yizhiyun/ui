@@ -91,21 +91,36 @@ def showTableDetailDataOfFileds(req):
 
 
 @api_view(['POST'])
-def filterTable(request):
+def filterTable(request, modeName):
     jsonData = request.data
     if request.method == 'POST':
-        obj = ConnectDataBase(
-            jsonData["dbtype"],
-            jsonData["dbserver"],
-            jsonData["dbport"],
-            jsonData["user"],
-            jsonData["password"],
-            jsonData["sid"]
-        )
-        obj.connectDB()
+        modeList = ['all', 'data', 'schema']
+        if modeName not in modeList:
+            failObj = {"status": "failed",
+                       "reason": "the mode must one of {0}".format(modeList)}
+            return JsonResponse(failObj, status=400)
+
+        results = {}
+        schema = []
+        for column in jsonData['columns'].items():
+            schema.append('{0}:{1}'.format(column[0], column[1]["columnType"]))
+
+        if modeName == 'all':
+            results = {
+                "schema": schema,
+                "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].filterTableData(jsonData)
+            }
+        elif modeName == 'schema':
+            results = {
+                "schema": schema
+            }
+        elif modeName == 'data':
+            results = {
+                "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].filterTableData(jsonData)
+            }
+
         context = {
-            "status": "ok",
-            "data": obj.filterTableData(
-                jsonData["conditions"], jsonData["tableName"], jsonData["sid"])
+            "status": "success",
+            "results": results
         }
         return JsonResponse(context)

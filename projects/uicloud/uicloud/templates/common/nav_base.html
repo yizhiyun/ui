@@ -8,7 +8,6 @@
       <script src={%static "js/httpSafe.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={%static "js/jquery-ui.min.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={%static "js/jquery.combo.select.js"%} type="text/javascript" charset="utf-8"></script>
-{#    <script src={% static "js/calculateRem.js" %} type="text/javascript" charset="utf-8"></script>#}
     <script src={% static "js/nav_base.js"%} type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href={%static "css/jquery-ui.min.css" %}/>
     <link rel="stylesheet" type="text/css" href={%static "css/combo.select.css" %}/>
@@ -65,6 +64,7 @@
     				<p>输入服务器登录信息:</p>
     				<label class="userName">用户名: <input type="text" name="dbuserName" /></label>
     				<label class="userPwd">密码: <input type="password" name="dbuserPwd" /></label>
+    				<label class="dbSid">SID:<input type="text" name="dbSid" /></label>
     			</div>
     			
     			<div class="otherSetting">
@@ -76,16 +76,18 @@
     </div>
     
  <div id="filter-model">
+    	<!--筛选器选择-->
+    	{% include "common/filter/filter-select.html" %}
     	
     <!--内容选择器-->
-{#   	{% include "common/filter/filer-content-base.html" %}#}
+  	{% include "common/filter/filer-content-base.html" %}
     
     
     <!--数值筛选器--->
-{#    {% include "common/filter/filter-number-base.html" %}#}
+   {% include "common/filter/filter-number-base.html" %}
 
      <!--日期筛选器-->
-{#     {% include "common/filter/filter-date-base.html" %}#}
+ {% include "common/filter/filter-date-base.html" %}
    
    <!--筛选器模块结束-->
  </div>

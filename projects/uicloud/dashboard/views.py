@@ -24,6 +24,39 @@ def ajax_list(request):
     return JsonResponse(td.getAjaxList())
 
 
+def getAllDataFunction(username, datatype=None):
+    context = {}
+    context['status'] = 'ok'
+    folderList = DashboardFolderByUser.objects.filter(username=username, parentfoldername=None)
+    if datatype is not None and datatype == 'folder':
+        for folder in folderList:
+            context[folder.foldername] = []
+            subfolderList = DashboardFolderByUser.objects.filter(parentfoldername=folder.foldername)
+            for subfolder in subfolderList:
+                context[folder.foldername].append(subfolder.foldername)
+            return context
+    else:
+        for folder in folderList:
+            context[folder.foldername] = {}
+            subfolderList = DashboardFolderByUser.objects.filter(parentfoldername=folder.foldername)
+            for subfolder in subfolderList:
+                context[folder.foldername][subfolder.foldername] = {}
+                tablelist = subfolder.dashboardviewbyuser_set.all()
+                num = len(tablelist)
+                for i in range(num):
+                    if tablelist[i].row == 'row':
+                        continue
+                    context[folder.foldername][subfolder.foldername]['table{0}'.format(tablelist[i].id)] = {
+                        'row': tablelist[i].row,
+                        'column': tablelist[i].column,
+                        'username': tablelist[i].username,
+                        'tablename': tablelist[i].tablename,
+                        'viewtype': tablelist[i].viewtype,
+                        'viewname': tablelist[i].viewname
+                    }
+        return context
+
+
 @api_view(['POST'])
 def getAllData(request):
     '''
@@ -32,35 +65,12 @@ def getAllData(request):
     jsonData = request.data
     if request.method == 'POST':
         username = jsonData['username']
-        context = {}
-        folderList = DashboardFolderByUser.objects.filter(username=username, parentfoldername=None)
         if 'datatype' in jsonData.keys() and jsonData['datatype'] == 'folder':
-            for folder in folderList:
-                context[folder.foldername] = []
-                subfolderList = DashboardFolderByUser.objects.filter(parentfoldername=folder.foldername)
-                for subfolder in subfolderList:
-                    context[folder.foldername].append(subfolder.foldername)
-                return JsonResponse(context)
+            context = getAllDataFunction(username, jsonData['datatype'])
+            return JsonResponse(context)
 
         else:
-            for folder in folderList:
-                context[folder.foldername] = {}
-                subfolderList = DashboardFolderByUser.objects.filter(parentfoldername=folder.foldername)
-                for subfolder in subfolderList:
-                    context[folder.foldername][subfolder.foldername] = {}
-                    tablelist = subfolder.dashboardviewbyuser_set.all()
-                    num = len(tablelist)
-                    for i in range(num):
-                        if tablelist[i].row == 'row':
-                            continue
-                        context[folder.foldername][subfolder.foldername]['table{0}'.format(tablelist[i].id)] = {
-                            'row': tablelist[i].row,
-                            'column': tablelist[i].column,
-                            'username': tablelist[i].username,
-                            'tablename': tablelist[i].tablename,
-                            'viewtype': tablelist[i].viewtype,
-                            'viewname': tablelist[i].viewname
-                        }
+            context = getAllDataFunction(username)
             return JsonResponse(context)
 
 
@@ -76,7 +86,7 @@ def dashboardTableAdd(request):
         if jsonData['row'] == 'row':
             countlist = DashboardFolderByUser.objects.filter(foldername=foldername)
             if len(countlist) > 0:
-                return JsonResponse({'status': 'faild'})
+                return JsonResponse({'status': 'False'})
 
         defaultfolderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['defaultparent'])
         if len(defaultfolderlist) == 0:
@@ -107,14 +117,7 @@ def dashboardTableAdd(request):
         )
         table.save()
 
-        context = {
-            'foldername': folder.foldername,
-            'row': table.row,
-            'column': table.column,
-            'username': table.username,
-            'tablename': table.tablename,
-            'viewtype': table.viewtype
-        }
+        context = {'status': 'ok'}
         return JsonResponse(context)
 
 
@@ -129,7 +132,7 @@ def dashboardFolderAdd(request):
         folderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['foldername'])
         if len(folderlist) > 0:
             context = {
-                'status': 'failed',
+                'status': 'false',
                 "reason": "the name has been used"
             }
             return JsonResponse(context)
@@ -159,9 +162,7 @@ def RelevanceFolder(request):
         folder.parentfoldername = parentfoldername
         folder.save()
 
-        context = {
-            'status': 'ok'
-        }
+        context = getAllDataFunction(jsonData['username'])
         return JsonResponse(context)
 
 
@@ -175,6 +176,9 @@ def changeViewName(request):
     if request.method == 'POST':
         objtype = jsonData['objtype']
         if objtype == 'view':
+            countlist = DashboardViewByUser.objects.filter(viewname=jsonData['newname'])
+            if len(countlist) > 0:
+                return JsonResponse({"status": "false", "reason": "this name has been used"})
             table = DashboardViewByUser.objects.get(id=int(jsonData['oldname'][5:]))
             table.viewname = jsonData['newname']
             table.save()
@@ -226,10 +230,12 @@ def deleteFolder(request):
                     folder.save()
             parentfolder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
             parentfolder.delete()
-            return JsonResponse({'status': 'ok'})
+            context = getAllDataFunction(jsonData['username'])
+            return JsonResponse(context)
 
         elif foldertype == 'folder':
             folder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
             folder.dashboardviewbyuser_set.all().delete()
             folder.delete()
-            return JsonResponse({'status': 'ok'})
+            context = getAllDataFunction(jsonData['username'])
+            return JsonResponse(context)

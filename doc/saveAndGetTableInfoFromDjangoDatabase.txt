@@ -177,7 +177,7 @@ Save Folder From Current User
 }
 6.2 if failed, it will response as follows
 {
-    "status": "failed",
+    "status": "false",
     "reason": "the name has been used"
 }
 
@@ -218,8 +218,8 @@ update Name From Current User
 4. Request Example:
 {
     "objtype": "view/folder/parentfolder",
-    "viewid": "table1",
-    "viewname": "newviewname"
+    "oldname": "table1",
+    "newname": "newviewname"
 }
 5. Support Format: JSON
 6. Response Data:
