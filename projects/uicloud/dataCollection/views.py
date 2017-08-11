@@ -93,6 +93,7 @@ def showTableDetailDataOfFileds(req):
 @api_view(['POST'])
 def filterTable(request, modeName):
     jsonData = request.data
+    Singleton().currentDBObjIndex = jsonData['source']
     if request.method == 'POST':
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
