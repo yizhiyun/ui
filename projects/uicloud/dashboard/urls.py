@@ -5,9 +5,8 @@ app_name = 'dashboard'
 
 
 urlpatterns = [
-    # url(r"^pallasdata2$", views.HomeView.as_view()),
-    url(r"^pallasdata2$", views.hello),
-    url(r'^ajax-list$', views.ajax_list, name='ajax-list'),
+    url(r"^pallasdata2$", views.HomeView.as_view()),
+    # url(r"^pallasdata2$", views.hello),
     url(r'^getAllData$', views.getAllData, name='getAllData'),
     url(r'^dashboardTableAdd$', views.dashboardTableAdd, name='dashboardTableAdd'),
     url(r'^dashboardFolderAdd$', views.dashboardFolderAdd, name='dashboardFolderAdd'),
