@@ -8,13 +8,15 @@
 	
 {% endblock %}
 {% block js %}
-<script src={% static "dashboard/js/echarts.min.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/echarts.js"%} type="text/javascript" charset="utf-8"></script>
  <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
  <script src={% static "dashboard/js/chartsHandle/pre_dataHandle.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/switch_chart.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/chartsHandle/chartHandle.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/table.js"%} type="text/javascript" charset="utf-8"></script>
+	<script src={% static "dashboard/js/data_handle.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/show_view.js"%} type="text/javascript" charset="utf-8"></script>
+	<script src={% static "dashboard/js/radarChart.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/dashboard.js"%} type="text/javascript" charset="utf-8"></script>
 	
 	
@@ -43,8 +45,13 @@
 					<img src={% static "dashboard/img/3top-icon_05.png" %} alt="next" title="重做"/>
 				</li>
 				<!--保存-->
-				<li>
+				<li id="action_save" style="width: 36px;">
 					<img src={% static "dashboard/img/3top-icon_07.png" %} alt="save" title="保存"/>
+					<img src={% static "dashboard/img/cell_triangle.png" %} alt="cell_tra"  class="cell_tra"/>
+					<div id="action_save_view">
+						<p id="click_save_view">视图</p>
+						<p id="click_save_index">指标</p>
+					</div>
 				</li>
 				<!--持续更新-->
 				<li>
@@ -81,7 +88,7 @@
 				<!--单元格-->
 				<li style="width: 36px;" id="cell_click">
 					<img src={% static "dashboard/img/3top-icon_25.png" %} alt="cell" / title="单元格">
-					<img src={% static "dashboard/img/cell_triangle.png" %} alt="cell_tra"  id="cell_tra"/>
+					<img src={% static "dashboard/img/cell_triangle.png" %} alt="cell_tra"  class="cell_tra"/>
 					<div id="cell_wrap">
 						<div class="cell_wrap_content"><p>增高</p></div>
 						<div class="cell_wrap_content"><p>缩短</p></div>
@@ -409,5 +416,50 @@
 			</div>
 		</div>
 	</div>
+
+
+
+	<!-- 视图保存弹窗 -->
+	<div id="view_save_up" class="clear">
+		<div id="view_save_up_line"></div>
+		<div id="view_save_up_head" >
+			<span>保存至视图</span>
+			<div class="view_save_up_close">
+				<img src={% static "images/contentFilter/X_33.png" %} alt="关闭">
+			</div>
+
+			<!-- 新建报表 -->
+			<div id="view_add_state" class="clear">
+				<span>新建报表 : </span>
+				<label for="action_new_view"><input type="text"  id="action_new_view" placeholder="请输入报表名称">
+											 <img src={% static "images/right-icon_03.png" %} alt="视图确定" id="btn_save_name">
+				</label>
+			</div>
+		</div>
+		<!-- 已创建报表名称展示搜索功能 -->
+			<div id="view_save_show_search">
+				<!-- 搜索功能 -->
+				<div id="key_search" class="clear">
+					<input type="text" id="key_search_input" placeholder="请输入关键字">
+					<div id="key_search_img_wrap"><img src={% static "images/contentFilter/search.png" %} alt="关键字搜索"></div>
+				</div>
+				<div id="show_excel_name">
+					
+				</div>
+			</div>
+			<!-- 取消保存按钮 -->
+			<div id="save_view_handle" class="clear">
+				
+				<!-- 隐藏显示新建报表 -->
+				<div class="show_view_if_hide">新建报表</div>
+
+				<div id="save_handle_open">保存</div>
+
+				<div id="save_handle_close">取消</div>
+			</div>
+	</div>
+
+	<!-- body遮罩 -->
+	<div id="body_content_shadow"></div>
 
 {% endblock %}

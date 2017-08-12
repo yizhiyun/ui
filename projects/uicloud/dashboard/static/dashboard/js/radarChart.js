@@ -10,7 +10,6 @@ function serise(de_num,data_max){
 }
 
 
-
 function data_wrap(save_me_wrap,save_me_name){
         	var ceshiH = [];
         	for(var i =0 ; i< save_me_wrap.length;i++){
@@ -25,10 +24,11 @@ function drag_Chart(titleText,ledendData,de_num,data_max,save_me_wrap,save_me_na
 
 	$("#main").css("display","block");
 
-
+	
+	
 	var myChart = echarts.init($("#main").get(0));
 
-
+	
 	option = {
     title: {
         text: titleText,
@@ -57,67 +57,40 @@ function drag_Chart(titleText,ledendData,de_num,data_max,save_me_wrap,save_me_na
 
     }]
 };
-
+	//清除上一个图例
+	myChart.clear();
 
 	myChart.setOption(option)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function drag_radarChart(){
+function drag_radarChart(data_handle){
 
 	//获得处理后的数据
 	var row_if_col = _drag_message["position"],
 		//判断拖入的是维度还是度量
 	row_col_type = _drag_message["type"];
 		//拿到处理后的数据
-	var data_save_dict = data_handle();
-	//保存拖入行里维度度量的字段名和对应数据
-	 row_if_de = data_save_dict["row_de"];
-	 row_if_me = data_save_dict["row_me"];
-	 save_row_me_wrap = data_save_dict["row_me_wrap"];
-	 save_row_de_wrap = data_save_dict["row_de_wrap"];
+		//保存拖入行里维度度量的字段名和对应数据
+	var row_if_de = data_handle["row_de"],
+	 row_if_me = data_handle["row_me"],
+	 save_row_me_wrap = data_handle["row_me_wrap"],
+	 save_row_de_wrap = data_handle["row_de_wrap"],
 	 //保存拖入列里维度度量的字段名和对应数据
-     col_if_de = data_save_dict["col_de"];
-	 col_if_me = data_save_dict["col_me"];
-	 save_col_me_wrap = data_save_dict["col_me_wrap"];
-	 save_col_de_wrap = data_save_dict["col_de_wrap"];
+     col_if_de = data_handle["col_de"],
+	 col_if_me = data_handle["col_me"],
+	 save_col_me_wrap = data_handle["col_me_wrap"],
+	 save_col_de_wrap = data_handle["col_de_wrap"];
+	 drag_or_sortable = data_handle["sortable_if"];
+	 
 
-//计算数组最大值最小值
-Array.prototype.data_max = function(){
-return Math.max.apply({},this)
-}
-Array.prototype.data_min = function(){
-return Math.min.apply({},this)
-}
+	//计算数组最大值最小值
+	Array.prototype.data_max = function(){
+	return Math.max.apply({},this)
+	}
+	Array.prototype.data_min = function(){
+	return Math.min.apply({},this)
+	}
 
 
 	
@@ -141,7 +114,7 @@ return Math.min.apply({},this)
 
 
 function radar_row(){
-		
+	console.log(row_if_de)
 			if(row_if_de.length > 0){
 				//存放第一个重复维度的数组
 				var radar_content=[];
@@ -151,8 +124,8 @@ function radar_row(){
 				var radar_me_content= [];
 				//存在重复元素
 				if(row_if_de.length == 1){
-					for(var i = 0 ; i <save_row_me_wrap.length;i++){
-						var temp_row_wrap = save_row_me_wrap[i];
+					for(var i = 0 ; i <save_col_me_wrap.length;i++){
+						var temp_row_wrap = save_col_me_wrap[i];
 						radar_me_content.push(save_row_de_wrap[0].unique3(temp_row_wrap))
 					}
 
@@ -211,6 +184,7 @@ function radar_col(){
 					var all_me_data = radar_me_content.reduce(function(a,b){return a.concat(b)},[])
 					var radar_de_max =  Math.ceil((all_me_data.data_max()-all_me_data.data_min())/radar_me_content.length)*radar_me_content.length+all_me_data.data_min();
 					drag_Chart(current_cube_name,row_if_me,save_col_de_wrap[0].unique4().notempty(),radar_de_max,radar_me_content,row_if_me);
+
 				//度量的组数
 				}else{
 					//重复维度下多个维度
@@ -238,7 +212,6 @@ function radar_col(){
 
 	
 
-
 	if(row_if_col == "row"){
 
 		if(row_col_type == "measure"){
@@ -260,7 +233,20 @@ function radar_col(){
 	}
 
 
+	//排序时调用图形
+			if(drag_or_sortable == "true"){
+				if(drag_row_column_data["column"]["dimensionality"].length > 0){
+				
+					radar_col();
+				}
 
+
+				if(drag_row_column_data["row"]["dimensionality"].length > 0 ){
+			
+					radar_row();
+				}
+			
+			}
 
 
 

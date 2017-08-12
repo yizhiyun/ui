@@ -28,6 +28,7 @@ urlpatterns = [
     url(r"^dataCollection/",include("dataCollection.urls")),
     url(r"^pallasdata$",views.IndexView.as_view()),
     url(r"^dashboard/", include("dashboard.urls")),
+    url(r"^statements/", include("statements.urls")),
     url(r"^filterConditionAdd$",views.filterConditionAdd),
     url(
         r'^api-auth/',

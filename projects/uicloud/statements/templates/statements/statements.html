@@ -1,0 +1,146 @@
+{% extends "common/nav_base.html" %}
+{% load static %}
+{% block css %}
+
+	<!--<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/jqueryui/dataTables.jqueryui.css" />-->
+	<link rel="stylesheet" href={% static "statements/css/statements.css" %}>
+	
+	
+{% endblock %}
+{% block js %}
+<!-- <script src={% static "dashboard/js/echarts.js"%} type="text/javascript" charset="utf-8"></script> -->
+<script src={% static "statements/js/statements.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/switch_chart.js"%} type="text/javascript" charset="utf-8"></script>
+	
+	
+{% endblock %}
+	
+{% block content %}
+	<!--侧边栏 -->
+	<div id="statements_left_bar">
+		<!-- title -->
+		<div id="state_left_bar_title" class="clear">
+			<p>视图库</p>
+			<!--搜索 -->
+			<div id="statements_left_search">
+				<img src={% static "images/contentFilter/search.png" %} alt="搜索">
+			</div>
+
+			<!-- 下拉三角 -->
+			<div id="statements_left_tra">
+				<img src={% static "images/contentFilter/more.png" %} alt="更多">
+				<div id="statements_add_folder">
+					<div class="statements_add_folder_son" id="add_folder_btn">创建文件夹</div>
+					<div class="statements_add_folder_son" id="add_view_btn">创建视图报表</div>
+					<div class="statements_add_folder_son" id="remove_all_folder">移除全部文件夹</div>
+					<div class="statements_add_folder_son" id="show_all_hide">显示全部隐藏</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 侧边栏展示区域 -->
+		<div id="statements_left_bar_area">
+			
+		</div>
+
+		<!-- 侧边栏收起按钮 -->
+		<div id="statements_left_bar_btn_close">
+			<img src={% static "images/contentFilter/nr_47.png" %} alt="收起">
+		</div>
+	</div>
+
+
+	<!--右侧报表视图展示区域-->
+	<div id="right_folder_show_are">
+		<!-- titile文件显示 操作 -->
+		<div class="right_folder_name_show">
+			<div class="right_folder_name_show_img">
+				<img src={% static "statements/img/file_icon.png" %} alt="folder_icon">
+			</div>
+			<!-- 有没有文件夹的存在 -->
+			<div class="right_if_have_parentfolder">
+				<span>文件夹1</span>
+				<img src={% static "statements/img/theme_06.png" %} alt="right_icon">
+			</div>
+			<!-- 报表名称展示 -->
+			<div class="right_folder_view_name">
+				<select class='view_folder_select'>
+					<option value="ceshi">ceshi1</option>
+					<option value="ceshi">ceshi2</option>
+					<option value="ceshi">ceshi3</option>
+					<option value="ceshi">ceshi4</option>
+				</select>
+			</div>
+		</div>
+
+
+		<!-- 右侧发布操作部分 -->
+	<div class="click_out_handle">
+		<!-- 新增视图 -->
+		<div class="click_new_view">
+			<img src={% static "statements/img/add-view.png" %} alt="click_folder">
+			<span>新增视图</span>
+		</div>
+		<!-- 主题风格 -->
+		<div class="theme_style right_handle_ele">
+			<img src={% static "statements/img/theme.png" %} alt="theme_style">
+		</div>
+		<!-- 下载 -->
+		<div class="theme_down right_handle_ele">
+			<img src={% static "statements/img/download.png" %} alt="theme_down">
+		</div>
+		<!-- 发布 -->
+		<div class="theme_release right_handle_ele">
+			<img src={% static "statements/img/Release.png" %} alt="theme_release">
+		</div>
+
+	</div>
+	
+	<!-- 报表视图展示区域 -->
+	<div class="view_folder_show_area clear">
+		
+	</div>
+	</div>
+<!-- end -->
+	
+
+	<!-- 删除弹出框 -->
+	<div id="delete_area">
+		<!-- 关闭按钮 -->
+		<div id="delete_area_close">
+			<img src={% static "images/contentFilter/exit_33.png" %} alt="delect_close">
+		</div>
+		<!-- 展示图标 -->
+		<div class='delete_area_img'>
+			<img src={% static "images/contentFilter/delete_37.png"%} alt="delect_show">
+		</div>
+		<!-- text -->
+		<div class="delete_area_text">
+			<h4>确定删除XXX文件夹 ?</h4>
+		</div>
+		<!--check -->
+		<div class="delete_checked clear">
+			<!-- 复选框自定义样式 -->
+			<div class="delete_area_input">
+				<div class="deltete_input_wrap">
+					<input type="checkbox" id="checkboxFourinput">
+					<label for="checkboxFourinput"></label>
+				</div>
+			</div>
+			<p>同时删除文件夹和包含的所有内容</p>
+		</div>
+		<!--确定按钮 -->
+		<div class='delete_area_ok_btn'>
+			确定
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+{% endblock %}

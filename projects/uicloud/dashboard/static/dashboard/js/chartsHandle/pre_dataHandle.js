@@ -9,18 +9,19 @@ return Math.min.apply({},this)
 Array.prototype.XMsort = function(propertyNameArray){
 		
 	function createComparisonFunction(obj1,obj2){
+
 		for (var i = 0; i < propertyNameArray.length;i++) {
 			var value1 = obj1[propertyNameArray[i].split(":")[0]];
 			var value2 = obj2[propertyNameArray[i].split(":")[0]];
-			if (value1 > value2) {
-				return true;
-			}else if (value1 <  value2) {
-				return false;
+			if (value1.localeCompare(value2) == 1) {
+				return -1;
+			}else if (value1.localeCompare(value2) == -1) {
+				return 1;
 			}else{
 				continue;
 			}
-		}		
-		return true;
+		}
+		return 0;
 	}
 	this.sort(createComparisonFunction);
 }

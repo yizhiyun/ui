@@ -6,7 +6,13 @@ function one_de_one_me_handle (chart_type_need) {
 	$("#main").css({
 			"display":"block"
 	});
+
+	
+	
 	var mycharts = echarts.init($("#main").get(0));
+
+	
+
  	var need_handle_measureName = null;
 	var handle_index =drag_row_column_data["row"]["measure"].length - 1; 
 		if (handle_index < 0) {
@@ -26,8 +32,6 @@ function one_de_one_me_handle (chart_type_need) {
 		var dimensionality_need_show = [];
 		var measure_need_show = [];
 		var measure_help_show =[];
-		
-		
 		var dimensionalityArr = allKeys(needMeasureData).sort();
 		var count_help = 0;
 		for (var i = 0;i < dimensionalityArr.length;i++) {
@@ -120,7 +124,9 @@ function one_de_one_me_handle (chart_type_need) {
 	    ]
 
 		};
-		
+		//清除上一个图例
+		mycharts.clear();
+
 		mycharts.setOption(option);
 	}
 
@@ -173,10 +179,13 @@ function one_de_one_me_handle (chart_type_need) {
 
 
 		};
+		//清除上一个图例
+		mycharts.clear();
+
 		mycharts.setOption(option)
 
 	}
-//	 cake_generate_fun();
+	 cake_generate_fun();
 	
 	// 3、范围图
 	function scale_generate_fun(){
@@ -243,9 +252,12 @@ function one_de_one_me_handle (chart_type_need) {
 			]
 			
 		}
+		//清除上一个图例
+		mycharts.clear();
+
 		mycharts.setOption(option)
 	}
-//	scale_generate_fun();
+	// scale_generate_fun();
 	// 4、面积图
 	function area_generate_fun (argument) {
 		var dimensionalityArr = allKeys(needMeasureData).sort();
@@ -295,10 +307,13 @@ function one_de_one_me_handle (chart_type_need) {
 				},
 			]		
 		}
+		//清除上一个图例
+		mycharts.clear();
+
 		mycharts.setOption(option)
 	}
 	
-//	area_generate_fun();
+	// area_generate_fun();
 
 
  function gantt_generate_fun(){
@@ -348,7 +363,6 @@ function one_de_one_me_handle (chart_type_need) {
 	     	 type : 'value',
 	    },
 	    yAxis: {
-	        
 	        type : 'category',
 	        splitLine: {show:false},
 			data:dimensionality_need_show,
@@ -391,20 +405,65 @@ function one_de_one_me_handle (chart_type_need) {
 	    ]
 
 		};
- 	
- 	mycharts.setOption(option)
+ 	//清除上一个图例
+		mycharts.clear();
+
+ 		mycharts.setOption(option)
  }
- gantt_generate_fun();
+ // gantt_generate_fun();
 
 
-} 
 
+//判断传入参数不同调用不同图形
+
+switch(chart_type_need)
+{
+case "waterWall":
+	//调用瀑布图
+	waterWall_generate_fun();
+  break;
+case "cake":
+	//调用饼图
+  	cake_generate_fun();
+  break;
+  case "scale":
+  //调用范围图
+  	scale_generate_fun();
+  break;
+  case "area":
+  //调用面积图
+  	area_generate_fun();
+  break;
+  case "gantt":
+  //调用甘特图
+  	gantt_generate_fun();
+  	break;
+default:
+
+}
+
+
+
+
+
+}
+
+
+
+
+// end------------------
 // 多个维度多个度量
-function many_de_many_me_handle(){
+function many_de_many_me_handle(chart_type_need){
 	$("#main").css({
 			"display":"block",
 	});
+
+	//释放图表实例
+	
 	var mycharts = echarts.init($("#main").get(0));
+
+	
+
 	
 	var all_dimensionality = drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]);
 	var all_measure = drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]);
@@ -517,7 +576,8 @@ function many_de_many_me_handle(){
 				return dimeNames+measureNames;
 			}
 			
-			
+			//清除上一个图例
+			mycharts.clear();
 				
 			mycharts.setOption(option);	
 			
@@ -793,10 +853,13 @@ function comparisonStrip_generate_fun(){
 				data: measure_show_arr[1],
 			}],
 		};
-	mycharts.setOption(option);
+		//清除上一个图例
+		mycharts.clear();
+
+		mycharts.setOption(option);
 	}		
 }
-//comparisonStrip_generate_fun();
+// comparisonStrip_generate_fun();
 
 
 
@@ -967,12 +1030,14 @@ function comparisonStrip_generate_fun(){
 				}
 				option["series"].push(obj);
 			}
+			//清除上一个图例
 			mycharts.clear();
+		
 			mycharts.setOption(option);	
 		}
  			
  	}
-// 	stackedBar_generate_fun("percentage_bar");
+	stackedBar_generate_fun("number_bar");
 
 
 
@@ -1082,9 +1147,52 @@ function comparisonStrip_generate_fun(){
 				}
 			]	
 		}
+		mycharts.clear();
+
 		mycharts.setOption(option);
 	}
-	reliationTree_generate_fun();
+	// reliationTree_generate_fun();
+
+	//判断传入参数不同调用不同图形
+	switch(chart_type_need)
+	{
+	case "polyline":
+		//调用折线图
+		polyLine_generate_fun();
+	  break;
+	case "comparisonStrip":
+		//调用对比条形图
+	  	comparisonStrip_generate_fun();
+	  break;
+	  case "number_bar":
+	  //调用堆积柱状图
+	  	stackedBar_generate_fun("number_bar");
+	  break;
+	  case "number_liner":
+	  //调用堆积条形图
+	  	stackedBar_generate_fun("number_liner");
+	  break;
+	  case "percentage_bar":
+	  //调用百分比堆积柱状图
+	  	stackedBar_generate_fun("percentage_bar");
+	  break;
+	   case "percentage_liner":
+	  //调用百分比堆积条形图
+	  	stackedBar_generate_fun("percentage_liner");
+	  break;
+	  case "reliationTree":
+	  //调用树状图
+	 	reliationTree_generate_fun();
+	  break;
+	default:
+
+}
+
+
+
+
+
+
 }
 
 

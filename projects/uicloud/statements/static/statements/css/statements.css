@@ -1,0 +1,98 @@
+.clear:after{content:"";display: block;clear: both}
+html,body{-webkit-user-select:none;}
+
+
+/*侧边栏*/
+#statements_left_bar{width: 200px;height: 100%;background: white;position: absolute;box-shadow: 0px 0px 4px 1px #DEDEDE;float: left;}
+#statements_left_bar #state_left_bar_title{width: 100%;height: 38px;line-height: 38px;}
+#statements_left_bar #state_left_bar_title>p{font-size: 12px;color: #808080;float: left;margin-left: 10px;}
+#statements_left_bar #state_left_bar_title #statements_left_tra,#statements_left_bar #state_left_bar_title #statements_left_search{float: right;margin-right: 10px;height: 100%;}
+#statements_left_bar #state_left_bar_title #statements_left_tra{width: 8px}
+#statements_left_bar #state_left_bar_title #statements_left_tra img{width: 8px;height:4px;vertical-align: middle;cursor: pointer;padding: 5px 0px 5px 5px;}
+#statements_left_bar #state_left_bar_title #statements_left_search img{width: 12px;height: 11px;vertical-align: middle;cursor: pointer;margin-left: 5px;}
+#statements_left_bar #statements_left_bar_btn_close{width:14px;height:38px;position: absolute;right:-7px;}
+#statements_left_bar #statements_left_bar_btn_close img{width: 14px;height: 38px;cursor: pointer;}
+
+/*侧边栏内容展示*/
+.state_folder{width:180px;margin: 0 auto;margin: 0 auto;font-size: 12px;}
+.click_folder{margin:5px 5px 0px 0px;line-height: 23px;}
+.click_delete{width: 13px;height: 13px;float: right;margin-top: 5px;cursor: pointer;display: none}
+.statement_li{width:90%;font-size: 12px;margin: 0 auto 5px;position: relative;}
+.statement_li_content{height: 23px;line-height: 26px;margin-bottom: 1px}
+.click_tra{width: 9px;height:5px;margin:9.5px 8px 0px 0px ;float: left;cursor: pointer;}
+.click_more{width: 8px;height:4px;float: right;margin: 4.5px 3px 0px 0px;cursor: pointer;display: none;padding: 5px 0px 5px 5px;}
+.view_show_handle{width:91%;height: 23px;margin-left:12px;text-indent: 5px;padding-right: 5px;line-height:23px;cursor: pointer;}
+/*.view_show_handle:hover{background: #f5f5f5}*/
+.hide_or_show{width: 14px;height: 14px;float: right;cursor: pointer;margin-top: 4.5px;display: none}
+.view_show_icon{margin: 5px 5px 0px 0px;float: left;}
+.floder_view_wrap{width:180px;margin-left:17px;box-sizing: border-box;padding-right: 17px;}
+/*视图库创建文件夹*/
+#statements_add_folder{width: 100px;border-bottom: 1px solid #E1E1E1;margin-top: -5px;font-size: 12px;margin-left: -50px;position: relative;z-index: 999;display: none}
+#statements_add_folder .statements_add_folder_son{width: 100%;height: 22px;border: 1px solid #E1E1E1;line-height: 22px;text-align: center;background: white;border-bottom: none;cursor:pointer;}
+#statements_add_folder .statements_add_folder_son:hover{background:#E1E1E1;}
+.view_show_name_save{width: 120px;height: 23px;line-height: 26px;text-align: left;font-size: 12px;float: left;cursor: pointer;}
+.view_show_img_content,.hide_or_show_wrap{width:23px;height:23px;float: right;}
+.view_show_img_content img{cursor: pointer;}
+
+.small_view_text{float: left;line-height: 24px;}
+/*报表按钮点击事件*/
+#new_state_wrap{width:100px;border-bottom: 1px solid #E1E1E1;text-align: center;font-size: 12px;position: absolute;right: 0;z-index: 9999;top: 23px;background: white}
+#new_state_wrap .new_state_content{width: 100%;border:1px solid #E1E1E1;border-bottom: none;height:22px;line-height: 22px;cursor: pointer;}
+#new_state_wrap .new_state_content:hover{background: #E1E1E1;}
+
+/*新建文件夹*/
+
+.click_new_folder{width: 180px;height: 23px;line-height: 23px;margin: 0 auto 5px;position: relative;}
+.click_new_folder_input{width: 137px;height: 23px;box-sizing: border-box;float: left;border: 1px solid #E1E1E1;text-indent: 3px;font-size: 12px;}
+.click_folder{float: left;}
+.click_or{float: left;margin:5px 5px 0px 0px;line-height: 25px;}
+.folder_name_show{width: 137px;height: 23px;line-height: 26px;text-align: left;font-size: 12px;float: left;cursor: pointer;}
+.state_folder_content{height: 23px;line-height: 25px;}
+
+/*删除弹出框*/
+#delete_area{width: 350px;height: 260px;border-radius: 5px;background: white;position: absolute;top: 0;right: 0;bottom:0;left: 0;margin: auto;display: none;z-index:9999}
+#delete_area #delete_area_close{position: absolute;right: 0;top: 0;cursor: pointer;}
+#delete_area .delete_area_img{width: 67px;height: 62px;margin: 30px auto;}
+#delete_area .delete_area_text{text-align: center;font-size: 14px;font-weight: bold;}
+#delete_area .delete_checked{text-align: center;font-size:12px;margin-top:10px;margin-bottom:62px;}
+input[type=checkbox] {visibility: hidden;}
+#delete_area .delete_checked .delete_area_input{width: 12px;height:12px;position: absolute;border-radius: 2px;left:78px;}
+#delete_area .delete_checked .delete_area_input label{cursor: pointer;position: absolute;width: 10px;height: 10px;top:3px;left:0px;border:1px solid #ddd;border-radius:2px;background:#0d53a4;}
+.delete_area_input label:after{opacity:1;content:"";position: absolute;width:7px;height: 3px;background: transparent;top:2px;left:1px;border:1px solid white;border-top: none;border-right: none;transform: rotate(-45deg);}
+.delete_area_input input[type=checkbox]:checked + label{background: white !important;}
+.delete_area_input input[type=checkbox]:checked + label:after{border-color: #ddd;opacity: 0;}
+#delete_area .delete_checked p{color:#808080;position: absolute;left: 95px;}
+#delete_area .delete_area_ok_btn{width: 160px;height: 30px;background: #0d53a4;color: white;text-align: center;line-height: 30px;margin:0 auto;font-size: 12px;border-radius: 3px;cursor: pointer;}
+/*拖拉拽样式*/
+.ui-state-default_z{border:1px solid #e2efff}
+.ui-state-hover_z{background:#e2efff;}
+
+
+
+/*右侧视图展示区域*/
+#right_folder_show_are{float: left;height: 100%;box-sizing: border-box;border: 1px solid red;margin-left: 200px;}
+#right_folder_show_are .view_folder_show_area{width: 100%;}
+#right_folder_show_are .right_folder_name_show{float: left;margin:20px 0px 20px 20px;}
+#right_folder_show_are .right_folder_name_show .right_folder_name_show_img{width: 14px;height: 14px;vertical-align: middle;float: left;margin: 5px 10px 0px 0px}
+#right_folder_show_are .right_if_have_parentfolder{float: left;font-size: 16px;}
+#right_folder_show_are .right_if_have_parentfolder img{background: #DEDEDE;margin: 0px 5px;}
+.right_folder_view_name{float: left;}
+.combo-select{float: left;width: 150px;height: 22px;background: white;margin-left: 5px}
+.combo-input{text-align: left;text-indent: 5px;height: 22px;line-height: 22px;padding: 0px;}
+.combo-dropdown li{padding: 3px;font-size: 12px;}
+/*右侧发布部分*/
+.click_out_handle{float: right;margin: 20px 20px 0px 0px;}
+.click_out_handle .click_new_view{width: 100px;height:30px;line-height:30px;box-sizing:border-box;border: 1px solid #DEDEDE;background: white;float: left;cursor:pointer;}
+.click_out_handle .click_new_view img{vertical-align: middle;margin: -3px 3px 0px 12px;}
+.click_out_handle .click_new_view span{font-size: 12px;}
+.right_handle_ele{width: 30px;height: 30px;border: 1px solid #DEDEDE;box-sizing: border-box;float: left;margin-left: 10px;cursor: pointer;}
+.right_handle_ele img{margin: 6.5px 0px 0px 6px;}
+
+/*右侧视图区域视图*/
+.new_view_content{float: left;background: white;height: 400px;box-shadow:0px 1px 10px 1px #DEDEDE;margin-left: 20px;}
+.new_view_content .new_view_title{width: 100%;height: 30px;background: #f5f5f5;box-sizing: border-box;padding: 4px 9px 0px;}
+.new_view_content .new_view_title .new_view_table_name{font-size: 12px;float: left;width: 120px;height: 20px;border: 1px solid #DEDEDE;box-sizing: border-box;background: white;text-indent: 3px;}
+.new_view_content  .new_view_right_icon{float: right;}
+.new_view_content  .new_view_right_icon .add_css_img{width: 23px;height: 23px;float: left;box-sizing: border-box;}
+.new_view_content  .new_view_right_icon .add_css_img img{margin: 4.5px 0px 0px 4.5px}
+.new_view_content .new_view_main{width: 100%;height:370px;}

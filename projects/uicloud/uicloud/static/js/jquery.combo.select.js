@@ -112,6 +112,9 @@
 			/* Add event bindings */          
 
 			this._events();
+			
+			
+			
 
 
 		},
@@ -158,8 +161,7 @@
 			 */
 
 			this.$dropdown = $('<ul class="'+this.settings.comboDropDownClass+'" />').appendTo(this.$container)
-
-
+					
 			/**
 			 * Create dropdown options
 			 */
@@ -195,7 +197,7 @@
 			 * Append Input
 			 */
 
-			this.$input = $('<input type="button"' + (isMobile? 'tabindex="-1"': '') + ' placeholder="'+p+'" class="'+ this.settings.inputClass + '">').appendTo(this.$container)
+			this.$input = $('<input type="text"' + (isMobile? 'tabindex="-1"': '') + ' placeholder="'+p+'" class="'+ this.settings.inputClass + '">').appendTo(this.$container)
 
 			/* Update input text */
 
@@ -655,7 +657,17 @@
 
 				if(plugin != self && plugin.opened) plugin.$container.trigger('comboselect:close')
 			})
-
+		
+//			console.log("-----",this.$dropdown);
+//			console.log("-----",this.$dropdown.parent().offsetParent());
+		var ele = this.$dropdown.parent(".combo-select");
+	      var pos = getAbsCoordinates(ele);
+			this.$dropdown.css({
+				left:pos.left,
+				top:pos.top,
+				width:ele.outerWidth()
+			});
+			
 		},
 
 		_toggle: function(){
@@ -795,3 +807,14 @@
 	$.fn[ pluginName ].instances = [];
 
 }));
+
+window.getAbsCoordinates=function(e){
+	e = e[0];
+    var pos = {top: 0, left: 0};
+    while(e && e.tagName != "HTML"){
+        pos.left += e.offsetLeft;
+        pos.top += e.offsetTop;
+        e=e.offsetParent;
+    }
+    return pos;
+};

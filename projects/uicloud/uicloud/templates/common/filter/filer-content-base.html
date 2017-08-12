@@ -1,5 +1,5 @@
 {% load static %}
-<div id="contentChooser" style="z-index: 1000;">
+<div id="contentChooser" class="screeningWasher" style="z-index: 1000;display: none;">
 	<div class="topline"></div>
 	<div class="contentChooser_head common-head">
 		<span class="logo">筛选器</span>
@@ -15,13 +15,7 @@
 				<a href="#common">常规</a>
 			</li>
 			<li>
-				<a href="#wildcards">通配符</a>
-			</li>
-			<li>
-				<a href="#condition">条件</a>
-			</li>
-			<li>
-				<a href="#headpiece">顶部</a>
+				<a href="#condition" class="conditionBtn">条件</a>
 			</li>
 		</ul>
 		<div id="common">
@@ -36,7 +30,7 @@
 
 				</ul>
 				<div class="handleBtns">
-					<label for="selectAllInCommon" class="all"><input type="checkbox" id="selectAllInCommon"/>全选</label>
+					<label for="selectAllInCommon" class="all"><input type="checkbox" id="selectAllInCommon" checked/>全选</label>
 					<label for="cancleSelectedInCommmon" class="not"><input type="checkbox" id="cancleSelectedInCommmon"/>剔除</label>
 				</div>
 				<div class="clear"></div>
@@ -45,89 +39,60 @@
 			<!--摘要-->
 			<div class="summaryPanel">
 				<p>摘要</p>
-				<ul>
-					<li>字段:<span></span></li>
-					<li>所选内容:<span></span></li>
-					<li>通配符:
-						<a href="javascript:void(0)">全部</a>
-					</li>
-					<li>条件:
-						<a href="javascript:void(0)">全部</a>
-					</li>
-					<li>限制:
-						<a href="javascript:void(0)">全部</a>
+				<ul class="summary-list">
+					<li class="filedLi">字段:<span></span></li>
+					<li class="selectedContentLi">所选内容:<span>全部</span></li>
+					<li class="conditionLi">
+						<span class="flag">条件:</span>
+						<a href="javascript:void(0)">无</a>
 					</li>
 				</ul>
 
 			</div>
 
 		</div>
-		<div id="wildcards">
-			<p class="wildcardLogo">匹配值:</p>
-			<div class="matchContentInput"><input type="text" placeholder="请输入关键字" /></div>
-			<div class="radioSelectBtns">
-				<p class="active radio">包含</p><br/>
-				<p class="radio">开头为</p><br/>
-				<p class="radio">结尾为</p><br/>
-				<p class="radio">精确匹配</p>
-			</div>
-			<div class="handleBtns">
-				<label class="emptyCotainAll"><input type="checkbox"/>为空时包括所有值</label>
-				<label class="delete"><input type="checkbox"/>剔除</label>
-			</div>
-		</div>
 		<div id="condition">
 			<p class="radio active" belong="condition">无</p>
 			<div class="byFiledConditionSelectDiv">
 				<div class="topTitle">
 					<p class="radio" belong="condition">按字段</p>
-					<img src={%static "dataCollection/images/add.png" %} alt="" class="add" />
+					<img src={%static "dataCollection/images/add.png" %} alt="" class="add"/>
 				</div>
 				<div class="scrollBody-box">
-					{% include "common/filter/content-term-scroll.html"%}
-				</div>
-			</div>
-
-			<div class="byFiledCondition-footer">
-				<p class="radio" belong="condition">按公式</p>
-				<textarea name="" rows="" cols=""></textarea>
-			</div>
-
-		</div>
-
-		<div id="headpiece">
-			<p class="radio active" belong="headpiece">无</p>
-			<div class="headpiece-body">
-				<div class="headpiece-body-filed-title">
-					<p class="radio" belong="headpiece">按字段</p>
-					<img src={%static "dataCollection/images/add.png" %} alt="" class="add" />
-				</div>
-				<div class="headpiece-scroll-box">
-					{% include 'common/filter/content-top-scroll.html' %}
-				</div>
-			</div>
-
-			<div class="headpiece-footer">
-				<p class="radio" belong="headpiece">按公式</p>
-				<div class="footer-select-div">
-					<div class="footer-select-div-float needSize">
-						<select class="custom-select">
-							<option value="1">顶部</option>
-							<option value="2">底部</option>
-						</select>
+					<div class="mask_cover"></div>
+					<div class="line-condition first-line-condition">
+						<div class="fieldSelctDiv">
+							<select class="field-selct"></select>
+						</div>
+						<div class="conditionSelectDiv">
+							<select class="condition-selct custom-select">
+								<option value="=" data="=">等于</option>
+								<option value="!=" data="!=">不等于</option>
+								<option value="包含" data="contains">包含</option>
+								<option value="不包含" data="notcontains">不包含</option>
+								<option value="开头是" data="startswith">开头是</option>
+								<option value="开头不是" data="notstartswith">开头不是</option>
+								<option value="结尾是" data="endswith">结尾是</option>
+								<option value="结尾不是" data="notendswith">结尾不是</option>
+								<option value="为空" data="isnull">为空</option>
+								<option value="非空" data="isnotnull">非空</option>
+								<option value="前N个" data="limit">前N个</option>>
+							</select>
+						</div>
+						<div class="detailConditionDiv">
+							<select class="detail-condition  custom-select"></select>
+							<label class="flagUserInputLabel"><span>N=</span><input type="text"/></label>
+							<label class="simpleUserInputLabel"><input type="text" /></label>
+					
+						</div>
 					</div>
-					<input type="text" class="footer-select-div-float needSize valueInput" />
-					<span class="footer-select-div-float indictorText">依据</span>
 				</div>
-				<textarea class="formulasInput"></textarea>
 			</div>
-
 		</div>
 	</div>
 	<div class="common-filer-footer">
 		<a href="javascript:void(0)" class="resetBtn">重置</a>
 		<a href="javascript:void(0)" class="cancleBtn">取消</a>
 		<a href="javascript:void(0)" class="confirmBtn">确定</a>
-
 	</div>
 </div>

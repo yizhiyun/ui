@@ -1708,9 +1708,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var existInstance = echarts.getInstanceByDom(dom);
 	        if (existInstance) {
-	            if (true) {
-	                console.warn('There is a chart instance already initialized on the dom.');
-	            }
 	            return existInstance;
 	        }
 
