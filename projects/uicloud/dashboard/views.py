@@ -198,12 +198,13 @@ def changeViewName(request):
 @api_view(['POST'])
 def deleteFolder(request):
     '''
+    删除文件夹，子文件夹或者视图
     '''
     jsonData = request.data
 
     if request.method == 'POST':
-        foldertype = jsonData['foldertype']
-        if foldertype == 'parentfolder':
+        datatype = jsonData['datatype']
+        if datatype == 'parentfolder':
             isDeleteAll = jsonData['isdeleteall']
             if isDeleteAll == 'yes':
                 folderList = DashboardFolderByUser.objects.filter(parentfoldername=jsonData['foldername'])
@@ -220,10 +221,16 @@ def deleteFolder(request):
             context = getAllDataFunction(jsonData['username'])
             return JsonResponse(context)
 
-        elif foldertype == 'folder':
+        elif datatype == 'folder':
             folder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
             folder.dashboardviewbyuser_set.all().delete()
             folder.delete()
+            context = getAllDataFunction(jsonData['username'])
+            return JsonResponse(context)
+
+        elif datatype == 'view':
+            table = DashboardViewByUser.objects.get(id=int(jsonData['tableid']))
+            table.delete()
             context = getAllDataFunction(jsonData['username'])
             return JsonResponse(context)
 
@@ -231,6 +238,7 @@ def deleteFolder(request):
 @api_view(['POST'])
 def addNote(request):
     '''
+    给视图保存备注
     '''
     jsonData = request.data
 

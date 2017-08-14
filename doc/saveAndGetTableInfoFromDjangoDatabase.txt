@@ -311,33 +311,45 @@ Delete Folder From Current User
 1. URI: /dashboard/deleteFolder
 2. Request Method: POST
 3. Request Data Schema:
-3.1 if foldertype is parentfolder
+3.1 if datatype is parentfolder:
 {
-    "foldertype": <foldertype>,
+    "datatype": <foldertype>,
     "isdeleteall": <yes/no>,
     "foldername": <foldername>,
     "defaultparent": <defaultparentfoldername>,
     "username": <username>
 }
-3.2 if viewtype is folder
+3.2 if datatype is folder:
 {
-    "foldertype": <foldertype>,
+    "datatype": <foldertype>,
     "foldername": <foldername>,
     "username": <username>
 }
-4. Request Example:
-4.1 if viewtype is parentfolder
+3.3 if datatype is view:
 {
-    "foldertype": "parentfolder",
+    "datatype": "view",
+    "tableid": "tableid",
+    "username": "username"
+}
+4. Request Example:
+4.1 if datatype is parentfolder
+{
+    "datatype": "parentfolder",
     "isdeleteall": "yes",
     "foldername": "testfolder",
     "defaultparent": "nmnf",
     "username": "yzy"
 }
-4.2 if viewtype is folder
+4.2 if datatype is folder
 {
-    "foldertype": "folder",
+    "datatype": "folder",
     "foldername": "testfolder",
+    "username": "yzy"
+}
+4.3 if datatype is view:
+{
+    "datatype": "view",
+    "tableid": 333,
     "username": "yzy"
 }
 5. Support Format: JSON
