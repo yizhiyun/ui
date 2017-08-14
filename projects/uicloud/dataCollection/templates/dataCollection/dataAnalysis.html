@@ -5,11 +5,15 @@
 	<link rel="stylesheet" type="text/css" href={%static "dataCollection/css/tableDrag.css" %}/>
 {% endblock %}
 {% block js %}
+	<script src={% static "js/dataWork.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={% static "dataCollection/js/dataAnalysis.js"%} type="text/javascript" charset="utf-8"></script>
         <script src={% static "dataCollection/js/jquery.jsPlumb-1.4.0-all.js"%} type="text/javascript" charset="utf-8"></script>
          <script src={% static "dataCollection/js/dragUI.js"%} type="text/javascript" charset="utf-8"></script>
        <script src={% static "dataCollection/js/tableDrag.js"%} type="text/javascript" charset="utf-8"></script>
         <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
+        <script src={% static "js/filter-common-hanlde.js"%} type="text/javascript" charset="utf-8"></script>
+		<script src={% static "js/jQRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
+		<script src={% static "js/jQDateRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
 {% endblock %}
 {% block content %}
 <div id="analysisContainer">
@@ -204,7 +208,7 @@
 			<div>
 				<img src={%static "dataCollection/images/tableDataDetail/Split.png" %} alt="" />
 			</div>
-			<div>
+			<div id="screeningWasher">
 				<img src={%static "dataCollection/images/tableDataDetail/filter.png" %} alt="" />
 			</div>
 			<div id="showHiddenEles">
@@ -260,6 +264,65 @@
  		</div>	
  		<div class="build-footer">
  			<a href="javascript:void(0)" class="moreSetting">更多设置</a><a href="javascript:void(0)" class="cancleBtn">取消</a><a href="javascript:void(0)" class="confirmBtn">确定</a>
+ 		</div>
+ 	</div>
+ 	<!-- 构建数据加载进度条 -->
+ 	<div id="build_upload" style="display: none">
+  		<!-- 关闭按钮 -->
+  		<div id="loding_close"></div>
+ 		<!-- 构建数据成功失败提示 -->
+ 		<div id="prompt_message" class="clear">
+ 			<span class="data_success_img" id="data_success_content"></span>
+ 			<span class="prompt_message_text">构建数据中</span>
+ 			<!--加载动态效果 -->
+ 			<div class="prompt_message_upload">
+ 				<span></span>
+ 				<span></span>
+ 				<span></span>
+ 			</div>
+ 		</div>
+
+ 		<!--加载进度条-->
+ 		<div id="loading_progress_bar">
+ 			<!--show -->
+ 			<div id="loading_progress_bar_active">
+ 				<!-- 进度 -->
+ 			<div id="loading_percentage" class="loading_percentage_ac"><span>0</span>%</div>
+ 			<!-- circle -->
+ 			<div id="loading_circle"></div>
+ 			</div>
+
+ 		</div>
+
+ 		<!-- 构建失败显示点击按钮 -->
+ 		<div id="build_false_btn" class="confirmBtn" style="display: none">
+ 			重新构建
+ 		</div>
+ 	</div>
+
+
+
+ 	<!--跳转到仪表盘或者分析 -->
+ 	<div id="choose_menu">
+ 		<!-- title -->
+ 		<div id="choose_menu_title">选择进入模块</div>
+
+ 		<!--模块点击展示-->
+ 		<div id="choose_menu_content">
+ 			<ul>
+ 				<li>
+ 					<a href="../dashboard/pallasdata2"><img src={%static "dataCollection/images/dashboard.png" %} alt="dashboard" id="choose_dashboard"></a>
+ 					<p>仪表板</p>
+ 				</li>
+ 				<li>
+ 					<a href="javascript:void(0)"><img src={%static "dataCollection/images/analysis.png" %} alt="analysis" id="choose_analysis"></a>
+ 					<p>统计分析</p>
+ 				</li>
+ 				<li>
+ 					<a href="javascript:void(0)"><img src={%static "dataCollection/images/Data-integration.png" %} alt="Data-integration" id="choose_integration"></a>
+ 					<p>数据集成</p>
+ 				</li>
+ 			</ul>
  		</div>
  	</div>
  {% endblock %}

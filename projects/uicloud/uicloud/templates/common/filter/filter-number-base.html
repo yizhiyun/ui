@@ -1,5 +1,5 @@
 {% load static %}
-<div id="number-filter" style="z-index: 1000;">
+<div id="number-filter" class="screeningWasher" style="z-index: 1000;display: none;" >
 	<div class="topline"></div>
 	<div class="number-filter-head common-head">
 		<span class="logo">筛选器</span>
@@ -10,67 +10,78 @@
 	</div>
 
 	<div class="number-filter-body">
-		<div class="fixedSelect-model">
-			<div class="fixedSelect-box">
+		
+		<div class="condition-select-box">
+			<div class="logic_relation_select_div">
 				<select class="custom-select">
-					<option value="1">总值</option>
-					<option value="2">平均值</option>
+					<option value="=">=</option>
+					<option value=">">&gt</option>
+					<option value="<">&lt</option>
+					<option value="<=">&lt=</option>
+					<option value="<=">&gt=</option>
+					<option value="!=">!=</option>
+				</select>
+			</div>
+			<div class="verticalLine"></div>
+			<div class="radiosBtns">
+				<div class="userInput_box value-select-float">
+					<p class="radio active" belong="number-filter"></p>
+					<input type="text" placeholder="输入值" class="relationvalue"/>
+				</div>
+				<div class="userSelect_div value-select-float">
+					<p class="radio" belong="number-filter"></p>
+					<select class="custom-select relationvalue">
+						<option value="averge">平均值</option>
+						<option value="max">最大值</option>
+						<option value="min">最小值</option>
+						<option value="modeArr" id="modeOption">众数</option>
+						<option value="median">中位数</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	
+	
+		<div id="value-range-box" class="slider-common-setting">
+				<div class="value-input-box">
+					<span class="flag">值范围</span>
+					<div class="scalesInput-box">
+						<input type="text" class="min-value-input"/>
+						<span>至</span>
+						<input type="text" class="max-value-input"/>
+					</div>
+					
+					
+				</div>
+				<div class="value-slider-box">
+					<div class="slider-ranage"></div>
+					<div class="range-flag">
+						<span class="min-value-flag">0</span>
+						<span class="max-value-flag">500</span>
+					</div>
+				</div>
+		</div>
+		
+		
+		<div class="dataLimit_box">
+			<div class="sortSelect_div limit_float_div">
+				<select class="custom-select">
+					<option value="最大">最大</option>
+					<option value="最小">最小</option>
+				</select>
+			</div>
+			<div class="userInput_div limit_float_div">
+				<input type="text" placeholder="输入值"/>
+			</div>
+			<div class="unitSelect_div limit_float_div">
+				<select class="custom-select">
+					<option value="项">项</option>
+					<option value="百分比">百分比</option>
 				</select>
 			</div>
 		</div>
 		
-		<div class="fold-module common-fold-module">
-			<ul class="fold-select-btns">
-				<li><a href="#value-range-box">值范围</a></li>
-				<li><a href="#at-most-box">至多</a></li>
-				<li><a href="#at-least-box">至少</a></li>
-				<li><a href="#special-value-box">特殊值</a></li>
-			</ul>
-			<div id="value-range-box" class="slider-common-setting">
-				<div class="value-input-box">
-					<input type="text" class="min-value-input"/><input type="text" class="max-value-input"/>
-				</div>
-				<div class="value-slider-box">
-					<div class="slider-ranage"></div>
-					<div class="range-flag">
-						<span class="min-value-flag">0</span>
-						<span class="current-value-flag">250</span>
-						<span class="max-value-flag">500</span>
-					</div>
-				</div>
-			</div>
-			<div id="at-most-box" class="slider-common-setting">
-				<div class="value-input-box">
-					<input type="text" class="min-value-input" value="0" disabled/><input type="text" class="max-value-input" value="0"/>
-				</div>
-				<div class="value-slider-box">
-					<div class="slider-ranage"></div>
-					<div class="range-flag">
-						<span class="min-value-flag">0</span>
-						<span class="current-value-flag">250</span>
-						<span class="max-value-flag">500</span>
-					</div>
-				</div>
-			</div>
-			<div id="at-least-box" class="slider-common-setting">
-				<div class="value-input-box">
-					<input type="text" class="min-value-input" value="0" /><input type="text" class="max-value-input" value="0" disabled/>
-				</div>
-				<div class="value-slider-box">
-					<div class="slider-ranage"></div>
-					<div class="range-flag">
-						<span class="min-value-flag">0</span>
-						<span class="current-value-flag">250</span>
-						<span class="max-value-flag">500</span>
-					</div>
-				</div>
-			</div>
-			<div id="special-value-box">
-				<p class="radio active" belong="filter-number-special">所有值</p><br/>
-				<p class="radio" belong="filter-number-special">Null值</p><br/>
-				<p class="radio" belong="filter-number-special">非Null值</p>
-			</div>
-		</div>	
+	
 	</div>
 	<div class="common-filer-footer number-filter-footer">
 		<a href="javascript:void(0)" class="resetBtn">重置</a>

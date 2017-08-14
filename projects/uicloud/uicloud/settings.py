@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "dataCollection",
-    "dashboard"
+    "dashboard",
+    "statements",
 ]
 
 MIDDLEWARE = [
@@ -92,22 +93,22 @@ WSGI_APPLICATION = 'uicloud.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'sqlite3': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'djangodb',
-        'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST': 'mysql1',
-        'PORT': '3306'
-    },
-    # 'default': {
+    # 'sqlite3': {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'djangodb',
+    #     'USER': 'root',
+    #     'PASSWORD': 'password',
+    #     'HOST': 'mysql1',
+    #     'PORT': '3306'
+    # },
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
 }
 #    'postgresql': {
 #        'ENGINE': 'django.db.backends.postgresql',

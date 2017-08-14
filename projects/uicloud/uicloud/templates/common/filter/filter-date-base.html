@@ -1,5 +1,5 @@
 {% load static %}
-<div id="date-filter" style="z-index: 1000;">
+<div id="date-filter" class="screeningWasher" style="z-index: 1000;display: none;">
 	<div class="topline"></div>
 	<div class="date-filter-head common-head">
 		<span class="logo">筛选器</span>
@@ -11,10 +11,8 @@
 	
 	<div class="date-filter-body common-fold-module">
 		<ul class="fold-select-btns">
-				<li><a href="#relative-date-box">相对日期</a></li>
-				<li><a href="#range-date-box">日期范围</a></li>
-				<li><a href="#date-start-box">开始</a></li>
-				<li><a href="#date-finish-box">结束</a></li>
+				<li><a href="#relative-date-box" data="releative">相对日期</a></li>
+				<li><a href="#range-date-box" data="range">日期范围</a></li>
 		</ul>
 		<div id="relative-date-box">
 			<div class="date-unit-btns">
@@ -26,94 +24,49 @@
 			</div>
 			<div class="date-detail-range-radios">
 				<div class="radio-group">
-					<p class="radio active" belong="filter-date-relative">本年</p>
-					<p class="radio" belong="filter-date-relative">本年至今</p>
+					<p class="radio active" belong="filter-date-relative" data="full">本<span class="unit">年</span></p>
+					<p class="radio flexibleOp" belong="filter-date-relative" data="now">本<span class="unit">年</span>至今</p>
 				</div>
 				<div class="radio-group">
-					<p class="radio" belong="filter-date-relative">前一年</p>
-					<p class="radio number-select-radio" belong="filter-date-relative">
-						<span>前</span>
-						<select name="">
-						<option value="">3</option>
-					</select><span>年</span></p>
+					<p class="radio" belong="filter-date-relative" data="preOne">前一<span class="unit">年</span></p>
+					<p class="radio number-select-radio" belong="filter-date-relative" data="preSome">
+					<span class="helpText">前</span>
+					<input type="text" class="spinner" value="1"/>
+					<span class="unit helpText">年</span></p>
 				</div>
 				<div class="radio-group">
-					<p class="radio" belong="filter-date-relative">后一年</p>
-					<p class="radio" belong="filter-date-relative">
-						<span>后</span>
-					<select name="">
-						<option value="">3</option>
-					</select>
-					<span>年</span>
+					<p class="radio" belong="filter-date-relative" data="nextOne">后一<span class="unit">年</span></p>
+					<p class="radio number-select-radio" belong="filter-date-relative" data="nextSome">
+					<span class="helpText">后</span>
+					<input type="text" class="spinner" value="1"/>
+					<span class="unit helpText">年</span>
 					</p>
 				</div>
-				
-			</div>
-			
+			</div>			
 		</div>
 		<div id="range-date-box" class="common-date-settering">
 			<div class="date-input-select-box">
 				<div class="min-date-input-box input-box">
-					<input type="text" />
-					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
+					<input type="text" class="minDate"/>
 				</div>
 				<div class="max-date-input-box input-box">
-					<input type="text" />
-					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
+					<input type="text" class="maxDate" />
 				</div>
 			</div>		
 			<div class="date-slider-box">
 				<div class="slider-ranage"></div>
 				<div class="range-flag">
-					<span class="min-date-flag">2017/1/2</span>
-					<span class="max-date-flag">2017/11/3</span>
+					<span class="min-date-flag"></span>
+					<span class="max-date-flag"></span>
 				</div>
 			</div>
-		</div>
-		<div id="date-start-box" class="common-date-settering">
-			<div class="date-input-select-box">
-				<div class="min-date-input-box input-box">
-					<input type="text" />
-					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
-				</div>
-				<div class="max-date-input-box input-box" >
-					<input type="text" disabled/>
-					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
-				</div>
-			</div>		
-			<div class="date-slider-box">
-				<div class="slider-ranage"></div>
-				<div class="range-flag">
-					<span class="min-date-flag">2017/1/2</span>
-					<span class="max-date-flag">2017/11/3</span>
-				</div>
-			</div>
-		</div>
-		<div id="date-finish-box" class="common-date-settering">
-			<div class="date-input-select-box">
-				<div class="min-date-input-box input-box">
-					<input type="text" disabled/>
-					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
-				</div>
-				<div class="max-date-input-box input-box" >
-					<input type="text" />
-					<img src={% static "images/contentFilter/calendar.png" %} alt="" />
-				</div>
-			</div>		
-			<div class="date-slider-box">
-				<div class="slider-ranage"></div>
-				<div class="range-flag">
-					<span class="min-date-flag">2017/1/2</span>
-					<span class="max-date-flag">2017/11/3</span>
-				</div>
-			</div>
-			
 		</div>
 	</div>
+	<p class="bottomDateIndictor releative"></p>
+	<p class="bottomDateIndictor range" style="display:none;"></p>
 	
 	<div class="common-filer-footer date-filter-footer">
 		<a href="javascript:void(0)" class="resetBtn">重置</a>
-		<a href="javascript:void(0)" class="cancleBtn">取消</a>
 		<a href="javascript:void(0)" class="confirmBtn">确定</a>
 	</div>
 </div>

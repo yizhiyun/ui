@@ -1,40 +1,35 @@
-<div class="byFiledCondition-body">
-	<div class="select-box">
-		<div class="filedSelect-container">
-			<select class="filedSelect custom-select">
-				<option value="1">测试</option>
-				<option value="2">门诊</option>
-				<option value="3">安全</option>
-				<option value="4">科室</option>
-			</select>
-		</div>
-
-		<div class="boxTwo">
-			<div class="calcuteFieldSelect-box toRowLine">
-				<select class="calcuteFieldSelect custom-select">
-					<option value="4">品均值</option>
-				</select>
-			</div>
-			<div class="fieldperator-box toRowLine">
-				<select class="fieldperator custom-select">
-					<option value="=">=</option>
-					<option value=">">&gt</option>
-					<option value="<">&lt</option>
-					<option value="<=">&lt=</option>
-					<option value="<=">&gt=</option>
-				</select>
-			</div>
-			<div class="numberInput-box toRowLine">
-				<input type="text" placeholder="请输入数值" class="numberInput" />
-			</div>
-		</div>
-
+{% load static %}
+<div class="line-condition">
+	<div class="relation_and_or_div">
+		<span class="and active">且</span>
+		<!--<span class="or">或</span>-->
 	</div>
-	<div class="range-box">
-		<p class="range-title">值范围</p>
-		<div class="range-content">
-			<label>最大值<input type="text" /></label>
-			<label>最小值<input type="text" /></label>
-		</div>
+	<div class="fieldSelctDiv">
+		<select class="field-selct"></select>
+	</div>
+	<div class="conditionSelectDiv">
+		<select class="condition-selct custom-select">
+			<option value="=" data="=">等于</option>
+			<option value="!=" data="!=">不等于</option>
+			<option value="包含" data="include">包含</option>
+			<option value="不包含" data="ninclude">不包含</option>
+			<option value="开头是" data="startwith">开头是</option>
+			<option value="开头不是" data="startwith">开头不是</option>
+			<option value="结尾是" data="endwith">结尾是</option>
+			<option value="结尾不是" data="endwith">结尾不是</option>
+			<option value="为空" data="isnull">为空</option>
+			<option value="非空" data="isnotnull">非空</option>
+			<option value="前N个" data="limit">前N个</option>
+		<!--	<option value="后N个">后N个</option>-->
+		</select>
+	</div>
+	<div class="detailConditionDiv">
+		<select class="detail-condition custom-select"></select>
+		<label class="flagUserInputLabel"><span>N=</span><input type="text" value ="10" /></label>
+		<label class="simpleUserInputLabel"><input type="text" value="0" /></label>
+		
+	</div>
+	<div class="close">
+		<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
 	</div>
 </div>
