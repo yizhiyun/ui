@@ -359,7 +359,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             # add the specified conditions in the DataFrame
             for condIt in tableDict["conditions"]:
                 condType = condIt["type"]
-                colName = condIt["columnName"]
+                colName = condIt["columnName"] if "columnName" in condIt.keys() else ""
                 if condType == "limit" and type(condIt["value"]) == int:
                     inDataFrame = inDataFrame.limit(condIt["value"])
                 elif condType in [">",">=","=","<","<=","!="]:
