@@ -223,16 +223,34 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     if not dbSourceDict:
         return False
     jsonData["dbsources"] = dbSourceDict
+    jsonStr = json.dumps(jsonData, ensure_ascii=True)
+    logger.debug("jsonStr:{0}".format(jsonStr))
 
     return """
     import sys
     import logging
     import traceback
-    # Get an instance of a logger
-    logger = logging.getLogger("sparkCodeExecutedBylivy")
-    def writeDataFrame( jsonData, savedPathUrl, mode='overwrite', partitionBy=None ):
+    import json
+    # set up logging to spark_excutedby_livy.log
+    def setup_logging():
+
+        logpath = '/opt/spark/logs/spark_excutedby_livy.log'
+        logger = logging.getLogger("sparkCodeExecutedBylivy")
+        # Set level of logger source.  Use debug for development time options, then bump it up
+        # to logging.INFO after your script is working well to avoid excessive logging.
+        logger.setLevel(logging.INFO)
+        logfile = logging.FileHandler(logpath)
+        logfile.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(module)s %(message)s'))
+        logger.addHandler(logfile)
+        return logger
+
+    logger = setup_logging()
+
+    def writeDataFrame( jsonStr, savedPathUrl, mode='overwrite', partitionBy=None ):
         '''
         '''
+        jsonData = json.loads(jsonStr, encoding='utf-8')
+        logger.debug(jsonData)
         newDF = generateNewDataFrame(jsonData);
         if not newDF:
             return False;
@@ -280,6 +298,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             # get data from those db sources
             for seq in range(0, tableNum):
                 # get the table connection information
+
                 dbSourceDict = jsonData["dbsources"][tables[seq]["source"]]
                 dbType = dbSourceDict["dbtype"]
                 dbServer = dbSourceDict["dbserver"]
@@ -310,6 +329,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 elif dbType == "sqlserver":
                     connUrl = "jdbc:{{0}}://{{1}}:{{2}};databaseName={{3}}".format(dbType, dbServer, dbPort, dbName)
                     connDbTable = tableName
+                logger.debug("connUrl:{{0}},connDbTable:{{1}}".format(connUrl, connDbTable))
 
                 try:
                     dfDict[dbTable] = spark.read \
@@ -318,8 +338,11 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                         .option("dbtable", connDbTable) \
                         .option("user", user) \
                         .option("password", password) \
+                        .option("useUnicode", True) \
+                        .option("characterEncoding","utf8") \
                         .load().select(columnList)
                     dfDict[dbTable] = filterDF(dfDict[dbTable], tables[seq])
+                    logger.debug("dfDict[dbTable]:{{0}},dbTable:{{1}}".format(dfDict[dbTable],dbTable))
                 except Exception:
                     traceback.print_exc()
                     print(sys.exc_info())
@@ -506,8 +529,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
         return outputDf
 
-    print(writeDataFrame({0}, '{1}', mode='{2}', partitionBy={3}))
-    """.format(jsonData, savedPathUrl, mode, partitionBy)
+    print(writeDataFrame(u'{0}', '{1}', mode='{2}', partitionBy={3}))
+    """.format(jsonStr, savedPathUrl, mode, partitionBy)
 
 
 def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-master0", port="9000", rootFolder="users"):
