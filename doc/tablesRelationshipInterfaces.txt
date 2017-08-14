@@ -196,6 +196,7 @@ The RESTful API Details of Generating New Table
         {
             "fromTable": "<databaseName>.<tableName>",
             "toTable": "<databaseName>.<tableName>",
+            # joinTypes: inner, cross, full, left and right.
             "joinType": <connectionType>,
             "columnMap": [
                 {
