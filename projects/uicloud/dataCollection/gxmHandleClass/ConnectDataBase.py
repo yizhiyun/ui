@@ -107,7 +107,7 @@ class ConnectDataBase():
                 for obj in rs:
                     tables.append(obj[0])
                 self.tablesOfDataBase[self.dbSid] = tables
-                return self.tablesOfDataBase[dataBaseName]
+                return self.tablesOfDataBase[self.dbSid]
 
         elif self.dbPaltName == 'sqlserver':
             if self.con:
