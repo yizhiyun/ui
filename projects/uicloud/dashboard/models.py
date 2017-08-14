@@ -17,3 +17,4 @@ class DashboardViewByUser(models.Model):
     viewtype = models.CharField(max_length=255)
     viewname = models.CharField(max_length=32, null=True)
     folder = models.ForeignKey(DashboardFolderByUser, null=True)
+    note = models.CharField(max_length=255, null=True)
