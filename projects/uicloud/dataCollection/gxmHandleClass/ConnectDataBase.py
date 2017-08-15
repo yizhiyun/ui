@@ -221,13 +221,7 @@ class ConnectDataBase():
                 oraclestr += oraclestr + 'and rownum<={0} '.format(condIt["value"])
 
             elif condType in [">", ">=", "=", "<=", "<", "!="]:
-                if 'datatype' in condIt.keys() and condIt['datatype'] == 'date':
-                    mysqlstr = 'and {0} {1} "{2}" '.format(condIt['columnName'], condType, condIt["value"]) + mysqlstr
-
-                    sqlserverstr = 'and {0} {1} "{2}" '.format(
-                        condIt['columnName'], condType, condIt["value"]
-                    ) + sqlserverstr
-
+                if 'datatype' in condIt.keys() and condIt['datatype'] == 'date' and self.dbPaltName == 'oracle':
                     oraclestr = "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
                         condIt['columnName'], condType, condIt["value"]
                     ) + oraclestr
