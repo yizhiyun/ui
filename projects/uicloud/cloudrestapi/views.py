@@ -217,8 +217,7 @@ def getTableViaSpark(request, tableName, modeName):
     '''
 
     jsonData = request.data
-    logger.info("request.data: {0}, tableName: {1}".format(
-        jsonData, tableName))
+    logger.info("request.data: {0}, tableName: {1}".format(jsonData, tableName))
     if request.method == 'GET':
 
         modeList = ['all', 'data', 'schema']
@@ -229,7 +228,7 @@ def getTableViaSpark(request, tableName, modeName):
         # response all valid columns
         curUserName = "myfolder"
         sparkCode = getTableInfoSparkCode(
-            curUserName, tableName, mode=modeName)
+            curUserName, tableName, mode=modeName, filterJson=jsonData)
 
         output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
         if not output:

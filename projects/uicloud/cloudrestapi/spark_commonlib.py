@@ -3,6 +3,31 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.cloudrestapi.spark_commonlib")
 
+
+def setupLoggingSparkCode():
+    """
+    return the spark code which provide the logger to be used.
+    """
+
+    return '''
+    # set up logging to spark-excutedby-livy.log
+    def setupLogging():
+        import logging
+
+        logpath = '/opt/spark/logs/spark-excutedby-livy.log'
+        logger = logging.getLogger("sparkExecutedBylivy")
+        # Set level of logger source.  Use debug for development time options, then bump it up
+        # to logging.INFO after your script is working well to avoid excessive logging.
+        logger.setLevel(logging.INFO)
+        logfile = logging.FileHandler(logpath)
+        logfile.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(module)s %(message)s'))
+        logger.addHandler(logfile)
+        return logger
+
+    logger = setupLogging()
+    '''
+
+
 def specialDataTypesEncoderSparkCode():
     """
     return the spark code which provide the specialDataTypesEncoder class to be used.
@@ -49,7 +74,7 @@ def getDataFrameFromSourceSparkCode():
             try:
                 df1 = spark.read.parquet(url).select(columnList)
             except Exception:
-                print("url:{{}}".format(url))
+                logger.debug("url:{{}}".format(url))
                 traceback.print_exc()
                 return False
 
@@ -90,4 +115,65 @@ def getDataFrameFromSourceSparkCode():
                 print(sys.exc_info())
                 return False
         return df1
+    '''
+
+
+def filterDataFrameSparkCode():
+    """
+    return the spark code which filter the DataFrame according the specified format.
+    """
+
+    return '''
+    def filterDF(inDataFrame, tableDict):
+        """
+        """
+        from pyspark.sql.functions import udf
+        from pyspark.sql.types import BooleanType
+
+        logger.debug("tableDict:{0}".format(tableDict))
+        if 'columns' in tableDict.keys():
+            columnList = list(tableDict['columns'].keys())
+            logger.debug("condIt:{0}".format(columnList))
+            inDataFrame=inDataFrame.select(columnList)
+
+        if "conditions" in tableDict.keys():
+            # add the specified conditions in the DataFrame
+            for condIt in tableDict["conditions"]:
+                condType = condIt["type"]
+                colName = condIt["columnName"] if "columnName" in condIt.keys() else ""
+                logger.debug("condIt:{0}".format(condIt))
+                if condType == "limit" and type(condIt["value"]) == int:
+                    inDataFrame = inDataFrame.limit(condIt["value"])
+                elif condType in [">",">=","=","==","<","<=","!="]:
+                    condStr = "{0} {1} {2}".format(colName, condType, condIt["value"])
+                    inDataFrame = inDataFrame.filter(condStr)
+                elif condType == "like":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].like(condIt["value"]))
+                elif condType == "startswith":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].startswith(condIt["value"]))
+                elif condType == "notstartswith":
+                    inDataFrame = inDataFrame.filter(
+                        udf(lambda column: not column.startswith(condIt["value"]), BooleanType())(inDataFrame[colName]))
+                elif condType == "endswith":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].endswith(condIt["value"]))
+                elif condType == "notendswith":
+                    inDataFrame = inDataFrame.filter(
+                        udf(lambda column: not column.endswith(condIt["value"]), BooleanType())(inDataFrame[colName]))
+                elif condType == "contains":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].contains(condIt["value"]))
+                elif condType == "notcontains":
+                    inDataFrame = inDataFrame.filter(
+                        udf(lambda column: not column.contains(condIt["value"]), BooleanType())(inDataFrame[colName]))
+                elif condType == "isin":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isin(condIt["value"]))
+                elif condType == "isnotin":
+                    inDataFrame = inDataFrame.filter(
+                        udf(lambda column: not column.isin(condIt["value"]), BooleanType())(inDataFrame[colName]))
+                elif condType == "isnull":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNull())
+                elif condType == "isnotnull":
+                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNotNull())
+                else:
+                    pass
+        return inDataFrame
     '''
