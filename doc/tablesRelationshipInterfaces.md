@@ -18,11 +18,11 @@ The RESTful API Details of Verify those table relationships
             "tableName": <tableName>,
             "columns": {
                 <columnName1>: {
-                    "columnType": <columnType>,
+                    "type": <columnType>,
                     "nullable": "yes/no",
-                    "primaryKey": "yes/no",
-                    "uniqueKey": "yes/no",
-                    "foreignKey": "no"
+                    "primary": "yes/no",
+                    "unique": "yes/no",
+                    "foreign": "no"
                 },
                 <columnName2>: {
                     ...
@@ -81,13 +81,13 @@ The RESTful API Details of Verify those table relationships
             "tableName": "table1",
             "columns": {
                 "col1": {
-                    "columnType": "number(3)",
+                    "type": "number(3)",
                     "nullable": "yes",
-                    "primaryKey": "yes",
-                    "uniqueKey": "yes"
+                    "primary": "yes",
+                    "unique": "yes"
                 },
                 "col2": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 }
             },
             "conditions": [
@@ -104,13 +104,13 @@ The RESTful API Details of Verify those table relationships
             "tableName": "table2",
             "columns": {
                 "col1": {
-                    "columnType": "number(3)"
+                    "type": "number(3)"
                 },
                 "col2": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 },
                 "col3": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 }
             }
         }
@@ -229,13 +229,13 @@ The RESTful API Details of Generating New Table
             "tableName": "table1",
             "columns": {
                 "col1": {
-                    "columnType": "number(3)",
+                    "type": "number(3)",
                     "nullable": "yes",
-                    "primaryKey": "yes",
-                    "uniqueKey": "yes"
+                    "primary": "yes",
+                    "unique": "yes"
                 },
                 "col2": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 }
             },
             "conditions": [
@@ -252,13 +252,13 @@ The RESTful API Details of Generating New Table
             "tableName": "table2",
             "columns": {
                 "col1": {
-                    "columnType": "number(3)"
+                    "type": "number(3)"
                 },
                 "col2": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 },
                 "col3": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 }
             }
         }

@@ -45,11 +45,11 @@ Get Table From Current User Via Spark
        # "columns" is optional. If this item don't be given, all columns are reserved.
        "columns": {
            <columnName1>: {
-               "columnType": <columnType>,
+               "type": <columnType>,
                "nullable": "yes/no",
-               "primaryKey": "yes/no",
-               "uniqueKey": "yes/no",
-               "foreignKey": "no"
+               "primary": "yes/no",
+               "unique": "yes/no",
+               "foreign": "no"
            },
            <columnName2>: {
                ...
