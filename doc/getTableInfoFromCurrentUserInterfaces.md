@@ -37,7 +37,7 @@ If successful, it will response as follows
 Get Table From Current User Via Spark
 -------------
 1. URI: /cloudapi/v1/tables/<tableName>/['all','schema','data']
-2. Request Method: GET
+2. Request Method: POST
 3. Request Data Schema:
    NULL if you don't need to filter the data. Or else, please specify the following json format for the filter.
 

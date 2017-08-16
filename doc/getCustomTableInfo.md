@@ -7,8 +7,13 @@ This document describe how to get users' tables information.
 Get All Tables
 -------------
 1. URI: /cloudapi/v1/customtables
-2. Request Method: GET
-3. Request Data Schema: JSON
+2. Request Method: POST
+3. Request Data Schema:
+{
+    "rootfolder": <rootfolder>,
+    "host": <host>,
+    "port": <port>
+}
 4. Support Format: JSON
 5. Response Data:
 5.1 if successful, it will response as follows
@@ -37,8 +42,48 @@ If successful, it will response as follows
 Get Table From Custom User Via Spark
 -------------
 1. URI: /cloudapi/v1/customtables/(?P<tableName>\w+)/['all','schema','data']
-2. Request Method: GET
-3. Request Data Schema: JSON
+2. Request Method: POST
+3. Request Data Schema:
+   NULL if you don't need to filter the data. Or else, please specify the following json format for the filter.
+
+   {
+       # "columns" is optional. If this item don't be given, all columns are reserved.
+       "columns": {
+           <columnName1>: {
+               "columnType": <columnType>,
+               "nullable": "yes/no",
+               "primaryKey": "yes/no",
+               "uniqueKey": "yes/no",
+               "foreignKey": "no"
+           },
+           <columnName2>: {
+               ...
+           },
+           ...
+       },
+       "conditions": [
+           {
+               # types: ">",">=","=","<","<=","!=",'like','startswith','notstartswith',
+               # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
+               # note: if type is 'isin' or 'isnotin', the value should be a list.
+               "type":<conditionTypeValue>,
+               "columnName": <columnName>,
+               "value": <value>
+           },
+           {
+               "type":"limit",
+               "value": <value>
+           },
+           {
+               "type":"isnull", # or 'isnotnull'
+               "columnName": "<columnName>"
+           },
+           ...
+       ],
+       <otherProperty>:<otherValue>,
+       ...
+   }
+
 4. Support Format: JSON
 5. Response Data:
 5.1 As for /cloudapi/v1/customtables/<tableName>/all, it will response as follows if successful
