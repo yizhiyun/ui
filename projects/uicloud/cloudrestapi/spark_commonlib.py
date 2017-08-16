@@ -16,12 +16,15 @@ def setupLoggingSparkCode():
 
         logpath = '/opt/spark/logs/spark-excutedby-livy.log'
         logger = logging.getLogger("sparkExecutedBylivy")
+
         # Set level of logger source.  Use debug for development time options, then bump it up
         # to logging.INFO after your script is working well to avoid excessive logging.
-        logger.setLevel(logging.INFO)
-        logfile = logging.FileHandler(logpath)
-        logfile.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(module)s %(message)s'))
-        logger.addHandler(logfile)
+
+        logger.setLevel(logging.DEBUG)
+        if not logger.handlers:
+            loghandler = logging.FileHandler(logpath)
+            loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(module)s %(message)s'))
+            logger.addHandler(loghandler)
         return logger
 
     logger = setupLogging()
