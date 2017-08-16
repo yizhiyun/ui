@@ -209,7 +209,7 @@ def getAllTablesFromUser(request):
         return JsonResponse(successObj)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getTableViaSpark(request, tableName, modeName):
     '''
     GET:
@@ -218,7 +218,7 @@ def getTableViaSpark(request, tableName, modeName):
 
     jsonData = request.data
     logger.info("request.data: {0}, tableName: {1}".format(jsonData, tableName))
-    if request.method == 'GET':
+    if request.method == 'POST':
 
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
@@ -248,14 +248,14 @@ def getTableViaSpark(request, tableName, modeName):
             return JsonResponse(sucessObj)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getAllTablesFromCustom(request):
     '''
     GET:
     Get all table from the custom user.
     '''
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         jsonData = request.data
         outputList = listDirectoryFromHdfs(
             path=jsonData['rootfolder'], hdfsHost=jsonData['host'], port=jsonData['port'])
@@ -267,7 +267,7 @@ def getAllTablesFromCustom(request):
         return JsonResponse(successObj)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getTableViaSparkCustom(request, tableName, modeName):
     '''
     GET:
@@ -277,7 +277,7 @@ def getTableViaSparkCustom(request, tableName, modeName):
     jsonData = request.data
     logger.info("request.data: {0}, tableName: {1}".format(
         jsonData, tableName))
-    if request.method == 'GET':
+    if request.method == 'POST':
 
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
@@ -312,7 +312,7 @@ def getTableViaSparkCustom(request, tableName, modeName):
             return JsonResponse(sucessObj)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getBasicStats(request):
     '''
     GET:
@@ -321,7 +321,7 @@ def getBasicStats(request):
 
     jsonData = request.data
     logger.debug("request.data: {0}".format(jsonData))
-    if request.method == 'GET':
+    if request.method == 'POST':
 
         # check the request data
         if ("sourceType" not in jsonData or "opTypes" not in jsonData):
