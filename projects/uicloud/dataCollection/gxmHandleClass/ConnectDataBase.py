@@ -129,7 +129,15 @@ class ConnectDataBase():
             if self.con:
                 cur = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
                 cur.execute("show columns from " + tableName)
-                rows = cur.fetchall()
+                datas = cur.fetchall()
+
+                rows = []
+                for data in datas:
+                    dic = {}
+                    for key, value in data.items():
+                        dic[key.lower()] = value
+                    rows.append(dic)
+
                 return rows
 
         elif self.dbPaltName == 'oracle':
@@ -141,8 +149,8 @@ class ConnectDataBase():
                 rows = []
                 for obj in rs:
                     rows.append({
-                        'Field': obj[0],
-                        'Type': obj[1]
+                        'field': obj[0],
+                        'type': obj[1]
                     })
                 return rows
 
@@ -154,8 +162,8 @@ class ConnectDataBase():
                 rows = []
                 for obj in rs:
                     rows.append({
-                        'Field': obj[3],
-                        'Type': obj[5]
+                        'field': obj[3],
+                        'type': obj[5]
                     })
                 return rows
 
