@@ -1,10 +1,10 @@
 
 Description
 -----------
-This document describe how to get users' tables information from hdfs via RESTful API.
+This document describe how to get users' tables information.
 
 
-Get All Tables From Custom User
+Get All Tables
 -------------
 1. URI: /cloudapi/v1/customtables
 2. Request Method: GET
@@ -17,7 +17,7 @@ Get All Tables From Custom User
     "results": <tableList>
 }
 5.2 if failed, it will response as follows
-{ 
+{
     "status": "failed",
     "reason": "Please see the logs for details."
 }
@@ -59,8 +59,8 @@ Get Table From Custom User Via Spark
             ...
         ],
         "schema": [
-            "<columnName1>:<columnType1>",
-            "<columnName2>:<columnType2>",
+            {"field":<columnName1>, "type":<columnType1>},
+            {"field":<columnName2>, "type":<columnType2>},
             ...
         ]
     }
@@ -71,8 +71,8 @@ Get Table From Custom User Via Spark
     "status": "success",
     "results": {
         "schema": [
-            "<columnName1>:<columnType1>",
-            "<columnName2>:<columnType2>",
+            {"field":<columnName1>, "type":<columnType1>},
+            {"field":<columnName2>, "type":<columnType2>},
             ...
         ]
     }
@@ -136,10 +136,10 @@ Get Table From Custom User Via Spark
             }
         ],
         "schema": [
-            "db1_table1_col2:StringType",
-            "mycol1:IntegerType",
-            "mycol2:StringType",
-            "db2_table2_col1:IntegerType"
+            {"field":"db1_table1_col2", "type":"StringType"},
+            {"field":"mycol1", "type":"IntegerType"},
+            {"field":"mycol2", "type":"StringType"},
+            {"field":"db2_table2_col1", "type":"IntegerType"}
         ]
     }
 }

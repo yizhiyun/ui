@@ -24,34 +24,59 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
     sparkCode = '''
     import sys
     import traceback
-    ''' + specialDataTypesEncoderSparkCode() + getDataFrameFromSourceSparkCode() + '''
+    ''' + specialDataTypesEncoderSparkCode() + getDataFrameFromSourceSparkCode() + setupLoggingSparkCode() + '''
     def getBasicStats(opTypeList, dataFrame):
         """
         opTypeList might include the following value
         "count","sum","mean","median", "min","max","std","var",
-        "skew","kurt","quarter1","quarter3","range"
+        "skew","kurt","quarter1","quarter3","sem", "range", "mode"
         pandasDF1 is a pandas data frame
         it will output json data.
         """
-        from pyspark.sql.types import DecimalType, FloatType, NumericType
+        from pyspark.sql.types import DecimalType, FloatType, NumericType, DoubleType
+        from pyspark.sql.functions import udf
 
         availTypeList = [
             "count", "sum", "mean", "median",
             "min", "max", "std", "var",
             "skew", "kurt", "quarter1", "quarter3",
-            "range"
+            "sem", "cv", "range", "mode",
+            "freq", "freqpercent"
         ]
 
+        freqDict = {}
+        dataFrame=dataFrame.limit(10)
+        if "freq" in opTypeList or "freqPercent" in opTypeList:
+            rowCount = dataFrame.count()
+            logger.debug("rowCount: {0}".format(rowCount))
+            percentage = udf(lambda s: round(s/float(rowCount),4), FloatType())
+
+            for col in dataFrame.columns:
+                # skip the numeric columns
+                if isinstance(dataFrame.schema[col].dataType, NumericType):
+                    continue
+
+                countDf = dataFrame.groupBy(col).count()
+                freqDf =countDf.select(col, countDf["count"].alias("freq"), percentage("count").alias("freqpercent"))
+
+                dictList1 = []
+                for freqit in freqDf.collect():
+                    dictList1.append(freqit.asDict())
+                freqDict[col] = dictList1
+        logger.debug("freqDict: {0}".format(freqDict))
+
+        # filter out the columns whose type isn't NumericType.
         columnList = []
         for sItem in dataFrame.schema:
             if isinstance(sItem.dataType, DecimalType):
                 columnList.append(dataFrame[sItem.name].cast(FloatType()))
             elif isinstance(sItem.dataType, NumericType):
                 columnList.append(dataFrame[sItem.name])
+        logger.debug("columnList: {0}".format(columnList))
 
         pandasDF1 = dataFrame.select(columnList).toPandas()
 
-        statsDict = {{}}
+        statsDict = {}
         for typeItem in opTypeList:
             typeItem = typeItem.strip()
             if typeItem not in availTypeList:
@@ -81,12 +106,33 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
                 statsDict["quarter1"] = json.loads(pandasDF1.quantile(0.25, interpolation='midpoint').to_json())
             elif "quarter3" == typeItem:
                 statsDict["quarter3"] = json.loads(pandasDF1.quantile(0.75, interpolation='midpoint').to_json())
+            elif "sem" == typeItem:
+                statsDict["sem"] = json.loads(pandasDF1.sem().to_json())
+            elif "cv" == typeItem:
+                statsDict["cv"] = json.loads((pandasDF1.std()/pandasDF1.mean()).to_json())
             elif "range" == typeItem:
                 statsDict["range"] = json.loads(pandasDF1.apply(lambda x: x.max() - x.min()).to_json())
+            elif "mode" == typeItem:
+                # statsDict["mode"] = json.loads(pandasDF1.mode().to_json())
+                modeDict = {}
+                rowNum = len(pandasDF1)
+                for col in pandasDF1:
+                    if rowNum == len(pandasDF1[col].mode()):
+                        # set null if all values is distinct
+                        modeDict[col]={}
+                    else:
+                        modeDict[col]=pandasDF1[col].mode().to_json()
+                logger.debug("modeDict: {0}".format(modeDict))
+                statsDict["mode"] = modeDict
             else:
                 pass
 
-        return statsDict
+        logger.debug("statsDict: {0}".format(statsDict))
+        outputDict = {}
+        outputDict["freqs"] = freqDict
+        outputDict["stats"] = statsDict
+        return outputDict
+    ''' + '''
     df3 = getDataFrameFromSource({0}, '{1}')
     if df3:
         print(json.dumps(getBasicStats({0}["opTypes"], df3), cls = SpecialDataTypesEncoder))

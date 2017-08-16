@@ -57,7 +57,7 @@ def getDataFrameFromSourceSparkCode():
     """
 
     return '''
-    def getDataFrameFromSource(jsonData, userTableUrl):
+    def getDataFrameFromSource(jsonData, userTableUrl, maxRow=10000):
         """
         get spark DataFrame once the input data source is valid.
         """
@@ -71,10 +71,10 @@ def getDataFrameFromSourceSparkCode():
                 url = jsonData["hdfsUrl"]
             else:
                 url = userTableUrl
+            logger.debug("url:{0}".format(url))
             try:
-                df1 = spark.read.parquet(url).select(columnList)
+                df1 = spark.read.parquet(url).select(columnList).limit(maxRow)
             except Exception:
-                logger.debug("url:{{}}".format(url))
                 traceback.print_exc()
                 return False
 
@@ -89,17 +89,17 @@ def getDataFrameFromSourceSparkCode():
             dbName = jsonData["database"]
             tableName = jsonData["tableName"]
 
-            connUrl = "jdbc:{{0}}://{{1}}:{{2}}".format(dbType, dbServer, dbPort)
-            dbTable = "{{0}}.{{1}}".format(dbName, tableName)
+            connUrl = "jdbc:{0}://{1}:{2}".format(dbType, dbServer, dbPort)
+            dbTable = "{0}.{1}".format(dbName, tableName)
 
             connDbTable = dbTable
             if dbType == "oracle":
                 sid = dbSourceDict["sid"]
-                connUrl = "jdbc:{{0}}:thin:@{{1}}:{{2}}:{{3}}".format(dbType, dbServer, dbPort, sid)
+                connUrl = "jdbc:{0}:thin:@{1}:{2}:{3}".format(dbType, dbServer, dbPort, sid)
             elif dbType == "postgresql":
-                connUrl = "jdbc:{{0}}://{{1}}".format(dbType, dbServer)
+                connUrl = "jdbc:{0}://{1}".format(dbType, dbServer)
             elif dbType == "sqlserver":
-                connUrl = "jdbc:{{0}}://{{1}}:{{2}};databaseName={{3}}".format(dbType, dbServer, dbPort, dbName)
+                connUrl = "jdbc:{0}://{1}:{2};databaseName={3}".format(dbType, dbServer, dbPort, dbName)
                 connDbTable = tableName
 
             try:

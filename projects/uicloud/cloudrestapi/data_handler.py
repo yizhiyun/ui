@@ -481,22 +481,23 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     filterJson = json.dumps(filterJson, ensure_ascii=True)
 
     sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + '''
-    def getTableInfo( url, mode, filterJson='{{}}'):
+    def getTableInfo( url, mode, filterJson='{}'):
         """
         get the specified table schema,
         note, the table format is parquet.
         """
         dframe1 = spark.read.parquet(url)
 
-        outputDict = {{}}
+        outputDict = {}
         if mode == 'all' or mode == 'schema':
             outputDict['schema'] = []
             for colItem in dframe1.schema.fields:
-                outputDict['schema'].append( '{{0}}:{{1}}'.format(colItem.name, colItem.dataType) )
+                logger.debug("field: {0}, type: {1}".format( colItem.name, colItem.dataType))
+                outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
         if mode == 'all' or mode == 'data':
             outputDict['data'] = []
 
-            logger.debug("filterJson:{{0}}, type:{{1}}".format(filterJson,type(filterJson)))
+            logger.debug("filterJson:{0}, type:{1}".format(filterJson,type(filterJson)))
             filterJson = json.loads(filterJson, encoding='utf-8')
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
@@ -505,7 +506,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
                 outputDict['data'].append(rowItem.asDict())
 
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
-
+    ''' + '''
     print(getTableInfo(u'{0}', u'{1}', u'{2}'))
     '''.format(userUrl, mode, filterJson)
 
