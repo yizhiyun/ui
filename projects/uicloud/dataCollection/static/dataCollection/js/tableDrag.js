@@ -301,7 +301,7 @@ function connectDetailSelect(conInfo,originalEvent){
 		if (dataInfo["isable"] == "no") {
 			continue
 		}
-		var op = $("<option value="+dataInfo["Field"]+">"+dataInfo["Field"]+"</option>")
+		var op = $("<option value="+dataInfo["field"]+">"+dataInfo["field"]+"</option>")
 		sourceSelect.append(op);
 	}
 	sourceSelect.comboSelect();
@@ -315,7 +315,7 @@ function connectDetailSelect(conInfo,originalEvent){
 		if (dataInfo["isable"] == "no") {
 			continue
 		}
-		var op = $("<option value="+dataInfo["Field"]+">"+dataInfo["Field"]+"</option>")
+		var op = $("<option value="+dataInfo["field"]+">"+dataInfo["field"]+"</option>")
 		targetSelect.append(op);
 		
 	}
