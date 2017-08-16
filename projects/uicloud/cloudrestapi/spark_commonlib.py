@@ -20,7 +20,7 @@ def setupLoggingSparkCode():
         # Set level of logger source.  Use debug for development time options, then bump it up
         # to logging.INFO after your script is working well to avoid excessive logging.
 
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
         if not logger.handlers:
             loghandler = logging.FileHandler(logpath)
             loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(module)s %(message)s'))
