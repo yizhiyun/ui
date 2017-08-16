@@ -2,7 +2,7 @@ var numberColumn_needValueInfo = {}; // 某个表格的数值类型列，需要�
 var copyCurrentTableData = null; // 对当前 table 数据的一份拷贝
 // fieldtype 为数字 numberType 、日期、dateType 俩种类型
 function dataHandleWork(tableInfo,field,fieldtype,finish){
-	
+	console.log(tableInfo);
 	if(numberColumn_needValueInfo[tableInfo] && numberColumn_needValueInfo[tableInfo][field]){
 		 finish(numberColumn_needValueInfo[tableInfo][field]);
 		return;

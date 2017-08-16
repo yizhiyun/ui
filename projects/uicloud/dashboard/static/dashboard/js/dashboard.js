@@ -97,38 +97,30 @@ $(function() {
 	})
 	//end----单元格---下拉框
 
-
-	
-
-
-
-
-
-
 	//保存按钮下拉框end---
 
 	// 筛选器和图形按钮切换
 	$("#project").on("click", function() {
 		$("#sizer_wrap .sizer_line").css("background", "#DEDEDE");
 		$("#project .sizer_line").css("background", "#0d53a4");
-		$("#sizer_content").css("display", "none");
+		$("#sizer_content").hide();
 
-		$("#project_chart").css("display", "block");
-		$("#sizer_mpt").css("display", "none");
-	})
+		$("#project_chart").show();
+		$("#sizer_mpt").hide();
+	});
 
 	$("#sizer_wrap").on("click", function() {
 		$("#project .sizer_line").css("background", "#DEDEDE");
 		$("#sizer_wrap .sizer_line").css("background", "#0d53a4");
-		$("#sizer_content").css("display", "block");
-		$("#project_chart").css("display", "none");
+		$("#sizer_content").show();
+		$("#project_chart").hide();
 
 		if($(".drog_row_list").length == "0") {
-			$("#sizer_mpt").css("display", "block")
-			$("#view_show_empty").css("display", "block");
-			$("#sizer_content").css("display", "none");
+			$("#sizer_mpt").show();
+			$("#view_show_empty").show();
+			$("#sizer_content").hide();
 		}
-	})
+	});
 	//end----- 筛选器和图形按钮切换
 /*gxm-----start*/	
 	
@@ -150,7 +142,7 @@ $(function() {
 	});
 	// 数据块选择 创建
 	function	 cubeSelectContent_fun(build_tables){
-	
+		
 		var cube_select = $('#lateral_title .custom-select');
 		for (var i =0; i < build_tables.length;i++) {
 			var val = build_tables[i];
@@ -165,9 +157,19 @@ $(function() {
 		// 展示维度和度量等
 		load_measurement_module(cube_select.val())
 		
+		// 数据选择 select 变化的时候，去获取新的数据
+		cube_select.unbind("change");
+		cube_select.change(function(event){
+			event.stopPropagation();
+			if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
+				
+				load_measurement_module($(this).val());
+			}
+		});	
 	}
 	
-
+	
+	
 	// 加载维度、度量等，需要在 select 加载完毕之后
 	function load_measurement_module(current_cube){
 		// 之前选择过的数据块  内存保存一份
@@ -182,13 +184,17 @@ $(function() {
 		//1、需要加载这个表格的 column schema
 		$.ajax({
 			url:"/cloudapi/v1/tables/" +current_cube+"/all",
-			type:"get",
+			type:"post",
 			dataType:"json",
 			success:function(data){
 				console.log(data);
 				if (data["status"] == "success") {
 					var cube_all_data = data["results"];
-					var schema = cube_all_data["schema"];	
+					filterNeedAllData =  data["results"]["data"];
+					var schema = cube_all_data["schema"];
+					for(var i = 0;i < schema.length;i++){
+						schema[i]["isable"] = "yes";
+					}
 					_cube_all_data[current_cube_name] = cube_all_data;
 					factory_create_li_to_measurement_module(schema);
 					
@@ -202,9 +208,8 @@ $(function() {
 			
 			for (var i = 0; i < schema.length;i++) {
 				var column_name_info = schema[i];
-				var arr = column_name_info.split(":");
-				var  _name = arr[0]; // 字段名
-				var _data_type = arr[1];  // 字段的数据类型
+				var  _name = column_name_info["field"]; // 字段名
+				var _data_type = column_name_info["type"];  // 字段的数据类型
 				var _show_type = _data_type.w_d_typeCat(); // 维度还是度量，返回值是一个字符串		
 				var type_indictot_img_path = _data_type.image_Name_Find();	 // 数据类型指示图片的路径
 				
@@ -446,7 +451,7 @@ $(function() {
 								if($(ele).parent().attr("class") != "list_wrap") {
 									$(ele).wrap("<div class='list_wrap'></div>");
 								}
-							})
+							});
 
 							//判断拖拽元素颜色
 							if($(this).find("span").hasClass("dimensionality_list_text_left")) {
@@ -887,8 +892,10 @@ $(function() {
 
 									//遍历所有行里的li 排序后更新数据
 									for(var i = 0; i < $(ele).find("li").length;i++){
+										console.log($(ele).find("li").eq(i).attr("id"));
 										//获取数据字段
 										var data_id = $(ele).find("li").eq(i).attr("id").split(":");
+										
 										//判断元素的类型
 										var data_wd_type = data_id[0];
 										//对应的数据

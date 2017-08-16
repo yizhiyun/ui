@@ -2,7 +2,7 @@
 <div id="contentChooser" class="screeningWasher" style="z-index: 1000;display: none;">
 	<div class="topline"></div>
 	<div class="contentChooser_head common-head">
-		<span class="logo">筛选器</span>
+		<span class="logo">筛选器:</span>
 		<span class="flag"></span>
 		<div class="close">
 			<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
@@ -52,17 +52,17 @@
 
 		</div>
 		<div id="condition">
-			<p class="radio active" belong="condition">无</p>
+			<p class="radio active empty" belong="condition">无</p>
 			<div class="byFiledConditionSelectDiv">
 				<div class="topTitle">
-					<p class="radio" belong="condition">按字段</p>
+					<p class="radio byCondtion" belong="condition">按字段</p>
 					<img src={%static "dataCollection/images/add.png" %} alt="" class="add"/>
 				</div>
 				<div class="scrollBody-box">
 					<div class="mask_cover"></div>
 					<div class="line-condition first-line-condition">
 						<div class="fieldSelctDiv">
-							<select class="field-selct"></select>
+							<select class="field-selct custom-select"></select>
 						</div>
 						<div class="conditionSelectDiv">
 							<select class="condition-selct custom-select">
@@ -80,9 +80,9 @@
 							</select>
 						</div>
 						<div class="detailConditionDiv">
-							<select class="detail-condition  custom-select"></select>
-							<label class="flagUserInputLabel"><span>N=</span><input type="text"/></label>
-							<label class="simpleUserInputLabel"><input type="text" /></label>
+							<select class="detail-condition  custom-select valueShow"></select>
+							<label class="flagUserInputLabel"><span>N=</span><input type="text" class="valueShow"/></label>
+							<label class="simpleUserInputLabel"><input type="text" class="valueShow"/></label>
 					
 						</div>
 					</div>
