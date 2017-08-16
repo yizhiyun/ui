@@ -5,16 +5,18 @@
 // 重复合并辅助数组
 var row_repeat_merge_help = [];
 var column_repeat_merge_help = [];
-function showTable_by_dragData(){
+function showTable_by_dragData(isagainDrawTable,isTabChart){
 	//drag_row_column_data 拖到行列 列名
 	//current_cube_name  当前操作的表名
 	//_cube_all_data 所有表的数据
 	//
-	$("#text_table_need_show").css('display', 'block');
-
+	$("#text_table_need_show").show();
+	if(isTabChart){
+		return;
+	}
 	//1、处理列的维度
-	function handle_column_drag_dimensionality(){
-	 	var handle_index =drag_row_column_data["column"]["dimensionality"].length - 1; 
+	function handle_column_drag_dimensionality(handle_index){
+//	 	var handle_index =drag_row_column_data["column"]["dimensionality"].length - 1; 
 	 	var need_handle_column =  drag_row_column_data["column"]["dimensionality"][handle_index];
 	 // 创建对应的----”维度“---列
 	 		var co_info = need_handle_column.split(":");
@@ -88,8 +90,8 @@ function showTable_by_dragData(){
 
 	
 	// 2、处理行的维度
-	 function handle_row_drag_dimensionality(){
-		var handle_index =drag_row_column_data["row"]["dimensionality"].length - 1; 
+	 function handle_row_drag_dimensionality(handle_index){
+//		var handle_index =drag_row_column_data["row"]["dimensionality"].length - 1; 
 	 	var need_handle_row =  drag_row_column_data["row"]["dimensionality"][handle_index];
 		// 创建对应的维度行
 		
@@ -168,8 +170,8 @@ function showTable_by_dragData(){
 	}
 	
 	//6、处理列里面的度量
-	function handle_column_drag_measure(){
-		var handle_index =drag_row_column_data["column"]["measure"].length - 1; 
+	function handle_column_drag_measure(handle_index){
+//		var handle_index =drag_row_column_data["column"]["measure"].length - 1; 
 		if (handle_index < 0) {
 			return;
 		}
@@ -177,8 +179,8 @@ function showTable_by_dragData(){
 		handle_common_measure(need_handle_column);
 	}
 	//7、处理行里面的度量
-	function handle_row_drag_measure(){
-		var handle_index =drag_row_column_data["row"]["measure"].length - 1; 
+	function handle_row_drag_measure(handle_index){
+//		var handle_index =drag_row_column_data["row"]["measure"].length - 1; 
 		if (handle_index < 0) {
 			return;
 		}
@@ -243,28 +245,49 @@ function showTable_by_dragData(){
 	
 	//开始函数
 	function init(){
-		if (_drag_message["position"] == "row") {
+		if (_drag_message["position"] == "row" && !isagainDrawTable) {
 			if(_drag_message["type"] == "dimensionality"){
-				handle_row_drag_dimensionality();
-				handle_row_drag_measure();
-				handle_column_drag_measure();
+				handle_row_drag_dimensionality(drag_row_column_data["row"]["dimensionality"].length - 1);
+				handle_row_drag_measure(drag_row_column_data["row"]["measure"].length - 1);
+				handle_column_drag_measure(drag_row_column_data["column"]["measure"].length - 1);
 			}else if(_drag_message["type"] == "measure"){
-				handle_row_drag_measure();
+				handle_row_drag_measure(drag_row_column_data["row"]["measure"].length - 1);
 			}
 		
-		}else if(_drag_message["position"] == "column"){
+		}else if(_drag_message["position"] == "column" && !isagainDrawTable){
 			if(_drag_message["type"] == "dimensionality"){
-				handle_column_drag_dimensionality();
-				handle_column_drag_measure();
-				handle_row_drag_measure();
+				handle_column_drag_dimensionality(drag_row_column_data["column"]["dimensionality"].length - 1);
+				handle_column_drag_measure(drag_row_column_data["column"]["measure"].length - 1);
+				handle_row_drag_measure(drag_row_column_data["row"]["measure"].length - 1);
 			}else if(_drag_message["type"] == "measure"){
-				handle_column_drag_measure();
+				handle_column_drag_measure(drag_row_column_data["column"]["measure"].length - 1);
 			}	
+		}else{
+			// 清空 绘制 table 区域的内容
+			$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .left_row_container").empty();
+			$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .content_body #data_list_for_body").empty();
+			$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .top_column_name").empty();
+			$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .column_data_list").empty();
+			//
+			for(var i  = 0;i < drag_row_column_data["row"]["dimensionality"].length;i++){
+				handle_row_drag_dimensionality(i)
+			}
+			for(var i = 0;i < drag_row_column_data["column"]["dimensionality"].length;i++){
+				handle_column_drag_dimensionality(i);
+			}
+			for(var i =0;i < drag_row_column_data["column"]["measure"].length;i++){
+				handle_column_drag_measure(i);
+			}
+			for(var i =0;i < drag_row_column_data["row"]["measure"].length;i++){
+				handle_row_drag_measure(i);
+			}
+			
 		}
 		
 		$(function(){
 			// 处理布局
 			layout_table_size();
+			
 		});	
 	}
 	init();

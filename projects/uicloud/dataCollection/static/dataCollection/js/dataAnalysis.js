@@ -144,8 +144,8 @@ $("#analysisContainer .mainDragArea").css({"margin-left":$("#analysisContainer .
 
 // 数据平台下具体数据库变化的时候
 $(".dataSetDetail select").change(function() {
-	var theSelect = this;
-	getTablesOfaDataBase(theSelect);
+//	var theSelect = this;
+	getTablesOfaDataBase($(this));
 });
 
 // 取消滑动事件的冒泡行为
@@ -157,10 +157,9 @@ var tableDragrecords = {};
 
 // 展示某个数据库下方的数据表格
 function getTablesOfaDataBase(theSelect){
-	if (!theSelect[0]) {
+	if (!theSelect.length || theSelect.length < 1) {
 		return;
 	}
-//	alert($(theSelect)[0].title);
 	$.ajax({
 		url: "/dataCollection/tablesOfaDB",
 		type: "post",
@@ -170,10 +169,10 @@ function getTablesOfaDataBase(theSelect){
 		},
 		success: function(data) {
 			var rs = $.parseJSON(data);
-			$(theSelect).next(".tablesOfaData").html("");
+			$(theSelect).parents(".dbDataShow").children(".tablesOfaData").eq(0).empty();
 			for(var i = 0; i < rs.data.length; i++) {
 				var p = $("<p>" + rs.data[i] + "</p>");
-				$(theSelect).next(".tablesOfaData").append(p);
+				$(theSelect).parents(".dbDataShow").children(".tablesOfaData").eq(0).append(p);
 			}
 			bindEventToPerTable($(theSelect).val(),$(theSelect).attr("dbIndex"));
 		}
@@ -235,7 +234,7 @@ getTablesOfaDataBase($(".dataSetDetail select"));
  				var tableList = $("<ul class='fields'></ul>");
  				boxDiv.append(tableList);
  				for (var i = 0;i < data.length;i++) {
-   					var aLi = $("<li>" + "<input type='checkbox' name='name' value='' checked='checked'>"+"<span>"+data[i]["Field"]+"</span>"+"</li>");
+   					var aLi = $("<li>" + "<input type='checkbox' name='name' value='' checked='checked'>"+"<span>"+data[i]["field"]+"</span>"+"</li>");
    					aLi[0].index = i; // 自定义属性，记录当前是第几个 li
    					// 默认所有字段选中，都是可用的
    					data[i]["isable"] = "yes";
@@ -358,9 +357,9 @@ getTablesOfaDataBase($(".dataSetDetail select"));
    			for (var i = 0;i < didShowDragAreaTableInfo[key].length;i++) {
 				var originalFileds = didShowDragAreaTableInfo[key];
 				if (originalFileds[i]["isable"] == "yes") {
-					var columnName = originalFileds[i]["Field"];
+					var columnName = originalFileds[i]["field"];
 					aTable["columns"][columnName] = {
-						"columnType":originalFileds[i]["Type"],
+						"columnType":originalFileds[i]["type"],
 						"nullable": originalFileds[i]["Null"],
                     		"primaryKey": (originalFileds[i]["key"] == "PRI" ? "yes":"no"),
                     		"uniqueKey": "no"
@@ -384,7 +383,7 @@ getTablesOfaDataBase($(".dataSetDetail select"));
 			var targetInfo = linePa["relation"]["targetInfo"].split("_YZYPD_");
 			aRelation["toTable"] = targetInfo[1] + "." + targetInfo[2];
 			
-			aRelation["joinType"] = "left join";
+			aRelation["joinType"] = linePa["type"];
 			aRelation["columnMap"] = [];
 			for(var i  = 0;i < linePa["relation"]["connections"].length;i ++){
 				var aMap = {};
@@ -486,7 +485,7 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
 	});
 })
 // 确定按钮
-$("#buildDataPanelView .build-footer .confirmBtn").click(function(){
+$("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").click(function(){
 	if ($("#buildDataPanelView .build-body .cube-name-radio .new-cube").hasClass("active")) {
 		if (!$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val()) {
 			$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).css("border","1px solid red");
@@ -496,13 +495,14 @@ $("#buildDataPanelView .build-footer .confirmBtn").click(function(){
 	}else{
 		postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check};
 	}
-	loading_init();
-	//进度条
-	loading_bar();
+	
 	// 记录
 	preBuildDataName = postData["outputs"]["outputTableName"];
+//	console.log($("#buildDataPanelView .build-body .build-options .more-content-div .check-label input").eq(0).is(':checked'),$("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val(),$("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).is(":visible"));
+	
 	if ($("#buildDataPanelView .build-body .build-options .more-content-div .check-label input").eq(0).is(':checked') && $("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val() && $("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).is(":visible")) {
 		var value = Number($("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val());
+//		console.log("--------",value);
 		for (var k = 0;k < postData["tables"].length;k++) {
 			var aTable = postData["tables"][k];
 			var conditions = aTable["conditions"];
@@ -515,7 +515,12 @@ $("#buildDataPanelView .build-footer .confirmBtn").click(function(){
 			}
 		}
 	}
+	loading_init();
+	//进度条
+	loading_bar();
+	
 	console.log(postData);
+	
 	var xhr = $.ajax({
 			url:"/cloudapi/v1/mergetables/generate",
 			type:"post",
@@ -721,15 +726,15 @@ $("#buildDataPanelView .build-footer .confirmBtn").click(function(){
    					
 					for (var i= 0;i <  bottom_panel_fileds.length;i++) {
 						var img = $("<img/>");
-						var th = $("<th title='双击选中列'><span>" + bottom_panel_fileds[i]["Field"]+"</span></th>");
-						th.data("type",bottom_panel_fileds[i]["Type"]);
-						if (bottom_panel_fileds[i]["Type"].isTypeString()) {
+						var th = $("<th title='双击选中列'><span>" + bottom_panel_fileds[i]["field"]+"</span></th>");
+						th.data("type",bottom_panel_fileds[i]["type"]);
+						if (bottom_panel_fileds[i]["type"].isTypeString()) {
 							img.attr("src","/../../../static/dataCollection/images/tableDataDetail/String.png");
-						}else if (bottom_panel_fileds[i]["Type"].isTypeDate()) {
+						}else if (bottom_panel_fileds[i]["type"].isTypeDate()) {
 							img.attr("src","/../../../static/dataCollection/images/tableDataDetail/date.png");
-						}else if(bottom_panel_fileds[i]["Type"].isTypeNumber()){
+						}else if(bottom_panel_fileds[i]["type"].isTypeNumber()){
 							img.attr("src","/../../../static/dataCollection/images/tableDataDetail/Integer.png");
-						}else if(bottom_panel_fileds[i]["Type"].isTypeSpace()){
+						}else if(bottom_panel_fileds[i]["type"].isTypeSpace()){
 							img.attr("src","/../../../static/dataCollection/images/tableDataDetail/geography.png");
 						}
 						img.insertBefore(th.children("span").eq(0));
@@ -739,10 +744,10 @@ $("#buildDataPanelView .build-footer .confirmBtn").click(function(){
 						var tr = $("<tr></tr>");
 						var lineData = rs[i];
 						for (var j = 0;j < bottom_panel_fileds.length;j++) {
-							var theFiled = bottom_panel_fileds[j]["Field"];
+							var theFiled = bottom_panel_fileds[j]["field"];
 							
 							var td = $("<td>" + lineData[theFiled] + "</td>");
-							td.addClass(bottom_panel_fileds[j]["Field"]);
+							td.addClass(bottom_panel_fileds[j]["field"]);
 							tr.append(td);
 						}
 						$("#tableDataDetailListPanel .mainContent table tbody").append(tr);
@@ -857,7 +862,7 @@ $("#tableDataDetailListPanel .topInfo  #showHiddenEles").click(function(event){
 		for (var i = 0;i < fileds.length;i++){
    			if (fileds[i]["isable"] == "no"){
    				fileds[i]["isable"] = "yes";
-   				$(".mainDragArea #" +dbInfo + " .fields li span:contains(" + fileds[i]["Field"]+")").prev("input").get(0).checked = true;
+   				$(".mainDragArea #" +dbInfo + " .fields li span:contains(" + fileds[i]["field"]+")").prev("input").get(0).checked = true;
    			}
    	}
 		setshowHiddenEles_btn_didSelected(); // 变成选中状态
@@ -880,31 +885,14 @@ function setshowHiddenEles_btn_didSelected(){
 
 // 底部菜单筛选器按钮点击的时候
 $("#tableDataDetailListPanel #screeningWasher").click(function(){
+		editFilterViewShow_fun("buildData",filterSuccessFun);
 		
-		$(".maskLayer").show();
-		$("#filter-model #user-filter-select").show();
-			//  调整筛选器的大小和位置
-		size_of_screeningWasher_fun();	
-		// 筛选器从构建数据页面进入
-		filter_from_in = "buildData";
-		finishCallBackFun = filterSuccessFun;
 });
 
 // 筛选完毕之后的回调函数
 function filterSuccessFun(isNeedAllData){
 	var dbInfo = $("#tableDataDetailListPanel").attr("nowShowTable");
 	var dbArr = dbInfo.split("_YZYPD_");	
-//	var fileds = didShowDragAreaTableInfo[dbInfo];
-//	var columns = {};
-//	for (var i = 0;i < fileds.length;i++){
-//		if (fileds[i]["isable"] == "yes"){
-//			columns[fileds[i]["Field"]] = {
-//				"columnType":fileds[i]["Type"],
-//				"nullable": fileds[i]["Null"],
-//              "primaryKey": (fileds[i]["key"] == "PRI" ? "yes":"no"),
-//			}
-//		}
-// 	}
 	var conditions = [];
 	if(conditionFilter_record[dbInfo]){
 		conditions = conditionFilter_record[dbInfo]["common"].concat(conditionFilter_record[dbInfo]["condition"]);

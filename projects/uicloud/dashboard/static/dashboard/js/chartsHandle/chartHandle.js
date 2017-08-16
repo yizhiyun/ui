@@ -6,13 +6,7 @@ function one_de_one_me_handle (chart_type_need) {
 	$("#main").css({
 			"display":"block"
 	});
-
-	
-	
 	var mycharts = echarts.init($("#main").get(0));
-
-	
-
  	var need_handle_measureName = null;
 	var handle_index =drag_row_column_data["row"]["measure"].length - 1; 
 		if (handle_index < 0) {

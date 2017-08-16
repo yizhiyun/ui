@@ -8,6 +8,7 @@
 	
 {% endblock %}
 {% block js %}
+<script src={% static "js/dataWork.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "dashboard/js/echarts.js"%} type="text/javascript" charset="utf-8"></script>
  <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
  <script src={% static "dashboard/js/chartsHandle/pre_dataHandle.js"%} type="text/javascript" charset="utf-8"></script>
@@ -18,6 +19,10 @@
 	<script src={% static "dashboard/js/show_view.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/radarChart.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/dashboard.js"%} type="text/javascript" charset="utf-8"></script>
+	<script src={% static "dashboard/js/filterRelationHandle.js"%} type="text/javascript" charset="utf-8"></script>
+	<script src={% static "js/filter-common-hanlde.js"%} type="text/javascript" charset="utf-8"></script>
+    <script src={% static "js/jQRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
+	<script src={% static "js/jQDateRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
 	
 	
 {% endblock %}
@@ -361,16 +366,16 @@
 			
 			<div id="sizer_title">
 				<div id="sizer_wrap">
-				<img src={% static "dashboard/img/sxq.png" %} alt="sizer" />
-				<!--line-->
-				<div class="sizer_line"></div>
-			</div>
+					<img src={% static "dashboard/img/sxq.png" %} alt="sizer" />
+					<!--line-->
+					<div class="sizer_line"></div>
+				</div>
 			
-			<div id="project">
-				<img src={% static "dashboard/img/design.png" %} alt="project"/>
-				<!--line-->
-				<div class="sizer_line"></div>
-			</div>
+				<div id="project">
+					<img src={% static "dashboard/img/design.png" %} alt="project"/>
+					<!--line-->
+					<div class="sizer_line"></div>
+				</div>
 			</div>
 			
 			<!--筛选器内容区域-->
@@ -395,7 +400,19 @@
 				
 				<!--筛选器-->
 				<div id="sizer_content">
-					筛选器
+					<div class="filter_header_div">
+						<span class="floatLeft logoFlag">筛选器</span>
+						<span class="cubeTableName floatLeft"></span>
+						<div class="filter_content_btn">
+							<img src = {% static "dashboard/img/3filter_content.png" %} alt="" />
+						</div>
+					</div>
+					<div class="filter_body_div">
+						<p class="cubeTableName"></p>
+						<ul class="table_field_list">
+							
+						</ul>
+					</div>
 				</div>
 				
 				<!--样式-->

@@ -5,7 +5,7 @@ var current_data = null;
 
 var save_data_handle;
 
-function switch_chart_handle_fun(drag_sortable){
+function switch_chart_handle_fun(drag_sortable,isagainDrawTable){
 
 	function save_btn_fun(){
 	
@@ -83,7 +83,7 @@ function switch_chart_handle_fun(drag_sortable){
 			//隐藏其他视图
 			$("#main").css("display","none");
 			//跳转到文本表
-			showTable_by_dragData();
+			showTable_by_dragData(isagainDrawTable);
 
 			view_name = "showTable_by_dragData";
 			
@@ -97,7 +97,7 @@ function switch_chart_handle_fun(drag_sortable){
 			//隐藏其他视图
 			$("#main").css("display","none");
 			//跳转到文本表
-			showTable_by_dragData();
+			showTable_by_dragData(isagainDrawTable);
 
 			view_name = "showTable_by_dragData";
 
@@ -254,13 +254,12 @@ function switch_chart_handle_fun(drag_sortable){
 					if($(ele).data("if_show") != "true"){
 						show_btn_change.data("if_show","");
 						$(ele).data("if_show","true");
-						console.log(index)
 						switch(index)
 							{
 							//点击文本表隐藏其他视图
 							case 0:
 							$("#main").css("display","none");
-							showTable_by_dragData();
+							showTable_by_dragData(false,true);
 							view_name = "showTable_by_dragData";
 							break;
 							case 3:

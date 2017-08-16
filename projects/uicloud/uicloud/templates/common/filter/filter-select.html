@@ -3,14 +3,16 @@
 	#user-filter-select{position: absolute;z-index:1000;width: 400px;background: white;border-radius: 5px;font-size: 12px;}
 	#user-filter-select .filter-select-body{border-top: 1px solid #dedede;}
 	#user-filter-select .filter-select-body .filer-detail-p{padding-left: 20px;height: 20px;}
-	#user-filter-select .filter-select-body .didFilteredList{margin-left: 20px;border: 1px solid #dedede;border-radius: 2px;width: 360px;}
-	#user-filter-select .filter-select-body .didFilteredList li{padding-left: 10px;}
+	#user-filter-select .filter-select-body .didFilteredList{margin-left: 20px;border: 1px solid #dedede;border-radius: 2px;width: 360px;min-height: 40px;max-height: 80px;overflow-y: auto;}
+	#user-filter-select .filter-select-body .didFilteredList li{padding-left: 10px;cursor: pointer;}
+	#user-filter-select .filter-select-body .didFilteredList li.active{background: #dedede;}
 	
-	
+	#user-filter-select .common-filer-footer .editBtn{position: absolute;border: 1px solid #0d53a4;left: 100px;top: 10px;display: none;color: #0d53a4;}
+	#user-filter-select .common-filer-footer .removeBtn{position: absolute;border: 1px solid #0d53a4;left: 180px;top: 10px;display: none;color: #0d53a4;}
 	#fileds-content-select{position: absolute;z-index:1001;width: 400px;background: white;border-radius: 5px;font-size: 12px;}
 	#fileds-content-select .fileds-content-select-body{border-top: 1px solid #dedede;}
 	#fileds-content-select .fileds-content-select-body .fileds-list li{cursor: pointer;padding-left: 20px;padding-right: 20px;}
-		#fileds-content-select .fileds-content-select-body .fileds-list li.active{background: #0d53a4;}
+	#fileds-content-select .fileds-content-select-body .fileds-list li.active{background: #0d53a4;}
 </style>
 <div id="user-filter-select" style="display:none;">
 	<div class="topline"></div>
@@ -24,14 +26,13 @@
 	<div class="filter-select-body">
 		<p class="filer-detail-p">筛选详情</p>
 			<ul class="didFilteredList">
-				<li>hdadada</li>
-				<li>dadadafaf</li>
 			</ul>
 	</div>
 	<div class="empty" style="height: 60px;background: transparent;"></div>
 	<div class="common-filer-footer">
 		<a href="javascript:void(0)" class="resetBtn addBtn">添加</a>
-		<a href="javascript:void(0)" class="cancleBtn">取消</a>
+		<a href="javascript:void(0)" class="editBtn">编辑</a>
+		<a href="javascript:void(0)" class="removeBtn">移除</a>
 		<a href="javascript:void(0)" class="confirmBtn">确定</a>
 	</div>	
 </div>
