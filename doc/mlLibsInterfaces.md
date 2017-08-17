@@ -10,14 +10,14 @@ The RESTful API Details of Getting the basic statistics.
 3. Request Data Schema:
 
 {
-    "sourceType": <sourceType>  # "db" or "hdfs"
-    "opTypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1",
+    "sourcetype": <sourceType>  # "db" or "hdfs"
+    "optypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1",
                                   "quarter3","range","freq", "freqpercent","sem", "cv", "mode"
 
-    "database": <databaseName>, # Optional. If sourceType is db, it's required. Or else it's unnecessary.
-    "tablename": <tableName>,   # Optional. If sourceType is db, it's required. Or else it's unnecessary.
-    "hdfsUrl": <hdfsUrl>,       # Optional. Only valid if sourceType is hdfs. This attribute is just for testing currently.
-    "dbsource": {               # Optional. If sourceType is db, it's required. Or else it's unnecessary.
+    "database": <databaseName>, # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
+    "tableName": <tableName>,   # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
+    "hdfsurl": <hdfsUrl>,       # Optional. Only valid if sourcetype is hdfs. This attribute is just for testing currently.
+    "dbsource": {               # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
         "dbtype": <dbType>,     # "mysql", "oracle", "sqlserver"
         "dbserver": <dbServer>, # db server IP or host
         "dbport": <dbPort>,
@@ -46,11 +46,11 @@ The RESTful API Details of Getting the basic statistics.
 4. Request Examples:
 4.1 Example for db
 {
-    "sourceType": "db",
-    "opTypes": ["count","sum","mean","median", "min","max"],
+    "sourcetype": "db",
+    "optypes": ["count","sum","mean","median", "min","max"],
     "source": "mysqlDB1",
     "database": "db1",
-    "tablename": "table1",
+    "tableName": "table1",
     "columns": {
         "col1": {
             "type": "number(3)",
@@ -65,8 +65,8 @@ The RESTful API Details of Getting the basic statistics.
 }
 4.1 Example for hdfs
 {
-    "sourceType": "hdfs",
-    "opTypes": ["count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3"],
+    "sourcetype": "hdfs",
+    "optypes": ["count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3"],
     "database": "myfolder",
     "tableName": "AREA_DICT"
 }

@@ -74,9 +74,9 @@ def getDataFrameFromSourceSparkCode():
                 if condIt["type"] == "limit" and type(condIt["value"]) == int:
                     maxRows = condIt["value"]
 
-        if ("sourceType" in jsonData.keys()) and (jsonData["sourceType"] == "hdfs"):
-            if ("hdfsUrl" in jsonData.keys()) and jsonData["hdfsUrl"].startswith("hdfs:"):
-                url = jsonData["hdfsUrl"]
+        if ("sourcetype" in jsonData.keys()) and (jsonData["sourcetype"] == "hdfs"):
+            if ("hdfsurl" in jsonData.keys()) and jsonData["hdfsurl"].startswith("hdfs:"):
+                url = jsonData["hdfsurl"]
             else:
                 url = userTableUrl
             logger.debug("url:{0}".format(url))

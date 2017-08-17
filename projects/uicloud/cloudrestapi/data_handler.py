@@ -220,8 +220,6 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     #     ...
     # }
     dbSourceDict = getDbSource()
-    if not dbSourceDict:
-        return False
     jsonData["dbsources"] = dbSourceDict
     jsonStr = json.dumps(jsonData, ensure_ascii=True)
     logger.debug("jsonStr:{0}".format(jsonStr))
@@ -255,7 +253,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             newDF.write.parquet(savedPathUrl, mode=mode)
         return True
 
-    def generateNewDataFrame(jsonData, maxRowCount=10000):
+    def generateNewDataFrame(jsonData, maxRowCount=10000,
+                            hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
 
         # check the json format
         if (("tables" not in jsonData.keys()) or
@@ -289,8 +288,17 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
                 dbTable = "{0}.{1}".format(dbName, tableName)
-                tables[seq]["dbsource"] = jsonData["dbsources"][tables[seq]["source"]]
-                dfDict[dbTable] = getDataFrameFromSource(tables[seq], False, removedColsDict, maxRowCount)
+                userTableUrl = False
+                if "sourcetype" not in tables[seq].keys() or tables[seq]["sourcetype"] == "db":
+                    tables[seq]["dbsource"] = jsonData["dbsources"][tables[seq]["source"]]
+                else:
+                    userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+                        hdfsHost, hdfsPort, rootFolder, dbName, tableName)
+
+                dfDict[dbTable] = getDataFrameFromSource(tables[seq], userTableUrl, removedColsDict, maxRowCount)
+                if not dfDict[dbTable]:
+                    logger.error("The data cannot be gotten from source. dbTable: {0}".format(dbTable))
+                    return False
 
             # check if all columns is available. BTW, it maybe is unnecessary.
             #

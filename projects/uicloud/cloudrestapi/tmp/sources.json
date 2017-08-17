@@ -1,9 +1,1 @@
-{
-    //        "mysqlDB1": {
-    //        "dbtype":"mysql",
-    //        "dbserver": "mysql1",
-    //        "dbport": "3306",
-    //        "user": "root",
-    //        "password": "password"
-    //    }
-}
+{}

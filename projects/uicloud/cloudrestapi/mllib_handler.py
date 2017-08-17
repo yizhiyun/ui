@@ -141,7 +141,7 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
     ''' + '''
     df3 = getDataFrameFromSource({0}, '{1}')
     if df3:
-        print(json.dumps(getBasicStats({0}["opTypes"], df3), cls = SpecialDataTypesEncoder))
+        print(json.dumps(getBasicStats({0}["optypes"], df3), cls = SpecialDataTypesEncoder))
     else:
         logger.error("Cannot get data from the given source!")
         print(False)
