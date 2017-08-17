@@ -44,6 +44,7 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
             "freq", "freqpercent"
         ]
 
+        outputDict = {}
         freqDict = {}
         logger.debug("opTypeList: {0}, dataFrame.count:{1}".format(opTypeList, dataFrame.count()))
         if "freq" in opTypeList or "freqPercent" in opTypeList:
@@ -64,6 +65,7 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
                     dictList1.append(freqit.asDict())
                 freqDict[col] = dictList1
         logger.debug("freqDict: {0}".format(freqDict))
+        outputDict["freqs"] = freqDict
 
         # filter out the columns whose type isn't NumericType.
         columnList = []
@@ -74,9 +76,14 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
                 columnList.append(dataFrame[sItem.name])
         logger.debug("columnList: {0}".format(columnList))
 
+        statsDict = {}
+
+        if len(columnList) == 0:
+            outputDict["stats"] = statsDict
+            return outputDict
+
         pandasDF1 = dataFrame.select(columnList).toPandas()
 
-        statsDict = {}
         for typeItem in opTypeList:
             typeItem = typeItem.strip()
             if typeItem not in availTypeList:
@@ -128,9 +135,8 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
                 pass
 
         logger.debug("statsDict: {0}".format(statsDict))
-        outputDict = {}
-        outputDict["freqs"] = freqDict
         outputDict["stats"] = statsDict
+
         return outputDict
     ''' + '''
     df3 = getDataFrameFromSource({0}, '{1}')

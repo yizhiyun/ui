@@ -448,7 +448,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             outputDf = outputDf.drop(colIt)
 
         return outputDf
-    ''' + filterDataFrameSparkCode() + '''
+    ''' + '''
     print(writeDataFrame('{0}', '{1}', mode='{2}', partitionBy={3}))
     '''.format(jsonStr, savedPathUrl, mode, partitionBy)
 
