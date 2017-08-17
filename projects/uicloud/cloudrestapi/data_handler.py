@@ -230,7 +230,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     import sys
     import traceback
     import json
-    ''' + setupLoggingSparkCode() + '''
+    ''' + setupLoggingSparkCode() + getDataFrameFromSourceSparkCode() + '''
 
     def writeDataFrame( jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=10000 ):
         """
@@ -238,7 +238,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         If the limit parameter is given, use that value.
         """
         jsonData = json.loads(jsonStr, encoding='utf-8')
-        logger.debug(jsonData)
+        logger.debug("jsonData: {0}".format(jsonData))
         newDF = generateNewDataFrame(jsonData, maxRowCount);
         if not newDF:
             return False;
@@ -286,58 +286,11 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             # get data from those db sources
             for seq in range(0, tableNum):
                 # get the table connection information
-
-                dbSourceDict = jsonData["dbsources"][tables[seq]["source"]]
-                dbType = dbSourceDict["dbtype"]
-                dbServer = dbSourceDict["dbserver"]
-                dbPort = dbSourceDict["dbport"]
-                user = dbSourceDict["user"]
-                password = dbSourceDict["password"]
-
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
-
-                connUrl = "jdbc:{0}://{1}:{2}".format(dbType, dbServer, dbPort)
                 dbTable = "{0}.{1}".format(dbName, tableName)
-
-                # check the "removedColumns" item, remove them from table columns
-                if dbTable in removedColsDict.keys():
-                    for colItem in removedColsDict:
-                        if colItem in tables[seq]['columns'].keys():
-                            tables[seq]['columns'].pop(colItem)
-
-                connDbTable = dbTable
-                if dbType == "oracle":
-                    sid = dbSourceDict["sid"]
-                    connUrl = "jdbc:{0}:thin:@{1}:{2}:{3}".format(dbType, dbServer, dbPort, sid)
-                elif dbType == "postgresql":
-                    connUrl = "jdbc:{0}://{1}".format(dbType, dbServer)
-                elif dbType == "sqlserver":
-                    connUrl = "jdbc:{0}://{1}:{2};databaseName={3}".format(dbType, dbServer, dbPort, dbName)
-                    connDbTable = tableName
-                logger.debug("connUrl:{0},connDbTable:{1}".format(connUrl, connDbTable))
-
-                maxRows = maxRowCount
-                for condIt in tables[seq]["conditions"]:
-                    if condIt["type"] == "limit" and type(condIt["value"]) == int:
-                        maxRows = condIt["value"]
-
-                try:
-                    dfDict[dbTable] = spark.read \
-                        .format("jdbc") \
-                        .option("url", connUrl) \
-                        .option("dbtable", connDbTable) \
-                        .option("user", user) \
-                        .option("password", password) \
-                        .option("useUnicode", True) \
-                        .option("characterEncoding","utf8") \
-                        .load().limit(maxRows)
-                    dfDict[dbTable] = filterDF(dfDict[dbTable], tables[seq])
-                    logger.debug("dfDict[dbTable]:{0},dbTable:{1}".format(dfDict[dbTable],dbTable))
-                except Exception:
-                    traceback.print_exc()
-                    print(sys.exc_info())
-                    return False
+                tables[seq]["dbsource"] = jsonData["dbsources"][tables[seq]["source"]]
+                dfDict[dbTable] = getDataFrameFromSource(tables[seq], False, removedColsDict, maxRowCount)
 
             # check if all columns is available. BTW, it maybe is unnecessary.
             #
@@ -354,12 +307,12 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 oldCol = key.replace('.', '_')
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
         except KeyError:
-            print(sys.exc_info())
             traceback.print_exc()
+            logger.error("KeyError Exception: {0}".format(sys.exc_info()))
             return False
         except Exception:
-            print(sys.exc_info())
             traceback.print_exc()
+            logger.error("Exception: {0}".format(sys.exc_info()))
             return False;
         return outputDf
 
@@ -496,8 +449,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
         return outputDf
     ''' + filterDataFrameSparkCode() + '''
-    print(writeDataFrame('{0}', '{1}', mode='{2}', partitionBy={3}, maxRowCount={4}))
-    '''.format(jsonStr, savedPathUrl, mode, partitionBy, maxRowCount)
+    print(writeDataFrame('{0}', '{1}', mode='{2}', partitionBy={3}))
+    '''.format(jsonStr, savedPathUrl, mode, partitionBy)
 
 
 def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-master0",

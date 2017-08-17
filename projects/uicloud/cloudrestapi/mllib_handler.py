@@ -45,7 +45,7 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
         ]
 
         freqDict = {}
-        dataFrame=dataFrame.limit(10)
+        logger.debug("opTypeList: {0}, dataFrame.count:{1}".format(opTypeList, dataFrame.count()))
         if "freq" in opTypeList or "freqPercent" in opTypeList:
             rowCount = dataFrame.count()
             logger.debug("rowCount: {0}".format(rowCount))
@@ -137,6 +137,7 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
     if df3:
         print(json.dumps(getBasicStats({0}["opTypes"], df3), cls = SpecialDataTypesEncoder))
     else:
+        logger.error("Cannot get data from the given source!")
         print(False)
     '''.format(jsonData, userTableUrl)
 

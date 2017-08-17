@@ -23,7 +23,7 @@ def setupLoggingSparkCode():
         logger.setLevel(logging.INFO)
         if not logger.handlers:
             loghandler = logging.FileHandler(logpath)
-            loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(module)s %(message)s'))
+            loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(funcName)s %(message)s'))
             logger.addHandler(loghandler)
         return logger
 
@@ -60,14 +60,19 @@ def getDataFrameFromSourceSparkCode():
     """
 
     return '''
-    def getDataFrameFromSource(jsonData, userTableUrl, maxRow=10000):
+    def getDataFrameFromSource(jsonData, userTableUrl=None, removedColsDict={}, maxRowCount=10000):
         """
         get spark DataFrame once the input data source is valid.
+        userTableUrl, it's just used for hdfs customized url.
+        removedColsDict, it's just used for the generateNewDataFrame function.
         """
 
-        columnList = "*"
-        if "columns" in jsonData.keys():
-            columnList = list(jsonData['columns'].keys())
+        # set the maxRow if it exists.
+        maxRow = maxRowCount
+        if "conditions" in jsonData.keys():
+            for condIt in jsonData["conditions"]:
+                if condIt["type"] == "limit" and type(condIt["value"]) == int:
+                    maxRows = condIt["value"]
 
         if ("sourceType" in jsonData.keys()) and (jsonData["sourceType"] == "hdfs"):
             if ("hdfsUrl" in jsonData.keys()) and jsonData["hdfsUrl"].startswith("hdfs:"):
@@ -75,14 +80,19 @@ def getDataFrameFromSourceSparkCode():
             else:
                 url = userTableUrl
             logger.debug("url:{0}".format(url))
+            if url is None:
+                errmsg = "The url hasn't been given. Please provide it."
+                logger.error(errmsg)
+                return False
             try:
-                df1 = spark.read.parquet(url).select(columnList).limit(maxRow)
+                df1 = spark.read.parquet(url).limit(maxRow)
             except Exception:
                 traceback.print_exc()
+                logger.error("There is an error while reading {0}. Exception:{1}".format(url, sys.exc_info()))
                 return False
 
         else:
-            dbSourceDict = jsonData["dbsources"][jsonData["source"]]
+            dbSourceDict = jsonData["dbsource"]
             dbType = dbSourceDict["dbtype"]
             dbServer = dbSourceDict["dbserver"]
             dbPort = dbSourceDict["dbport"]
@@ -95,6 +105,12 @@ def getDataFrameFromSourceSparkCode():
             connUrl = "jdbc:{0}://{1}:{2}".format(dbType, dbServer, dbPort)
             dbTable = "{0}.{1}".format(dbName, tableName)
 
+            # check the "removedColumns" item, remove them from table columns
+            if dbTable in removedColsDict.keys():
+                for colItem in removedColsDict:
+                    if colItem in jsonData['columns'].keys():
+                        jsonData['columns'].pop(colItem)
+
             connDbTable = dbTable
             if dbType == "oracle":
                 sid = dbSourceDict["sid"]
@@ -104,6 +120,7 @@ def getDataFrameFromSourceSparkCode():
             elif dbType == "sqlserver":
                 connUrl = "jdbc:{0}://{1}:{2};databaseName={3}".format(dbType, dbServer, dbPort, dbName)
                 connDbTable = tableName
+            logger.debug("connUrl:{0},connDbTable:{1}".format(connUrl, connDbTable))
 
             try:
                 df1 = spark.read \
@@ -112,11 +129,17 @@ def getDataFrameFromSourceSparkCode():
                     .option("dbtable", connDbTable) \
                     .option("user", user) \
                     .option("password", password) \
-                    .load().select(columnList)
+                    .option("useUnicode", True) \
+                    .option("characterEncoding","utf8") \
+                    .load().limit(maxRow)
+
             except Exception:
                 traceback.print_exc()
-                print(sys.exc_info())
+                logger.error("Exception: {0}".format(sys.exc_info()))
                 return False
+
+        df1 = filterDF(df1, jsonData)
+
         return df1
     '''
 
@@ -133,10 +156,11 @@ def filterDataFrameSparkCode():
         from pyspark.sql.functions import udf
         from pyspark.sql.types import BooleanType
 
+        columnList = "*"
         logger.debug("tableDict:{0}".format(tableDict))
         if 'columns' in tableDict.keys():
             columnList = list(tableDict['columns'].keys())
-            logger.debug("condIt:{0}".format(columnList))
+            logger.debug("columnList:{0}".format(columnList))
             inDataFrame=inDataFrame.select(columnList)
 
         if "conditions" in tableDict.keys():
