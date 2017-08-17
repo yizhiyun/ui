@@ -11,7 +11,8 @@ The RESTful API Details of Getting the basic statistics.
 
 {
     "sourceType": <sourceType>  # "db" or "hdfs"
-    "opTypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3","range"
+    "opTypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1",
+                                  "quarter3","range","freq", "freqpercent","sem", "cv", "mode"
 
     "database": <databaseName>, # Optional. If sourceType is db, it's required. Or else it's unnecessary.
     "tablename": <tableName>,   # Optional. If sourceType is db, it's required. Or else it's unnecessary.
