@@ -5,10 +5,10 @@ This document describe the RESTful API of getting mllib information, e.g. statis
 
 The RESTful API Details of Getting the basic statistics.
 -------------
-1. Support Format: JSON
-2. Request Method: POST
-3. Request Data Schema:
-
+### 1. Support Format: JSON
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
     "sourcetype": <sourceType>  # "db" or "hdfs"
     "optypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1",
@@ -41,10 +41,11 @@ The RESTful API Details of Getting the basic statistics.
     <otherProperty>:<otherValue>,
     ...
 }
+```
 
-
-4. Request Examples:
-4.1 Example for db
+### 4. Request Examples:
+* Example for db
+```
 {
     "sourcetype": "db",
     "optypes": ["count","sum","mean","median", "min","max"],
@@ -63,16 +64,19 @@ The RESTful API Details of Getting the basic statistics.
         }
     }
 }
-4.1 Example for hdfs
+```
+* Example for hdfs
+```
 {
     "sourcetype": "hdfs",
     "optypes": ["count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3"],
     "database": "myfolder",
     "tableName": "AREA_DICT"
 }
-
-5. Response Data:
-5.1 if successful, it will response as follows
+```
+### 5. Response Data:
+* if successful, it will response as follows
+```
 {
     "status": "success",
     "results": {
@@ -84,8 +88,9 @@ The RESTful API Details of Getting the basic statistics.
         }
     }
 }
-5.2 if failed, it will response as follows
-{ "status":"failed", "reason": ... }
+```
+* if failed, it will response as follows
+> { "status":"failed", "reason": ... }
 
 
 Notes

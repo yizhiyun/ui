@@ -9,7 +9,7 @@ The RESTful API Details of Verify those table relationships
 ### 1. Support Format: JSON
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
-
+```
 {
     "tables": [
         {
@@ -72,8 +72,9 @@ The RESTful API Details of Verify those table relationships
     ]
 
 }
-
+```
 ### 4. Request Examples:
+```
 {
     "tables": [
         {
@@ -134,7 +135,7 @@ The RESTful API Details of Verify those table relationships
         }
     ]
 }
-
+```
 ### 5. Response Data:
 * if successful, it will response as follows
 > { "status": "success",
