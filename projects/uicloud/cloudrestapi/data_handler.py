@@ -131,11 +131,17 @@ def getOutputColumns(jsonData):
     # This variable is for checking if there is a repeated database.tableName
     dbTableList = []
     for seq in range(0, tableNum):
+        if ("database" not in tables[seq].keys()) or ("tableName" not in tables[seq].keys()):
+            errMsg = "All table should include both database and tableName. Please check table: {0}".format(tables[seq])
+            logger.error(errMsg)
+            return False
         dbName = tables[seq]["database"]
         tableName = tables[seq]["tableName"]
         dbTable = "{0}.{1}".format(dbName, tableName)
         if dbTable in dbTableList:
-            logger.error("Currently, it don't support two tables are the same as both database name and table name.")
+            errMsg = "At present, the case that two tables are the same as both database name and table name \
+                       hasn't been supported. Please check dbTable: {0}".format(dbTable)
+            logger.error(errMsg)
             return False
         else:
             dbTableList.append(dbTable)

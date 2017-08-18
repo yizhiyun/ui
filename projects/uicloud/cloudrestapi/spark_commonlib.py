@@ -93,6 +93,10 @@ def getDataFrameFromSourceSparkCode():
 
         else:
             dbSourceDict = jsonData["dbsource"]
+            keySet = ("dbtype", "dbserver", "dbport", "user", "password")
+            if not keySet.issubset(dbSourceDict.keys()):
+                logger.error("Please make sure that the dbsource keys include all keys {0}".format(keySet))
+                return False
             dbType = dbSourceDict["dbtype"]
             dbServer = dbSourceDict["dbserver"]
             dbPort = dbSourceDict["dbport"]
@@ -113,6 +117,9 @@ def getDataFrameFromSourceSparkCode():
 
             connDbTable = dbTable
             if dbType == "oracle":
+                if "sid" not in dbSourceDict:
+                    logger.error("The 'sid' must in the dbsource keys when connect to oracle.")
+                    return False
                 sid = dbSourceDict["sid"]
                 connUrl = "jdbc:{0}:thin:@{1}:{2}:{3}".format(dbType, dbServer, dbPort, sid)
             elif dbType == "postgresql":
