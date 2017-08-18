@@ -128,9 +128,17 @@ def getOutputColumns(jsonData):
     # <fullColName> has the format of <dbName>.<tableName>.<colName>
     outputColumnsDict = {}
 
+    # This variable is for checking if there is a repeated database.tableName
+    dbTableList = []
     for seq in range(0, tableNum):
         dbName = tables[seq]["database"]
         tableName = tables[seq]["tableName"]
+        dbTable = "{0}.{1}".format(dbName, tableName)
+        if dbTable in dbTableList:
+            logger.error("Currently, it don't support two tables are the same as both database name and table name.")
+            return False
+        else:
+            dbTableList.append(dbTable)
         columnList = list(tables[seq]['columns'].keys())
 
         curTableColumnList = []
@@ -139,6 +147,10 @@ def getOutputColumns(jsonData):
         for colName in columnList:
             fullColName = "{0}.{1}.{2}".format(dbName, tableName, colName)
             if colName in outputColumnsList:
+                # if fullColName in outputColumnsList:
+                #     logger.error("There are two columns with the same database, table and columns. \
+                #         fullColName: {0}".format(fullColName))
+                #     return False
                 curTableColumnList.append(fullColName)
                 outputColumnsDict[fullColName] = fullColName
             else:
@@ -149,7 +161,7 @@ def getOutputColumns(jsonData):
 
     # check if all columns is available. BTW, it maybe is unnecessary.
     #
-
+    logger.debug("outputColumnsDict: {0}".format(outputColumnsDict))
     return outputColumnsDict
 
 
