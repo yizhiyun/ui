@@ -6,9 +6,9 @@ This document describe the store schema when operator provide the table relation
 
 The RESTful API Details of Verify those table relationships
 -------------
-1. Support Format: JSON
-2. Request Method: POST
-3. Request Data Schema:
+### 1. Support Format: JSON
+### 2. Request Method: POST
+### 3. Request Data Schema:
 
 {
     "tables": [
@@ -73,7 +73,7 @@ The RESTful API Details of Verify those table relationships
 
 }
 
-4. Request Examples:
+### 4. Request Examples:
 {
     "tables": [
         {
@@ -135,20 +135,20 @@ The RESTful API Details of Verify those table relationships
     ]
 }
 
-5. Response Data: 
-5.1 if successful, it will response as follows
-{ "status": "success", 
+### 5. Response Data:
+* if successful, it will response as follows
+> { "status": "success",
 "columns": [ "column1", "column2", ...] }
-5.2 if failed, it will response as follows
-{ "status":"failed" }
+* if failed, it will response as follows
+> { "status":"failed" }
 
 
 The RESTful API Details of Generating New Table
 -------------
-1. Support Format: JSON
-2. Request Method: POST
-3. Request Data Schema:
-
+### 1. Support Format: JSON
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
     "tables": [
         {
@@ -221,9 +221,10 @@ The RESTful API Details of Generating New Table
         ...
     }
 }
-
-4. Request Examples:
-4.1 Db sources example:
+```
+### 4. Request Examples:
+* Db sources example:
+```
 {
     "tables": [
         {
@@ -294,8 +295,9 @@ The RESTful API Details of Generating New Table
         ]
     }
 }
-
-4.2 hdfs source example:
+```
+* hdfs source example:
+```
 {
     "tables": [
         {
@@ -350,20 +352,21 @@ The RESTful API Details of Generating New Table
         ]
     }
 }
+```
 
-5. Response Data:
-5.1 if successful, it will response as follows
-{ "status":"success" }
-5.2 if failed, it will response as follows
-{ "status":"failed" }
+### 5. Response Data:
+* if successful, it will response as follows
+> { "status":"success" }
+* if failed, it will response as follows
+> { "status":"failed", "reason": ... }
 
 
 
 Notes
 -------------
 Here are the default value lists for the column attribute if you don't provide.
-* columnType = VARCHAR2(32)
+* type = VARCHAR2(32)
 * nullable = yes
-* primaryKey = no
-* uniqueKey = no
-* foreignKey = no
+* primary = no
+* unique = no
+* foreign = no
