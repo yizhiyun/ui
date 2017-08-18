@@ -223,6 +223,7 @@ The RESTful API Details of Generating New Table
 }
 
 4. Request Examples:
+4.1 Db sources example:
 {
     "tables": [
         {
@@ -290,6 +291,62 @@ The RESTful API Details of Generating New Table
         },
         "removedColumns": [
             "db2.table2.col3"
+        ]
+    }
+}
+
+4.2 hdfs source example:
+{
+    "tables": [
+        {
+            "sourcetype": "hdfs",
+            "database": "myfolder",
+            "tableName": "tt1",
+            "columns": {
+                "idt1": {},
+                "name": {},
+                "score": {},
+                "location": {}
+            },
+            "conditions": [
+                {
+                    "type":"=",
+                    "columnName": "idt1",
+                    "value": 1000
+                }
+            ]
+        },
+        {
+            "sourcetype": "hdfs",
+            "database": "myfolder",
+            "tableName": "tt2",
+            "columns": {
+                "idt1": {},
+                "name": {},
+                "score": {}
+            }
+        }
+    ],
+    "relationships": [
+        {
+            "fromTable": "myfolder.tt1",
+            "toTable": "myfolder.tt2",
+            "joinType": "inner join",
+            "columnMap": [
+                {
+                    "fromCol": "idt1",
+                    "toCol": "idt1"
+                }
+            ]
+        }
+    ],
+    "outputs": {
+        "outputTableName": "ctable1",
+        "columnRenameMapping": {
+            "myfolder.tt2.score": "toscore"
+        },
+        "removedColumns": [
+            "myfolder.tt2.name"
         ]
     }
 }
