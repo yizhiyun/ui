@@ -11,14 +11,14 @@ Get All Tables From Current User
 ### 3. Request Data Schema:NULL
 ### 4. Support Format: JSON
 ### 5. Response Data:
-#### 5.1. if successful, it will response as follows
+* if successful, it will response as follows
 ```
 {
     "status": "success",
     "results": <tableList>
 }
 ```
-#### 5.2. if failed, it will response as follows
+* if failed, it will response as follows
 ```
 { 
     "status": "failed",
@@ -85,7 +85,7 @@ Get Table From Current User Via Spark
 ```
 ### 4. Support Format: JSON
 ### 5. Response Data:
-#### 5.1. As for /cloudapi/v1/tables/<tableName>/all, it will response as follows if successful
+* As for /cloudapi/v1/tables/<tableName>/all, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -111,7 +111,7 @@ Get Table From Current User Via Spark
     }
 }
 ```
-#### 5.2 As for /cloudapi/v1/tables/<tableName>/schema, it will response as follows if successful
+* As for /cloudapi/v1/tables/<tableName>/schema, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -124,7 +124,7 @@ Get Table From Current User Via Spark
     }
 }
 ```
-#### 5.3 As for /cloudapi/v1/tables/<tableName>/data, it will response as follows if successful
+* As for /cloudapi/v1/tables/<tableName>/data, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -145,7 +145,7 @@ Get Table From Current User Via Spark
     }
 }
 ```
-#### 5.4 if failed, it will response as follows
+* if failed, it will response as follows
 ```
 {
     "status": "failed",
@@ -153,7 +153,7 @@ Get Table From Current User Via Spark
 }
 ```
 ### 6. Response Example:
-#### 6.1 As for /cloudapi/v1/tables/<tableName>/all, it will response as follows if successful
+* As for /cloudapi/v1/tables/<tableName>/all, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -193,7 +193,7 @@ Get Table From Current User Via Spark
     }
 }
 ```
-#### 6.2 if failed, it will response as follows
+* if failed, it will response as follows
 ```
 {
     "status": "failed",
