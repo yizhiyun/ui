@@ -39,7 +39,8 @@ def getAllDataFunction(username, datatype=None):
                         'viewtype': tablelist[i].viewtype,
                         'viewname': tablelist[i].viewname,
                         'note': tablelist[i].note,
-                        'id': tablelist[i].id
+                        'id': tablelist[i].id,
+                        'show': tablelist[i].show
                     }
         return context
 
@@ -246,6 +247,24 @@ def addNote(request):
         note = jsonData['note']
         table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
         table.note = note
+        table.save()
+        context = getAllDataFunction(jsonData['username'])
+        return JsonResponse(context)
+
+
+@api_view(['POST'])
+def setShow(request):
+    '''
+    给视图保存备注
+    '''
+    jsonData = request.data
+
+    if request.method == 'POST':
+        table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
+        if table.show:
+            table.show = False
+        else:
+            table.show = True
         table.save()
         context = getAllDataFunction(jsonData['username'])
         return JsonResponse(context)
