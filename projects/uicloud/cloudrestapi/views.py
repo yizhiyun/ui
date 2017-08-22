@@ -380,7 +380,7 @@ def upload(request):
                 delimiter,
                 quote,
                 hdfsHost=jsonData['hdfshost'],
-                Port=jsonData['port'],
+                port=jsonData['port'],
                 rootFolder=jsonData['rootfolder'],
                 username=jsonData['username'],
                 header=jsonData['header'],
