@@ -360,35 +360,48 @@ def upload(request):
     file = request.FILES.get('file')
     if request.method == 'POST':
         file = fileFormat(file)
-        sparkCode = uploadToHdfs(
+        upload = uploadToHdfs(
             file,
             nNPort=jsonData['nnport'],
-            header=jsonData['header'],
             hdfsHost=jsonData['hdfshost'],
-            port=jsonData['port'],
             rootFolder=jsonData['rootfolder'],
             username=jsonData['username']
         )
+        if upload:
+            delimiter = ','
+            if jsonData['delimiter']:
+                delimiter = jsonData['delimiter']
+            quote = '"'
+            if jsonData['quote']:
+                quote = jsonData['quote']
 
-        if not sparkCode:
-            context = {
-                "status": "false"
-            }
-            return JsonResponse(context)
+            sparkCode = getUploadInfoSparkCode(
+                file.name,
+                delimiter,
+                quote,
+                hdfsHost=jsonData['hdfshost'],
+                Port=jsonData['port'],
+                rootFolder=jsonData['rootfolder'],
+                username=jsonData['username'],
+                header=jsonData['header'],
+                maxRowCount=jsonData['maxRowCount']
+            )
 
-        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
-        if not output:
-            failObj = {"status": "failed",
-                       "reason": "Please see the logs for details."}
-            return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok":
-            failObj = {"status": "failed",
-                       "reason": output}
-            return JsonResponse(failObj, status=400)
+            output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+            if not output:
+                failObj = {"status": "failed",
+                           "reason": "Please see the logs for details."}
+                return JsonResponse(failObj, status=400)
+            elif output["status"] != "ok":
+                failObj = {"status": "failed",
+                           "reason": output}
+                return JsonResponse(failObj, status=400)
+            else:
+                logger.debug("output: {}".format(output))
+                data = output["data"]["text/plain"]
+
+                results = json.loads(data)
+                sucessObj = {"status": "success", "results": results}
+                return JsonResponse(sucessObj)
         else:
-            logger.debug("output: {}".format(output))
-            data = output["data"]["text/plain"]
-
-            results = json.loads(data)
-            sucessObj = {"status": "success", "results": results}
-            return JsonResponse(sucessObj)
+            return JsonResponse({"status": "false"})

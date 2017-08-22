@@ -8,6 +8,19 @@ This document describe the RESTful API of how to upload the file to hdfs
 ### 3. Request Method: POST
 ### 4. Request Data Schema:
 ```
+if you want to set the separator:
+{
+    "hdfshost": <hdfshost>,
+    "nnport": <nameNodePort>,
+    "port": <port>,
+    "rootfolder": <rootfolder>,
+    "username": <username>,
+    "header": <True/False>,
+    "delimiter": <delimiter>,
+    "quote": <quote>  # notice: add '\' before ' or ".
+}
+```
+if you dont't set the separator:
 {
     "hdfshost": <hdfshost>,
     "nnport": <nameNodePort>,
@@ -21,6 +34,19 @@ This document describe the RESTful API of how to upload the file to hdfs
 ### 5. Request Examples:
 * Example
 ```
+if you want to set the separator:
+{
+    "hdfshost": "spark-master0",
+    "nnport": "50070",
+    "port": "9000",
+    "rootfolder": "tmp/users",
+    "username": "myfolder",
+    "header": True,
+    "delimiter": ",",
+    "quote": "\""
+}
+```
+if you dont't set the separator:
 {
     "hdfshost": "spark-master0",
     "nnport": "50070",
