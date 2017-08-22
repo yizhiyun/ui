@@ -5,6 +5,7 @@ import textwrap
 import time
 import os
 
+
 from .spark_commonlib import *
 from dataCollection.gxmHandleClass.Singleton import Singleton
 
@@ -545,3 +546,30 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
         return False
 
     return outputList
+
+
+def getUploadInfoSparkCode(fileName, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users', username="myfolder",
+                           header=True, maxRowCount=10000):
+    hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(hdfsHost, port, rootFolder, username, fileName)
+    parquetPathUrl = '/{0}/{1}/parquet/'.format(rootFolder, username)
+    sparkCode = '''
+    import json
+    def test(hdfsUrl, parquetPathUrl, tableName, header, maxRowCount=10000):
+        if header:
+            df = spark.read.format("csv").option("inferSchema", "true").option("header", "true").load(hdfsUrl)
+        else:
+            df = spark.read.format("csv").option("inferSchema", "true").load(hdfsUrl)
+        df.write.parquet(parquetPathUrl + tableName)
+        dframe1 = spark.read.parquet(parquetPathUrl + tableName).limit(int(maxRowCount))
+        outputDict = {}
+        outputDict['schema'] = []
+        for colItem in dframe1.schema.fields:
+            outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
+        outputDict['data'] = []
+        for rowItem in dframe1.collect():
+            outputDict['data'].append(rowItem.asDict())
+        return json.dumps(outputDict)
+    ''' + '''
+    print(test('{0}', '{1}', '{2}', '{3}', '{4}'))
+    '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, maxRowCount)
+    return sparkCode

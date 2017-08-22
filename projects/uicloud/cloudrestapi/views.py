@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 # from rest_framework.response import Response
 from .data_handler import *
 from .mllib_handler import *
+from .upload import *
 from django.http import JsonResponse
 
 import json
@@ -330,6 +331,50 @@ def getBasicStats(request):
             return JsonResponse(failObj, status=400)
         # response all valid columns
         sparkCode = getBasicStatsSparkCode(jsonData)
+
+        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        if not output:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        elif output["status"] != "ok":
+            failObj = {"status": "failed",
+                       "reason": output}
+            return JsonResponse(failObj, status=400)
+        else:
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+
+            results = json.loads(data)
+            sucessObj = {"status": "success", "results": results}
+            return JsonResponse(sucessObj)
+
+
+@api_view(['POST'])
+def upload(request):
+    '''
+    此处后续应添加空行问题，分隔符如非默认问题的处理手段
+    '''
+
+    jsonData = request.data
+    file = request.FILES.get('file')
+    if request.method == 'POST':
+        file = fileFormat(file)
+        sparkCode = uploadToHdfs(
+            file,
+            nNPort=jsonData['nnport'],
+            header=jsonData['header'],
+            hdfsHost=jsonData['hdfshost'],
+            port=jsonData['port'],
+            rootFolder=jsonData['rootfolder'],
+            username=jsonData['username']
+        )
+
+        if not sparkCode:
+            context = {
+                "status": "false"
+            }
+            return JsonResponse(context)
 
         output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
         if not output:
