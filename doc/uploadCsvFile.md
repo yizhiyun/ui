@@ -3,9 +3,10 @@ Description
 -----------
 This document describe the RESTful API of how to upload the file to hdfs
 -------------
-### 1. Support Format: JSON
-### 2. Request Method: POST
-### 3. Request Data Schema:
+### 1. url: dataCollection/cloudapi/v1/upload
+### 2. Support Format: JSON
+### 3. Request Method: POST
+### 4. Request Data Schema:
 ```
 {
     "hdfshost": <hdfshost>,
@@ -17,7 +18,7 @@ This document describe the RESTful API of how to upload the file to hdfs
 }
 ```
 
-### 4. Request Examples:
+### 5. Request Examples:
 * Example
 ```
 {
@@ -30,7 +31,7 @@ This document describe the RESTful API of how to upload the file to hdfs
 }
 ```
 
-### 5. Response Data:
+### 6. Response Data:
 * if successful, it will response as follows
 ```
 {
