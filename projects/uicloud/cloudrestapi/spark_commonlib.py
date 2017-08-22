@@ -93,7 +93,7 @@ def getDataFrameFromSourceSparkCode():
 
         else:
             dbSourceDict = jsonData["dbsource"]
-            keySet = ("dbtype", "dbserver", "dbport", "user", "password")
+            keySet = set(["dbtype", "dbserver", "dbport", "user", "password"])
             if not keySet.issubset(dbSourceDict.keys()):
                 logger.error("Please make sure that the dbsource keys include all keys {0}".format(keySet))
                 return False
