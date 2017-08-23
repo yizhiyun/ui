@@ -50,6 +50,7 @@ var _drag_message = {
 var username = "liuyue";
 //视图保存的数据
 var post_dict ={};
+var  now_build_tables = [];
 
 $(function() {
 
@@ -158,7 +159,7 @@ $(function() {
 			var op = $("<option value="+val+">"+val+"</option>");
 			cube_select.append(op);
 		}	
-
+		now_build_tables = build_tables;
 		
 		// select选项卡
 		cube_select.comboSelect();
