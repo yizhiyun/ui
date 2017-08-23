@@ -549,13 +549,13 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
 
 
 def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
-                           username="myfolder", header=False, maxRowCount=10000):
+                           username="myfolder", header='false', maxRowCount=10000):
     hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(hdfsHost, port, rootFolder, username, fileName)
     parquetPathUrl = '/{0}/{1}/parquet/'.format(rootFolder, username)
     sparkCode = '''
     import json
     def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote, maxRowCount=10000):
-        if header:
+        if header == 'true':
             df = spark.read.option("inferSchema", "true") \
                            .option("header", "true") \
                            .option("delimiter",delimiter) \

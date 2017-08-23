@@ -365,7 +365,7 @@ def upload(request):
         hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData else "spark-master0"
         rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
         username = jsonData['username'] if 'username' in jsonData else "myfolder"
-        header = jsonData['header'] if 'header' in jsonData else False
+        header = jsonData['header'] if 'header' in jsonData else 'false'
         maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
         delimiter = jsonData['delimiter'] if 'delimiter' in jsonData else ','
         quote = jsonData['quote'] if 'quote' in jsonData else '"'
