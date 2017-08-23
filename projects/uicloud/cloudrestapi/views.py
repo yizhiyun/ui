@@ -369,6 +369,7 @@ def upload(request):
         maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
         delimiter = jsonData['delimiter'] if 'delimiter' in jsonData else ','
         quote = jsonData['quote'] if 'quote' in jsonData else '"'
+        quote = jsonData['port'] if 'port' in jsonData else '9000'
 
         upload = uploadToHdfs(
             file, hdfsHost, nNPort, rootFolder, username
