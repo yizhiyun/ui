@@ -353,38 +353,31 @@ def getBasicStats(request):
 @api_view(['POST'])
 def upload(request):
     '''
-    此处后续应添加空行问题，分隔符如非默认问题的处理手段
+    上传csv文件到hdfs， 返回表单。 目前支持中文，空行， 自定义分隔符。
+
     '''
 
     jsonData = request.data
     file = request.FILES.get('file')
     if request.method == 'POST':
         file = fileFormat(file)
+        nNPort = jsonData['nnport'] if 'nnport' in jsonData.keys() else "50070"
+        hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData.keys() else "spark-master0"
+        rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData.keys() else "tmp/users"
+        username = jsonData['username'] if 'username' in jsonData.keys() else "myfolder"
+        header = jsonData['header'] if 'header' in jsonData.keys() else False
+        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData.keys() else 10000
+        delimiter = jsonData['delimiter'] if 'delimiter' in jsonData.keys() else ','
+        quote = jsonData['quote'] if 'quote' in jsonData.keys() else '"'
+
         upload = uploadToHdfs(
-            file,
-            nNPort=jsonData['nnport'],
-            hdfsHost=jsonData['hdfshost'],
-            rootFolder=jsonData['rootfolder'],
-            username=jsonData['username']
+            file, hdfsHost, nNPort, rootFolder, username
         )
         if upload:
-            delimiter = ','
-            if jsonData['delimiter']:
-                delimiter = jsonData['delimiter']
-            quote = '"'
-            if jsonData['quote']:
-                quote = jsonData['quote']
 
             sparkCode = getUploadInfoSparkCode(
-                file.name,
-                delimiter,
-                quote,
-                hdfsHost=jsonData['hdfshost'],
-                port=jsonData['port'],
-                rootFolder=jsonData['rootfolder'],
-                username=jsonData['username'],
-                header=jsonData['header'],
-                maxRowCount=jsonData['maxRowCount']
+                file.name, delimiter, quote, hdfsHost,
+                port, rootFolder, username, header, maxRowCount
             )
 
             output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)

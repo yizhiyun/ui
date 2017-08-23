@@ -549,34 +549,64 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
 
 
 def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
-                           username="myfolder", header=True, maxRowCount=10000):
+                           username="myfolder", header=False, maxRowCount=10000):
     hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(hdfsHost, port, rootFolder, username, fileName)
     parquetPathUrl = '/{0}/{1}/parquet/'.format(rootFolder, username)
     sparkCode = '''
     import json
     def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote, maxRowCount=10000):
         if header:
-            df = spark.read.option("inferSchema", "true")
-                           .option("header", "true")
-                           .option("delimiter",delimiter)
-                           .option("quote",quote)
+            df = spark.read.option("inferSchema", "true") \
+                           .option("header", "true") \
+                           .option("delimiter",delimiter) \
+                           .option("quote",quote) \
                            .csv(hdfsUrl)
         else:
-            df = spark.read.option("inferSchema", "true")
-                           .option("delimiter",delimiter)
-                           .option("quote",quote)
+            df = spark.read.option("inferSchema", "true") \
+                           .option("delimiter",delimiter) \
+                           .option("quote",quote) \
                            .csv(hdfsUrl)
         df.write.parquet(parquetPathUrl + tableName)
         dframe1 = spark.read.parquet(parquetPathUrl + tableName).limit(int(maxRowCount))
+        dframe1 = removeNullColumns(dframe1)
+
         outputDict = {}
         outputDict['schema'] = []
         for colItem in dframe1.schema.fields:
             outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
+
+        dataList = removeNullLines(dframe1)
+
         outputDict['data'] = []
-        for rowItem in dframe1.collect():
+        for rowItem in dataList:
             outputDict['data'].append(rowItem.asDict())
         return json.dumps(outputDict)
+
+    def removeNullColumns(dframe1):
+        count=0
+        nullIndexList = []
+        for i in dframe1.collect():
+            count = len(i)
+            for j in range(count-1, -1, -1):
+                if i[j] != None:
+                    nullIndexList.append(j)
+                    break
+        nullIndexList.sort()
+        for i in range(nullIndexList[0]+1, count):
+            dframe1 = dframe1.drop('_c{0}'.format(i))
+        return dframe1
+
+    def removeNullLines(dframe1):
+        dataList = []
+        for i in dframe1.collect():
+            count1 = 0
+            for j in range(len(i)):
+                if i[j] != None:
+                    count1 += 1
+            if count1 != 0:
+                dataList.append(i)
+        return dataList
     ''' + '''
-    print(test('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}'))
+    print(test('{0}', '{1}', '{2}', {3}, '{4}', '\{5}', '{6}'))
     '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, delimiter, quote, maxRowCount)
     return sparkCode

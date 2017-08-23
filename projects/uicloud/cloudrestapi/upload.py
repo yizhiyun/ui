@@ -10,8 +10,7 @@ from .models import FileNameMap
 logger = logging.getLogger("uicloud.cloudrestapi.upload")
 
 
-def uploadToHdfs(file, hdfsHost="spark-master0", nNPort="50070",
-                 rootFolder='tmp/users', username="myfolder"):
+def uploadToHdfs(file, hdfsHost, nNPort, rootFolder, username):
     '''
     先判断文件为csv的情况. 若有别的文件. 后续再做别的判断处理. 多个文件处理
     '''
@@ -38,12 +37,16 @@ def uploadToHdfs(file, hdfsHost="spark-master0", nNPort="50070",
 def fileFormat(file):
     fileName = file.name
     if re.match('[ \u4e00 -\u9fa5]+', fileName) is not None:
-        obj = FileNameMap()
-        obj.filename = fileName
-        obj.idname = "table{0}_{1}.csv".format(obj.id, str(time.time()).replace('.', '_'))
-        obj.save()
+        fileList = FileNameMap.objects.filter(filename=fileName)
+        if fileList:
+            file.name = fileList[0].idname
+        else:
+            obj = FileNameMap()
+            obj.filename = fileName
+            obj.idname = "table{0}_{1}.csv".format(obj.id, str(time.time()).replace('.', '_'))
+            obj.save()
 
-        file.name = "table{0}_{1}.csv".format(obj.id, str(time.time()).replace('.', '_'))
+            file.name = "table{0}_{1}.csv".format(obj.id, str(time.time()).replace('.', '_'))
         return file
 
     else:
