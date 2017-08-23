@@ -357,18 +357,18 @@ def upload(request):
 
     '''
 
-    jsonData = request.data
+    jsonData = request.POST
     file = request.FILES.get('file')
     if request.method == 'POST':
         file = fileFormat(file)
-        nNPort = jsonData['nnport'] if 'nnport' in jsonData.keys() else "50070"
-        hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData.keys() else "spark-master0"
-        rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData.keys() else "tmp/users"
-        username = jsonData['username'] if 'username' in jsonData.keys() else "myfolder"
-        header = jsonData['header'] if 'header' in jsonData.keys() else False
-        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData.keys() else 10000
-        delimiter = jsonData['delimiter'] if 'delimiter' in jsonData.keys() else ','
-        quote = jsonData['quote'] if 'quote' in jsonData.keys() else '"'
+        nNPort = jsonData['nnport'] if 'nnport' in jsonData else "50070"
+        hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData else "spark-master0"
+        rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
+        username = jsonData['username'] if 'username' in jsonData else "myfolder"
+        header = jsonData['header'] if 'header' in jsonData else False
+        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
+        delimiter = jsonData['delimiter'] if 'delimiter' in jsonData else ','
+        quote = jsonData['quote'] if 'quote' in jsonData else '"'
 
         upload = uploadToHdfs(
             file, hdfsHost, nNPort, rootFolder, username
