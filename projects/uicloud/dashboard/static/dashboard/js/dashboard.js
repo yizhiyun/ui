@@ -157,6 +157,7 @@ $(function() {
 		for (var i =0; i < build_tables.length;i++) {
 			var val = build_tables[i];
 			var op = $("<option value="+val+">"+val+"</option>");
+		
 			cube_select.append(op);
 		}	
 		now_build_tables = build_tables;
@@ -169,7 +170,7 @@ $(function() {
 		load_measurement_module(cube_select.val())
 		
 		// 数据选择 select 变化的时候，去获取新的数据
-		cube_select.unbind("change");
+		// cube_select.unbind("change");
 		cube_select.change(function(event){
 			event.stopPropagation();
 			if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
@@ -182,6 +183,7 @@ $(function() {
 	
 	// 加载维度、度量等，需要在 select 加载完毕之后
 	function load_measurement_module(current_cube){
+
 		// 之前选择过的数据块  内存保存一份
 		// 记录当前操作数据块的名称
 		current_cube_name = current_cube;
@@ -192,7 +194,7 @@ $(function() {
 			factory_create_li_to_measurement_module(schema);
 			return;
 		}
-		
+
 		//1、需要加载这个表格的 column schema
 		$.ajax({
 			url:"/cloudapi/v1/tables/" +current_cube+"/all",
@@ -204,6 +206,7 @@ $(function() {
 					var cube_all_data = data["results"];
 					filterNeedAllData =  data["results"]["data"];
 					var schema = cube_all_data["schema"];
+
 					for(var i = 0;i < schema.length;i++){
 						schema[i]["isable"] = "yes";
 					}
@@ -217,7 +220,10 @@ $(function() {
 		
 		//2、工厂，根据数据去创建 维度和度量等的 Li
 		function factory_create_li_to_measurement_module(schema){
-			
+			// 清空展示区域
+		$("#dimensionality #dimensionality_show ul").html("");
+		$("#measurement #measure_show ul").html("");
+		
 			for (var i = 0; i < schema.length;i++) {
 				var column_name_info = schema[i];
 				var  _name = column_name_info["field"]; // 字段名

@@ -6,7 +6,7 @@ var current_data = null;
 var save_data_handle;
 
 function switch_chart_handle_fun(drag_sortable){
-	
+
 	function save_btn_fun(){
 	
 
@@ -50,7 +50,6 @@ function switch_chart_handle_fun(drag_sortable){
 	switch_col_me = drag_row_column_data["column"]["measure"].length;
 
 	current_data = _cube_all_data[current_cube_name];
-	
 
 	//所有视图点击按钮
 	var show_btn_change = $("#project_chart ul li");
@@ -68,7 +67,6 @@ function switch_chart_handle_fun(drag_sortable){
 
 	//拖拽元素存储数据
 	save_data_handle = data_handle(drag_sortable);
-	console.log("rrrrr",save_data_handle);
 
 	if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
 			view_init();
@@ -77,6 +75,7 @@ function switch_chart_handle_fun(drag_sortable){
 			$("#view_show_empty").css("display","block");
 		}
 	
+
 	
 
 	//只拖入维度或行里或列里同时存在维度度量时跳转到展示文本表
@@ -86,7 +85,7 @@ function switch_chart_handle_fun(drag_sortable){
 			//跳转到文本表
 			showTable_by_dragData();
 
-			view_name = "showTable_by_dragData";
+			view_name = "showTable_by_dragData()";
 			
 			change_view_css("#show_table");
 		}
@@ -100,7 +99,7 @@ function switch_chart_handle_fun(drag_sortable){
 			//跳转到文本表
 			showTable_by_dragData();
 
-			view_name = "showTable_by_dragData";
+			view_name = "showTable_by_dragData()";
 
 			change_view_css("#show_table");
 		}
@@ -114,7 +113,7 @@ function switch_chart_handle_fun(drag_sortable){
 		view_init();
 		histogram_show(save_data_handle);
 
-		view_name = "histogram_show";
+		view_name = "histogram_show(save_data_handle)";
 
 		$("#show_table").css("opacity","1");
 		//判断是条形图还是柱状图为默认
@@ -129,7 +128,7 @@ function switch_chart_handle_fun(drag_sortable){
 	if((switch_col_di == 1 && switch_row_me ==1 && switch_col_me == 0 && switch_row_di == 0 ) || (switch_row_di == 1 && switch_col_me ==1 && switch_row_me ==0 && switch_col_di == 0)){
 		view_init();
 		histogram_show(save_data_handle);
-		view_name = "histogram_show";
+		view_name = "histogram_show(save_data_handle)";
 
 		show_btn_change.not($("#show_storehis,#show_percontrasth,#show_storebar,#show_contrastbar,#prestorebar,#show_histogram,#show_bar,#show_treemap")).css("opacity","1");
 		//判断是条形图还是柱状图为默认
@@ -149,7 +148,7 @@ function switch_chart_handle_fun(drag_sortable){
 		//调用柱状图
 		histogram_show(save_data_handle);
 
-		view_name = "histogram_show";
+		view_name = "histogram_show(save_data_handle)";
 
 		$("#show_table,#show_polyline,#show_randar").css("opacity","1");
 
@@ -198,7 +197,7 @@ function switch_chart_handle_fun(drag_sortable){
 		view_init();
 				//调用柱条图
 				histogram_show(save_data_handle);
-				view_name = "histogram_show";
+				view_name = "histogram_show(save_data_handle)";
 
 				$("#show_table").css("opacity","1");
 				if(switch_col_me > 1){
@@ -219,7 +218,7 @@ function switch_chart_handle_fun(drag_sortable){
 		}
 			histogram_show(save_data_handle);
 
-			view_name = "histogram_show";
+			view_name = "histogram_show(save_data_handle)";
 
 				if(switch_col_me >= 1){
 					change_view_css("#show_bar");
@@ -255,33 +254,34 @@ function switch_chart_handle_fun(drag_sortable){
 					if($(ele).data("if_show") != "true"){
 						show_btn_change.data("if_show","");
 						$(ele).data("if_show","true");
+						
 						switch(index)
 							{
 							//点击文本表隐藏其他视图
 							case 0:
 							$("#main").css("display","none");
-							showTable_by_dragData(true);
-							view_name = "showTable_by_dragData";
+							showTable_by_dragData();
+							view_name = "showTable_by_dragData()";
 							break;
 							case 3:
 							$("#text_table_need_show").css("display","none");
 							histogram_show(save_data_handle);
-							view_name = "histogram_show";
+							view_name = "histogram_show()";
 							break;
 							case 7:
 							$("#text_table_need_show").css("display","none");
 							histogram_show(save_data_handle);
-							view_name = "histogram_show";
+							view_name = "histogram_show()";
 							break;
 							case 14:
 							$("#text_table_need_show").css("display","none");
 							drag_radarChart(save_data_handle);
-							view_name = "drag_radarChart";
+							view_name = "drag_radarChart(save_data_handle)";
 
 							break;
 							default:
 							$("#text_table_need_show").css("display","none");
-							Function(save_show_click_change[index])();
+							eval(save_show_click_change[index]);
 							view_name = save_show_click_change[index];
 							break;
 						}
