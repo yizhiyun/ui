@@ -58,15 +58,15 @@ class ConnectDataBase():
                 for obj in result:
                     self.dataBasesRs.append(obj[0])
 
-                return self.dataBasesRs
-            return None
+                return True
+            return False
 
         elif self.dbPaltName == 'oracle':
             if self.con:
                 self.dataBasesRs = []
                 self.dataBasesRs.append(self.dbSid)
-                return self.dataBasesRs
-            return None
+                return True
+            return False
 
         elif self.dbPaltName == 'sqlserver':
             if self.con:
@@ -78,8 +78,8 @@ class ConnectDataBase():
                 for obj in rs:
                     self.dataBasesRs.append(obj[0])
 
-                return self.dataBasesRs
-            return None
+                return True
+            return False
 
     # 获取某个数据库下所有的表格
 
