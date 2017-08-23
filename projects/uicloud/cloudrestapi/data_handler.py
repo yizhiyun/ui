@@ -561,7 +561,7 @@ def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0",
                            .option("delimiter",delimiter) \
                            .option("quote",quote) \
                            .csv(hdfsUrl)
-        else:
+        elif header == 'false':
             df = spark.read.option("inferSchema", "true") \
                            .option("delimiter",delimiter) \
                            .option("quote",quote) \
@@ -607,6 +607,6 @@ def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0",
                 dataList.append(i)
         return dataList
     ''' + '''
-    print(test('{0}', '{1}', '{2}', {3}, '{4}', '\{5}', '{6}'))
+    print(test('{0}', '{1}', '{2}', '{3}', '{4}', '\{5}', '{6}'))
     '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, delimiter, quote, maxRowCount)
     return sparkCode
