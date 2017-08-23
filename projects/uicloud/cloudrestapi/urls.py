@@ -38,4 +38,9 @@ urlpatterns = [
         views.getBasicStats,
         name='getBasicStats'
     ),
+    url(
+        r'^dataCollection/cloudapi/v1/upload$',
+        views.upload,
+        name='upload'
+    ),
 ]

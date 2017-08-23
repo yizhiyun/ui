@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 # from rest_framework.response import Response
 from .data_handler import *
 from .mllib_handler import *
+from .upload import *
 from django.http import JsonResponse
 
 import json
@@ -209,7 +210,7 @@ def getAllTablesFromUser(request):
         return JsonResponse(successObj)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getTableViaSpark(request, tableName, modeName):
     '''
     GET:
@@ -217,9 +218,8 @@ def getTableViaSpark(request, tableName, modeName):
     '''
 
     jsonData = request.data
-    logger.info("request.data: {0}, tableName: {1}".format(
-        jsonData, tableName))
-    if request.method == 'GET':
+    logger.info("request.data: {0}, tableName: {1}".format(jsonData, tableName))
+    if request.method == 'POST':
 
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
@@ -229,7 +229,7 @@ def getTableViaSpark(request, tableName, modeName):
         # response all valid columns
         curUserName = "myfolder"
         sparkCode = getTableInfoSparkCode(
-            curUserName, tableName, mode=modeName)
+            curUserName, tableName, mode=modeName, filterJson=jsonData)
 
         output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
         if not output:
@@ -249,14 +249,14 @@ def getTableViaSpark(request, tableName, modeName):
             return JsonResponse(sucessObj)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getAllTablesFromCustom(request):
     '''
     GET:
     Get all table from the custom user.
     '''
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         jsonData = request.data
         outputList = listDirectoryFromHdfs(
             path=jsonData['rootfolder'], hdfsHost=jsonData['host'], port=jsonData['port'])
@@ -268,7 +268,7 @@ def getAllTablesFromCustom(request):
         return JsonResponse(successObj)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getTableViaSparkCustom(request, tableName, modeName):
     '''
     GET:
@@ -278,7 +278,7 @@ def getTableViaSparkCustom(request, tableName, modeName):
     jsonData = request.data
     logger.info("request.data: {0}, tableName: {1}".format(
         jsonData, tableName))
-    if request.method == 'GET':
+    if request.method == 'POST':
 
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
@@ -313,7 +313,7 @@ def getTableViaSparkCustom(request, tableName, modeName):
             return JsonResponse(sucessObj)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getBasicStats(request):
     '''
     GET:
@@ -322,7 +322,7 @@ def getBasicStats(request):
 
     jsonData = request.data
     logger.debug("request.data: {0}".format(jsonData))
-    if request.method == 'GET':
+    if request.method == 'POST':
 
         # check the request data
         if ("sourceType" not in jsonData or "opTypes" not in jsonData):
@@ -348,3 +348,53 @@ def getBasicStats(request):
             results = json.loads(data)
             sucessObj = {"status": "success", "results": results}
             return JsonResponse(sucessObj)
+
+
+@api_view(['POST'])
+def upload(request):
+    '''
+    上传csv文件到hdfs， 返回表单。 目前支持中文，空行， 自定义分隔符。
+
+    '''
+
+    jsonData = request.data
+    file = request.FILES.get('file')
+    if request.method == 'POST':
+        file = fileFormat(file)
+        nNPort = jsonData['nnport'] if 'nnport' in jsonData.keys() else "50070"
+        hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData.keys() else "spark-master0"
+        rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData.keys() else "tmp/users"
+        username = jsonData['username'] if 'username' in jsonData.keys() else "myfolder"
+        header = jsonData['header'] if 'header' in jsonData.keys() else False
+        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData.keys() else 10000
+        delimiter = jsonData['delimiter'] if 'delimiter' in jsonData.keys() else ','
+        quote = jsonData['quote'] if 'quote' in jsonData.keys() else '"'
+
+        upload = uploadToHdfs(
+            file, hdfsHost, nNPort, rootFolder, username
+        )
+        if upload:
+
+            sparkCode = getUploadInfoSparkCode(
+                file.name, delimiter, quote, hdfsHost,
+                port, rootFolder, username, header, maxRowCount
+            )
+
+            output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+            if not output:
+                failObj = {"status": "failed",
+                           "reason": "Please see the logs for details."}
+                return JsonResponse(failObj, status=400)
+            elif output["status"] != "ok":
+                failObj = {"status": "failed",
+                           "reason": output}
+                return JsonResponse(failObj, status=400)
+            else:
+                logger.debug("output: {}".format(output))
+                data = output["data"]["text/plain"]
+
+                results = json.loads(data)
+                sucessObj = {"status": "success", "results": results}
+                return JsonResponse(sucessObj)
+        else:
+            return JsonResponse({"status": "false"})

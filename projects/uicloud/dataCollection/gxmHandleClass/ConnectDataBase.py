@@ -58,15 +58,15 @@ class ConnectDataBase():
                 for obj in result:
                     self.dataBasesRs.append(obj[0])
 
-                return self.dataBasesRs
-            return None
+                return True
+            return False
 
         elif self.dbPaltName == 'oracle':
             if self.con:
                 self.dataBasesRs = []
                 self.dataBasesRs.append(self.dbSid)
-                return self.dataBasesRs
-            return None
+                return True
+            return False
 
         elif self.dbPaltName == 'sqlserver':
             if self.con:
@@ -78,8 +78,8 @@ class ConnectDataBase():
                 for obj in rs:
                     self.dataBasesRs.append(obj[0])
 
-                return self.dataBasesRs
-            return None
+                return True
+            return False
 
     # 获取某个数据库下所有的表格
 
@@ -107,7 +107,7 @@ class ConnectDataBase():
                 for obj in rs:
                     tables.append(obj[0])
                 self.tablesOfDataBase[self.dbSid] = tables
-                return self.tablesOfDataBase[dataBaseName]
+                return self.tablesOfDataBase[self.dbSid]
 
         elif self.dbPaltName == 'sqlserver':
             if self.con:
@@ -129,7 +129,15 @@ class ConnectDataBase():
             if self.con:
                 cur = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
                 cur.execute("show columns from " + tableName)
-                rows = cur.fetchall()
+                datas = cur.fetchall()
+
+                rows = []
+                for data in datas:
+                    dic = {}
+                    for key, value in data.items():
+                        dic[key.lower()] = value
+                    rows.append(dic)
+
                 return rows
 
         elif self.dbPaltName == 'oracle':
@@ -141,8 +149,8 @@ class ConnectDataBase():
                 rows = []
                 for obj in rs:
                     rows.append({
-                        'Field': obj[0],
-                        'Type': obj[1]
+                        'field': obj[0],
+                        'type': obj[1]
                     })
                 return rows
 
@@ -154,8 +162,8 @@ class ConnectDataBase():
                 rows = []
                 for obj in rs:
                     rows.append({
-                        'Field': obj[3],
-                        'Type': obj[5]
+                        'field': obj[3],
+                        'type': obj[5]
                     })
                 return rows
 
@@ -221,13 +229,7 @@ class ConnectDataBase():
                 oraclestr += oraclestr + 'and rownum<={0} '.format(condIt["value"])
 
             elif condType in [">", ">=", "=", "<=", "<", "!="]:
-                if 'datatype' in condIt.keys() and condIt['datatype'] == 'date':
-                    mysqlstr = 'and {0} {1} "{2}" '.format(condIt['columnName'], condType, condIt["value"]) + mysqlstr
-
-                    sqlserverstr = 'and {0} {1} "{2}" '.format(
-                        condIt['columnName'], condType, condIt["value"]
-                    ) + sqlserverstr
-
+                if 'datatype' in condIt.keys() and condIt['datatype'] == 'date' and self.dbPaltName == 'oracle':
                     oraclestr = "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
                         condIt['columnName'], condType, condIt["value"]
                     ) + oraclestr

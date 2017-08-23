@@ -660,11 +660,11 @@
 		
 //			console.log("-----",this.$dropdown);
 //			console.log("-----",this.$dropdown.parent().offsetParent());
-		var ele = this.$dropdown.parent(".combo-select");
+		var ele = this.$dropdown.parent(".combo-select").eq(0);
 	      var pos = getAbsCoordinates(ele);
 			this.$dropdown.css({
 				left:pos.left,
-				top:pos.top,
+				top:pos.top + ele.outerHeight(),
 				width:ele.outerWidth()
 			});
 			

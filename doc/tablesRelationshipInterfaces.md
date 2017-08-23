@@ -6,23 +6,24 @@ This document describe the store schema when operator provide the table relation
 
 The RESTful API Details of Verify those table relationships
 -------------
-1. Support Format: JSON
-2. Request Method: POST
-3. Request Data Schema:
-
+### 1. Support Format: JSON
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
     "tables": [
         {
-            "source": <sourceName or connectString>,
-            "database": <databaseName>,
+            "database": <databaseName>, # It's the current user name if sourcetype is hdfs
             "tableName": <tableName>,
+            "source": <sourceString>,   # Optional. DB source string. If sourcetype is db, it's required. Or else it's unnecessary.
+            "sourcetype": <sourceType>  # Optional. "db" or "hdfs". By default, it's db if this item doesn't exist.
             "columns": {
                 <columnName1>: {
-                    "columnType": <columnType>,
+                    "type": <columnType>,
                     "nullable": "yes/no",
-                    "primaryKey": "yes/no",
-                    "uniqueKey": "yes/no",
-                    "foreignKey": "no"
+                    "primary": "yes/no",
+                    "unique": "yes/no",
+                    "foreign": "no"
                 },
                 <columnName2>: {
                     ...
@@ -71,8 +72,9 @@ The RESTful API Details of Verify those table relationships
     ]
 
 }
-
-4. Request Examples:
+```
+### 4. Request Examples:
+```
 {
     "tables": [
         {
@@ -81,13 +83,13 @@ The RESTful API Details of Verify those table relationships
             "tableName": "table1",
             "columns": {
                 "col1": {
-                    "columnType": "number(3)",
+                    "type": "number(3)",
                     "nullable": "yes",
-                    "primaryKey": "yes",
-                    "uniqueKey": "yes"
+                    "primary": "yes",
+                    "unique": "yes"
                 },
                 "col2": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 }
             },
             "conditions": [
@@ -104,13 +106,13 @@ The RESTful API Details of Verify those table relationships
             "tableName": "table2",
             "columns": {
                 "col1": {
-                    "columnType": "number(3)"
+                    "type": "number(3)"
                 },
                 "col2": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 },
                 "col3": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 }
             }
         }
@@ -133,27 +135,28 @@ The RESTful API Details of Verify those table relationships
         }
     ]
 }
-
-5. Response Data: 
-5.1 if successful, it will response as follows
-{ "status": "success", 
+```
+### 5. Response Data:
+* if successful, it will response as follows
+> { "status": "success",
 "columns": [ "column1", "column2", ...] }
-5.2 if failed, it will response as follows
-{ "status":"failed" }
+* if failed, it will response as follows
+> { "status":"failed" }
 
 
 The RESTful API Details of Generating New Table
 -------------
-1. Support Format: JSON
-2. Request Method: POST
-3. Request Data Schema:
-
+### 1. Support Format: JSON
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
     "tables": [
         {
-            "source": <sourceName or connectString>,
-            "database": <databaseName>,
+            "database": <databaseName>, # It's the current user name if sourcetype is hdfs
             "tableName": <tableName>,
+            "source": <sourceString>,   # Optional. DB source string. If sourcetype is db, it's required. Or else it's unnecessary.
+            "sourcetype": <sourceType>  # Optional. "db" or "hdfs". By default, it's db if this item doesn't exist.
             "columns": {
                 <columnName1>: {
                     "columnType": <columnType>,
@@ -196,6 +199,7 @@ The RESTful API Details of Generating New Table
         {
             "fromTable": "<databaseName>.<tableName>",
             "toTable": "<databaseName>.<tableName>",
+            # joinTypes: "inner join", "full join", "left join" and "right join".
             "joinType": <connectionType>,
             "columnMap": [
                 {
@@ -218,8 +222,10 @@ The RESTful API Details of Generating New Table
         ...
     }
 }
-
-4. Request Examples:
+```
+### 4. Request Examples:
+* Db sources example:
+```
 {
     "tables": [
         {
@@ -228,13 +234,13 @@ The RESTful API Details of Generating New Table
             "tableName": "table1",
             "columns": {
                 "col1": {
-                    "columnType": "number(3)",
+                    "type": "number(3)",
                     "nullable": "yes",
-                    "primaryKey": "yes",
-                    "uniqueKey": "yes"
+                    "primary": "yes",
+                    "unique": "yes"
                 },
                 "col2": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 }
             },
             "conditions": [
@@ -251,13 +257,13 @@ The RESTful API Details of Generating New Table
             "tableName": "table2",
             "columns": {
                 "col1": {
-                    "columnType": "number(3)"
+                    "type": "number(3)"
                 },
                 "col2": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 },
                 "col3": {
-                    "columnType": "VARCHAR2(64)"
+                    "type": "VARCHAR2(64)"
                 }
             }
         }
@@ -290,20 +296,78 @@ The RESTful API Details of Generating New Table
         ]
     }
 }
+```
+* hdfs source example:
+```
+{
+    "tables": [
+        {
+            "sourcetype": "hdfs",
+            "database": "myfolder",
+            "tableName": "tt1",
+            "columns": {
+                "idt1": {},
+                "name": {},
+                "score": {},
+                "location": {}
+            },
+            "conditions": [
+                {
+                    "type":"=",
+                    "columnName": "idt1",
+                    "value": 1000
+                }
+            ]
+        },
+        {
+            "sourcetype": "hdfs",
+            "database": "myfolder",
+            "tableName": "tt2",
+            "columns": {
+                "idt1": {},
+                "name": {},
+                "score": {}
+            }
+        }
+    ],
+    "relationships": [
+        {
+            "fromTable": "myfolder.tt1",
+            "toTable": "myfolder.tt2",
+            "joinType": "inner join",
+            "columnMap": [
+                {
+                    "fromCol": "idt1",
+                    "toCol": "idt1"
+                }
+            ]
+        }
+    ],
+    "outputs": {
+        "outputTableName": "ctable1",
+        "columnRenameMapping": {
+            "myfolder.tt2.score": "toscore"
+        },
+        "removedColumns": [
+            "myfolder.tt2.name"
+        ]
+    }
+}
+```
 
-5. Response Data:
-5.1 if successful, it will response as follows
-{ "status":"success" }
-5.2 if failed, it will response as follows
-{ "status":"failed" }
+### 5. Response Data:
+* if successful, it will response as follows
+> { "status":"success" }
+* if failed, it will response as follows
+> { "status":"failed", "reason": ... }
 
 
 
 Notes
 -------------
 Here are the default value lists for the column attribute if you don't provide.
-* columnType = VARCHAR2(32)
+* type = VARCHAR2(32)
 * nullable = yes
-* primaryKey = no
-* uniqueKey = no
-* foreignKey = no
+* primary = no
+* unique = no
+* foreign = no

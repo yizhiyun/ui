@@ -1,4 +1,4 @@
-from django.shortcuts import render
+# from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
 from django.http import JsonResponse
@@ -8,8 +8,6 @@ from .models import DashboardFolderByUser, DashboardViewByUser
 
 class HomeView(TemplateView):
     template_name = 'dashboard/dashboard.html'
-
-
 
 
 def getAllDataFunction(username, datatype=None):
@@ -33,13 +31,16 @@ def getAllDataFunction(username, datatype=None):
                 for i in range(num):
                     if tablelist[i].row == 'row':
                         continue
-                    context[folder.foldername][subfolder.foldername]['table{0}'.format(tablelist[i].id)] = {
+                    context[folder.foldername][subfolder.foldername]['视图{0}'.format(i + 1)] = {
                         'row': tablelist[i].row,
                         'column': tablelist[i].column,
                         'username': tablelist[i].username,
                         'tablename': tablelist[i].tablename,
                         'viewtype': tablelist[i].viewtype,
-                        'viewname': tablelist[i].viewname
+                        'viewname': tablelist[i].viewname,
+                        'note': tablelist[i].note,
+                        'id': tablelist[i].id,
+                        'show': tablelist[i].show
                     }
         return context
 
@@ -73,7 +74,7 @@ def dashboardTableAdd(request):
         if jsonData['row'] == 'row':
             countlist = DashboardFolderByUser.objects.filter(foldername=foldername)
             if len(countlist) > 0:
-                return JsonResponse({'status': 'False'})
+                return JsonResponse({'status': 'false'})
 
         defaultfolderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['defaultparent'])
         if len(defaultfolderlist) == 0:
@@ -166,7 +167,7 @@ def changeViewName(request):
             countlist = DashboardViewByUser.objects.filter(viewname=jsonData['newname'])
             if len(countlist) > 0:
                 return JsonResponse({"status": "false", "reason": "this name has been used"})
-            table = DashboardViewByUser.objects.get(id=int(jsonData['oldname'][5:]))
+            table = DashboardViewByUser.objects.get(id=int(jsonData['oldname']))
             table.viewname = jsonData['newname']
             table.save()
             return JsonResponse({'status': 'ok'})
@@ -198,12 +199,13 @@ def changeViewName(request):
 @api_view(['POST'])
 def deleteFolder(request):
     '''
+    删除文件夹，子文件夹或者视图
     '''
     jsonData = request.data
 
     if request.method == 'POST':
-        foldertype = jsonData['foldertype']
-        if foldertype == 'parentfolder':
+        datatype = jsonData['datatype']
+        if datatype == 'parentfolder':
             isDeleteAll = jsonData['isdeleteall']
             if isDeleteAll == 'yes':
                 folderList = DashboardFolderByUser.objects.filter(parentfoldername=jsonData['foldername'])
@@ -220,9 +222,49 @@ def deleteFolder(request):
             context = getAllDataFunction(jsonData['username'])
             return JsonResponse(context)
 
-        elif foldertype == 'folder':
+        elif datatype == 'folder':
             folder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
             folder.dashboardviewbyuser_set.all().delete()
             folder.delete()
             context = getAllDataFunction(jsonData['username'])
             return JsonResponse(context)
+
+        elif datatype == 'view':
+            table = DashboardViewByUser.objects.get(id=int(jsonData['tableid']))
+            table.delete()
+            context = getAllDataFunction(jsonData['username'])
+            return JsonResponse(context)
+
+
+@api_view(['POST'])
+def addNote(request):
+    '''
+    给视图保存备注
+    '''
+    jsonData = request.data
+
+    if request.method == 'POST':
+        note = jsonData['note']
+        table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
+        table.note = note
+        table.save()
+        context = getAllDataFunction(jsonData['username'])
+        return JsonResponse(context)
+
+
+@api_view(['POST'])
+def setShow(request):
+    '''
+    给视图保存备注
+    '''
+    jsonData = request.data
+
+    if request.method == 'POST':
+        table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
+        if table.show:
+            table.show = False
+        else:
+            table.show = True
+        table.save()
+        context = getAllDataFunction(jsonData['username'])
+        return JsonResponse(context)

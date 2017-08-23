@@ -1,10 +1,10 @@
 import json
 import logging
-# import pprint
 import requests
 import textwrap
 import time
 import os
+
 
 from .spark_commonlib import *
 from dataCollection.gxmHandleClass.Singleton import Singleton
@@ -129,9 +129,23 @@ def getOutputColumns(jsonData):
     # <fullColName> has the format of <dbName>.<tableName>.<colName>
     outputColumnsDict = {}
 
+    # This variable is for checking if there is a repeated database.tableName
+    dbTableList = []
     for seq in range(0, tableNum):
+        if ("database" not in tables[seq].keys()) or ("tableName" not in tables[seq].keys()):
+            errMsg = "All table should include both database and tableName. Please check table: {0}".format(tables[seq])
+            logger.error(errMsg)
+            return False
         dbName = tables[seq]["database"]
         tableName = tables[seq]["tableName"]
+        dbTable = "{0}.{1}".format(dbName, tableName)
+        if dbTable in dbTableList:
+            errMsg = "At present, the case that two tables are the same as both database name and table name \
+                       hasn't been supported. Please check dbTable: {0}".format(dbTable)
+            logger.error(errMsg)
+            return False
+        else:
+            dbTableList.append(dbTable)
         columnList = list(tables[seq]['columns'].keys())
 
         curTableColumnList = []
@@ -140,6 +154,10 @@ def getOutputColumns(jsonData):
         for colName in columnList:
             fullColName = "{0}.{1}.{2}".format(dbName, tableName, colName)
             if colName in outputColumnsList:
+                # if fullColName in outputColumnsList:
+                #     logger.error("There are two columns with the same database, table and columns. \
+                #         fullColName: {0}".format(fullColName))
+                #     return False
                 curTableColumnList.append(fullColName)
                 outputColumnsDict[fullColName] = fullColName
             else:
@@ -150,7 +168,7 @@ def getOutputColumns(jsonData):
 
     # check if all columns is available. BTW, it maybe is unnecessary.
     #
-
+    logger.debug("outputColumnsDict: {0}".format(outputColumnsDict))
     return outputColumnsDict
 
 
@@ -172,6 +190,7 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
 
     palts = Singleton().dataPaltForm['db']
     dbSourceDict = {}
+    logger.debug("palts: {}".format(palts))
     if palts:
         for key, value in palts.items():
 
@@ -196,7 +215,7 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
 
 
 def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", folder="myfolder",
-                            mode='overwrite', partitionBy=None):
+                            mode='overwrite', partitionBy=None, maxRowCount=10000):
     '''
     return the running spark code which write the New table into hdfs by default
     '''
@@ -220,20 +239,24 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     #     ...
     # }
     dbSourceDict = getDbSource()
-    if not dbSourceDict:
-        return False
     jsonData["dbsources"] = dbSourceDict
+    jsonStr = json.dumps(jsonData, ensure_ascii=True)
+    logger.debug("jsonStr:{0}".format(jsonStr))
 
-    return """
+    return '''
     import sys
-    import logging
     import traceback
-    # Get an instance of a logger
-    logger = logging.getLogger("sparkCodeExecutedBylivy")
-    def writeDataFrame( jsonData, savedPathUrl, mode='overwrite', partitionBy=None ):
-        '''
-        '''
-        newDF = generateNewDataFrame(jsonData);
+    import json
+    ''' + setupLoggingSparkCode() + getDataFrameFromSourceSparkCode() + '''
+
+    def writeDataFrame( jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=10000 ):
+        """
+        notes: maxRowCount is used for refine the max rows from every data sources.
+        If the limit parameter is given, use that value.
+        """
+        jsonData = json.loads(jsonStr, encoding='utf-8')
+        logger.debug("jsonData: {0}".format(jsonData))
+        newDF = generateNewDataFrame(jsonData, maxRowCount);
         if not newDF:
             return False;
 
@@ -249,7 +272,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             newDF.write.parquet(savedPathUrl, mode=mode)
         return True
 
-    def generateNewDataFrame(jsonData):
+    def generateNewDataFrame(jsonData, maxRowCount=10000,
+                            hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
 
         # check the json format
         if (("tables" not in jsonData.keys()) or
@@ -260,18 +284,18 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             print(errMsg)
             return False
 
-        dfDict = {{}}
+        dfDict = {}
 
         try:
             tables = jsonData["tables"]
             tableNum = len(tables)
 
             # change the removedColumn list to dict for comparing by table.
-            removedColsDict = {{}}
+            removedColsDict = {}
             if "removedColumns" in jsonData["outputs"].keys():
                 for item in jsonData["outputs"]["removedColumns"]:
                     (db, table, col) = item.split(".")
-                    dbTable = "{{0}}.{{1}}".format(db, table)
+                    dbTable = "{0}.{1}".format(db, table)
                     if dbTable in removedColsDict.keys():
                         removedColsDict[dbTable].append(col)
                     else:
@@ -280,49 +304,19 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             # get data from those db sources
             for seq in range(0, tableNum):
                 # get the table connection information
-                dbSourceDict = jsonData["dbsources"][tables[seq]["source"]]
-                dbType = dbSourceDict["dbtype"]
-                dbServer = dbSourceDict["dbserver"]
-                dbPort = dbSourceDict["dbport"]
-                user = dbSourceDict["user"]
-                password = dbSourceDict["password"]
-
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
+                dbTable = "{0}.{1}".format(dbName, tableName)
+                userTableUrl = False
+                if "sourcetype" not in tables[seq].keys() or tables[seq]["sourcetype"] == "db":
+                    tables[seq]["dbsource"] = jsonData["dbsources"][tables[seq]["source"]]
+                else:
+                    userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+                        hdfsHost, hdfsPort, rootFolder, dbName, tableName)
 
-                connUrl = "jdbc:{{0}}://{{1}}:{{2}}".format(dbType, dbServer, dbPort)
-                dbTable = "{{0}}.{{1}}".format(dbName, tableName)
-
-                # check the "removedColumns" item, remove them from table columns
-                if dbTable in removedColsDict.keys():
-                    for colItem in removedColsDict:
-                        if colItem in tables[seq]['columns'].keys():
-                            tables[seq]['columns'].pop(colItem)
-
-                columnList = list(tables[seq]['columns'].keys())
-
-                connDbTable = dbTable
-                if dbType == "oracle":
-                    sid = dbSourceDict["sid"]
-                    connUrl = "jdbc:{{0}}:thin:@{{1}}:{{2}}:{{3}}".format(dbType, dbServer, dbPort, sid)
-                elif dbType == "postgresql":
-                    connUrl = "jdbc:{{0}}://{{1}}".format(dbType, dbServer)
-                elif dbType == "sqlserver":
-                    connUrl = "jdbc:{{0}}://{{1}}:{{2}};databaseName={{3}}".format(dbType, dbServer, dbPort, dbName)
-                    connDbTable = tableName
-
-                try:
-                    dfDict[dbTable] = spark.read \
-                        .format("jdbc") \
-                        .option("url", connUrl) \
-                        .option("dbtable", connDbTable) \
-                        .option("user", user) \
-                        .option("password", password) \
-                        .load().select(columnList)
-                    dfDict[dbTable] = filterDF(dfDict[dbTable], tables[seq])
-                except Exception:
-                    traceback.print_exc()
-                    print(sys.exc_info())
+                dfDict[dbTable] = getDataFrameFromSource(tables[seq], userTableUrl, removedColsDict, maxRowCount)
+                if not dfDict[dbTable]:
+                    logger.error("The data cannot be gotten from source. dbTable: {0}".format(dbTable))
                     return False
 
             # check if all columns is available. BTW, it maybe is unnecessary.
@@ -340,67 +334,21 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 oldCol = key.replace('.', '_')
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
         except KeyError:
-            print(sys.exc_info())
             traceback.print_exc()
+            logger.error("KeyError Exception: {0}".format(sys.exc_info()))
             return False
         except Exception:
-            print(sys.exc_info())
             traceback.print_exc()
+            logger.error("Exception: {0}".format(sys.exc_info()))
             return False;
         return outputDf
 
-    def filterDF(inDataFrame, tableDict):
-        '''
-        '''
-        from pyspark.sql.functions import udf
-        from pyspark.sql.types import BooleanType
-
-        if "conditions" in tableDict.keys():
-            # add the specified conditions in the DataFrame
-            for condIt in tableDict["conditions"]:
-                condType = condIt["type"]
-                colName = condIt["columnName"]
-                if condType == "limit" and type(condIt["value"]) == int:
-                    inDataFrame = inDataFrame.limit(condIt["value"])
-                elif condType in [">",">=","=","<","<=","!="]:
-                    condStr = "{{0}} {{1}} {{2}}".format(colName, condType, condIt["value"])
-                    inDataFrame = inDataFrame.filter(condStr)
-                elif condType == "like":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].like(condIt["value"]))
-                elif condType == "startswith":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].startswith(condIt["value"]))
-                elif condType == "notstartswith":
-                    inDataFrame = inDataFrame.filter(
-                        udf(lambda column: not column.startswith(condIt["value"]), BooleanType())(inDataFrame[colName]))
-                elif condType == "endswith":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].endswith(condIt["value"]))
-                elif condType == "notendswith":
-                    inDataFrame = inDataFrame.filter(
-                        udf(lambda column: not column.endswith(condIt["value"]), BooleanType())(inDataFrame[colName]))
-                elif condType == "contains":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].contains(condIt["value"]))
-                elif condType == "notcontains":
-                    inDataFrame = inDataFrame.filter(
-                        udf(lambda column: not column.contains(condIt["value"]), BooleanType())(inDataFrame[colName]))
-                elif condType == "isin":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isin(condIt["value"]))
-                elif condType == "isnotin":
-                    inDataFrame = inDataFrame.filter(
-                        udf(lambda column: not column.isin(condIt["value"]), BooleanType())(inDataFrame[colName]))
-                elif condType == "isnull":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNull())
-                elif condType == "isnotnull":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNotNull())
-                else:
-                    pass
-        return inDataFrame
-
     def sortTableRelationship(jsonData):
-        '''
+        """
         # sort the jsonData["relationships"] list to follow the below rule
         # 1. saved both tables from the first relationship into joinedTableSet.
         # 2. At least one table from the latter relationship exist in the joinedTableSet.
-        '''
+        """
 
         joinedTableSet = set()
         sortedRelList = []
@@ -447,23 +395,23 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         return sortedRelList
 
     def joinDF(sortedRelList, dfDict):
-        '''
+        """
         The sortedRelList sort the table relationship list using the function of sortTableRelationship.
-        The dfDict parameter store content like {{"<dbName>.<tableName>":tableDataFrame, ...}}
+        The dfDict parameter store content like {"<dbName>.<tableName>":tableDataFrame, ...}
         This function will handle all the relationships to return the output dataFrame.
-        '''
+        """
 
         # For safety and unification, update all old DataFrame's Columns
         # with the format of "<dbName>.<tableName>.<columnName>"
         for dbTable in dfDict.keys():
             for colItem in dfDict[dbTable].columns:
                 dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(colItem,
-                    "{{0}}_{{1}}".format(dbTable.replace('.','_'),colItem))
+                    "{0}_{1}".format(dbTable.replace('.','_'),colItem))
 
         # TBD, this mapping need to be researched again for the details.
         # joinType must be one of below
         # inner, cross, outer, full, full_outer, left, left_outer, right, right_outer, left_semi, and left_anti.
-        joinTypeMapping = {{
+        joinTypeMapping = {
             "inner join":"inner",
             "join":"inner",
             "full join": "full",
@@ -474,9 +422,12 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             "right outer join": "right_outer",
             "left semi join": "left_semi",
             "left anti join": "left_anti"
-        }}
+        }
 
         outputDf = None
+        joinCols = []
+        repeatedJoinCols = []
+
         for relItem in sortedRelList:
             # check if two column types is different
             fromDbTable = relItem['fromTable']
@@ -487,15 +438,31 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             #print(dfDict[fromDbTable].printSchema())
             #print(dfDict[toDbTable].printSchema())
             for mapit in columnMapList:
-                fromCol = "{{0}}_{{1}}".format(fromDbTable.replace('.','_'),mapit["fromCol"])
-                toCol = "{{0}}_{{1}}".format(toDbTable.replace('.','_'), mapit["toCol"])
-                #print(fromCol, toCol)
+                fromCol = "{0}_{1}".format(fromDbTable.replace('.','_'),mapit["fromCol"])
+                toCol = "{0}_{1}".format(toDbTable.replace('.','_'), mapit["toCol"])
+                logger.debug("fromCol: {0}, toCol: {1}".format(fromCol, toCol))
                 cond.append(dfDict[fromDbTable][fromCol] == dfDict[toDbTable][toCol])
+
+                # just want to get all repeated joined columns.
+                if fromCol not in joinCols:
+                    if toCol not in joinCols:
+                        joinCols.append(fromCol)
+                        repeatedJoinCols.append(toCol)
+                    elif fromCol not in repeatedJoinCols:
+                        repeatedJoinCols.append(fromCol)
+                else:
+                    # fromCol in joinCols
+                    if toCol in joinCols:
+                        joinCols.remove(toCol)
+                    else:
+                        pass
+                    if toCol not in removeCols:
+                        repeatedJoinCols.append(toCol)
 
             joinType = joinTypeMapping[relItem['joinType']]
 
             if outputDf is None:
-                #The first join connection
+                # The first join connection
                 outputDf = dfDict[fromDbTable].join(dfDict[toDbTable], cond, joinType)
 
             elif fromDbTable in joinedTableSet:
@@ -503,50 +470,65 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
             else:
                 outputDf = outputDf.join(dfDict[fromDbTable], cond, joinType)
+        logger.debug("repeatedJoinCols: {0}, outputDf columns:{1}".format(repeatedJoinCols, outputDf.columns))
+        for colIt in repeatedJoinCols:
+            outputDf = outputDf.drop(colIt)
 
         return outputDf
+    ''' + '''
+    print(writeDataFrame('{0}', '{1}', mode='{2}', partitionBy={3}))
+    '''.format(jsonStr, savedPathUrl, mode, partitionBy)
 
-    print(writeDataFrame({0}, '{1}', mode='{2}', partitionBy={3}))
-    """.format(jsonData, savedPathUrl, mode, partitionBy)
 
-
-def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-master0", port="9000", rootFolder="users"):
-    '''
+def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-master0",
+                          port="9000", rootFolder="users", filterJson={}, maxRowCount=10000):
+    """
     return the running spark code which will get a specified table schema from hdfs,
     mode can be 'schema', 'data' and 'both'
-    '''
+    """
     userUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
         hdfsHost, port, rootFolder, userName, tableName)
+    filterJson = json.dumps(filterJson, ensure_ascii=True)
+    logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
 
-    sparkCode = specialDataTypesEncoderSparkCode() + '''
-    def getTableInfo( url, mode ):
+    sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + '''
+    def getTableInfo( url, mode, filterJson='{}', maxRowCount=10000):
         """
         get the specified table schema,
         note, the table format is parquet.
         """
-        t1 = spark.read.parquet(url)
+        dframe1 = spark.read.parquet(url).limit(maxRowCount)
 
-        outputDict = {{}}
+        outputDict = {}
         if mode == 'all' or mode == 'schema':
             outputDict['schema'] = []
-            for colItem in t1.schema.fields:
-                outputDict['schema'].append( '{{0}}:{{1}}'.format(colItem.name, colItem.dataType) )
+            for colItem in dframe1.schema.fields:
+                logger.debug("field: {0}, type: {1}".format( colItem.name, colItem.dataType))
+                outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
+        logger.debug("just a test")
         if mode == 'all' or mode == 'data':
             outputDict['data'] = []
-            for rowItem in t1.collect():
-                outputDict['data'].append( rowItem.asDict() )
 
+            logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
+            filterJson = json.loads(filterJson, encoding='utf-8')
+            if len(filterJson) > 0:
+                dframe1 = filterDF(dframe1, filterJson)
+            for rowItem in dframe1.collect():
+                logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
+                outputDict['data'].append(rowItem.asDict())
+        logger.debug("outputDict: {0}".format(outputDict))
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
-    print(getTableInfo("{0}", "{1}"))
-    '''.format(userUrl, mode)
+    ''' + '''
+    print(getTableInfo('{0}', '{1}', '{2}', {3}))
+    '''.format(userUrl, mode, filterJson, maxRowCount)
 
     return sparkCode
 
 
 def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", fileType='DIRECTORY'):
-    '''
+    """
     list a specified directory from HDFS using webHDFS.
-    '''
+    """
 
     rootUrl = "http://{0}:{1}/webhdfs/v1".format(hdfsHost, port)
     # headers = {'Content-Type': 'application/json'}
@@ -565,3 +547,66 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
 
     return outputList
 
+
+def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
+                           username="myfolder", header=False, maxRowCount=10000):
+    hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(hdfsHost, port, rootFolder, username, fileName)
+    parquetPathUrl = '/{0}/{1}/parquet/'.format(rootFolder, username)
+    sparkCode = '''
+    import json
+    def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote, maxRowCount=10000):
+        if header:
+            df = spark.read.option("inferSchema", "true") \
+                           .option("header", "true") \
+                           .option("delimiter",delimiter) \
+                           .option("quote",quote) \
+                           .csv(hdfsUrl)
+        else:
+            df = spark.read.option("inferSchema", "true") \
+                           .option("delimiter",delimiter) \
+                           .option("quote",quote) \
+                           .csv(hdfsUrl)
+        df.write.parquet(parquetPathUrl + tableName)
+        dframe1 = spark.read.parquet(parquetPathUrl + tableName).limit(int(maxRowCount))
+        dframe1 = removeNullColumns(dframe1)
+
+        outputDict = {}
+        outputDict['schema'] = []
+        for colItem in dframe1.schema.fields:
+            outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
+
+        dataList = removeNullLines(dframe1)
+
+        outputDict['data'] = []
+        for rowItem in dataList:
+            outputDict['data'].append(rowItem.asDict())
+        return json.dumps(outputDict)
+
+    def removeNullColumns(dframe1):
+        count=0
+        nullIndexList = []
+        for i in dframe1.collect():
+            count = len(i)
+            for j in range(count-1, -1, -1):
+                if i[j] != None:
+                    nullIndexList.append(j)
+                    break
+        nullIndexList.sort()
+        for i in range(nullIndexList[0]+1, count):
+            dframe1 = dframe1.drop('_c{0}'.format(i))
+        return dframe1
+
+    def removeNullLines(dframe1):
+        dataList = []
+        for i in dframe1.collect():
+            count1 = 0
+            for j in range(len(i)):
+                if i[j] != None:
+                    count1 += 1
+            if count1 != 0:
+                dataList.append(i)
+        return dataList
+    ''' + '''
+    print(test('{0}', '{1}', '{2}', {3}, '{4}', '\{5}', '{6}'))
+    '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, delimiter, quote, maxRowCount)
+    return sparkCode

@@ -26,6 +26,7 @@ This document describe how to get users' tables filter information.
             # types: "limit",">",">=","=","<","<=",'!=',like','startswith','notstartswith',
             # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
             # notice! if type is 'isin' or 'isnotin', the value should be a list.
+            # and if you want to filter the datetype, you should add an argument "datatype": "date".
             "type": <typevalue>,
             "value": <value>,
             "columnName": <columnName>
@@ -60,6 +61,12 @@ This document describe how to get users' tables filter information.
             "type": ">",
             "value": 1,
             "columnName": "col1"
+        },
+        {
+            "type": ">=",
+            "value": "2012-01-03",
+            "columnName": "col1",
+            "datatype": "date"
         }
     ]
 }

@@ -16,8 +16,13 @@ function showTable_by_dragData(isTabChart){
 //	if(!isNeedSHidenTable){
 	$("#text_table_need_show").show();
 //	}
+<<<<<<< HEAD
 //	if(isTabChart && !isagainDrawTable){
 //		return;
+=======
+//	if(isTabChart && !isagainDrawTable){
+//		return;
+>>>>>>> 5efc7f72de8d2605004946e24efebd188dffa094
 //	}
 	//1、处理列的维度
 	function handle_column_drag_dimensionality(handle_index){

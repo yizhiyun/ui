@@ -2,7 +2,7 @@
 <div id="number-filter" class="screeningWasher" style="z-index: 1000;display: none;" >
 	<div class="topline"></div>
 	<div class="number-filter-head common-head">
-		<span class="logo">筛选器</span>
+		<span class="logo">筛选器:</span>
 		<span class="flag"></span>
 		<div class="close">
 			<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
@@ -18,18 +18,18 @@
 					<option value=">">&gt</option>
 					<option value="<">&lt</option>
 					<option value="<=">&lt=</option>
-					<option value="<=">&gt=</option>
+					<option value=">=">&gt=</option>
 					<option value="!=">!=</option>
 				</select>
 			</div>
 			<div class="verticalLine"></div>
 			<div class="radiosBtns">
 				<div class="userInput_box value-select-float">
-					<p class="radio active" belong="number-filter"></p>
+					<p class="radio active userInputFlag" belong="number-filter" data = "userInputFlag"></p>
 					<input type="text" placeholder="输入值" class="relationvalue"/>
 				</div>
 				<div class="userSelect_div value-select-float">
-					<p class="radio" belong="number-filter"></p>
+					<p class="radio userSelectFlag" belong="number-filter" data="userSelectFlag"></p>
 					<select class="custom-select relationvalue">
 						<option value="averge">平均值</option>
 						<option value="max">最大值</option>

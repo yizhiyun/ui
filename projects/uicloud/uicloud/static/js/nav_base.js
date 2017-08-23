@@ -19,7 +19,7 @@ function initWindowSize(doc,win,paHeight){
 		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";		
 }
 //获取指定form中的所有的<input>对象  
-function getElements(formId) {  
+function getElements(formId) {
   var form = document.getElementById(formId);  
   var elements = new Array();  
   var tagElements = form.getElementsByTagName('input');  
@@ -36,7 +36,7 @@ function inputSelector(element) {
    return [element.name, element.value];  
 }  
     
-function input(element) {  
+function input(element) {
   switch (element.type.toLowerCase()) {  
    case 'submit':  
    case 'hidden':  
@@ -51,7 +51,7 @@ function input(element) {
 }  
   
 //组合URL 
-function serializeElement(element) {  
+function serializeElement(element) { 
   var method = element.tagName.toLowerCase();  
   var parameter = input(element);  
    
@@ -186,4 +186,6 @@ function equalCompare(objA, objB)
         return result;
     }
     return arguments[0] == arguments[1];
+
 }
+

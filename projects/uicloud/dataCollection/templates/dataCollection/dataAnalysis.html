@@ -12,7 +12,7 @@
        <script src={% static "dataCollection/js/tableDrag.js"%} type="text/javascript" charset="utf-8"></script>
         <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
         <script src={% static "js/filter-common-hanlde.js"%} type="text/javascript" charset="utf-8"></script>
-		<script src={% static "js/jQRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
+        <script src={% static "js/jQRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
 		<script src={% static "js/jQDateRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
 {% endblock %}
 {% block content %}
@@ -73,7 +73,7 @@
 								<div class="dataSetDetail">
 								{% for key,value in paltInfoList.db.items %}
 									<div class="dbDataShow">
-										<select dbIndex={{key}}>
+										<select dbIndex={{key}} class="custom-select">
 										{% for op in value.dataBasesRs %}
 										<option value={{op}}>{{op}}</option>
 										{% endfor %}
@@ -115,6 +115,7 @@
 		           	 	<li>朝阳医院平台</li>
 		                <li>MYSQL</li>
 		                <li>ORACLE</li>
+		                <li>SQLSERVER</li>
 		            </ul>
 		            <div class="line"></div>
 		      	 </div>
@@ -146,11 +147,11 @@
 				<p class="title">连接</p>
 				<!--<div class="line"></div>-->
 				<div class="btnSelects">
-					<div class="active"><img src={%static "dataCollection/images/inline.png" %} alt="" /><p>内连</p></div>
-					<div><img src={%static "dataCollection/images/left.png"  %} alt="" /><p>左连</p></div>
-					<div><img src={%static "dataCollection/images/right.png"  %} alt="" /><p>右连</p></div>
-					<div><img src={%static "dataCollection/images/Outreach.png"  %} alt="" /><p>全连</p></div>
-					<div><img src={%static "dataCollection/images/breakoff.png" %} alt="" /><p>断开</p></div>
+					<div class="active"><img src={%static "dataCollection/images/inline.png" %} alt="" /><p data="inner join">内连</p></div>
+					<div><img src={%static "dataCollection/images/left.png"  %} alt="" /><p data="left join">左连</p></div>
+					<div><img src={%static "dataCollection/images/right.png"  %} alt="" /><p data= "right join">右连</p></div>
+					<div><img src={%static "dataCollection/images/Outreach.png"  %} alt="" /><p data="full join">全连</p></div>
+					<div><img src={%static "dataCollection/images/breakoff.png" %} alt="" /><p data="delete">断开</p></div>
 				</div>
 				<div class="selectInfoDiv">
 					<div class="selectHeader">
@@ -160,11 +161,11 @@
 					</div>
 					<div class="selectContent">
 						<div class="selectDiv">
-							<div><span>请选择</span><select name="" class="select_sourceList"></select></div>
-							<div><span>=</span><select name="" class="select_comparison">
+							<div class="selectContainer"><select name="" class="select_sourceList custom-select"></select></div>
+							<div class="selectContainer"><select name="" class="select_comparison custom-select">
 								<option value="=">=</option>
 							</select></div>
-							<div><span>请选择</span><select name="" class="select_targetList"></select></div>
+							<div class="selectContainer"><select name="" class="select_targetList custom-select"></select></div>
 						</div>
 						
 					</div>

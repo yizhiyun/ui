@@ -212,20 +212,26 @@ instance = jsPlumb.getInstance({
 			
 			event.stopPropagation();	
 			var lineInfo = conInfo.connection.getOverlay("connFlag");
+			var connectType = $("#connectModalprompt .btnSelects .active").children("p").attr("data");
+			if(connectType == "delete"){
+				instance.detach(conInfo);
+				$("#connectModalprompt").hide();
+				return;
+			}
+			
 			// 更换图片
 			lineInfo.canvas.src =$ ("#connectModalprompt .btnSelects .active").children("img").attr("src");
 			
 			
 			var releationShipArr = [];
 			$("#connectModalprompt .selectInfoDiv .selectContent .selectDiv").each(function(index,ele){
-				var relation = $(ele).children("div").eq(0).children("span").html() + "===" + $(ele).children("div").eq(2).children("span").html();
+				var relation = $(ele).children("div").eq(0).find(".select_sourceList").val() + "===" + $(ele).children("div").eq(2).find(".select_targetList").val();
 				releationShipArr.push(relation);
 			})
 			
 			
 			lineInfo.setParameters({
-				 "type":$("#connectModalprompt .btnSelects .active").children("p").html(),
-				 
+				 "type":connectType,
 				 "relation":{
 				 	"sourceInfo":conInfo.sourceId,
 				 	"targetInfo":conInfo.targetId,
@@ -234,7 +240,6 @@ instance = jsPlumb.getInstance({
 				
 			})
 			
-//			console.log(lineInfo.getParameters());
 			$("#connectModalprompt").hide();
 			
 		});
@@ -284,7 +289,11 @@ function connectDetailSelect(conInfo,originalEvent){
 	$("#connectModalprompt .selectInfoDiv .selectHeader p").eq(2).html(targetTBName);
 	
 	
-
+	var sourceSelect = $("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div .select_sourceList");
+	if(sourceSelect.children("option").length > 0){
+		sourceSelect.empty();
+	}
+	
 	// 创建源点的选项卡
 	for (var i = 0; i < didShowDragAreaTableInfo[conInfo.sourceId].length;i++) {
 		// 具体的字段
@@ -292,31 +301,26 @@ function connectDetailSelect(conInfo,originalEvent){
 		if (dataInfo["isable"] == "no") {
 			continue
 		}
-		var op = $("<option value="+dataInfo["Field"]+">"+dataInfo["Field"]+"</option>")
-		$("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div .select_sourceList").append(op);
-		
+		var op = $("<option value="+dataInfo["field"]+">"+dataInfo["field"]+"</option>")
+		sourceSelect.append(op);
 	}
+	sourceSelect.comboSelect();
 	
+	var targetSelect = $("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div .select_targetList");
+	if(targetSelect.children("option").length > 0){
+		targetSelect.empty();
+	}
 	for (var i = 0; i < didShowDragAreaTableInfo[conInfo.targetId].length;i++) {
 		var dataInfo =  didShowDragAreaTableInfo[conInfo.targetId][i];
 		if (dataInfo["isable"] == "no") {
 			continue
 		}
-		var op = $("<option value="+dataInfo["Field"]+">"+dataInfo["Field"]+"</option>")
-		$("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div .select_targetList").append(op);
+		var op = $("<option value="+dataInfo["field"]+">"+dataInfo["field"]+"</option>")
+		targetSelect.append(op);
 		
 	}
+	targetSelect.comboSelect();
 	
-	//  自定义选项卡数据同步
-//connectPromptSelectynchronous($("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div .select_sourceList"));
-//connectPromptSelectynchronous($("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div .select_targetList"));
-
-$("#connectModalprompt .selectInfoDiv .selectContent .selectDiv div select").change(function(){
-	connectPromptSelectynchronous(this);
-
-	
-	
-});
 
 // 内联、外联等按钮点击事件
 $("#connectModalprompt .btnSelects div").click(function(){
@@ -325,22 +329,7 @@ $("#connectModalprompt .btnSelects div").click(function(){
 })
 	
 }
-// 选项卡改变的函数
 
-function connectPromptSelectynchronous (ele){
-	
-	$(ele).prev("span").html($(ele).val());
-}
-
-
-// 表格之间连线弹框 点击-----“确定”----按钮之后
-function connectionRelationConfirm(event){
-	event.stopPropagation();
-	
-	
-	$("#connectModalprompt").hide();	
-		
-}
 
 // 表格之间连线弹框 点击-----“取消”----按钮之后
 function connectionRelationCancle(event){

@@ -1,4 +1,4 @@
-#text_table_need_show{min-width: 100%;min-height: 100%;font-size: 12px;position: relative;left: 0;top: 0; overflow: auto;}
+#text_table_need_show{min-width: 100%;min-height: 100%;font-size: 12px;position: relative;left: 0;top: 0; overflow: auto;height: 100%;}
 #text_table_need_show .top_column_container{overflow: visible;}
 #text_table_need_show .top_column_container .top_column_name{text-align: center;font-weight: bold}
 #text_table_need_show .top_column_container .column_data_list{border-bottom: 1px solid #dedede;border-left: 1px solid #dedede;}

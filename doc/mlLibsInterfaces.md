@@ -5,24 +5,33 @@ This document describe the RESTful API of getting mllib information, e.g. statis
 
 The RESTful API Details of Getting the basic statistics.
 -------------
-1. Support Format: JSON
-2. Request Method: POST
-3. Request Data Schema:
-
+### 1. Support Format: JSON
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
-    "sourceType": <sourceType>  # "db" or "hdfs"
-    "opTypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3","range"
-    "source": <sourceName>,     # Optional. if sourceType is db, it's useless.
-    "database": <databaseName>, # Optional. if sourceType is hdfs and hdfsUrl is provided, it's useless.
-    "tableName": <tableName>,   # Optional. if sourceType is hdfs and hdfsUrl is provided, it's useless.
-    "hdfsUrl": <hdfsUrl>,       # Optional. Only valid if sourceType is hdfs. This attribute is just for testing currently.
+    "sourcetype": <sourceType>  # "db" or "hdfs"
+    "optypes": <outputTypeList>,# "count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1",
+                                  "quarter3","range","freq", "freqpercent","sem", "cv", "mode"
+
+    "database": <databaseName>, # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
+    "tableName": <tableName>,   # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
+    "hdfsurl": <hdfsUrl>,       # Optional. Only valid if sourcetype is hdfs. This attribute is just for testing currently.
+    "dbsource": {               # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
+        "dbtype": <dbType>,     # "mysql", "oracle", "sqlserver"
+        "dbserver": <dbServer>, # db server IP or host
+        "dbport": <dbPort>,
+        "user": <user>,
+        "password": <password>,
+        "sid": <sid>            # Optional. If dbtype is Oracle, it's required. Or else it's unnecessary.
+    },
     "columns": {                # Optional. If it's not provided, all columns will be returned.
         <columnName1>: {
-            "columnType": <columnType>,
+            "type": <columnType>,
             "nullable": "yes/no",
-            "primaryKey": "yes/no",
-            "uniqueKey": "yes/no",
-            "foreignKey": "no"
+            "primary": "yes/no",
+            "unique": "yes/no",
+            "foreign": "no"
         },
         <columnName2>: {
             ...
@@ -32,42 +41,56 @@ The RESTful API Details of Getting the basic statistics.
     <otherProperty>:<otherValue>,
     ...
 }
+```
 
-
-4. Request Examples:
-4.1 Example for db
+### 4. Request Examples:
+* Example for db
+```
 {
-    "sourceType": "db",
-    "opTypes": ["count","sum","mean","median", "min","max"],
+    "sourcetype": "db",
+    "optypes": ["count","sum","mean","median", "min","max"],
     "source": "mysqlDB1",
     "database": "db1",
     "tableName": "table1",
     "columns": {
         "col1": {
-            "columnType": "number(3)",
+            "type": "number(3)",
             "nullable": "yes",
-            "primaryKey": "yes",
-            "uniqueKey": "yes"
+            "primary": "yes",
+            "unique": "yes"
         },
         "col2": {
-            "columnType": "VARCHAR2(64)"
+            "type": "VARCHAR2(64)"
         }
     }
 }
-4.1 Example for hdfs
+```
+* Example for hdfs
+```
 {
-    "sourceType": "hdfs",
-    "opTypes": ["count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3"],
+    "sourcetype": "hdfs",
+    "optypes": ["count","sum","mean","median", "min","max","std","var","skew","kurt","quarter1","quarter3"],
     "database": "myfolder",
     "tableName": "AREA_DICT"
 }
-
-5. Response Data:
-5.1 if successful, it will response as follows
-{ "status": "success",
-"results": {...} }
-5.2 if failed, it will response as follows
-{ "status":"failed", "reason": ... }
+```
+### 5. Response Data:
+* if successful, it will response as follows
+```
+{
+    "status": "success",
+    "results": {
+        "freqs": {
+            "count": <value>
+        }
+        "stats": {
+            "count": <value>
+        }
+    }
+}
+```
+* if failed, it will response as follows
+> { "status":"failed", "reason": ... }
 
 
 Notes

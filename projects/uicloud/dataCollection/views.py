@@ -47,33 +47,47 @@ def connectDataBaseHandle(req):
         dbSid
     )
     dataBaseObj.connectDB()
-    dataBaseObj.fetchAllDabaBase()
-    #  创建数据平台模型实例
-    Singleton().addPalt(dataBaseObj)
-    logger.warn(Singleton().dataPaltForm)
-    return render(req, "dataCollection/dataAnalysis.html", {"paltInfoList": Singleton().dataPaltForm})
+    isConnect = dataBaseObj.fetchAllDabaBase()
+    if isConnect:
+        #  创建数据平台模型实例
+        Singleton().addPalt(dataBaseObj)
+        logger.warn(Singleton().dataPaltForm)
+        return render(req, "dataCollection/dataAnalysis.html", {"paltInfoList": Singleton().dataPaltForm})
+
+    else:
+        context = {
+            'status': 'false',
+            'reason': "can't connect db"
+        }
+        return JsonResponse(context)
 
 # 选择具体数据库下的表格
 
 
 def showAllTablesOfaDabaBase(req):
     Singleton().currentDBObjIndex = req.POST["dbObjIndex"]
+    dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
+    dataBaseObj.connectDB()
+    data = dataBaseObj.fetchTableBydataBaseName(req.POST["theDBName"])
     return HttpResponse(json.dumps({
         "status": "ok",
-        "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchTableBydataBaseName(
-            req.POST["theDBName"])
+        "data": data
     }))
 
-# 返回某个表格下的具体字段
+# 返回某个表格下的具体字段. add a new argument just same as previous's "dbObjIndex"
 
 
 def showTableFiledsOFaTable(req):
+    Singleton().currentDBObjIndex = req.POST["dbObjIndex"]
+    dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
+    dataBaseObj.connectDB()
+    data = dataBaseObj.fetchFiledsOfATable(req.POST["tableName"])
     return HttpResponse(json.dumps({
         "status": "ok",
-        "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchFiledsOfATable(req.POST["tableName"])
+        "data": data
     }))
 
-# 返回这个表格指定字段的所有的数据,只需要table参数
+# 返回这个表格的所有的数据
 
 
 def showTableDetailDataOfFileds(req):
@@ -81,10 +95,12 @@ def showTableDetailDataOfFileds(req):
     dbindex = dbInfoArr[0]
     tbName = dbInfoArr[2]
     Singleton().currentDBObjIndex = dbindex
+    dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
+    dataBaseObj.connectDB()
+    data = dataBaseObj.fetchAllDataOfaTableByFields(tbName)
     return HttpResponse(json.dumps({
         "status": "ok",
-        "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].fetchAllDataOfaTableByFields(
-            tbName)
+        "data": data
     }, cls=SpecialDataTypesEncoder))
 
 # 根据条件查询. 返回表格数据
@@ -94,6 +110,8 @@ def showTableDetailDataOfFileds(req):
 def filterTable(request, modeName):
     jsonData = request.data
     Singleton().currentDBObjIndex = jsonData['source']
+    dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
+    dataBaseObj.connectDB()
     if request.method == 'POST':
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
@@ -109,7 +127,7 @@ def filterTable(request, modeName):
         if modeName == 'all':
             results = {
                 "schema": schema,
-                "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].filterTableData(jsonData)
+                "data": dataBaseObj.filterTableData(jsonData)
             }
         elif modeName == 'schema':
             results = {
@@ -117,7 +135,7 @@ def filterTable(request, modeName):
             }
         elif modeName == 'data':
             results = {
-                "data": Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex].filterTableData(jsonData)
+                "data": dataBaseObj.filterTableData(jsonData)
             }
 
         context = {
