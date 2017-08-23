@@ -3,14 +3,24 @@
 {% block css %}
 
 	<!--<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/jqueryui/dataTables.jqueryui.css" />-->
+	<link rel="stylesheet" href={% static "dashboard/css/dashboard_table.css"%} />
 	<link rel="stylesheet" href={% static "statements/css/statements.css" %}>
-	
+	<link rel="stylesheet" href={% static "statements/css/jquery.gridster.css" %}>
 	
 {% endblock %}
 {% block js %}
-<!-- <script src={% static "dashboard/js/echarts.js"%} type="text/javascript" charset="utf-8"></script> -->
+<script src={% static "statements/js/jquery.gridster.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/echarts.js"%} type="text/javascript" charset="utf-8"></script>
+ <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
+ <script src={% static "statements/js/state_chartsHandle/state_pre_dataHandle.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/statements_view_handle.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/state_chartsHandle/state_chartHandle.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/state_table.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/state_data_handle.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/state_show_view.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/state_radarChart.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/textarea_auto.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "statements/js/statements.js"%} type="text/javascript" charset="utf-8"></script>
-<script src={% static "dashboard/js/switch_chart.js"%} type="text/javascript" charset="utf-8"></script>
 	
 	
 {% endblock %}
@@ -59,16 +69,13 @@
 			</div>
 			<!-- 有没有文件夹的存在 -->
 			<div class="right_if_have_parentfolder">
-				<span>文件夹1</span>
-				<img src={% static "statements/img/theme_06.png" %} alt="right_icon">
+				<span></span>
+				<img src={% static "statements/img/jt.png" %} alt="right_icon">
 			</div>
 			<!-- 报表名称展示 -->
 			<div class="right_folder_view_name">
 				<select class='view_folder_select'>
-					<option value="ceshi">ceshi1</option>
-					<option value="ceshi">ceshi2</option>
-					<option value="ceshi">ceshi3</option>
-					<option value="ceshi">ceshi4</option>
+
 				</select>
 			</div>
 		</div>
@@ -97,8 +104,10 @@
 	</div>
 	
 	<!-- 报表视图展示区域 -->
-	<div class="view_folder_show_area clear">
-		
+	<div class="view_folder_show_area clear gridster">
+		<ul class="gridster_ui">
+			
+		</ul>
 	</div>
 	</div>
 <!-- end -->
@@ -132,6 +141,7 @@
 		<!--确定按钮 -->
 		<div class='delete_area_ok_btn'>
 			确定
+			<input type="area">
 		</div>
 	</div>
 

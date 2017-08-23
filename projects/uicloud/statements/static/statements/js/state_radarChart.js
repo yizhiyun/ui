@@ -22,11 +22,11 @@ function data_wrap(save_me_wrap,save_me_name){
 //绘制雷达图
 function drag_Chart(titleText,ledendData,de_num,data_max,save_me_wrap,save_me_name){
 
-	$("#main").css("display","block");
+	$("."+ viewshow_class).css("display","block");
 
 	
 	
-	var myChart = echarts.init($("#main").get(0));
+	var myChart = echarts.init($("."+ viewshow_class).get(0));
 
 	
 	option = {

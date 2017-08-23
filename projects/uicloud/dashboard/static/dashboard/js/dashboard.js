@@ -1,4 +1,13 @@
-
+function setCookie(cookieName,cookieContent,cookieTime){
+		if(cookieTime){
+		var nowDate = new Date();
+		nowDate.setDate(nowDate.getDate()+cookieTime);
+		//"name = gxm;expires = 2018;"
+		document.cookie = cookieName + "=" + escape(cookieContent) +";"+"expires="+nowDate + "; path=/";
+		}else{
+			document.cookie = cookieName + "=" + cookieContent + ";";
+		}
+	}
 // 记录拖拽到行列等的数据
 var drag_row_column_data = {
 	"row":{
@@ -1485,7 +1494,7 @@ $(function() {
 		$("#action_new_view").css("borderColor","#DEDEDED");
 
 		var new_data_name = $("<div class='statement_li save_delect clear'><div class='statement_li_content'><img src=../static/dashboard/img/form_icon.png  class='view_show_icon'><div class='view_show_name_save filter_view_class'>"+action_input_data+"</div></div><div class='view_show_content'></div></div>");
-		new_data_name.prependTo("#show_excel_name");
+		new_data_name.prependTo($("#show_excel_name"));
 		new_data_name.addClass("only_folder");
 		$(".filter_view_class").removeClass("active_folder_view");
 		new_data_name.find(".view_show_name_save").addClass("active_folder_view");
@@ -1562,6 +1571,7 @@ $(function() {
 
 	//保存视图按钮点击事件
 	$("#click_save_view").on("click",function(){
+		$("#show_excel_name").html("");
 		add_state_name();
 		//获取之前是否有保存的文件夹和报表
 
@@ -1667,8 +1677,10 @@ $(function() {
 			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 				
-			if(result["column"] != ""){
-				 window.location.href="../statements/pallasdata3"
+			if(result["foldername"] != ""){
+				 window.location.href="../statements/pallasdata3";
+				 setCookie("now_add_view",post_dict["foldername"],24);
+
 			}else{
 				alert("保存失败");
 			}

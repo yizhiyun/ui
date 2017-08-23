@@ -14,7 +14,8 @@ function showTable_by_dragData(isTabChart){
 	//_cube_all_data 所有表的数据
 //	console.log(isagainDrawTable,isTabChart);
 //	if(!isNeedSHidenTable){
-	$("#text_table_need_show").show();
+	$("."+viewshow_class+"").show();
+	console.log($("."+viewshow_class+""))
 //	}
 //	if(isTabChart && !isagainDrawTable){
 //		return;
@@ -33,14 +34,14 @@ function showTable_by_dragData(isTabChart){
 	 				titleArr.push(ele.split(":")[0]);
 	 				return true;
 	 		});
-	 		$("#text_table_need_show .right_module .top_column_container .top_column_name").eq(0).html(titleArr.join(" / "));
+	 		$("."+viewshow_class+" .right_module .top_column_container .top_column_name").eq(0).html(titleArr.join(" / "));
 	 		// 创建列名
 	 		var li = $("<li class="+co_name+"></li>");
 	 		li.data("field_name",co_name);
-	 		$("#text_table_need_show .top_column_container .column_data_list").eq(0).append(li);
+	 		$("."+viewshow_class+" .top_column_container .column_data_list").eq(0).append(li);
 	 		// 清楚 body 区域的竖线
 	 		var span_width = 0;
-	 		$("#text_table_need_show #data_list_for_body .vertical_line").remove();
+	 		$("."+viewshow_class+" #data_list_for_body .vertical_line").remove();
 	 		
 	 		// 依照列进行排序
 	 		current_data["data"].XMsort(drag_row_column_data["column"]["dimensionality"].slice(0,handle_index+1));
@@ -103,9 +104,9 @@ function showTable_by_dragData(isTabChart){
 			var row_name = need_handle_row.split(":")[0];
 			var table = $("<table cellspacing='0' cellpadding='0' class=" + row_name+"><thead><tr><th>"+row_name+"</th</tr></thead></table>");
 			table.data("field_name",row_name);
-			$("#text_table_need_show .left_row_container").eq(0).append(table);
+			$("."+viewshow_class+" .left_row_container").eq(0).append(table);
 			// 清楚 body 区域的li内容
-			$("#text_table_need_show #data_list_for_body li").remove();
+			$("."+viewshow_class+" #data_list_for_body li").remove();
 			
 			
 //			// 对数据排序
@@ -165,13 +166,13 @@ function showTable_by_dragData(isTabChart){
 	function handle_data_body(liHeight){
 		var aLi = $("<li></li>");
 		aLi.css("height",liHeight);
-		$("#text_table_need_show #data_list_for_body").append(aLi);
+		$("."+viewshow_class+" #data_list_for_body").append(aLi);
 	}
 	//5、处理 body 里面的竖线
 	function line_for_data_body(left_position){
 		var vertical_line = $("<div class='vertical_line'></div>");
 		vertical_line.css("left",left_position);
-		$("#text_table_need_show #data_list_for_body").append(vertical_line);	
+		$("."+viewshow_class+" #data_list_for_body").append(vertical_line);	
 	}
 	
 	//6、处理列里面的度量
@@ -195,7 +196,7 @@ function showTable_by_dragData(isTabChart){
 	
 	// 设置列区域的宽度
 	function column_li_width_handle(_wdith){
-		$("#text_table_need_show .top_column_container .column_data_list").css("width",_wdith);
+		$("."+viewshow_class+" .top_column_container .column_data_list").css("width",_wdith);
 	}
 	
 	//8 目前对于表格来说，不管度量是在列里面还是行里面处理机制是一样的
@@ -210,27 +211,27 @@ function showTable_by_dragData(isTabChart){
 		var row_info = positionInfo[0];
 		var column_info = positionInfo[1];
 		var div = null;
-		if($("#text_table_need_show .content_body #data_list_for_body ." + key).length && $("#text_table_need_show .content_body #data_list_for_body ." + key).length > 0){
-			div = $("#text_table_need_show .content_body #data_list_for_body ." + key);
-			$("#text_table_need_show .content_body #data_list_for_body ." + key).append("<span class='seperate'>/</span>");
-			$("#text_table_need_show .content_body #data_list_for_body ." + key).append(span);
+		if($("."+viewshow_class+" .content_body #data_list_for_body ." + key).length && $("."+viewshow_class+" .content_body #data_list_for_body ." + key).length > 0){
+			div = $("."+viewshow_class+" .content_body #data_list_for_body ." + key);
+			$("."+viewshow_class+" .content_body #data_list_for_body ." + key).append("<span class='seperate'>/</span>");
+			$("."+viewshow_class+" .content_body #data_list_for_body ." + key).append(span);
 		}else{
 			div = $("<div class='measureDiv'></div>");
-			$("#text_table_need_show .content_body #data_list_for_body").append(div);
+			$("."+viewshow_class+" .content_body #data_list_for_body").append(div);
 			div.addClass(key);
 			div.append(span);
 		}	
 			var top_index = 0;
 			var left_index = 0;
 			if (row_info) {
-				var lastTable = $("#text_table_need_show .left_row_container table:last tbody");
+				var lastTable = $("."+viewshow_class+" .left_row_container table:last tbody");
 				lastTable.find("." + row_info).filter(".activeShow").eq(0).prevAll("tr").each(function(index,ele){
 					top_index += $(ele).outerHeight();
 				});
 				
 			}
 			if (column_info) {
-				var lastLi = $("#text_table_need_show .right_module .top_column_container .column_data_list li:last").eq(0);
+				var lastLi = $("."+viewshow_class+" .right_module .top_column_container .column_data_list li:last").eq(0);
 				 lastLi.find("."+column_info).filter(".activeShow").eq(0).prevAll(".activeShow").each(function(index,ele){
 				 	
 				 	left_index += $(ele).outerWidth();
@@ -253,11 +254,12 @@ function showTable_by_dragData(isTabChart){
 		
 		$(function(){
 			if(isagainDrawTable){
+				console.log("gaga")
 					// 清空 绘制 table 区域的内容
-				$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .left_row_container").empty();
-				$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .content_body #data_list_for_body").empty();
-				$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .top_column_name").empty();
-				$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .column_data_list").empty();
+				$("#dashboard_content #view_show_area #view_show_wrap ."+viewshow_class+" .left_row_container").empty();
+				$("#dashboard_content #view_show_area #view_show_wrap ."+viewshow_class+" .right_module .content_body #data_list_for_body").empty();
+				$("#dashboard_content #view_show_area #view_show_wrap ."+viewshow_class+" .right_module .top_column_container .top_column_name").empty();
+				$("#dashboard_content #view_show_area #view_show_wrap ."+viewshow_class+" .right_module .top_column_container .column_data_list").empty();
 				row_repeat_merge_help = [];
 				column_repeat_merge_help = [];
 				//
@@ -283,7 +285,7 @@ function showTable_by_dragData(isTabChart){
 					console.log(rescordCurrentTableData);
 					if(_drag_message["type"] == "dimensionality" && !equalCompare(rescordCurrentTableData,drag_row_column_data)) {
 						handle_row_drag_dimensionality(drag_row_column_data["row"]["dimensionality"].length - 1);
-						$("#text_table_need_show .content_body #data_list_for_body .measureDiv").remove();
+						$("."+viewshow_class+" .content_body #data_list_for_body .measureDiv").remove();
 						for(var i =0;i < drag_row_column_data["column"]["measure"].length;i++){
 							handle_column_drag_measure(i);
 						}
@@ -299,7 +301,7 @@ function showTable_by_dragData(isTabChart){
 				} else if(_drag_message["position"] == "column") {
 					if(_drag_message["type"] == "dimensionality" && !equalCompare(rescordCurrentTableData,drag_row_column_data)) {
 						handle_column_drag_dimensionality(drag_row_column_data["column"]["dimensionality"].length - 1);
-						$("#text_table_need_show .content_body #data_list_for_body .measureDiv").remove();
+						$("."+viewshow_class+" .content_body #data_list_for_body .measureDiv").remove();
 						for(var i =0;i < drag_row_column_data["column"]["measure"].length;i++){
 							handle_column_drag_measure(i);
 						}
@@ -335,22 +337,22 @@ function showTable_by_dragData(isTabChart){
 //			
 //		});
 //		$("#text_table_need_show .left_row_container").css("width","2000px");
-		var left_row_width = $("#text_table_need_show .left_row_container").eq(0).outerWidth();
-		$("#text_table_need_show .right_module").css("margin-left",left_row_width + "px");
+		var left_row_width = $("."+viewshow_class+" .left_row_container").eq(0).outerWidth();
+		$("."+viewshow_class+" .right_module").css("margin-left",left_row_width + "px");
 		// 左侧行设置 th 的高度
-		var top_height = $("#text_table_need_show .right_module .top_column_container").eq(0).height();
-		$("#text_table_need_show .left_row_container table th").css("height",top_height -1);
+		var top_height = $("."+viewshow_class+" .right_module .top_column_container").eq(0).height();
+		$("."+viewshow_class+" .left_row_container table th").css("height",top_height -1);
 				
 		// 设置 body 区域的  ul 的宽度
 		var ui_width = 0
 		var top_border = 0;
-		if ($("#text_table_need_show .top_column_container .column_data_list").eq(0).find("li").length < 1) {
+		if ($("."+viewshow_class+" .top_column_container .column_data_list").eq(0).find("li").length < 1) {
 			ui_width = "50px";
 			top_border = 1;
 		}else{
-			ui_width = $("#text_table_need_show .top_column_container .column_data_list").eq(0).outerWidth();
+			ui_width = $("."+viewshow_class+" .top_column_container .column_data_list").eq(0).outerWidth();
 		}
-		$("#text_table_need_show #data_list_for_body").css({"width":ui_width,"border-top":top_border +"px solid #dedede"});
+		$("."+viewshow_class+" #data_list_for_body").css({"width":ui_width,"border-top":top_border +"px solid #dedede"});
 		
 }
 
@@ -360,5 +362,4 @@ function compareTwoObjectEqualFun(obj1,obj2){
 	
 	
 }
-
 

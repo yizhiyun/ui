@@ -207,8 +207,8 @@
 	//条形图展示
 			function barChart(xType,xShow,xTitle,data,dataName,axisData,axisName,col_repeat,xchangey){
 
-				$("#main").css("display","block");
-				var mycharts = echarts.init($("#main").get(0));
+				$("."+ viewshow_class).css("display","block");
+				var mycharts = echarts.init($("."+ viewshow_class).get(0));
 
 				option = {
 			    title: {
@@ -258,6 +258,8 @@
 				//使用刚指定的配置项和数据显示图标
 				mycharts.setOption(option);
 
+			
+
 
 
 			}
@@ -267,9 +269,9 @@
 			//柱状图展示
 
 			function histogram(xType,yType,yShow,yTitle,data,dataName,axisData,axisName,col_repeat,xchangey){
-				$("#main").css("display","block");
+				$("."+ viewshow_class).css("display","block");
 
-				var mycharts = echarts.init($("#main").get(0));
+				var mycharts = echarts.init($("."+ viewshow_class).get(0));
 
 				option = {
 			    title: {
@@ -317,11 +319,13 @@
 				mycharts.clear();
 				//使用刚指定的配置项和数据显示图标
 				mycharts.setOption(option);
+
+
 			}
 
 		// end.....
 			function histogram_show(data_handle){
-
+			
 			var row_if_col = _drag_message["position"],
 				//判断拖入的是维度还是度量
 			row_col_type = _drag_message["type"];
@@ -462,33 +466,6 @@
 				//只拖入列里度量的求和 显示条形图
 				col_data = col_row_me_math(save_col_me_wrap,col_if_me);
 
-		// histogram_handle -----end
-				//判断拖入方式展示不同图形
-				//判断拖入行中展示图形
-				if(row_if_col == "row"){
-					//判断拖入度量展示柱状图
-					if(row_col_type == "measure"){
-						//柱状图的展示
-						histogram_handle(col_if_de,"col");
-				//条形图的展示
-				}else if(row_col_type == "dimensionality"){
-						//展示条形图
-						barChart_handle(col_if_me,"row")
-			}
-				}
-			//拖入列里图形展示
-				if(row_if_col == "column"){
-					//判断列里拖入度量展示条形图
-						if(row_col_type == "measure"){
-							//展示条形图
-							barChart_handle(row_if_de,"col")
-						//柱状图的展示
-						}else if(row_col_type == "dimensionality"){
-							//柱状图的展示
-							histogram_handle(row_if_me,"row");
-
-					}
-			}
 
 			//排序时调用图形
 			if(drag_or_sortable == "true"){

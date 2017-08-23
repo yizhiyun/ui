@@ -486,7 +486,7 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
 	});
 })
 // 确定按钮
-$("#buildDataPanelView .build-footer .confirmBtn").click(function(){
+$("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").click(function(){
 	if ($("#buildDataPanelView .build-body .cube-name-radio .new-cube").hasClass("active")) {
 		if (!$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val()) {
 			$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).css("border","1px solid red");
