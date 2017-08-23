@@ -566,7 +566,7 @@ def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0",
                            .option("delimiter",delimiter) \
                            .option("quote",quote) \
                            .csv(hdfsUrl)
-        df.write.parquet(parquetPathUrl + tableName)
+        df.write.parquet(parquetPathUrl + tableName, 'overwrite')
         dframe1 = spark.read.parquet(parquetPathUrl + tableName).limit(int(maxRowCount))
         dframe1 = removeNullColumns(dframe1)
 
