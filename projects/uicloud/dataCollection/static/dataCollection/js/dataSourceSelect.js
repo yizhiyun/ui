@@ -29,17 +29,43 @@ $(function () {
     			$("#dataBaseConnectForm").submit();
     			$("#connectDataBaseInfo").hide();
     			$("#dataList").hide();
-    		})
+    		});
     }
     
    
+   $("#panelFileSettingOption .close,#panelFileSettingOption a.cancleBtn").click(function(){
+   		$(".maskLayer").hide();
+  		$("#panelFileSettingOption").hide();
+   });
+   
+   $("#panelFileSettingOption a.confirmBtn").click(function(event){
+   		var delimiter = $("#panelFileSettingOption .fileSettingBody .topOption .delimiterOption input").val();
+   		var quote = $("#panelFileSettingOption .fileSettingBody .topOption .quoteOption input").val();
+   		var header = $("#panelFileSettingOption .fileSettingBody .bottomOption  input").get(0).checked;
+		var formData = new FormData();
+		var fileInfo = $("#selectedPanelFile").files[0];
+		formData.append("file",fileInfo);
+		formData.append("delimiter",delimiter);
+		formData.append("quote",quote);
+		formData.append("header",header);
+		$.ajax({
+			url:"/cloudapi/v1/upload",
+			type:"POST",
+			processData: false,
+            contentType:false,
+            data:formData,
+            success:function(data){
+            		
+            }
+		})
+   		
+   });
+   
   // 点击选择平面文件，选中一个或者多个文件后
   $("#selectedPanelFile").change(function(){
-  	
-  		
-  		$("#panelForm").submit();
-  		 
-  })
-    
-    
+  		$(".maskLayer").show();
+  		$("#panelFileSettingOption").show();
+		
+  });
+  
 })

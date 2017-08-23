@@ -19,14 +19,10 @@
 				<div class="panelFile">
 					<p class="title">文件</p>
 					<div class="contentDiv">
-						<p class="contentText">导入 Excel、文本文件、Access、空间文件、传统文件或更多</p>
-						<form action="/dataCollection/uploadFile" method="post" id="panelForm" enctype="multipart/form-data" >
-							{% csrf_token %}
+						<p class="contentText unselectable">导入 Excel、文本文件、Access、空间文件、传统文件或更多</p>
 						<input type="file" id="selectedPanelFile" multiple="multiple" name="file"/>
-						<a>获取</a>
-						</form>
-				
-					
+						<a>获取</a>	
+						
 					</div>
 				</div>
 				<div class="dataBase">
@@ -64,4 +60,7 @@
 	   		 </div>
 	</div>
 
+{% endblock %}
+{% block other %}
+    {% include "dataCollection/panelFileOption.html" %}
 {% endblock %}

@@ -146,6 +146,30 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #sizer_content .filter_header_div div.filter_content_btn{position: absolute;height: 100%;width: 23px;line-height: 35px;right: 0;cursor:pointer;}
 #sizer_content .filter_header_div div.filter_content_btn img{margin-left: 10px;margin-top: 11px;}
 
+#sizer_content .filter_body_div{font-size: 10px;}
+#sizer_content .filter_body_div p.cubeTableName{font-size: 12px;text-indent: 10px;}
+#sizer_content .filter_body_div ul.table_field_list li .field_header_div{position: relative;height: 23px;}
+#sizer_content .filter_body_div ul.table_field_list li .openAndCloseImg{position: absolute;left: 10px;top: 9px;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv{position: absolute;left: 25px;height: 23px;width: 165px;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv span.fieldName{position: absolute;left: 0;top: 0;height: 23px;line-height: 23px;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv .filterSelectImgDiv{position: absolute;right: 25px;height: 23px;text-align: right;width: 23px;cursor: pointer;display: none;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv .filterSelectImgDiv img{margin-top: 5px;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv .filterDetailImgDiv{position: absolute;right: 0px;height: 23px;cursor: pointer;width: 23px;display: none}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv .filterDetailImgDiv.active{background: rgba(0,0,0,0.1);border-radius: 2px;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv .filterDetailImgDiv img{margin-top: 5px;margin-left: 6px;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv:hover{background: #dedede;border-radius: 2px;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv:hover .filterSelectImgDiv{display: inline-block;}
+#sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv:hover .filterDetailImgDiv{display: inline-block;}
+#sizer_content .filter_body_div ul.table_field_list li ul.field_detail_list li{margin-left: 25px;padding-top: 5px;}
+#sizer_content .filter_body_div ul.table_field_list li ul.field_detail_list li span.filedContentName{margin-left: 5px;}
+#sizer_content .filter_body_div ul.table_field_list li .filterBox{border: 1px solid #DEDEDE;border-radius: 2px;margin-left: 10px;width: 178px;height: 120px;display: none;}
+#sizer_content .filter_body_div ul.table_field_list li .filterBox p.detail_logo{text-indent: 10px;height: 21px;border-bottom: 1px solid #DEDEDE;line-height: 21px;font-size: 10px;}
+#sizer_content .filter_body_div ul.table_field_list li .filterBox ul.filter_list{height: 75px;text-indent: 10px;}
+#sizer_content .filter_body_div ul.table_field_list li .filterBox .bottomHandleDiv{position: relative;top: 3px;}
+#sizer_content .filter_body_div ul.table_field_list li .filterBox .bottomHandleDiv .switchDiv{position: absolute;left: 10px;cursor: pointer;}
+#sizer_content .filter_body_div ul.table_field_list li .filterBox .bottomHandleDiv .deleteRecordDiv{position: absolute;right: 10px;text-align: right;cursor: pointer;}
+#sizer_content .filter_body_div ul.table_field_list li .filterBox  ul.filter_list li{cursor: pointer;}
+#sizer_content .filter_body_div ul.table_field_list li .filterBox  ul.filter_list li.active{background: #dedede;}
 
 
 /*设计样式*/

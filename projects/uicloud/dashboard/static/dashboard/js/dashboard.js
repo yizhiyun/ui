@@ -163,6 +163,7 @@ $(function() {
 		// select选项卡
 		cube_select.comboSelect();
 		
+		
 		// 展示维度和度量等
 		load_measurement_module(cube_select.val())
 		
@@ -171,7 +172,6 @@ $(function() {
 		cube_select.change(function(event){
 			event.stopPropagation();
 			if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
-				
 				load_measurement_module($(this).val());
 			}
 		});	
@@ -184,6 +184,8 @@ $(function() {
 		// 之前选择过的数据块  内存保存一份
 		// 记录当前操作数据块的名称
 		current_cube_name = current_cube;
+		$("#dashboard_content #sizer_place #sizer_content .filter_header_div span.cubeTableName").html(current_cube_name);
+		
 		if (_cube_all_data[current_cube_name]) {
 			var schema = _cube_all_data[current_cube_name]["schema"];	
 			factory_create_li_to_measurement_module(schema);
@@ -678,9 +680,8 @@ $(function() {
 							}
 			
 							// 展现 table
-//					showTable_by_dragData();
-			
-			switch_chart_handle_fun();
+					rightFilterListDraw("add",_field_name+":"+_dataType);
+					switch_chart_handle_fun();
 
 						}
 
@@ -1018,10 +1019,9 @@ $(function() {
 								//拖拽区域外消失
 									
 								case "view_show_area_content":
+								
 									$(this).find(".list_wrap").remove();
 									$(this).find(".ui-draggable").parent().remove();
-									
-									
 									if(ui["sender"].attr("id") == "drop_col_view"){
 									drag_row_column_data["column"]["measure"]= [];
 									drag_row_column_data["column"]["dimensionality"] =[];
@@ -1058,13 +1058,17 @@ $(function() {
 										drag_row_column_data["row"][data_wd_type].push(sortable_data)
 									}
 									}
+									
+									// 移除筛选列
+									var fieldInfoArr = ui.item.attr("id").split(":");
+									rightFilterListDraw("delete",fieldInfoArr[1] + ":" + fieldInfoArr[2]);
 
 									break;
 								default:
 
 									break;
 							}
-							
+							isagainDrawTable = true;
 							switch_chart_handle_fun("sortable");
 						}
 
@@ -1501,7 +1505,7 @@ $(function() {
 		$("#action_new_view").css("borderColor","#DEDEDED");
 
 		var new_data_name = $("<div class='statement_li save_delect clear'><div class='statement_li_content'><img src=../static/dashboard/img/form_icon.png  class='view_show_icon'><div class='view_show_name_save filter_view_class'>"+action_input_data+"</div></div><div class='view_show_content'></div></div>");
-		new_data_name.prependTo($("#show_excel_name"));
+		new_data_name.prependTo("#show_excel_name");
 		new_data_name.addClass("only_folder");
 		$(".filter_view_class").removeClass("active_folder_view");
 		new_data_name.find(".view_show_name_save").addClass("active_folder_view");
@@ -1578,7 +1582,6 @@ $(function() {
 
 	//保存视图按钮点击事件
 	$("#click_save_view").on("click",function(){
-		$("#show_excel_name").html("");
 		add_state_name();
 		//获取之前是否有保存的文件夹和报表
 
@@ -1697,7 +1700,4 @@ $(function() {
 		}
 
 	})
-
-
-
 })

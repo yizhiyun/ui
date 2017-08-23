@@ -1,6 +1,5 @@
 var didShowDragAreaTableInfo= {}; // 用来记录拖拽到拖拽区域的所有表格信息
 var currentTableAllData = null;// 当前操作表格的所有数据
-var filterNeedAllData = null; // 筛选器需要全部的表格数据
 //var current
 var preBuildDataName = null; // 之前构建数据集的名称
 var bottom_panel_fileds = []; // 底部表格详情，所需要的字段
@@ -227,7 +226,7 @@ getTablesOfaDataBase($(".dataSetDetail select"));
  				boxDiv[0].id = dbPaltIndexForBack + "_YZYPD_"+ dataBaseName + "_YZYPD_" + tableName;				
 // 				tableDragsRecords.push(boxDiv[0].id);
  				
- 				boxDiv.append($("<div class='tableTitle'>" + "<img src=" + "/../../../static/dataCollection/images/left_40.png"+"/>"+"<p title="+tableName+">"+tableName+"</p>"+ "</div>"));
+ 				boxDiv.append($("<div class='tableTitle'>" + "<img src=" + "/static/dataCollection/images/left_40.png"+"/>"+"<p title="+tableName+">"+tableName+"</p>"+ "</div>"));
  				
  				boxDiv.append("<div class='clear'></div>")
  				
@@ -292,14 +291,14 @@ getTablesOfaDataBase($(".dataSetDetail select"));
    	// 显示数据集列表
  	function showDataSetList(ele){
  		ele.setAttribute("openFlag","on");
- 		$(ele).children("img").attr("src","/../../../static/dataCollection/images/left_40.png");
+ 		$(ele).children("img").attr("src","/static/dataCollection/images/left_40.png");
  		$(ele).next(".theDataSetContent").show("blind",300);
  		$(ele).css("color","#005eca");
  	}
  	//隐藏数据集列表
  	function hideDataSetList(ele){
  		ele.setAttribute("openFlag","off");
- 		$(ele).children("img").attr("src","/../../../static/dataCollection/images/left_35.png");
+ 		$(ele).children("img").attr("src","/static/dataCollection/images/left_35.png");
  		$(ele).next(".theDataSetContent").hide("blind",300);
  		$(ele).css("color","#202020");
  	}
