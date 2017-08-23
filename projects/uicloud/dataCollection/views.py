@@ -78,9 +78,9 @@ def showAllTablesOfaDabaBase(req):
 
 
 def showTableFiledsOFaTable(req):
-    Singleton().currentDBObjIndex = req.POST["dbObjIndex"]
+    # Singleton().currentDBObjIndex = req.POST["dbObjIndex"]
     dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
-    dataBaseObj.connectDB()
+    # dataBaseObj.connectDB()
     data = dataBaseObj.fetchFiledsOfATable(req.POST["tableName"])
     return HttpResponse(json.dumps({
         "status": "ok",
