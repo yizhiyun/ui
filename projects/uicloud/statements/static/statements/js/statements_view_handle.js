@@ -12,7 +12,7 @@ function view_handle_switch_statements(viewshow_class){
 	}
 	
 
-
+	console.log(state_view_show_type)
 	current_data = _cube_all_data[current_cube_name];
 	
 	isagainDrawTable = true;

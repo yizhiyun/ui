@@ -116,7 +116,7 @@ $(function(){
 	//拿到构建报表的数据
 	$.post("../dashboard/getAllData",{"username":username},function(result){
 
-
+		console.log(result)
 		view_out_handle_init(result);
 
 			//侧边栏关闭按钮点击收起
@@ -488,6 +488,7 @@ function user_handle_change_cookie(ele){
 
 			var change_view_show_click = data_result[now_view_folder][now_click_ele.text()];
 			for(right_view_show in change_view_show_click){
+				console.log(now_view_folder+","+now_click_ele.text()+","+right_view_show)
 				count++;
 				if(!change_view_show_click[right_view_show]["show"]){
 					continue;
@@ -602,7 +603,6 @@ function user_handle_change_cookie(ele){
 							//确定删除按钮点击事件
 						$(".delete_area_ok_btn").unbind("click");
 						$(".delete_area_ok_btn").on("click",function(){
-							console.log()
 							//服务器更新数据
 							$.post("../dashboard/deleteFolder",{"datatype":"view","tableid":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id"),"username":username},function(result){{
 								if(result != ""){
@@ -855,7 +855,7 @@ function user_handle_change_cookie(ele){
 
 									//将视图对应表存储起来
 									if(_cube_all_data_table.indexOf(data_result[erv_data][small_view_show][view_show]["tablename"]) == -1){
-										console.log("a");
+										
 										_cube_all_data_table.push(data_result[erv_data][small_view_show][view_show]["tablename"]);
 									}
 									//判断是否有修改过的名字 而不使用默认的展现形式
@@ -1064,10 +1064,9 @@ function user_handle_change_cookie(ele){
 					// reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
 					return;
 				}
-				console.log("2")
 					$.ajax({
 					url:"/cloudapi/v1/tables/" +_cube_all_data_table[len-l]+"/all",
-					type:"get",
+					type:"post",
 					dataType:"json",
 					success:function(data){
 						
