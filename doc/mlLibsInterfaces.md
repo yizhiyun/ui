@@ -225,30 +225,32 @@ The RESTful API Details of Getting the hypothesis testing information.
 Notes
 -------------
 
-Method,      Description
-"count",     Number of non-null observations
-"sum",       Sum of values
-"mean",      Mean of values
-"median",    Arithmetic median of values
-"min",       Minimum
-"max",       Maximum
-"std",       Bessel-corrected sample standard deviation
-"var",       Unbiased variance
-"skew",      Sample skewness (3rd moment)
-"kurt",      Sample kurtosis (4th moment)
-"quarterdev",Sample quantile (value at 75% - value at 25%)
-"range",     The value of max - min
-"sem",       Unbiased standard error of the mean
-"cv",        Coefficient of Variation(std/mean)
-"mode",      The mode(s) for numeric type
-"freq",      Frequency
-"freqpercent", Frequency percentage
-"cov",       Unbiased covariance (binary)
-"corr",      Correlation (binary)
+Method        | Description
+------------- | -------------
+"count"       | Number of non-null observations
+"sum"         | Sum of values
+"mean"        | Mean of values
+"median"      | Arithmetic median of values
+"min"         | Minimum
+"max"         | Maximum
+"std"         | Bessel-corrected sample standard deviation
+"var"         | Unbiased variance
+"skew"        | Sample skewness (3rd moment)
+"kurt"        | Sample kurtosis (4th moment)
+"quarterdev"  | Sample quantile (value at 75% - value at 25%)
+"range"       | The value of max - min
+"sem"         | Unbiased standard error of the mean
+"cv"          | Coefficient of Variation(std/mean)
+"mode"        | The mode(s) for numeric type
+"freq"        | Frequency
+"freqpercent" | Frequency percentage
+"cov"         | Unbiased covariance (binary)
+"corr"        | Correlation (binary)
 
 
-Method,         Description
-"ttest_1samp",  Calculates the T-test for the mean of ONE group of scores.
-"ttest_ind",    Calculates the T-test for the means of two independent samples of scores.
-"ttest_rel",    Calculates the T-test on TWO RELATED samples of scores, a and b.
-"chiSqtest",    The null hypothesis is that the occurrence of the outcomes is statistically independent.
+Method        | Description
+------------- | -------------
+"ttest_1samp" | Calculates the T-test for the mean of ONE group of scores.
+"ttest_ind"   | Calculates the T-test for the means of two independent samples of scores.
+"ttest_rel"   | Calculates the T-test on TWO RELATED samples of scores, a and b.
+"chiSqtest"   | The null hypothesis is that the occurrence of the outcomes is statistically independent.
