@@ -7,13 +7,15 @@ logger = logging.getLogger(__name__)
 
 class ConnectDataBase():
     # 新增一个Sid（数据库名称）参数
-    def __init__(self, dbPaltName=None, dbLocation=None, dbPort=None, dbUserName=None, dbUserPwd=None, dbSid=None):
+    def __init__(self, dbPaltName=None, dbLocation=None, dbPort=None,
+                 dbUserName=None, dbUserPwd=None, dbSid=None, dbTime=None):
         self.dbPaltName = dbPaltName
         self.dbLocation = dbLocation
         self.dbPort = int(dbPort)
         self.dbUserName = dbUserName
         self.dbUserPwd = dbUserPwd
         self.dbSid = dbSid
+        self.dbTime = dbTime
         self.con = None
         # 所有数据库的集合
         self.dataBasesRs = []
@@ -28,22 +30,25 @@ class ConnectDataBase():
             try:
                 self.con = MySQLdb.connect(
                     host=self.dbLocation, port=self.dbPort, user=self.dbUserName, passwd=self.dbUserPwd, charset='utf8')
+                return True
             except Exception:
-                self.con = False
+                return False
 
         elif self.dbPaltName == 'oracle':
             try:
                 self.con = cx_Oracle.connect('{0}/{1}@{2}:{3}/{4}'.format(
                     self.dbUserName, self.dbUserPwd, self.dbLocation, self.dbPort, self.dbSid))
+                return True
             except Exception:
-                self.con = False
+                return False
 
         elif self.dbPaltName == 'sqlserver':
             try:
                 self.con = pymssql.connect(
                     host='{0}:{1}'.format(self.dbLocation, self.dbPort), user=self.dbUserName, password=self.dbUserPwd)
+                return True
             except Exception:
-                self.con = False
+                return False
 
     # 获取当前数据库平台所有的数据库
 

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+# from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
@@ -8,10 +8,14 @@ from .gxmHandleClass.Singleton import Singleton
 import json
 import decimal
 import datetime
+import time
 
 
 import logging
-logger = logging.getLogger(__name__)
+
+# Get an instance of a logger
+logger = logging.getLogger("uicloud.dataCollection.views")
+logger.setLevel(logging.DEBUG)
 # Create your views here.
 
 
@@ -44,15 +48,34 @@ def connectDataBaseHandle(req):
         req.POST["port"],
         req.POST["dbuserName"],
         req.POST["dbuserPwd"],
-        dbSid
+        dbSid,
+        time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
     )
-    dataBaseObj.connectDB()
-    isConnect = dataBaseObj.fetchAllDabaBase()
+    isConnect = dataBaseObj.connectDB()
+    logger.error(isConnect)
     if isConnect:
-        #  创建数据平台模型实例
-        Singleton().addPalt(dataBaseObj)
-        logger.warn(Singleton().dataPaltForm)
-        return render(req, "dataCollection/dataAnalysis.html", {"paltInfoList": Singleton().dataPaltForm})
+        username = req.POST['username']
+        isAlreadyIn = Singleton().addPalt(dataBaseObj, username)
+        if not isAlreadyIn:
+            return JsonResponse({'status': 'false', 'reason': 'the palt is already has'})
+        context = {
+            'db': {},
+            'panel': []
+        }
+        for md5, dbObj in Singleton().dataPaltForm[username]['db'].items():
+            dbObj.fetchAllDabaBase()
+            context['db'][md5] = {
+                'dbtype': dbObj.dbPaltName,
+                'dbport': dbObj.dbPort,
+                'dbuser': dbObj.dbdbUserName,
+                'dblist': dbObj.dataBasesRs
+            }
+
+        if 'panel' in Singleton().dataPaltForm[username].keys():
+            for panel in Singleton().dataPaltForm[username]['panel']:
+                context['panel'].append(panel.name)
+
+        return JsonResponse(context)
 
     else:
         context = {
@@ -64,38 +87,40 @@ def connectDataBaseHandle(req):
 # 选择具体数据库下的表格
 
 
-def showAllTablesOfaDabaBase(req):
-    Singleton().currentDBObjIndex = req.POST["dbObjIndex"]
-    dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
-    dataBaseObj.connectDB()
-    data = dataBaseObj.fetchTableBydataBaseName(req.POST["theDBName"])
-    return HttpResponse(json.dumps({
+def showAllTablesOfaDabaBase(request):
+    username = request.POST['username']
+    dbObjIndex = request.POST['dbObjIndex']
+    dataBaseObj = Singleton().dataPaltForm[username]['db'][dbObjIndex]
+    data = dataBaseObj.fetchTableBydataBaseName(request.POST["theDBName"])
+    context = {
         "status": "ok",
         "data": data
-    }))
+    }
+    return JsonResponse(context)
 
-# 返回某个表格下的具体字段. add a new argument just same as previous's "dbObjIndex"
+# 返回某个表格下的具体字段.
 
 
-def showTableFiledsOFaTable(req):
-    # Singleton().currentDBObjIndex = req.POST["dbObjIndex"]
-    dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
-    # dataBaseObj.connectDB()
-    data = dataBaseObj.fetchFiledsOfATable(req.POST["tableName"])
-    return HttpResponse(json.dumps({
+def showTableFiledsOFaTable(request):
+    username = request.POST['username']
+    dbObjIndex = request.POST['dbObjIndex']
+    dataBaseObj = Singleton().dataPaltForm[username]['db'][dbObjIndex]
+    data = dataBaseObj.fetchFiledsOfATable(request.POST["tableName"])
+    context = {
         "status": "ok",
         "data": data
-    }))
+    }
+    return JsonResponse(context)
 
 # 返回这个表格的所有的数据
 
 
 def showTableDetailDataOfFileds(req):
+    username = req.POST['username']
     dbInfoArr = req.POST["dbInfo"].split("_YZYPD_")
     dbindex = dbInfoArr[0]
     tbName = dbInfoArr[2]
-    Singleton().currentDBObjIndex = dbindex
-    dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
+    dataBaseObj = Singleton().dataPaltForm[username]["db"][dbindex]
     dataBaseObj.connectDB()
     data = dataBaseObj.fetchAllDataOfaTableByFields(tbName)
     return HttpResponse(json.dumps({
@@ -110,7 +135,8 @@ def showTableDetailDataOfFileds(req):
 def filterTable(request, modeName):
     jsonData = request.data
     Singleton().currentDBObjIndex = jsonData['source']
-    dataBaseObj = Singleton().dataPaltForm["db"][Singleton().currentDBObjIndex]
+    username = jsonData['username']
+    dataBaseObj = Singleton().dataPaltForm[username]["db"][Singleton().currentDBObjIndex]
     dataBaseObj.connectDB()
     if request.method == 'POST':
         modeList = ['all', 'data', 'schema']
