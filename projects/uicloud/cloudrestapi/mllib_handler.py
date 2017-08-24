@@ -213,7 +213,7 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
     ''' + '''
     df3 = getDataFrameFromSource({0}, '{1}')
     if df3:
-        print(json.dumps(getBasicStats({0}["inputParams"], df3), cls = SpecialDataTypesEncoder))
+        print(json.dumps(getHypothesisTest({0}["inputParams"], df3), cls = SpecialDataTypesEncoder))
     else:
         logger.error("Cannot get data from the given source!")
         print(False)

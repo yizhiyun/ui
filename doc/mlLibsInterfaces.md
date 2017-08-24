@@ -125,7 +125,7 @@ The RESTful API Details of Getting the hypothesis testing information.
         "ttype": <tTestType>,   # "ttest_1samp", "ttest_ind", "ttest_rel", "chiSqtest"
         "popmean": <popmean>,   # expected value in null hypothesis
         "col_a": <columnName>,  # Existed column name
-        "col_b": <columnName>,  # Optional. It's required if ttype is ttest_ind, ttest_rel or chiSqtest.
+        "col_b": <columnName>   # Optional. It's required if ttype is ttest_ind, ttest_rel or chiSqtest.
     }
 
     "database": <databaseName>, # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
@@ -181,7 +181,12 @@ The RESTful API Details of Getting the hypothesis testing information.
 ```
 {
     "sourcetype": "db",
-    "optypes": [""],
+    "inputParams": {
+        "ttype": "ttest_ind",
+        "popmean": 32,
+        "col_a": "col1",
+        "col_b": "col2
+    }
     "source": "mysqlDB1",
     "database": "db1",
     "tableName": "table1",
@@ -195,7 +200,12 @@ The RESTful API Details of Getting the hypothesis testing information.
 ```
 {
     "sourcetype": "hdfs",
-    "optypes": [""],
+    "inputParams": {
+        "ttype": "ttest_ind",
+        "popmean": 32,
+        "col_a": "col1",
+        "col_b": "col2
+    }
     "database": "myfolder",
     "tableName": "AREA_DICT"
 }
@@ -235,3 +245,10 @@ Method,      Description
 "freqpercent", Frequency percentage
 "cov",       Unbiased covariance (binary)
 "corr",      Correlation (binary)
+
+
+Method,         Description
+"ttest_1samp",  Calculates the T-test for the mean of ONE group of scores.
+"ttest_ind",    Calculates the T-test for the means of two independent samples of scores.
+"ttest_rel",    Calculates the T-test on TWO RELATED samples of scores, a and b.
+"chiSqtest",    The null hypothesis is that the occurrence of the outcomes is statistically independent.

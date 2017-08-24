@@ -351,6 +351,43 @@ def getBasicStats(request):
 
 
 @api_view(['POST'])
+def getHypothesisTest(request):
+    '''
+    GET:
+    Get hypothesis test information.
+    '''
+
+    jsonData = request.data
+    logger.debug("request.data: {0}".format(jsonData))
+    if request.method == 'POST':
+
+        # check the request data
+        if ("sourceType" not in jsonData or "inputParams" not in jsonData):
+            failObj = {"status": "failed",
+                       "reason": "Please make sure your request data is valid."}
+            return JsonResponse(failObj, status=400)
+        # response all valid columns
+        sparkCode = getHypothesisTestSparkCode(jsonData)
+
+        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        if not output:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        elif output["status"] != "ok":
+            failObj = {"status": "failed",
+                       "reason": output}
+            return JsonResponse(failObj, status=400)
+        else:
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+
+            results = json.loads(data)
+            sucessObj = {"status": "success", "results": results}
+            return JsonResponse(sucessObj)
+
+
+@api_view(['POST'])
 def upload(request):
     '''
     上传csv文件到hdfs， 返回表单。 目前支持中文，空行， 自定义分隔符。
