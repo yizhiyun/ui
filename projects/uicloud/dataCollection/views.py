@@ -52,28 +52,32 @@ def connectDataBaseHandle(req):
         time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
     )
     isConnect = dataBaseObj.connectDB()
-    logger.error(isConnect)
     if isConnect:
         username = req.POST['username']
         isAlreadyIn = Singleton().addPalt(dataBaseObj, username)
         if not isAlreadyIn:
             return JsonResponse({'status': 'false', 'reason': 'the palt is already has'})
         context = {
-            'db': {},
-            'panel': []
+            'status': 'ok',
+            'data': {
+                'db': {},
+                'panel': []
+            }
         }
         for md5, dbObj in Singleton().dataPaltForm[username]['db'].items():
+            if not dbObj.con:
+                dbObj.connectDB()
             dbObj.fetchAllDabaBase()
-            context['db'][md5] = {
+            context['data']['db'][md5] = {
                 'dbtype': dbObj.dbPaltName,
                 'dbport': dbObj.dbPort,
-                'dbuser': dbObj.dbdbUserName,
+                'dbuser': dbObj.dbUserName,
                 'dblist': dbObj.dataBasesRs
             }
 
         if 'panel' in Singleton().dataPaltForm[username].keys():
             for panel in Singleton().dataPaltForm[username]['panel']:
-                context['panel'].append(panel.name)
+                context['data']['panel'].append(panel.name)
 
         return JsonResponse(context)
 
@@ -91,6 +95,8 @@ def showAllTablesOfaDabaBase(request):
     username = request.POST['username']
     dbObjIndex = request.POST['dbObjIndex']
     dataBaseObj = Singleton().dataPaltForm[username]['db'][dbObjIndex]
+    if not dataBaseObj.con:
+        dataBaseObj.connectDB()
     data = dataBaseObj.fetchTableBydataBaseName(request.POST["theDBName"])
     context = {
         "status": "ok",
@@ -105,6 +111,8 @@ def showTableFiledsOFaTable(request):
     username = request.POST['username']
     dbObjIndex = request.POST['dbObjIndex']
     dataBaseObj = Singleton().dataPaltForm[username]['db'][dbObjIndex]
+    if not dataBaseObj.con:
+        dataBaseObj.connectDB()
     data = dataBaseObj.fetchFiledsOfATable(request.POST["tableName"])
     context = {
         "status": "ok",
@@ -121,7 +129,8 @@ def showTableDetailDataOfFileds(req):
     dbindex = dbInfoArr[0]
     tbName = dbInfoArr[2]
     dataBaseObj = Singleton().dataPaltForm[username]["db"][dbindex]
-    dataBaseObj.connectDB()
+    if not dataBaseObj.con:
+        dataBaseObj.connectDB()
     data = dataBaseObj.fetchAllDataOfaTableByFields(tbName)
     return HttpResponse(json.dumps({
         "status": "ok",
@@ -137,7 +146,8 @@ def filterTable(request, modeName):
     Singleton().currentDBObjIndex = jsonData['source']
     username = jsonData['username']
     dataBaseObj = Singleton().dataPaltForm[username]["db"][Singleton().currentDBObjIndex]
-    dataBaseObj.connectDB()
+    if not dataBaseObj.con:
+        dataBaseObj.connectDB()
     if request.method == 'POST':
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
