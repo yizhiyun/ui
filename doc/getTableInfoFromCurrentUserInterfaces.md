@@ -6,7 +6,7 @@ This document describe how to get users' tables information from hdfs via RESTfu
 
 Get All Tables From Current User
 -------------
-### 1. URI: /cloudapi/v1/tables
+### 1. Request URI: /cloudapi/v1/tables
 ### 2. Request Method: GET
 ### 3. Request Data Schema:NULL
 ### 4. Support Format: JSON
@@ -40,7 +40,7 @@ If successful, it will response as follows
 
 Get Table From Current User Via Spark
 -------------
-### 1. URI: /cloudapi/v1/tables/<tableName>/['all','schema','data']
+### 1. Request URI: /cloudapi/v1/tables/<tableName>/['all','schema','data']
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
    NULL if you don't need to filter the data. Or else, please specify the following json format for the filter.
@@ -217,18 +217,18 @@ Get Table From Current User Via Spark
 Notes
 -------------
 1. Here are all column types
-StringType
-BinaryType
-BooleanType
-DateType
-TimestampType
-DecimalType
-DoubleType
-FloatType
-ByteType
-IntegerType
-LongType
-ShortType
-ArrayType
-MapType
-NullType
+* StringType
+* BinaryType
+* BooleanType
+* DateType
+* TimestampType
+* DecimalType
+* DoubleType
+* FloatType
+* ByteType
+* IntegerType
+* LongType
+* ShortType
+* ArrayType
+* MapType
+* NullType

@@ -5,9 +5,10 @@ This document describe the RESTful API of getting mllib information, e.g. statis
 
 The RESTful API Details of Getting the basic statistics.
 -------------
-### 1. Support Format: JSON
-### 2. Request Method: POST
-### 3. Request Data Schema:
+### 1. Request URI: cloudapi/v1/ml/basicstats
+### 2. Support Format: JSON
+### 3. Request Method: POST
+### 4. Request Data Schema:
 ```
 {
     "sourcetype": <sourceType>  # "db" or "hdfs"
@@ -62,7 +63,7 @@ The RESTful API Details of Getting the basic statistics.
 }
 ```
 
-### 4. Request Examples:
+### 5. Request Examples:
 * Example for db
 ```
 {
@@ -93,7 +94,7 @@ The RESTful API Details of Getting the basic statistics.
     "tableName": "AREA_DICT"
 }
 ```
-### 5. Response Data:
+### 6. Response Data:
 * if successful, it will response as follows
 ```
 {
@@ -115,9 +116,10 @@ The RESTful API Details of Getting the basic statistics.
 
 The RESTful API Details of Getting the hypothesis testing information.
 -------------
-### 1. Support Format: JSON
-### 2. Request Method: POST
-### 3. Request Data Schema:
+### 1. Request URI: cloudapi/v1/ml/hyptest
+### 2. Support Format: JSON
+### 3. Request Method: POST
+### 4. Request Data Schema:
 ```
 {
     "sourcetype": <sourceType>  # "db" or "hdfs"
@@ -176,7 +178,7 @@ The RESTful API Details of Getting the hypothesis testing information.
 }
 ```
 
-### 4. Request Examples:
+### 5. Request Examples:
 * Example for db
 ```
 {
@@ -210,7 +212,7 @@ The RESTful API Details of Getting the hypothesis testing information.
     "tableName": "AREA_DICT"
 }
 ```
-### 5. Response Data:
+### 6. Response Data:
 * if successful, it will response as follows
 ```
 {
