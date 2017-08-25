@@ -177,8 +177,9 @@ def generateNewTable(request):
             failObj = {"status": "failed",
                        "reason": "Cannot get the db sources mapping."}
             return JsonResponse(failObj, status=400)
-
-        output = executeSpark(sparkCode)
+        maxCheck = 300 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
+        duration = 1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
+        output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
         logger.debug("output: {0}".format(output))
         if not output:
             failObj = {"status": "failed",
@@ -230,8 +231,9 @@ def getTableViaSpark(request, tableName, modeName):
         curUserName = "myfolder"
         sparkCode = getTableInfoSparkCode(
             curUserName, tableName, mode=modeName, filterJson=jsonData)
-
-        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
+        duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
+        output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
@@ -294,8 +296,9 @@ def getTableViaSparkCustom(request, tableName, modeName):
             port=jsonData['port'],
             rootFolder=jsonData['rootfolder']
         )
-
-        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
+        duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
+        output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
@@ -331,8 +334,9 @@ def getBasicStats(request):
             return JsonResponse(failObj, status=400)
         # response all valid columns
         sparkCode = getBasicStatsSparkCode(jsonData)
-
-        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
+        duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
+        output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
@@ -369,7 +373,9 @@ def getHypothesisTest(request):
         # response all valid columns
         sparkCode = getHypothesisTestSparkCode(jsonData)
 
-        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
+        duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
+        output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}

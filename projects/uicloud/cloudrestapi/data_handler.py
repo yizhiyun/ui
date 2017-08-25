@@ -45,7 +45,7 @@ def executeSpark(sparkCode,
         sessionUrl = "{0}/{1}".format(rootSessionsUrl, newSessionReqJson['id'])
 
         reqJsonTmp = getReqFromDesiredReqState(sessionUrl)
-        if not reqJsonTmp:
+        if reqJsonTmp["state"] in ["error", "cancel", "waitting"]:
             # requests.delete(sessionUrl, headers=headers)
             return False
 
@@ -64,9 +64,11 @@ def executeSpark(sparkCode,
                                               maxReqCount=maxCheckCount,
                                               eachSleepDuration=reqCheckDuration)
 
-    if not resultReqJson:
+    if resultReqJson["state"] in ["error", "cancel"]:
         # requests.delete(sessionUrl, headers=headers)
         return False
+    elif resultReqJson["state"] == "waitting":
+        return {"status": "waitting", "msg": "The job hasn't been finished. You can check it latter."}
 
     # pprint.pprint(resultReqJson)
     logger.debug("resultReqJson:{0}".format(resultReqJson))
@@ -90,12 +92,12 @@ def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json
         if reqJson['state'] == 'error':
             logger.error(
                 "There is an error in Step-{0}, see the details for the response:{1}".format(reqCount, reqJson))
-            return False
+            return {"state": "error"}
         if reqJson['state'] in ['cancelled', 'cancelling']:
             logger.error(
                 "The job has been cancelled in Step-{0}, see the details for the response:{1}"
                 .format(reqCount, reqJson))
-            return False
+            return {"state": "cancel"}
         # sleep half a second
         time.sleep(eachSleepDuration)
         reqCount = reqCount + 1
@@ -104,9 +106,10 @@ def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json
         logger.debug("Step:{0}, response:{1}".format(reqCount, reqJson))
 
     if reqCount >= maxReqCount:
-        return False
+        logger.warn("Request count has exceeded the maxReqCount({0})".format(maxReqCount))
+        return {"state": "waitting"}
 
-    return reqJson
+    return {"state": "ok", "result": reqJson}
 
 
 def getOutputColumns(jsonData):

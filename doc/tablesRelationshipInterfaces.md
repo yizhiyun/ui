@@ -222,7 +222,9 @@ The RESTful API Details of Generating New Table
         },
         "removedColumns": ["<databaseName>.<tableName>.<columnName>", ...],
         ...
-    }
+    },
+    "maxchecknum": <NUM>,     # Optional. Set the max number to check the request state.
+    "checkduration": <NUMRIC>   # Optional. Set how offen to check the request state.
 }
 ```
 ### 5. Request Examples:
