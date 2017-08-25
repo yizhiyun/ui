@@ -396,43 +396,111 @@ def upload(request):
 
     jsonData = request.POST
     file = request.FILES.get('file')
+    fileName = file.name
     if request.method == 'POST':
-        file = fileFormat(file)
+        files = fileFormat(file)
+        if not files:
+            return JsonResponse({'status': 'false', 'reason': 'filetype is wrong'})
         nNPort = jsonData['nnport'] if 'nnport' in jsonData else "50070"
         hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData else "spark-master0"
         rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
-        username = jsonData['username'] if 'username' in jsonData else "myfolder"
+        username = jsonData['username'] if 'username' in jsonData else "yzy"
         header = jsonData['header'] if 'header' in jsonData else 'false'
-        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
+        # maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
         delimiter = jsonData['delimiter'] if 'delimiter' in jsonData else ','
         quote = jsonData['quote'] if 'quote' in jsonData else '"'
         port = jsonData['port'] if 'port' in jsonData else '9000'
 
-        upload = uploadToHdfs(
-            file, hdfsHost, nNPort, rootFolder, username
-        )
-        if upload:
+        for file in files:
 
-            sparkCode = getUploadInfoSparkCode(
-                file.name, delimiter, quote, hdfsHost,
-                port, rootFolder, username, header, maxRowCount
+            upload = uploadToHdfs(
+                file, hdfsHost, nNPort, rootFolder, username
             )
+            if not upload:
+                return JsonResponse({"status": "false", 'reason': 'see the logs'})
 
-            output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
-            if not output:
-                failObj = {"status": "failed",
-                           "reason": "Please see the logs for details."}
-                return JsonResponse(failObj, status=400)
-            elif output["status"] != "ok":
-                failObj = {"status": "failed",
-                           "reason": output}
-                return JsonResponse(failObj, status=400)
             else:
-                logger.debug("output: {}".format(output))
-                data = output["data"]["text/plain"]
+                sparkCode = csvToParquetSparkCode(
+                    file.name, delimiter, quote, hdfsHost,
+                    port, rootFolder, username, header
+                )
 
-                results = json.loads(data)
-                sucessObj = {"status": "success", "results": results}
-                return JsonResponse(sucessObj)
+                output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+                if not output:
+                    failObj = {"status": "failed",
+                               "reason": "Please see the logs for details."}
+                    return JsonResponse(failObj, status=400)
+                elif output["status"] != "ok":
+                    failObj = {"status": "failed",
+                               "reason": output}
+                    return JsonResponse(failObj, status=400)
+                else:
+                    Singleton().addPanelFile(fileName, file, username)
+        context = {
+            'status': 'ok',
+            'data': {
+                'db': {},
+                'panel': {}
+            }
+        }
+        for key, value in Singleton().dataPaltForm[username]['panel'].items():
+            context['data']['panel'][key] = []
+            for file in value:
+                chname = chName(file.name)
+                context['data']['panel'][key].append(chname)
+
+            if 'db' in Singleton().dataPaltForm[username].keys():
+                for md5, dbObj in Singleton().dataPaltForm[username]['db'].items():
+                    if not dbObj.con:
+                        dbObj.connectDB()
+                    dbObj.fetchAllDabaBase()
+
+                    context['data']['db'][md5] = {
+                        'dbtype': dbObj.dbPaltName,
+                        'dbport': dbObj.dbPort,
+                        'dbuser': dbObj.dbUserName,
+                        'dblist': dbObj.dataBasesRs
+                    }
+            # data = output["data"]["text/plain"]
+
+            # results = json.loads(data)
+            # sucessObj = {"status": "success", "results": results}
+        return JsonResponse(context)
+
+
+@api_view(['POST'])
+def getPanel(request, modeName):
+    '''
+    '''
+
+    jsonData = request.data
+    if request.method == 'POST':
+        modeList = ['all', 'data', 'schema']
+        if modeName not in modeList:
+            failObj = {"status": "failed",
+                       "reason": "the mode must one of {0}".format(modeList)}
+            return JsonResponse(failObj, status=400)
+
+        rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
+        username = jsonData['username'] if 'username' in jsonData else "yzy"
+        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
+        sparkCode = getCsvParquetSparkCode(
+            idName(jsonData['filename']), modeName, rootFolder, username, maxRowCount
+        )
+
+        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        if not output:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        elif output["status"] != "ok":
+            failObj = {"status": "failed",
+                       "reason": output}
+            return JsonResponse(failObj, status=400)
         else:
-            return JsonResponse({"status": "false"})
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+
+            results = json.loads(data)
+            sucessObj = {"status": "ok", "results": results}
+            return JsonResponse(sucessObj)

@@ -187,8 +187,8 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
         ...
     }
     '''
-
-    palts = Singleton().dataPaltForm['db']
+    username = "yzy"
+    palts = Singleton().dataPaltForm[username]['db']
     dbSourceDict = {}
     logger.debug("palts: {}".format(palts))
     if palts:
@@ -565,13 +565,12 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
     return outputList
 
 
-def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
-                           username="myfolder", header='false', maxRowCount=10000):
+def csvToParquetSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
+                          username="myfolder", header='false'):
     hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(hdfsHost, port, rootFolder, username, fileName)
     parquetPathUrl = '/{0}/{1}/parquet/'.format(rootFolder, username)
     sparkCode = '''
-    import json
-    def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote, maxRowCount=10000):
+    def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote):
         if header == 'true':
             df = spark.read.option("inferSchema", "true") \
                            .option("header", "true") \
@@ -584,19 +583,31 @@ def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0",
                            .option("quote",quote) \
                            .csv(hdfsUrl)
         df.write.parquet(parquetPathUrl + tableName, 'overwrite')
-        dframe1 = spark.read.parquet(parquetPathUrl + tableName).limit(int(maxRowCount))
+    ''' + '''
+    print(test('{0}', '{1}', '{2}', '{3}', '{4}', '\{5}'))
+    '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, delimiter, quote)
+    return sparkCode
+
+
+def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy', maxRowCount=10000):
+    parquetPathUrl = '/{0}/{1}/parquet/{2}'.format(rootFolder, username, os.path.splitext(filename)[0])
+    sparkCode = '''
+    import json
+    def getCsvParquet(parquetPathUrl, mode, maxRowCount=10000):
+        dframe1 = spark.read.parquet(parquetPathUrl).limit(maxRowCount)
         dframe1 = removeNullColumns(dframe1)
-
         outputDict = {}
-        outputDict['schema'] = []
-        for colItem in dframe1.schema.fields:
-            outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
+        if mode == 'all' or mode == 'schema':
+            outputDict['schema'] = []
+            for colItem in dframe1.schema.fields:
+                outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
 
-        dataList = removeNullLines(dframe1)
+        if mode == 'all' or mode == 'data':
+            dataList = removeNullLines(dframe1)
 
-        outputDict['data'] = []
-        for rowItem in dataList:
-            outputDict['data'].append(rowItem.asDict())
+            outputDict['data'] = []
+            for rowItem in dataList:
+                outputDict['data'].append(rowItem.asDict())
         return json.dumps(outputDict)
 
     def removeNullColumns(dframe1):
@@ -624,6 +635,6 @@ def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0",
                 dataList.append(i)
         return dataList
     ''' + '''
-    print(test('{0}', '{1}', '{2}', '{3}', '{4}', '\{5}', '{6}'))
-    '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, delimiter, quote, maxRowCount)
+    print(getCsvParquet('{0}', '{1}', {2}))
+    '''.format(parquetPathUrl, mode, maxRowCount)
     return sparkCode
