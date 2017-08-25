@@ -187,8 +187,8 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
         ...
     }
     '''
-
-    palts = Singleton().dataPaltForm['db']
+    username = "yzy"
+    palts = Singleton().dataPaltForm[username]['db']
     dbSourceDict = {}
     logger.debug("palts: {}".format(palts))
     if palts:
