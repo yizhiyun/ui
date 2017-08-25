@@ -1,13 +1,3 @@
-function setCookie(cookieName,cookieContent,cookieTime){
-		if(cookieTime){
-		var nowDate = new Date();
-		nowDate.setDate(nowDate.getDate()+cookieTime);
-		//"name = gxm;expires = 2018;"
-		document.cookie = cookieName + "=" + escape(cookieContent) +";"+"expires="+nowDate + "; path=/";
-		}else{
-			document.cookie = cookieName + "=" + cookieContent + ";";
-		}
-	}
 // 记录拖拽到行列等的数据
 var drag_row_column_data = {
 	"row":{
@@ -50,10 +40,210 @@ var _drag_message = {
 var username = "liuyue";
 //视图保存的数据
 var post_dict ={};
-var  now_build_tables = [];
+var now_build_tables = [];
 
+//存储视图对应的数据生成图形
+var view_homo_data = {};
+
+//记录视图标题的顺序
+var view_title_change_count = -1;
+
+//视图标题对应的下标
+var view_title_index =null;
+
+
+var storage=window.localStorage;
 $(function() {
+	$.post("../dashboard/getAllData",{"username":username},function(result){
+		console.log(result)
+		if(Object.getOwnPropertyNames(result).length != 0){
+			//获取需要编辑的视图
+			var have_view_edit = storage.getItem("edit_view_now").split(",");
+			for(folder in result){
+			for(folder_view in result[folder]){
+				for(folder_view_name in result[folder][folder_view]){
+					//显示名称
+					var add_view_post_name = folder_view+"-"+folder_view_name;
+					view_homo_data[add_view_post_name] = result[folder][folder_view][folder_view_name]
+					
+					if(view_homo_data[add_view_post_name]["isopen"]){
+						folder_view_add_show(add_view_post_name,"new",folder+","+folder_view+","+folder_view_name,result);
+					}
+					
+				}
+			}
+			
+			
+		}
+		}
+	})
 
+	//根据编辑过的视图重新展示
+	function edit_view_show(edit_view,result){
+		console.log("asd")
+		//当前操作的数据
+		var now_handle_view = edit_view.data("edit_view").split(",");
+		//当前标题对应视图的数据
+		var now_title_handle_view =result[now_handle_view[0]][now_handle_view[1]][now_handle_view[2]];
+
+
+		//更改数据源展示
+		for(var i = 0; i < $('#lateral_title .custom-select').find("option").length;i++){
+			if($('#lateral_title .custom-select').find("option").eq(i).text() == now_title_handle_view["tablename"]){
+				console.log(i)
+				$('#lateral_title .custom-select').find("option").removeAttr("selected");
+				$('#lateral_title .custom-select').find("option").eq(i).attr("selected","selected");
+				$('#lateral_title .custom-select').comboSelect();
+				
+				// 展示维度和度量等
+				// load_measurement_module($('#lateral_title .custom-select').val())
+			}
+		}
+
+		//创建对应的维度和度量
+
+	}
+	//创建视图标题展示和新建
+	function folder_view_add_show(add_view_name,new_or_old,edit_view_save_data,result){
+		view_title_change_count++;
+		var folderview_li = $("<li class='folderview_li_show' title="+add_view_name+"><span class='folderview_li_span'>"+add_view_name+"</span><div class='folderview_li_del_btn'></div></li>");
+		if(new_or_old == "new"){
+			folderview_li.prependTo($(".rightConent #dashboard_content #new_view ul"));
+			folderview_li.data("edit_view",edit_view_save_data);
+		}else{
+			folderview_li.appendTo($(".rightConent #dashboard_content #new_view ul"));
+		}
+		$(".rightConent #dashboard_content #new_view ul li").removeClass("auto_show");
+		folderview_li.attr("title_change",view_title_change_count).addClass("auto_show");
+		//视图标题展示区域的宽度
+		var view_show_title_width = $("#new_view").width();
+		//视图标题的数量
+		var view_show_title_count = $(".rightConent #dashboard_content #new_view ul li").length;
+		//视图标题的宽度
+		var view_show_evy_width = $(".rightConent #dashboard_content #new_view ul li").width();
+
+
+		if(view_show_title_count * view_show_evy_width >= view_show_title_width){
+			$(".rightConent #dashboard_content #new_view ul li").css("width",view_show_title_width/view_show_title_count + "px");
+		}
+
+		if(view_show_evy_width <= 74){
+			$(".rightConent #dashboard_content #new_view ul li .folderview_li_del_btn").not($(".rightConent #dashboard_content #new_view ul .auto_show .folderview_li_del_btn")).css("display","none");
+
+		}
+		$(".rightConent #dashboard_content #new_view ul li").data("view_btn","true");
+
+
+		
+		//添加视图点击事件
+		folderview_li.on("click",function(e){
+			if($(this).data("view_btn") == "true" && !$(e.target).is($("#new_view ul li .folderview_li_del_btn"))){
+				$(".rightConent #dashboard_content #new_view ul li").removeClass("auto_show").data("view_btn","true");
+				$(".rightConent #dashboard_content #new_view ul li .folderview_li_del_btn").css("display","none");
+				$(this).addClass("auto_show").data("view_btn","false");
+				$(this).find(".folderview_li_del_btn").css("display","block");
+				if(folderview_li.width() <= 74){
+					$(".rightConent #dashboard_content #new_view ul li .folderview_li_del_btn").css("display","none");
+					$(".rightConent #dashboard_content #new_view ul .auto_show .folderview_li_del_btn").css("display","block");
+				}
+				if(!/-/gi.test($(this).find("span").text())){
+					empty_viem_init();
+					return;
+				}else{
+					edit_view_show($(this),result);
+				}
+
+			}
+		})
+
+
+		//删除视图
+		folderview_li.find(".folderview_li_del_btn").on("click",function(){
+			if(!/-/gi.test($(this).find("span").text())){
+
+				if(Number(folderview_li.attr("title_change")) == $(".rightConent #dashboard_content #new_view ul li").length-1){
+							var view_title_index = Number(folderview_li.attr("title_change"))-1;
+					}else{
+							var view_title_index = Number(folderview_li.attr("title_change"));
+					}
+				
+				folderview_li.remove();
+				console.log(Math.ceil($("#new_view").width()/90),$(".rightConent #dashboard_content #new_view ul li").length)
+				if(Math.ceil($("#new_view").width()/90) > $(".rightConent #dashboard_content #new_view ul li").length){
+					$(".rightConent #dashboard_content #new_view ul li").css("width","90px");
+					$(".rightConent #dashboard_content #new_view ul li .folderview_li_del_btn").css("display","block");
+					}else{
+					$(".rightConent #dashboard_content #new_view ul li").css("width",$("#new_view").width()/$(".rightConent #dashboard_content #new_view ul li").length + "px");
+					}
+				
+				for(var i = 0; i < $(".rightConent #dashboard_content #new_view ul li").length;i++){
+					$(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title_change",i);
+				}
+				if(folderview_li.hasClass("auto_show")){
+					$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").addClass("auto_show");
+					$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_del_btn").css("display","block");
+				}
+			}
+		})
+
+
+
+	}
+
+	//视图清空 页面初始化
+	function empty_viem_init(){
+		//清空维度度量里面的数据
+		$("#operational_view .annotation_text").find(".list_wrap").remove();
+		$("#operational_view .annotation_text").find("li").remove();
+		drag_row_column_data = {
+			"row":{
+				"dimensionality":[],
+				"measure":[]
+			},
+			"column":{
+				"dimensionality":[],
+				"measure":[]
+			}
+		}
+		//清空视图展示区域
+		$("#view_show_wrap #main").css("display","none");
+		$("#view_show_wrap #text_table_need_show").css("display","none");
+		$("#view_show_area_content #view_show_empty").css("display","block");
+		$("#project_chart ul li").data("if_show","").css("border","").css("opacity","0.3");
+
+		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .left_row_container").empty();
+		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .content_body #data_list_for_body").empty();
+		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .top_column_name").empty();
+		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .column_data_list").empty();
+		isagainDrawTable = true;
+		switch_chart_handle_fun("sortable");
+	}
+
+
+
+
+
+	//小部件操作栏事件
+	function small_handle_btn(){
+		var add_view_count = 0;
+		folder_view_add_show("新建视图","old");
+
+		if($(".rightConent #dashboard_content #new_view ul li").find("span").text() == "新建视图"){
+				$(".rightConent #dashboard_content #new_view ul li").addClass("auto_show");
+			}
+		//添加视图
+		$("#action_box .action_add_view").on("click",function(){
+			add_view_count++;
+			folder_view_add_show("新建视图"+add_view_count+"");
+			
+		})
+
+		//清空视图
+		$("#action_box .action_delect_view").on("click",function(){
+			empty_viem_init();
+		})
+	}
+	small_handle_btn();
 	/*视图大小调整  select 下拉框*/
 	$(".buildOpa").each(function(index, ele) {
 		$(ele).on("mouseenter", function() {
@@ -157,7 +347,7 @@ $(function() {
 		for (var i =0; i < build_tables.length;i++) {
 			var val = build_tables[i];
 			var op = $("<option value="+val+">"+val+"</option>");
-		
+
 			cube_select.append(op);
 		}	
 		now_build_tables = build_tables;
@@ -443,6 +633,7 @@ $(function() {
 					})
 				}
 
+
 				var lock = false;
 				$(".drop_view").each(function(index, ele) {
 					//视图展示区域禁止拖拽放置
@@ -685,10 +876,87 @@ $(function() {
 								default:
 									break;
 							}
-			
+				function md_click_show(element,data_dict){
+				
+					var open_or_close = true;
+					element.each(function(index,ele){
+						
+						$(ele).on("click",function(){
+						if(open_or_close){
+							open_or_close = false;
+								//创建最外层元素
+							var out_wrap_click = $("<ul class='me_out_content'></ul>");
+							out_wrap_click.appendTo($(ele).parent().parent());
+							out_wrap_click.css({
+								"left":$(ele).parent().parent().offset().left + $(ele).parent().parent().width() - 60 -50+ "px",
+								"top":$(ele).parent().parent().offset().top - 47+  "px",
+							})
+							for(out_wrap_count in data_dict){
+								if(data_dict[out_wrap_count] != null){
+									//创建单个元素
+								var add_ele_evr = $("<li class='me_out_content_li'><p>"+out_wrap_count+"</p><ul class='second_menu'><ul></li>");
+								add_ele_evr.addClass("have_second_menu").appendTo(out_wrap_click);
+									for(var i =0; i < data_dict[out_wrap_count].length;i++){
+										$("<li class='second_li'>"+data_dict[out_wrap_count][i]+"<li>").appendTo(add_ele_evr.find(".second_menu"));
+									}
+
+									//清除空元素
+									add_ele_evr.find(".second_menu").children().each(function(index,ele){
+										if($(ele).html() ==""){
+											$(ele).remove();
+										}
+									})
+								}else{
+									//创建单个元素
+								var add_ele_evr = $("<li class='me_out_content_li'><p>"+out_wrap_count+"</p></li>");
+								add_ele_evr.appendTo(out_wrap_click);
+								}
+								
+							}
+							//移入事件
+						$(".me_out_content li").on("mouseenter",function(){
+							$(this).css("background","rgb(222,222,222)");
+							if($(this).hasClass("have_second_menu")){
+								$(".second_menu").css("display","block");
+							}
+						})
+						$(".me_out_content li").on("mouseleave",function(){
+							$(this).css("background","");
+							if($(this).hasClass("have_second_menu")){
+								$(".second_menu").css("display","none");
+							}
+						})
+
+						$(".me_out_content").on("mouseleave",function(){
+							$(this).remove();
+							open_or_close = true;
+						})
+						}else{
+							$(".me_out_content").remove();
+							$(".me_out_content li").unbind("mouseenter mouseleave");
+							open_or_close = true;
+						}
+
+
+						// 点击事件-------------
+
+
+						// -------------------
+						})
+
+
+						$(ele).parent().parent().on("mouseleave",function(){
+							$(".me_out_content").remove();
+							open_or_close = true;
+						})
+
+					})
+				}
 							// 展现 table
 					rightFilterListDraw("add",_field_name+":"+_dataType);
 					switch_chart_handle_fun();
+					//度量更多操作过程
+					md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算":null,"度量":["总计","平均值","中位数","最大值","最小值"],"移除":null})
 
 						}
 
@@ -1502,6 +1770,7 @@ $(function() {
 		//点击创建报表名称
 	$("#btn_save_name").on("click",function(){
 		$("#key_search").css("display","block");
+		$("#show_excel_name").html("");
 		//输入框里面的值
 		var action_input_data = $("#action_new_view").val();
 		if(action_input_data == ""){
@@ -1593,7 +1862,6 @@ $(function() {
 		//获取之前是否有保存的文件夹和报表
 
 		$.post("../dashboard/getAllData",{"username":username},function(result){
-			console.log(result);
 			//判断第一次新建报表
 			if(!result["default"]){
 				$(".show_view_if_hide").css("color","#808080").unbind("mouseenter mouseleave").css("cursor","default");
@@ -1696,8 +1964,8 @@ $(function() {
 				
 			if(result["foldername"] != ""){
 				 window.location.href="../statements/pallasdata3";
-				 setCookie("now_add_view",post_dict["foldername"],24);
-
+				
+				 storage.setItem("now_add_view",post_dict["foldername"]);
 			}else{
 				alert("保存失败");
 			}

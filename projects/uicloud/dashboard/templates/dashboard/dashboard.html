@@ -32,9 +32,7 @@
 		<!--新建图表-->
 		<div id="new_view" class="clear">
 			<ul class="clear">
-				{% for item in table_name %}
-				<li class="table_name"><span>{{item|cut:"("|cut:")"|cut:"',"|cut:"'"}}</span></li>
-				{% endfor %}
+				
 			</ul>
 		</div>
 		
@@ -67,7 +65,7 @@
 					<img src={% static "dashboard/img/3top-icon_11.png" %} alt="update" title="运行更新"/>
 				</li>
 				<!--新建图表-->
-				<li>
+				<li class='action_add_view'>
 					<img src={% static "dashboard/img/3top-icon_13.png" %} alt="newboard" title="新建视图"/>
 				</li>
 				<!--复制工作表-->
@@ -75,8 +73,8 @@
 					<img src={% static "dashboard/img/3top-icon_15.png" %} alt="copy_board" title="复制视图"/>
 				</li>
 				<!--删除工作表-->
-				<li>
-					<img src={% static "dashboard/img/3top-icon_17.png" %} alt="del_board" title="删除视图"/>
+				<li class='action_delect_view'>
+					<img src={% static "dashboard/img/3top-icon_17.png" %} alt="del_board" title="清空视图"/>
 				</li>
 				<!--更换队列-->
 				<li>
