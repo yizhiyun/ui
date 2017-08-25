@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
 # from .DataModels.PaltInfoModel import PaltInfoModel
 from .gxmHandleClass.Singleton import Singleton
+from cloudrestapi.upload import *
 import json
 import decimal
 import datetime
@@ -61,7 +62,7 @@ def connectDataBaseHandle(req):
             'status': 'ok',
             'data': {
                 'db': {},
-                'panel': []
+                'panel': {}
             }
         }
         for md5, dbObj in Singleton().dataPaltForm[username]['db'].items():
@@ -76,8 +77,10 @@ def connectDataBaseHandle(req):
             }
 
         if 'panel' in Singleton().dataPaltForm[username].keys():
-            for panel in Singleton().dataPaltForm[username]['panel']:
-                context['data']['panel'].append(panel.name)
+            for key, value in Singleton().dataPaltForm[username]['panel'].items():
+                context['data']['panel'][key] = []
+                for file in value:
+                    context['data']['panel'][key].append(chName(file.name))
 
         return JsonResponse(context)
 

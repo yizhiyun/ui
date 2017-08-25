@@ -63,13 +63,14 @@ class Singleton(object):
 
     # 添加平面文件
 
-    def addPanelFile(self, afile, username):
+    def addPanelFile(self, filename, file, username):
         if username not in self.dataPaltForm.keys():
             self.dataPaltForm[username] = {}
         if 'panel' not in self.dataPaltForm[username].keys():
-            self.dataPaltForm[username]['panel'] = []
-        for file in self.dataPaltForm[username]['panel']:
-            if file.name == afile.name:
-                return False
-        self.dataPaltForm[username]['panel'].append(afile)
-        return True
+            self.dataPaltForm[username]['panel'] = {}
+        if filename not in self.dataPaltForm[username]['panel'].keys():
+            self.dataPaltForm[username]['panel'][filename] = []
+        for f in self.dataPaltForm[username]['panel'][filename]:
+            if f.name == file.name:
+                self.dataPaltForm[username]['panel'][filename].remove(f)
+        self.dataPaltForm[username]['panel'][filename].append(file)

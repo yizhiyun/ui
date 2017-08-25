@@ -48,4 +48,9 @@ urlpatterns = [
         views.upload,
         name='upload'
     ),
+    url(
+        r'^dataCollection/cloudapi/v1/getPanel$',
+        views.getPanel,
+        name='getPanel'
+    ),
 ]
