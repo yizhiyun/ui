@@ -251,7 +251,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     import traceback
     import json
     ''' + setupLoggingSparkCode() + getDataFrameFromSourceSparkCode() + '''
-    def writeDataFrame(jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=10000):
+    def writeDataFrame(jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=False):
         """
         notes: maxRowCount is used for refine the max rows from every data sources.
         If the limit parameter is given, use that value.
