@@ -1,11 +1,15 @@
 import time
 import pyhdfs
+import xlrd
+import os
+import csv
 import logging
 
 from .models import FileNameMap
 
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.cloudrestapi.upload")
+logger.setLevel(logging.DEBUG)
 
 
 def uploadToHdfs(file, hdfsHost, nNPort, rootFolder, username):
@@ -14,7 +18,7 @@ def uploadToHdfs(file, hdfsHost, nNPort, rootFolder, username):
     '''
 
     csvPathUrl = '/{0}/{1}/csv/'.format(rootFolder, username)
-    fileName = file.name
+    fileName = os.path.split(file.name)[1]
     client = pyhdfs.HdfsClient(hosts='{0}:{1}'.format(hdfsHost, nNPort))
     if client.exists(csvPathUrl):
         client.create(csvPathUrl + fileName, file, overwrite=True)
@@ -36,19 +40,31 @@ def fileFormat(file):
             if fileList:
                 file.name = fileList[0].idname
             else:
+                nowtime = time.time()
                 obj = FileNameMap()
                 obj.filename = fileName
                 obj.save()
-                obj.idname = "table{0}_{1}.csv".format(str(obj.id), str(time.time()).replace('.', '_'))
+                obj.idname = "table{0}_{1}.csv".format(str(obj.id), str(nowtime).replace('.', '_'))
                 obj.save()
 
-                file.name = "table{0}_{1}.csv".format(str(obj.id), str(time.time()).replace('.', '_'))
+                file.name = "table{0}_{1}.csv".format(str(obj.id), str(nowtime).replace('.', '_'))
             return [file]
 
         else:
             return [file]
-    else:
-        return False
+    elif fileName.endswith('xls') or fileName.endswith('xlsx'):
+        workbook = xlrd.open_workbook(filename=None, file_contents=file.read())
+        all_worksheets = workbook.sheet_names()
+        fileList = []
+        for worksheet_name in all_worksheets:
+            worksheet = workbook.sheet_by_name(worksheet_name)
+            csv_file = open('/tmp/{0}_{1}.csv'.format(os.path.splitext(fileName)[0], worksheet_name), 'w')
+            wr = csv.writer(csv_file)
+            for rownum in range(worksheet.nrows):
+                wr.writerow([entry for entry in worksheet.row_values(rownum)])
+            csv_file.close()
+            fileList.append(open('/tmp/{0}_{1}.csv'.format(os.path.splitext(fileName)[0], worksheet_name), 'rb'))
+        return fileList
 
 
 def check_contain_chinese(check_str):

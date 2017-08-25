@@ -72,5 +72,6 @@ class Singleton(object):
             self.dataPaltForm[username]['panel'][filename] = []
         for f in self.dataPaltForm[username]['panel'][filename]:
             if f.name == file.name:
-                self.dataPaltForm[username]['panel'][filename].remove(f)
+                del self.dataPaltForm[username]['panel'][filename]
+                self.dataPaltForm[username]['panel'][filename] = []
         self.dataPaltForm[username]['panel'][filename].append(file)

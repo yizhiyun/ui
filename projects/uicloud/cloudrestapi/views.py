@@ -409,8 +409,8 @@ def upload(request):
             return JsonResponse({'status': 'false', 'reason': 'filetype is wrong'})
         nNPort = jsonData['nnport'] if 'nnport' in jsonData else "50070"
         hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData else "spark-master0"
-        rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
         username = jsonData['username'] if 'username' in jsonData else "yzy"
+        rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
         header = jsonData['header'] if 'header' in jsonData else 'false'
         # maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
         delimiter = jsonData['delimiter'] if 'delimiter' in jsonData else ','
@@ -427,7 +427,7 @@ def upload(request):
 
             else:
                 sparkCode = csvToParquetSparkCode(
-                    file.name, delimiter, quote, hdfsHost,
+                    os.path.split(file.name)[1], delimiter, quote, hdfsHost,
                     port, rootFolder, username, header
                 )
 
@@ -452,7 +452,7 @@ def upload(request):
         for key, value in Singleton().dataPaltForm[username]['panel'].items():
             context['data']['panel'][key] = []
             for file in value:
-                chname = chName(file.name)
+                chname = chName(os.path.split(file.name)[1])
                 context['data']['panel'][key].append(chname)
 
             if 'db' in Singleton().dataPaltForm[username].keys():

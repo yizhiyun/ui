@@ -73,7 +73,7 @@ def executeSpark(sparkCode,
     # pprint.pprint(resultReqJson)
     logger.debug("resultReqJson:{0}".format(resultReqJson))
 
-    results = resultReqJson['output']
+    results = resultReqJson['result']['output']
 
 #    # close the session url.
 #    requests.delete(sessionUrl, headers=headers)
