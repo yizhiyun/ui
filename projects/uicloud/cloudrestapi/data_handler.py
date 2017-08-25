@@ -589,23 +589,25 @@ def csvToParquetSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", 
     return sparkCode
 
 
-def getCsvParquetSparkCode(filename, rootFolder='tmp/users', username='yzy', maxRowCount=10000):
+def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy', maxRowCount=10000):
     parquetPathUrl = '/{0}/{1}/parquet/{2}'.format(rootFolder, username, os.path.splitext(filename)[0])
     sparkCode = '''
     import json
-    def getCsvParquet(parquetPathUrl, maxRowCount=10000):
+    def getCsvParquet(parquetPathUrl, mode, maxRowCount=10000):
         dframe1 = spark.read.parquet(parquetPathUrl).limit(maxRowCount)
         dframe1 = removeNullColumns(dframe1)
         outputDict = {}
-        outputDict['schema'] = []
-        for colItem in dframe1.schema.fields:
-            outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
+        if mode == 'all' or mode == 'schema':
+            outputDict['schema'] = []
+            for colItem in dframe1.schema.fields:
+                outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
 
-        dataList = removeNullLines(dframe1)
+        if mode == 'all' or mode == 'data':
+            dataList = removeNullLines(dframe1)
 
-        outputDict['data'] = []
-        for rowItem in dataList:
-            outputDict['data'].append(rowItem.asDict())
+            outputDict['data'] = []
+            for rowItem in dataList:
+                outputDict['data'].append(rowItem.asDict())
         return json.dumps(outputDict)
 
     def removeNullColumns(dframe1):
@@ -633,6 +635,6 @@ def getCsvParquetSparkCode(filename, rootFolder='tmp/users', username='yzy', max
                 dataList.append(i)
         return dataList
     ''' + '''
-    print(getCsvParquet('{0}', {1}))
-    '''.format(parquetPathUrl, maxRowCount)
+    print(getCsvParquet('{0}', '{1}', {2}))
+    '''.format(parquetPathUrl, mode, maxRowCount)
     return sparkCode

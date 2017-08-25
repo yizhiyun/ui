@@ -60,7 +60,7 @@ This document describe the RESTful API of how to upload the file to hdfs
 
 Returns all information about the specified file
 -------------
-### 1. url: dataCollection/cloudapi/v1/getPanel
+### 1. url: dataCollection/cloudapi/v1/getPanel/['all', 'data', 'schema']
 ### 2. Support Format: JSON
 ### 3. Request Method: POST
 ### 4. Request Data Schema:
@@ -83,6 +83,7 @@ Returns all information about the specified file
 ### 6. Response Data:
 * if successful, it will response as follows
 ```
+if all:
 {
     "status": "ok",
     "results": {
@@ -99,6 +100,38 @@ Returns all information about the specified file
             },
             ...
         ],
+        "schema": [
+            {"field":<columnName1>, "type":<columnType1>},
+            {"field":<columnName2>, "type":<columnType2>},
+            ...
+        ]
+    }
+}
+
+if data:
+{
+    "status": "ok",
+    "results": {
+        "data": [
+            {
+                <columnName1>: <column1Value1>,
+                <columnName2>: <column2Value1>,
+                ...
+            },
+            {
+                <columnName1>: <column1Value2>,
+                <columnName2>: <column2Value2>,
+                ...
+            },
+            ...
+        ]
+    }
+}
+
+if schema:
+{
+    "status": "ok",
+    "results": {
         "schema": [
             {"field":<columnName1>, "type":<columnType1>},
             {"field":<columnName2>, "type":<columnType2>},

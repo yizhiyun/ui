@@ -469,17 +469,23 @@ def upload(request):
 
 
 @api_view(['POST'])
-def getPanel(request):
+def getPanel(request, modeName):
     '''
     '''
 
     jsonData = request.data
     if request.method == 'POST':
+        modeList = ['all', 'data', 'schema']
+        if modeName not in modeList:
+            failObj = {"status": "failed",
+                       "reason": "the mode must one of {0}".format(modeList)}
+            return JsonResponse(failObj, status=400)
+
         rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
         username = jsonData['username'] if 'username' in jsonData else "yzy"
         maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
         sparkCode = getCsvParquetSparkCode(
-            idName(jsonData['filename']), rootFolder, username, maxRowCount
+            idName(jsonData['filename']), modeName, rootFolder, username, maxRowCount
         )
 
         output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)

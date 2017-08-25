@@ -49,7 +49,7 @@ urlpatterns = [
         name='upload'
     ),
     url(
-        r'^dataCollection/cloudapi/v1/getPanel$',
+        r'^dataCollection/cloudapi/v1/getPanel/(?P<modeName>\w+)$',
         views.getPanel,
         name='getPanel'
     ),
