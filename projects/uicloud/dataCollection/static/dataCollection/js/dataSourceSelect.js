@@ -26,10 +26,13 @@ $(function () {
     		$("#connectDataBaseInfo #dataBaseName").html(dataBaseName)
   			$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName)
     		$("#loginBtn").click(function(event){
+    			
     			$("#dataBaseConnectForm").submit();
+    			
     			$("#connectDataBaseInfo").hide();
     			$("#dataList").hide();
     		});
+    		
     }
     
    
@@ -43,19 +46,19 @@ $(function () {
    		var quote = $("#panelFileSettingOption .fileSettingBody .topOption .quoteOption input").val();
    		var header = $("#panelFileSettingOption .fileSettingBody .bottomOption  input").get(0).checked;
 		var formData = new FormData();
-		var fileInfo = $("#selectedPanelFile").files[0];
+		var fileInfo = $("#selectedPanelFile").get(0).files[0];
 		formData.append("file",fileInfo);
 		formData.append("delimiter",delimiter);
-		formData.append("quote",quote);
+		formData.append("quote",	 quote);
 		formData.append("header",header);
 		$.ajax({
-			url:"/cloudapi/v1/upload",
+			url:"cloudapi/v1/upload",
 			type:"POST",
 			processData: false,
             contentType:false,
             data:formData,
             success:function(data){
-            		
+            		console.log(data);
             }
 		})
    		

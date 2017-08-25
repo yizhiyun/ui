@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^deleteFolder$', views.deleteFolder, name='deleteFolder'),
     url(r'^addNote$', views.addNote, name='addNote'),
     url(r'^setShow$', views.setShow, name='setShow'),
+    url(r'^setIsopen$', views.setIsopen, name='setIsopen'),
 ]

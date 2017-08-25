@@ -8,25 +8,7 @@ This document describe the RESTful API of how to upload the file to hdfs
 ### 3. Request Method: POST
 ### 4. Request Data Schema:
 ```
-if you want to set the separator:
 {
-    "header": <True/False>,
-    "delimiter": <delimiter>,
-    "quote": <quote>  # notice: add '\' before ' or ".
-}
-```
-if you dont't set the separator:
-{
-    "header": <True/False>
-}
-```
-if you want to set the path yourself:
-{
-    "hdfshost": <hdfshost>,
-    "nnport": <nameNodePort>,
-    "port": <port>,
-    "rootfolder": <rootfolder>,
-    "username": <username>,
     "header": <True/False>,
     "delimiter": <delimiter>,
     "quote": <quote>  # notice: add '\' before ' or ".
@@ -36,25 +18,7 @@ if you want to set the path yourself:
 ### 5. Request Examples:
 * Example
 ```
-if you want to set the separator:
 {
-    "header": False,
-    "delimiter": ",",
-    "quote": "\""
-}
-```
-if you dont't set the separator:
-{
-    "header": False
-}
-```
-if you want to set the path yourself:
-{
-    "hdfshost": "spark-master0",
-    "nnport": "50070",
-    "port": "9000",
-    "rootfolder": "tmp/users",
-    "username": "myfolder",
     "header": False,
     "delimiter": ",",
     "quote": "\""
@@ -65,18 +29,112 @@ if you want to set the path yourself:
 * if successful, it will response as follows
 ```
 {
-    "status": "success",
+    "status": "ok",
+    "data": {
+        "db": {
+            "md5aefaekfnaeaeu": {
+                "dbtype": "mysql",
+                "dbport": "3306",
+                "dbuser": "yzy",
+                "dblist": ["django", "yzy", "test"]
+            }
+        },
+        "panel": {
+            "终极测试.csv": [
+                "终极测试.csv"
+            ],
+            "zaq.csv": [
+                "zaq.csv"
+            ],
+            "your_csv.csv": [
+                "your_csv.csv"
+            ]
+        }
+    }
+}
+```
+* if failed, it will response as follows
+> { "status":"faild", "reason": ... }
+
+
+
+Returns all information about the specified file
+-------------
+### 1. url: dataCollection/cloudapi/v1/getPanel/['all', 'data', 'schema']
+### 2. Support Format: JSON
+### 3. Request Method: POST
+### 4. Request Data Schema:
+```
+{
+    "username": <username>,
+    "filename": <filename>
+}
+```
+
+### 5. Request Examples:
+* Example
+```
+{
+    "username": "myfolder",
+    "filename": "zaq.csv"
+}
+```
+
+### 6. Response Data:
+* if successful, it will response as follows
+```
+if all:
+{
+    "status": "ok",
     "results": {
         "data": [
-            {"column": <value>, "column": <value>, "column": <value>, "column": <value>},
-            {"column": <value>, "column": <value>, "column": <value>, "column": <value>},
-            {"column": <value>, "column": <value>, "column": <value>, "column": <value>},
+            {
+                <columnName1>: <column1Value1>,
+                <columnName2>: <column2Value1>,
+                ...
+            },
+            {
+                <columnName1>: <column1Value2>,
+                <columnName2>: <column2Value2>,
+                ...
+            },
             ...
         ],
         "schema": [
-            {"field": <fieldname>, "type": <fieldtype>},
-            {"field": <fieldname>, "type": <fieldtype>},
-            {"field": <fieldname>, "type": <fieldtype>},
+            {"field":<columnName1>, "type":<columnType1>},
+            {"field":<columnName2>, "type":<columnType2>},
+            ...
+        ]
+    }
+}
+
+if data:
+{
+    "status": "ok",
+    "results": {
+        "data": [
+            {
+                <columnName1>: <column1Value1>,
+                <columnName2>: <column2Value1>,
+                ...
+            },
+            {
+                <columnName1>: <column1Value2>,
+                <columnName2>: <column2Value2>,
+                ...
+            },
+            ...
+        ]
+    }
+}
+
+if schema:
+{
+    "status": "ok",
+    "results": {
+        "schema": [
+            {"field":<columnName1>, "type":<columnType1>},
+            {"field":<columnName2>, "type":<columnType2>},
             ...
         ]
     }

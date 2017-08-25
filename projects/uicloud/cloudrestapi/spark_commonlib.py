@@ -67,13 +67,6 @@ def getDataFrameFromSourceSparkCode():
         removedColsDict, it's just used for the generateNewDataFrame function.
         """
 
-        # set the maxRow if it exists.
-        maxRow = maxRowCount
-        if "conditions" in jsonData.keys():
-            for condIt in jsonData["conditions"]:
-                if condIt["type"] == "limit" and type(condIt["value"]) == int:
-                    maxRows = condIt["value"]
-
         if ("sourcetype" in jsonData.keys()) and (jsonData["sourcetype"] == "hdfs"):
             if ("hdfsurl" in jsonData.keys()) and jsonData["hdfsurl"].startswith("hdfs:"):
                 url = jsonData["hdfsurl"]
@@ -85,7 +78,7 @@ def getDataFrameFromSourceSparkCode():
                 logger.error(errmsg)
                 return False
             try:
-                df1 = spark.read.parquet(url).limit(maxRow)
+                df1 = spark.read.parquet(url)
             except Exception:
                 traceback.print_exc()
                 logger.error("There is an error while reading {0}. Exception:{1}".format(url, sys.exc_info()))
@@ -138,15 +131,24 @@ def getDataFrameFromSourceSparkCode():
                     .option("password", password) \
                     .option("useUnicode", True) \
                     .option("characterEncoding","utf8") \
-                    .load().limit(maxRow)
+                    .load()
 
             except Exception:
                 traceback.print_exc()
                 logger.error("Exception: {0}".format(sys.exc_info()))
                 return False
 
-        df1 = filterDF(df1, jsonData)
+        # set the maxRow if it exists.
+        maxRow = maxRowCount
+        if "conditions" in jsonData.keys():
+            for condIt in jsonData["conditions"]:
+                if condIt["type"] == "limit" and type(condIt["value"]) == int:
+                    maxRows = condIt["value"]
 
+        if maxRow is False or maxRow == -1:
+            df1 = filterDF(df1, jsonData)
+        else:
+            df1 = filterDF(df1.limit(maxRow), jsonData)
         return df1
     '''
 

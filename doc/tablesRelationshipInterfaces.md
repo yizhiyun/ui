@@ -6,9 +6,10 @@ This document describe the store schema when operator provide the table relation
 
 The RESTful API Details of Verify those table relationships
 -------------
-### 1. Support Format: JSON
-### 2. Request Method: POST
-### 3. Request Data Schema:
+### 1. Request URI: cloudapi/v1/mergetables/check
+### 2. Support Format: JSON
+### 3. Request Method: POST
+### 4. Request Data Schema:
 ```
 {
     "tables": [
@@ -73,7 +74,7 @@ The RESTful API Details of Verify those table relationships
 
 }
 ```
-### 4. Request Examples:
+### 5. Request Examples:
 ```
 {
     "tables": [
@@ -136,7 +137,7 @@ The RESTful API Details of Verify those table relationships
     ]
 }
 ```
-### 5. Response Data:
+### 6. Response Data:
 * if successful, it will response as follows
 > { "status": "success",
 "columns": [ "column1", "column2", ...] }
@@ -146,9 +147,10 @@ The RESTful API Details of Verify those table relationships
 
 The RESTful API Details of Generating New Table
 -------------
-### 1. Support Format: JSON
-### 2. Request Method: POST
-### 3. Request Data Schema:
+### 1. Request URI: cloudapi/v1/mergetables/generate
+### 2. Support Format: JSON
+### 3. Request Method: POST
+### 4. Request Data Schema:
 ```
 {
     "tables": [
@@ -220,10 +222,12 @@ The RESTful API Details of Generating New Table
         },
         "removedColumns": ["<databaseName>.<tableName>.<columnName>", ...],
         ...
-    }
+    },
+    "maxchecknum": <NUM>,     # Optional. Set the max number to check the request state.
+    "checkduration": <NUMRIC>   # Optional. Set how offen to check the request state.
 }
 ```
-### 4. Request Examples:
+### 5. Request Examples:
 * Db sources example:
 ```
 {
@@ -355,7 +359,7 @@ The RESTful API Details of Generating New Table
 }
 ```
 
-### 5. Response Data:
+### 6. Response Data:
 * if successful, it will response as follows
 > { "status":"success" }
 * if failed, it will response as follows

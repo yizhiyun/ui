@@ -29,7 +29,7 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
         """
         opTypeList might include the following value
         "count","sum","mean","median", "min","max","std","var",
-        "skew","kurt","quarter1","quarter3","sem", "range", "mode"
+        "skew","kurt","quarterdev","sem", "range", "mode"
         pandasDF1 is a pandas data frame
         it will output json data.
         """
@@ -39,7 +39,7 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
         availTypeList = [
             "count", "sum", "mean", "median",
             "min", "max", "std", "var",
-            "skew", "kurt", "quarter1", "quarter3",
+            "skew", "kurt", "quarterdev",
             "sem", "cv", "range", "mode",
             "freq", "freqpercent"
         ]
@@ -110,9 +110,8 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
             elif "kurt" == typeItem:
                 statsDict["kurt"] = json.loads(pandasDF1.kurt().to_json())
             elif "quarter1" == typeItem:
-                statsDict["quarter1"] = json.loads(pandasDF1.quantile(0.25, interpolation='midpoint').to_json())
-            elif "quarter3" == typeItem:
-                statsDict["quarter3"] = json.loads(pandasDF1.quantile(0.75, interpolation='midpoint').to_json())
+                statsDict["quarterdev"] = json.loads((pandasDF1.quantile(0.75, interpolation='midpoint') -
+                    pandasDF1.quantile(0.25, interpolation='midpoint')).to_json())
             elif "sem" == typeItem:
                 statsDict["sem"] = json.loads(pandasDF1.sem().to_json())
             elif "cv" == typeItem:
@@ -142,6 +141,122 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
     df3 = getDataFrameFromSource({0}, '{1}')
     if df3:
         print(json.dumps(getBasicStats({0}["optypes"], df3), cls = SpecialDataTypesEncoder))
+    else:
+        logger.error("Cannot get data from the given source!")
+        print(False)
+    '''.format(jsonData, userTableUrl)
+
+    return sparkCode
+
+
+def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
+    '''
+    return the running spark code which will get the basic statistics information,
+    Notes:
+    hdfsHost, hdfsPort, rootFolder are available if jsonData["sourceType"] is hdfs and
+    the hdfsUrl key isn't provided
+    '''
+    userTableUrl = ""
+    if ("sourceType" in jsonData.keys()) and (jsonData["sourceType"] == "hdfs"):
+        if ("hdfsUrl" not in jsonData.keys() or not jsonData["hdfsUrl"].startswith("hdfs:")):
+            userName = jsonData["database"]
+            tableName = jsonData["tableName"]
+            userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+                hdfsHost, hdfsPort, rootFolder, userName, tableName)
+
+    sparkCode = '''
+    import sys
+    import traceback
+    ''' + specialDataTypesEncoderSparkCode() + getDataFrameFromSourceSparkCode() + setupLoggingSparkCode() + '''
+    def getHypothesisTest(inputParams, dataFrame):
+        """
+        it will output json data.
+        """
+        from scipy import stats
+
+        outputDict = {}
+        if "ttype" not in inputParams.keys():
+            logger.warn("Cannot get the 'ttype' key from {0}".format(inputParams))
+            return outputDict
+        levres = False
+        if "ttest_1samp" == inputParams["ttype"]:
+            res = stats.ttest_1samp(dataFrame.select(inputParams["col_a"]).toPandas(), inputParams["popmean"])
+        elif "ttest_ind" == inputParams["ttype"]:
+            # res = stats.ttest_ind(
+            #     dataFrame.select(inputParams["col_a"]).toPandas(),
+            #     dataFrame.select(inputParams["col_b"]).toPandas(),
+            #     inputParams["popmean"]
+            # )
+            disdf = dataFrame.select(inputParams["col_a"]).distinct()
+            if disdf.count() != 2:
+                logger.warn("The {0} column must be 2 categories while doing the ttest_ind test."
+                            .format(inputParams["col_a"]))
+                return outputDict
+            disdf.collect()[0][inputParams["col_a"]]
+            pdf1 = dataFrame \
+                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[0][inputParams["col_a"]]) \
+                .select(inputParams["col_b"]) \
+                .toPandas()
+            pdf2 = dataFrame \
+                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[1][inputParams["col_a"]]) \
+                .select(inputParams["col_b"]) \
+                .toPandas()
+            levres = stats.levene(pdf1, pdf2)
+            # decide which independent method should be used. As for equal_var parameter, if True (default),
+            # perform a standard independent 2 sample test that assumes equal population variances [R643].
+            # If False, perform Welch’s t-test, which does not assume equal population variance [R644].
+            if levres.pValue > inputParams["significance"]:
+                res = stats.ttest_ind(pdf1, pdf2, equal_var=True)
+            else:
+                res = stats.ttest_ind(pdf1, pdf2, equal_var=False)
+        elif "ttest_rel" == inputParams["ttype"]:
+            # res = stats.ttest_rel(
+            #     dataFrame.select(inputParams["col_a"]).toPandas(),
+            #     dataFrame.select(inputParams["col_b"]).toPandas(),
+            #     inputParams["popmean"]
+            # )
+            disdf = dataFrame.select(inputParams["col_a"]).distinct()
+            if disdf.count() != 2:
+                logger.warn("The {0} column must be 2 categories while doing the ttest_rel test."
+                            .format(inputParams["col_a"]))
+                return outputDict
+            disdf.collect()[0][inputParams["col_a"]]
+            pdf1 = dataFrame \
+                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[0][inputParams["col_a"]]) \
+                .select(inputParams["col_b"]) \
+                .toPandas()
+            pdf2 = dataFrame \
+                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[1][inputParams["col_a"]]) \
+                .select(inputParams["col_b"]) \
+                .toPandas()
+            if pdf1.count()[inputParams["col_b"]] != pdf2.count()[inputParams["col_b"]]:
+                logger.warn("The 2 categories must include the same rows' length while doing the ttest_rel test."
+                            .format(inputParams["col_a"]))
+                return outputDict
+            levres = stats.levene(pdf1, pdf2)
+            res = stats.ttest_rel(pdf1, pdf2)
+        elif "chiSqtest" == inputParams["ttype"]:
+            import pyspark.mllib.stat as stat
+
+            # df1 = dataFrame.groupBy(inputParams["col_a"]).pivot(inputParams["col_b"]).count().fillna(0)
+            pdf1 = dataFrame \
+                .groupBy(inputParams["col_a"], inputParams["col_b"]) \
+                .count() \
+                .toPandas() \
+                .pivot_table(values="count", index=[inputParams["col_a"]], columns=[inputParams["col_b"]]) \
+                .fillna(0)
+            res = stat.Statistics.chiSqTest(pdf1.as_matrix())
+            logger.debug("statistic: {0}, pValue: {1}, degreesOfFreedom:{2}, method:{3}, nullHypothesis: {4}"
+                .format(res.statistic, res.pValue, res.degreesOfFreedom, res.method, res.nullHypothesis))
+        if levres:
+            outputDict["levenetest"] = {"statistic": levres.statistic, "pvalue": levres.pvalue}
+        outputDict[inputParams["ttype"]] = {"statistic": res.statistic, "pvalue": res.pvalue}
+
+        return outputDict
+    ''' + '''
+    df3 = getDataFrameFromSource({0}, '{1}')
+    if df3:
+        print(json.dumps(getHypothesisTest({0}["inputParams"], df3), cls = SpecialDataTypesEncoder))
     else:
         logger.error("Cannot get data from the given source!")
         print(False)

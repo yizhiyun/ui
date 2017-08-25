@@ -19,3 +19,4 @@ class DashboardViewByUser(models.Model):
     folder = models.ForeignKey(DashboardFolderByUser, null=True)
     note = models.CharField(max_length=255, null=True)
     show = models.BooleanField(default=True)
+    isopen = models.BooleanField(default=True)

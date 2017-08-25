@@ -45,7 +45,7 @@ def executeSpark(sparkCode,
         sessionUrl = "{0}/{1}".format(rootSessionsUrl, newSessionReqJson['id'])
 
         reqJsonTmp = getReqFromDesiredReqState(sessionUrl)
-        if not reqJsonTmp:
+        if reqJsonTmp["state"] in ["error", "cancel", "waitting"]:
             # requests.delete(sessionUrl, headers=headers)
             return False
 
@@ -64,14 +64,16 @@ def executeSpark(sparkCode,
                                               maxReqCount=maxCheckCount,
                                               eachSleepDuration=reqCheckDuration)
 
-    if not resultReqJson:
+    if resultReqJson["state"] in ["error", "cancel"]:
         # requests.delete(sessionUrl, headers=headers)
         return False
+    elif resultReqJson["state"] == "waitting":
+        return {"status": "waitting", "msg": "The job hasn't been finished. You can check it latter."}
 
     # pprint.pprint(resultReqJson)
     logger.debug("resultReqJson:{0}".format(resultReqJson))
 
-    results = resultReqJson['output']
+    results = resultReqJson['result']['output']
 
 #    # close the session url.
 #    requests.delete(sessionUrl, headers=headers)
@@ -90,12 +92,12 @@ def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json
         if reqJson['state'] == 'error':
             logger.error(
                 "There is an error in Step-{0}, see the details for the response:{1}".format(reqCount, reqJson))
-            return False
+            return {"state": "error"}
         if reqJson['state'] in ['cancelled', 'cancelling']:
             logger.error(
                 "The job has been cancelled in Step-{0}, see the details for the response:{1}"
                 .format(reqCount, reqJson))
-            return False
+            return {"state": "cancel"}
         # sleep half a second
         time.sleep(eachSleepDuration)
         reqCount = reqCount + 1
@@ -104,9 +106,10 @@ def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json
         logger.debug("Step:{0}, response:{1}".format(reqCount, reqJson))
 
     if reqCount >= maxReqCount:
-        return False
+        logger.warn("Request count has exceeded the maxReqCount({0})".format(maxReqCount))
+        return {"state": "waitting"}
 
-    return reqJson
+    return {"state": "ok", "result": reqJson}
 
 
 def getOutputColumns(jsonData):
@@ -187,8 +190,8 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
         ...
     }
     '''
-
-    palts = Singleton().dataPaltForm['db']
+    username = "yzy"
+    palts = Singleton().dataPaltForm[username]['db']
     dbSourceDict = {}
     logger.debug("palts: {}".format(palts))
     if palts:
@@ -248,24 +251,23 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     import traceback
     import json
     ''' + setupLoggingSparkCode() + getDataFrameFromSourceSparkCode() + '''
-
-    def writeDataFrame( jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=10000 ):
+    def writeDataFrame(jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=False):
         """
         notes: maxRowCount is used for refine the max rows from every data sources.
         If the limit parameter is given, use that value.
         """
         jsonData = json.loads(jsonStr, encoding='utf-8')
         logger.debug("jsonData: {0}".format(jsonData))
-        newDF = generateNewDataFrame(jsonData, maxRowCount);
+        newDF = generateNewDataFrame(jsonData, maxRowCount)
         if not newDF:
-            return False;
+            return False
 
-        #get user information, especially username.
+        # get user information, especially username.
 
         # shorten the partition num.
         # refer to the spark.sql.shuffle.partitions parameter, the default is 200.
         if partitionBy is not None:
-            newDF.write.parquet(savedPathUrl, mode=mode,  partitionBy=partitionBy)
+            newDF.write.parquet(savedPathUrl, mode=mode, partitionBy=partitionBy)
         elif newDF.count() < 10000:
             newDF.coalesce(1).write.parquet(savedPathUrl, mode=mode, partitionBy=partitionBy)
         else:
@@ -273,7 +275,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         return True
 
     def generateNewDataFrame(jsonData, maxRowCount=10000,
-                            hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
+                             hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
 
         # check the json format
         if (("tables" not in jsonData.keys()) or
@@ -289,6 +291,23 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         try:
             tables = jsonData["tables"]
             tableNum = len(tables)
+            if tableNum == 1:
+                # get the table connection information
+                dbName = tables[0]["database"]
+                tableName = tables[0]["tableName"]
+                userTableUrl = False
+                if "sourcetype" not in tables[0].keys() or tables[0]["sourcetype"] == "db":
+                    tables[0]["dbsource"] = jsonData["dbsources"][tables[0]["source"]]
+                else:
+                    userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+                        hdfsHost, hdfsPort, rootFolder, dbName, tableName)
+
+                df0 = getDataFrameFromSource(tables[0], userTableUrl, maxRowCount=maxRowCount)
+                if not df0:
+                    logger.error("The data cannot be gotten from source. dbName: {0}, tableName: {1}"
+                                 .format(dbName, tableName))
+                    return False
+                return df0
 
             # change the removedColumn list to dict for comparing by table.
             removedColsDict = {}
@@ -340,7 +359,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         except Exception:
             traceback.print_exc()
             logger.error("Exception: {0}".format(sys.exc_info()))
-            return False;
+            return False
         return outputDf
 
     def sortTableRelationship(jsonData):
@@ -352,9 +371,9 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
         joinedTableSet = set()
         sortedRelList = []
-        traverseList = [ i for i in range(len(jsonData["relationships"])) ]
+        traverseList = [i for i in range(len(jsonData["relationships"]))]
 
-        loopNum = 0;
+        loopNum = 0
         maxLoopNum = 100
         while len(traverseList) > 0 and loopNum < maxLoopNum:
             seq = traverseList.pop(0)
@@ -405,15 +424,16 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         # with the format of "<dbName>.<tableName>.<columnName>"
         for dbTable in dfDict.keys():
             for colItem in dfDict[dbTable].columns:
-                dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(colItem,
-                    "{0}_{1}".format(dbTable.replace('.','_'),colItem))
+                dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(
+                    colItem,
+                    "{0}_{1}".format(dbTable.replace('.', '_'), colItem))
 
         # TBD, this mapping need to be researched again for the details.
         # joinType must be one of below
         # inner, cross, outer, full, full_outer, left, left_outer, right, right_outer, left_semi, and left_anti.
         joinTypeMapping = {
-            "inner join":"inner",
-            "join":"inner",
+            "inner join": "inner",
+            "join": "inner",
             "full join": "full",
             "full outer join": "full_outer",
             "left join": "left",
@@ -434,12 +454,12 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             toDbTable = relItem['toTable']
             columnMapList = relItem['columnMap']
 
-            cond = [];
-            #print(dfDict[fromDbTable].printSchema())
-            #print(dfDict[toDbTable].printSchema())
+            cond = []
+            # print(dfDict[fromDbTable].printSchema())
+            # print(dfDict[toDbTable].printSchema())
             for mapit in columnMapList:
-                fromCol = "{0}_{1}".format(fromDbTable.replace('.','_'),mapit["fromCol"])
-                toCol = "{0}_{1}".format(toDbTable.replace('.','_'), mapit["toCol"])
+                fromCol = "{0}_{1}".format(fromDbTable.replace('.', '_'), mapit["fromCol"])
+                toCol = "{0}_{1}".format(toDbTable.replace('.', '_'), mapit["toCol"])
                 logger.debug("fromCol: {0}, toCol: {1}".format(fromCol, toCol))
                 cond.append(dfDict[fromDbTable][fromCol] == dfDict[toDbTable][toCol])
 
@@ -548,38 +568,49 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
     return outputList
 
 
-def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
-                           username="myfolder", header=False, maxRowCount=10000):
+def csvToParquetSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
+                          username="myfolder", header='false'):
     hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(hdfsHost, port, rootFolder, username, fileName)
     parquetPathUrl = '/{0}/{1}/parquet/'.format(rootFolder, username)
     sparkCode = '''
-    import json
-    def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote, maxRowCount=10000):
-        if header:
+    def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote):
+        if header == 'true':
             df = spark.read.option("inferSchema", "true") \
                            .option("header", "true") \
                            .option("delimiter",delimiter) \
                            .option("quote",quote) \
                            .csv(hdfsUrl)
-        else:
+        elif header == 'false':
             df = spark.read.option("inferSchema", "true") \
                            .option("delimiter",delimiter) \
                            .option("quote",quote) \
                            .csv(hdfsUrl)
-        df.write.parquet(parquetPathUrl + tableName)
-        dframe1 = spark.read.parquet(parquetPathUrl + tableName).limit(int(maxRowCount))
+        df.write.parquet(parquetPathUrl + tableName, 'overwrite')
+    ''' + '''
+    print(test('{0}', '{1}', '{2}', '{3}', '{4}', '\{5}'))
+    '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, delimiter, quote)
+    return sparkCode
+
+
+def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy', maxRowCount=10000):
+    parquetPathUrl = '/{0}/{1}/parquet/{2}'.format(rootFolder, username, os.path.splitext(filename)[0])
+    sparkCode = '''
+    import json
+    def getCsvParquet(parquetPathUrl, mode, maxRowCount=10000):
+        dframe1 = spark.read.parquet(parquetPathUrl).limit(maxRowCount)
         dframe1 = removeNullColumns(dframe1)
-
         outputDict = {}
-        outputDict['schema'] = []
-        for colItem in dframe1.schema.fields:
-            outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
+        if mode == 'all' or mode == 'schema':
+            outputDict['schema'] = []
+            for colItem in dframe1.schema.fields:
+                outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
 
-        dataList = removeNullLines(dframe1)
+        if mode == 'all' or mode == 'data':
+            dataList = removeNullLines(dframe1)
 
-        outputDict['data'] = []
-        for rowItem in dataList:
-            outputDict['data'].append(rowItem.asDict())
+            outputDict['data'] = []
+            for rowItem in dataList:
+                outputDict['data'].append(rowItem.asDict())
         return json.dumps(outputDict)
 
     def removeNullColumns(dframe1):
@@ -607,6 +638,6 @@ def getUploadInfoSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0",
                 dataList.append(i)
         return dataList
     ''' + '''
-    print(test('{0}', '{1}', '{2}', {3}, '{4}', '\{5}', '{6}'))
-    '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, delimiter, quote, maxRowCount)
+    print(getCsvParquet('{0}', '{1}', {2}))
+    '''.format(parquetPathUrl, mode, maxRowCount)
     return sparkCode

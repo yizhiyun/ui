@@ -39,8 +39,18 @@ urlpatterns = [
         name='getBasicStats'
     ),
     url(
+        r'^cloudapi/v1/ml/hyptest$',
+        views.getHypothesisTest,
+        name='getHypothesisTest'
+    ),
+    url(
         r'^dataCollection/cloudapi/v1/upload$',
         views.upload,
         name='upload'
+    ),
+    url(
+        r'^dataCollection/cloudapi/v1/getPanel/(?P<modeName>\w+)$',
+        views.getPanel,
+        name='getPanel'
     ),
 ]
