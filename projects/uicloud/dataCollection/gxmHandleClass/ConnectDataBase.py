@@ -69,7 +69,7 @@ class ConnectDataBase():
         elif self.dbPaltName == 'oracle':
             if self.con:
                 self.dataBasesRs = []
-                self.dataBasesRs.append(self.dbSid)
+                self.dataBasesRs.append(self.dbUserName)
                 return True
             return False
 
