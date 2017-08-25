@@ -248,24 +248,23 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     import traceback
     import json
     ''' + setupLoggingSparkCode() + getDataFrameFromSourceSparkCode() + '''
-
-    def writeDataFrame( jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=10000 ):
+    def writeDataFrame(jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=10000):
         """
         notes: maxRowCount is used for refine the max rows from every data sources.
         If the limit parameter is given, use that value.
         """
         jsonData = json.loads(jsonStr, encoding='utf-8')
         logger.debug("jsonData: {0}".format(jsonData))
-        newDF = generateNewDataFrame(jsonData, maxRowCount);
+        newDF = generateNewDataFrame(jsonData, maxRowCount)
         if not newDF:
-            return False;
+            return False
 
-        #get user information, especially username.
+        # get user information, especially username.
 
         # shorten the partition num.
         # refer to the spark.sql.shuffle.partitions parameter, the default is 200.
         if partitionBy is not None:
-            newDF.write.parquet(savedPathUrl, mode=mode,  partitionBy=partitionBy)
+            newDF.write.parquet(savedPathUrl, mode=mode, partitionBy=partitionBy)
         elif newDF.count() < 10000:
             newDF.coalesce(1).write.parquet(savedPathUrl, mode=mode, partitionBy=partitionBy)
         else:
@@ -273,7 +272,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         return True
 
     def generateNewDataFrame(jsonData, maxRowCount=10000,
-                            hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
+                             hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
 
         # check the json format
         if (("tables" not in jsonData.keys()) or
@@ -289,6 +288,23 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         try:
             tables = jsonData["tables"]
             tableNum = len(tables)
+            if tableNum == 1:
+                # get the table connection information
+                dbName = tables[0]["database"]
+                tableName = tables[0]["tableName"]
+                userTableUrl = False
+                if "sourcetype" not in tables[0].keys() or tables[0]["sourcetype"] == "db":
+                    tables[0]["dbsource"] = jsonData["dbsources"][tables[0]["source"]]
+                else:
+                    userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+                        hdfsHost, hdfsPort, rootFolder, dbName, tableName)
+
+                df0 = getDataFrameFromSource(tables[0], userTableUrl, maxRowCount=maxRowCount)
+                if not df0:
+                    logger.error("The data cannot be gotten from source. dbName: {0}, tableName: {1}"
+                                 .format(dbName, tableName))
+                    return False
+                return df0
 
             # change the removedColumn list to dict for comparing by table.
             removedColsDict = {}
@@ -340,7 +356,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         except Exception:
             traceback.print_exc()
             logger.error("Exception: {0}".format(sys.exc_info()))
-            return False;
+            return False
         return outputDf
 
     def sortTableRelationship(jsonData):
@@ -352,9 +368,9 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
         joinedTableSet = set()
         sortedRelList = []
-        traverseList = [ i for i in range(len(jsonData["relationships"])) ]
+        traverseList = [i for i in range(len(jsonData["relationships"]))]
 
-        loopNum = 0;
+        loopNum = 0
         maxLoopNum = 100
         while len(traverseList) > 0 and loopNum < maxLoopNum:
             seq = traverseList.pop(0)
@@ -405,15 +421,16 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         # with the format of "<dbName>.<tableName>.<columnName>"
         for dbTable in dfDict.keys():
             for colItem in dfDict[dbTable].columns:
-                dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(colItem,
-                    "{0}_{1}".format(dbTable.replace('.','_'),colItem))
+                dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(
+                    colItem,
+                    "{0}_{1}".format(dbTable.replace('.', '_'), colItem))
 
         # TBD, this mapping need to be researched again for the details.
         # joinType must be one of below
         # inner, cross, outer, full, full_outer, left, left_outer, right, right_outer, left_semi, and left_anti.
         joinTypeMapping = {
-            "inner join":"inner",
-            "join":"inner",
+            "inner join": "inner",
+            "join": "inner",
             "full join": "full",
             "full outer join": "full_outer",
             "left join": "left",
@@ -434,12 +451,12 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             toDbTable = relItem['toTable']
             columnMapList = relItem['columnMap']
 
-            cond = [];
-            #print(dfDict[fromDbTable].printSchema())
-            #print(dfDict[toDbTable].printSchema())
+            cond = []
+            # print(dfDict[fromDbTable].printSchema())
+            # print(dfDict[toDbTable].printSchema())
             for mapit in columnMapList:
-                fromCol = "{0}_{1}".format(fromDbTable.replace('.','_'),mapit["fromCol"])
-                toCol = "{0}_{1}".format(toDbTable.replace('.','_'), mapit["toCol"])
+                fromCol = "{0}_{1}".format(fromDbTable.replace('.', '_'), mapit["fromCol"])
+                toCol = "{0}_{1}".format(toDbTable.replace('.', '_'), mapit["toCol"])
                 logger.debug("fromCol: {0}, toCol: {1}".format(fromCol, toCol))
                 cond.append(dfDict[fromDbTable][fromCol] == dfDict[toDbTable][toCol])
 

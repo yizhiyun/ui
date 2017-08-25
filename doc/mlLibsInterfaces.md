@@ -125,8 +125,9 @@ The RESTful API Details of Getting the hypothesis testing information.
     "sourcetype": <sourceType>  # "db" or "hdfs"
     "inputParams": {
         "ttype": <tTestType>,   # "ttest_1samp", "ttest_ind", "ttest_rel", "chiSqtest"
-        "popmean": <popmean>,   # expected value in null hypothesis
-        "col_a": <columnName>,  # Existed column name
+        "popmean": <popmean>,   # Optional. Expected value in null hypothesis. Required if "ttest_1samp"
+        "significance": <num>,  # Optional. Significance level. Required if ttest_ind type
+        "col_a": <columnName>,  # Existed column name. Note, it's category data for "ttest_ind" and "ttest_rel".
         "col_b": <columnName>   # Optional. It's required if ttype is ttest_ind, ttest_rel or chiSqtest.
     }
 
@@ -206,8 +207,8 @@ The RESTful API Details of Getting the hypothesis testing information.
         "ttype": "ttest_ind",
         "popmean": 32,
         "col_a": "col1",
-        "col_b": "col2
-    }
+        "col_b": "col2"
+    },
     "database": "myfolder",
     "tableName": "AREA_DICT"
 }

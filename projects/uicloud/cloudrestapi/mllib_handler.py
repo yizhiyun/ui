@@ -178,36 +178,79 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
         if "ttype" not in inputParams.keys():
             logger.warn("Cannot get the 'ttype' key from {0}".format(inputParams))
             return outputDict
-
-        if "ttest_1samp" inputParams["ttype"]:
-            res = stats.ttest_1samp(dataFrame[inputParams["col_a"]], inputParams["popmean"])
+        levres = False
+        if "ttest_1samp" == inputParams["ttype"]:
+            res = stats.ttest_1samp(dataFrame.select(inputParams["col_a"]).toPandas(), inputParams["popmean"])
         elif "ttest_ind" == inputParams["ttype"]:
-            res = stats.ttest_ind(
-                dataFrame[inputParams["col_a"]],
-                dataFrame[inputParams["col_b"]],
-                inputParams["popmean"]
-            )
+            # res = stats.ttest_ind(
+            #     dataFrame.select(inputParams["col_a"]).toPandas(),
+            #     dataFrame.select(inputParams["col_b"]).toPandas(),
+            #     inputParams["popmean"]
+            # )
+            disdf = dataFrame.select(inputParams["col_a"]).distinct()
+            if disdf.count() != 2:
+                logger.warn("The {0} column must be 2 categories while doing the ttest_ind test."
+                            .format(inputParams["col_a"]))
+                return outputDict
+            disdf.collect()[0][inputParams["col_a"]]
+            pdf1 = dataFrame \
+                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[0][inputParams["col_a"]]) \
+                .select(inputParams["col_b"]) \
+                .toPandas()
+            pdf2 = dataFrame \
+                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[1][inputParams["col_a"]]) \
+                .select(inputParams["col_b"]) \
+                .toPandas()
+            levres = stats.levene(pdf1, pdf2)
+            # decide which independent method should be used. As for equal_var parameter, if True (default),
+            # perform a standard independent 2 sample test that assumes equal population variances [R643].
+            # If False, perform Welch’s t-test, which does not assume equal population variance [R644].
+            if levres.pValue > inputParams["significance"]:
+                res = stats.ttest_ind(pdf1, pdf2, equal_var=True)
+            else:
+                res = stats.ttest_ind(pdf1, pdf2, equal_var=False)
         elif "ttest_rel" == inputParams["ttype"]:
-            res = stats.ttest_rel(
-                dataFrame[inputParams["col_a"]],
-                dataFrame[inputParams["col_b"]],
-                inputParams["popmean"]
-            )
+            # res = stats.ttest_rel(
+            #     dataFrame.select(inputParams["col_a"]).toPandas(),
+            #     dataFrame.select(inputParams["col_b"]).toPandas(),
+            #     inputParams["popmean"]
+            # )
+            disdf = dataFrame.select(inputParams["col_a"]).distinct()
+            if disdf.count() != 2:
+                logger.warn("The {0} column must be 2 categories while doing the ttest_rel test."
+                            .format(inputParams["col_a"]))
+                return outputDict
+            disdf.collect()[0][inputParams["col_a"]]
+            pdf1 = dataFrame \
+                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[0][inputParams["col_a"]]) \
+                .select(inputParams["col_b"]) \
+                .toPandas()
+            pdf2 = dataFrame \
+                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[1][inputParams["col_a"]]) \
+                .select(inputParams["col_b"]) \
+                .toPandas()
+            if pdf1.count()[inputParams["col_b"]] != pdf2.count()[inputParams["col_b"]]:
+                logger.warn("The 2 categories must include the same rows' length while doing the ttest_rel test."
+                            .format(inputParams["col_a"]))
+                return outputDict
+            levres = stats.levene(pdf1, pdf2)
+            res = stats.ttest_rel(pdf1, pdf2)
         elif "chiSqtest" == inputParams["ttype"]:
             import pyspark.mllib.stat as stat
 
-            #df1 = dataFrame.groupBy(inputParams["col_a"]).pivot(inputParams["col_b"]).count().fillna(0)
+            # df1 = dataFrame.groupBy(inputParams["col_a"]).pivot(inputParams["col_b"]).count().fillna(0)
             pdf1 = dataFrame \
-                .groupBy(inputParams["col_a"],inputParams["col_b"]) \
+                .groupBy(inputParams["col_a"], inputParams["col_b"]) \
                 .count() \
                 .toPandas() \
                 .pivot_table(values="count", index=[inputParams["col_a"]], columns=[inputParams["col_b"]]) \
                 .fillna(0)
             res = stat.Statistics.chiSqTest(pdf1.as_matrix())
-            logger.debug("statistic: {0}, pValue: {1}, degreesOfFreedom:{2}, method:{3}, nullHypothesis: {4}" \
+            logger.debug("statistic: {0}, pValue: {1}, degreesOfFreedom:{2}, method:{3}, nullHypothesis: {4}"
                 .format(res.statistic, res.pValue, res.degreesOfFreedom, res.method, res.nullHypothesis))
-
-        outputDict[inputParams["ttype"]] = { "statistic": res.statistic, "pvalue":res.pvalue }
+        if levres:
+            outputDict["levenetest"] = {"statistic": levres.statistic, "pvalue": levres.pvalue}
+        outputDict[inputParams["ttype"]] = {"statistic": res.statistic, "pvalue": res.pvalue}
 
         return outputDict
     ''' + '''
