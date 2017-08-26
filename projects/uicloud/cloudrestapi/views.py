@@ -490,7 +490,14 @@ def getPanel(request, modeName):
         rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
         username = jsonData['username'] if 'username' in jsonData else "yzy"
         maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
-        filterJson = jsonData['filterjson'] if 'filterjson' in jsonData else {}
+        columns = jsonData['columns'] if 'columns' in jsonData else {}
+        conditions = jsonData['conditions'] if 'conditions' in jsonData else {}
+
+        filterJson = {}
+        if columns:
+            filterJson['columns'] = columns
+        if conditions:
+            filterJson['conditions'] = conditions
         sparkCode = getCsvParquetSparkCode(
             idName(jsonData['filename']), modeName, rootFolder, username, maxRowCount, filterJson
         )

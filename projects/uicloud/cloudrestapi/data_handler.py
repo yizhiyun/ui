@@ -621,8 +621,7 @@ def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy
         if mode == 'all' or mode == 'data':
             logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
             filterJson = json.loads(filterJson, encoding='utf-8')
-            if len(filterJson) > 0:
-                dframe1 = filterDF(dframe1, filterJson)
+            dframe1 = filterDF(dframe1, filterJson)
             dataList = removeNullLines(dframe1)
 
             outputDict['data'] = []

@@ -74,43 +74,42 @@ if you need to filter the data. please specify the following json format for the
 {
     "username": <username>,
     "filename": <filename>,
-    "filterjson":{
-        # "columns" is optional. If this item don't be given, all columns are reserved.
-        "columns": {
-            <columnName1>: {
-                "columnType": <columnType>,
-                "nullable": "yes/no",
-                "primaryKey": "yes/no",
-                "uniqueKey": "yes/no",
-                "foreignKey": "no"
-            },
-            <columnName2>: {
-                ...
-            },
+
+    # "columns" is optional. If this item don't be given, all columns are reserved.
+    "columns": {
+        <columnName1>: {
+            "columnType": <columnType>,
+            "nullable": "yes/no",
+            "primaryKey": "yes/no",
+            "uniqueKey": "yes/no",
+            "foreignKey": "no"
+        },
+        <columnName2>: {
             ...
         },
-        "conditions": [
-            {
-                # types: ">",">=","=","<","<=","!=",'like','startswith','notstartswith',
-                # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
-                # note: if type is 'isin' or 'isnotin', the value should be a list.
-                "type":<conditionTypeValue>,
-                "columnName": <columnName>,
-                "value": <value>
-            },
-            {
-                "type":"limit",
-                "value": <value>
-            },
-            {
-                "type":"isnull", # or 'isnotnull'
-                "columnName": "<columnName>"
-            },
-            ...
-        ],
-        <otherProperty>:<otherValue>,
         ...
-    } 
+    },
+    "conditions": [
+        {
+            # types: ">",">=","=","<","<=","!=",'like','startswith','notstartswith',
+            # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
+            # note: if type is 'isin' or 'isnotin', the value should be a list.
+            "type":<conditionTypeValue>,
+            "columnName": <columnName>,
+            "value": <value>
+        },
+        {
+            "type":"limit",
+            "value": <value>
+        },
+        {
+            "type":"isnull", # or 'isnotnull'
+            "columnName": "<columnName>"
+        },
+        ...
+    ],
+    <otherProperty>:<otherValue>,
+    ...
 }
 ```
 
