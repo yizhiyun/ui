@@ -570,7 +570,12 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
 
 def csvToParquetSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
                           username="myfolder", header='false'):
-    hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(hdfsHost, port, rootFolder, username, fileName)
+    '''
+    把hadoop上面的csv文件转为parquet文件
+    '''
+
+    hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(
+        hdfsHost, port, rootFolder, username, fileName)
     parquetPathUrl = '/{0}/{1}/parquet/'.format(rootFolder, username)
     sparkCode = '''
     def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote):
@@ -592,11 +597,19 @@ def csvToParquetSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", 
     return sparkCode
 
 
-def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy', maxRowCount=10000):
-    parquetPathUrl = '/{0}/{1}/parquet/{2}'.format(rootFolder, username, os.path.splitext(filename)[0])
-    sparkCode = '''
+def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy', maxRowCount=10000, filterJson={}):
+    '''
+    获取hadoop上的指定名字的parquet dataframe， 如需要筛选，需要filterjson指定条件
+    '''
+
+    parquetPathUrl = '/{0}/{1}/parquet/{2}'.format(
+        rootFolder, username, os.path.splitext(filename)[0])
+    filterJson = json.dumps(filterJson, ensure_ascii=True)
+    logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
+
+    sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + '''
     import json
-    def getCsvParquet(parquetPathUrl, mode, maxRowCount=10000):
+    def getCsvParquet(parquetPathUrl, mode, maxRowCount=10000, filterJson='{}'):
         dframe1 = spark.read.parquet(parquetPathUrl).limit(maxRowCount)
         dframe1 = removeNullColumns(dframe1)
         outputDict = {}
@@ -606,6 +619,10 @@ def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy
                 outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
 
         if mode == 'all' or mode == 'data':
+            logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
+            filterJson = json.loads(filterJson, encoding='utf-8')
+            if len(filterJson) > 0:
+                dframe1 = filterDF(dframe1, filterJson)
             dataList = removeNullLines(dframe1)
 
             outputDict['data'] = []
@@ -638,6 +655,6 @@ def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy
                 dataList.append(i)
         return dataList
     ''' + '''
-    print(getCsvParquet('{0}', '{1}', {2}))
-    '''.format(parquetPathUrl, mode, maxRowCount)
+    print(getCsvParquet('{0}', '{1}', {2}, '{3}'))
+    '''.format(parquetPathUrl, mode, maxRowCount, filterJson)
     return sparkCode

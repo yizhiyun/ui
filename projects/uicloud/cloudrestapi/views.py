@@ -453,7 +453,7 @@ def upload(request):
             context['data']['panel'][key] = []
             for file in value:
                 chname = chName(os.path.split(file.name)[1])
-                context['data']['panel'][key].append(chname)
+                context['data']['panel'][key].append(os.path.splitext(chname)[0])
 
             if 'db' in Singleton().dataPaltForm[username].keys():
                 for md5, dbObj in Singleton().dataPaltForm[username]['db'].items():
@@ -490,8 +490,9 @@ def getPanel(request, modeName):
         rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "tmp/users"
         username = jsonData['username'] if 'username' in jsonData else "yzy"
         maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
+        filterJson = jsonData['filterjson'] if 'filterjson' in jsonData else {}
         sparkCode = getCsvParquetSparkCode(
-            idName(jsonData['filename']), modeName, rootFolder, username, maxRowCount
+            idName(jsonData['filename']), modeName, rootFolder, username, maxRowCount, filterJson
         )
 
         output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
