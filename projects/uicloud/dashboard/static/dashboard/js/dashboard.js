@@ -58,7 +58,10 @@ $(function() {
 		console.log(result)
 		if(Object.getOwnPropertyNames(result).length != 0){
 			//获取需要编辑的视图
-			var have_view_edit = storage.getItem("edit_view_now").split(",");
+			if(storage.getItem("edit_view_now")){
+				var have_view_edit = storage.getItem("edit_view_now").split(",");
+			}
+			
 			for(folder in result){
 			for(folder_view in result[folder]){
 				for(folder_view_name in result[folder][folder_view]){
@@ -80,7 +83,6 @@ $(function() {
 
 	//根据编辑过的视图重新展示
 	function edit_view_show(edit_view,result){
-		console.log("asd")
 		//当前操作的数据
 		var now_handle_view = edit_view.data("edit_view").split(",");
 		//当前标题对应视图的数据
@@ -89,14 +91,18 @@ $(function() {
 
 		//更改数据源展示
 		for(var i = 0; i < $('#lateral_title .custom-select').find("option").length;i++){
+			
 			if($('#lateral_title .custom-select').find("option").eq(i).text() == now_title_handle_view["tablename"]){
-				console.log(i)
+				console.log(i);
 				$('#lateral_title .custom-select').find("option").removeAttr("selected");
 				$('#lateral_title .custom-select').find("option").eq(i).attr("selected","selected");
+				console.log($('#lateral_title .custom-select'));
+				$('#lateral_title .combo-select .combo-dropdown').find("li").removeClass();
+				// $('#lateral_title .combo-select .combo-dropdown').find("li").eq(i).addClass("option-selected");
 				$('#lateral_title .custom-select').comboSelect();
 				
 				// 展示维度和度量等
-				// load_measurement_module($('#lateral_title .custom-select').val())
+				load_measurement_module($('#lateral_title .custom-select').val())
 			}
 		}
 
@@ -147,7 +153,7 @@ $(function() {
 					$(".rightConent #dashboard_content #new_view ul .auto_show .folderview_li_del_btn").css("display","block");
 				}
 				if(!/-/gi.test($(this).find("span").text())){
-					empty_viem_init();
+					empty_viem_init("click");
 					return;
 				}else{
 					edit_view_show($(this),result);
@@ -191,10 +197,20 @@ $(function() {
 	}
 
 	//视图清空 页面初始化
-	function empty_viem_init(){
+	function empty_viem_init(change_or_click){
 		//清空维度度量里面的数据
 		$("#operational_view .annotation_text").find(".list_wrap").remove();
 		$("#operational_view .annotation_text").find("li").remove();
+		
+		if(change_or_click == "click"){
+			//选择块恢复默认
+		$('#lateral_title .custom-select').find("option").removeAttr("selected");
+		$('#lateral_title .custom-select').find("option").eq(0).attr("selected","selected");
+		$('#lateral_title .custom-select').comboSelect();
+		}
+				
+		// 展示维度和度量等
+		load_measurement_module($('#lateral_title .custom-select').val())
 		drag_row_column_data = {
 			"row":{
 				"dimensionality":[],
@@ -240,7 +256,7 @@ $(function() {
 
 		//清空视图
 		$("#action_box .action_delect_view").on("click",function(){
-			empty_viem_init();
+			empty_viem_init("click");
 		})
 	}
 	small_handle_btn();
@@ -364,7 +380,7 @@ $(function() {
 		cube_select.change(function(event){
 			event.stopPropagation();
 			if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
-				load_measurement_module($(this).val());
+						empty_viem_init("change");
 			}
 		});	
 	}
@@ -886,7 +902,7 @@ $(function() {
 							open_or_close = false;
 								//创建最外层元素
 							var out_wrap_click = $("<ul class='me_out_content'></ul>");
-							out_wrap_click.appendTo($(ele).parent().parent());
+							out_wrap_click.appendTo($(ele).parent().parent()).data("pop_data_handle",username+"_YZY_"+ $("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY_"+ element.parent().find("span").text());
 							out_wrap_click.css({
 								"left":$(ele).parent().parent().offset().left + $(ele).parent().parent().width() - 60 -50+ "px",
 								"top":$(ele).parent().parent().offset().top - 47+  "px",
@@ -894,10 +910,10 @@ $(function() {
 							for(out_wrap_count in data_dict){
 								if(data_dict[out_wrap_count] != null){
 									//创建单个元素
-								var add_ele_evr = $("<li class='me_out_content_li'><p>"+out_wrap_count+"</p><ul class='second_menu'><ul></li>");
+								var add_ele_evr = $("<li class='me_out_content_li "+out_wrap_count.split("_YZY_")[1]+"'><p>"+out_wrap_count.split("_YZY_")[0]+"</p><ul class='second_menu'><ul></li>");
 								add_ele_evr.addClass("have_second_menu").appendTo(out_wrap_click);
 									for(var i =0; i < data_dict[out_wrap_count].length;i++){
-										$("<li class='second_li'>"+data_dict[out_wrap_count][i]+"<li>").appendTo(add_ele_evr.find(".second_menu"));
+										$("<li class='second_li "+data_dict[out_wrap_count][i].split("_YZY_")[1]+"'><p>"+data_dict[out_wrap_count][i].split("_YZY_")[0]+"</p><li>").appendTo(add_ele_evr.find(".second_menu"));
 									}
 
 									//清除空元素
@@ -908,7 +924,7 @@ $(function() {
 									})
 								}else{
 									//创建单个元素
-								var add_ele_evr = $("<li class='me_out_content_li'><p>"+out_wrap_count+"</p></li>");
+								var add_ele_evr = $("<li class='me_out_content_li "+out_wrap_count.split("_YZY_")[1]+"'><p>"+out_wrap_count.split("_YZY_")[0]+"</p></li>");
 								add_ele_evr.appendTo(out_wrap_click);
 								}
 								
@@ -939,8 +955,38 @@ $(function() {
 
 
 						// 点击事件-------------
+						//编辑计算
+						out_wrap_click.find(".edit_calculation").on("click",function(){
+							console.log("编辑计算");
+							console.log(out_wrap_click.data("pop_data_handle"));
+						})
 
+						//移除
+						out_wrap_click.find(".deleting").on("click",function(){
+							console.log("移除");
+						})
 
+						//度量里点击事件
+						//总计
+						out_wrap_click.find(".pop_total").on("click",function(){
+							console.log("总计");
+						})
+						//平均值
+						out_wrap_click.find(".pop_mean").on("click",function(){
+							console.log("平均数");
+						})
+						//中位数
+						out_wrap_click.find(".pop_median").on("click",function(){
+							console.log("中位数");
+						})
+						//最大值
+						out_wrap_click.find(".pop_max").on("click",function(){
+							console.log("最大值");
+						})
+						//最小值
+						out_wrap_click.find(".pop_").on("click",function(){
+							console.log("最小值");
+						})
 						// -------------------
 						})
 
@@ -956,7 +1002,7 @@ $(function() {
 					rightFilterListDraw("add",_field_name+":"+_dataType);
 					switch_chart_handle_fun();
 					//度量更多操作过程
-					md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算":null,"度量":["总计","平均值","中位数","最大值","最小值"],"移除":null})
+					md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["总计_YZY_pop_total","平均值_YZY_pop_mean","中位数_YZY_pop_median","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null})
 
 						}
 
@@ -1770,7 +1816,7 @@ $(function() {
 		//点击创建报表名称
 	$("#btn_save_name").on("click",function(){
 		$("#key_search").css("display","block");
-		$("#show_excel_name").html("");
+		// $("#show_excel_name").html("");
 		//输入框里面的值
 		var action_input_data = $("#action_new_view").val();
 		if(action_input_data == ""){
