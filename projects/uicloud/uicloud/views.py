@@ -12,3 +12,4 @@ def filterConditionAdd(req):
             return render(req, "common/filter/content-top-scroll.html")
         elif req.POST["flag"] == "content-term":
             return  render(req,"common/filter/content-term-scroll.html")
+

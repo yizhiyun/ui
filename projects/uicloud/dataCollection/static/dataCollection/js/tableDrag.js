@@ -184,7 +184,7 @@ instance = jsPlumb.getInstance({
 	 	ReattachConnections:true,
 		ConnectionOverlays:[
 			["Custom",{
-				create:function(component){return $("<img src='/../../../static/dataCollection/images/breakoff.png'/>")},
+				create:function(component){return $("<img src='/static/dataCollection/images/breakoff.png'/>")},
 				loaction:0.5,
 				cssClass:"connectionImg",
 				id:"connFlag"

@@ -1961,11 +1961,14 @@ $(function() {
 			
 			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
-				
+			
 			if(result["foldername"] != ""){
 				 window.location.href="../statements/pallasdata3";
+
 				
 				 storage.setItem("now_add_view",post_dict["foldername"]);
+				 navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
+
 			}else{
 				alert("保存失败");
 			}

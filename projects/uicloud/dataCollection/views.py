@@ -34,6 +34,8 @@ class SpecialDataTypesEncoder(json.JSONEncoder):
 
 class IndexView(TemplateView):
     template_name = 'dataCollection/dataSourceSelect.html'
+class dataBuildView(TemplateView):
+    template_name = 'dataCollection/dataAnalysis.html'
 
 # 连接数据库平台
 
@@ -118,8 +120,8 @@ def showTableFiledsOFaTable(request):
         dataBaseObj.connectDB()
     data = dataBaseObj.fetchFiledsOfATable(request.POST["tableName"])
     context = {
-        "status": "ok",
-        "data": data
+        "status": "success",
+        "results": {"schema":data}
     }
     return JsonResponse(context)
 

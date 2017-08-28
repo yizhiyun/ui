@@ -20,8 +20,10 @@
 
 #dataSet .detailDataSetList .dataSetDetail .dbDataShow .combo-select{height: 21px;}
 #dataSet .detailDataSetList .dataSetDetail .dbDataShow .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
+#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables .buildTableTitle{color: #808080;}
+#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables ul.tablesList li{margin-top: 5px;cursor: pointer;}
 
-
+.detailDataSetList li  .dbDataShow{margin-top: 10px;}
 .detailDataSetList li  .dbDataShow .tablesOfaData{/*padding-left: 30px;*/overflow-y: auto;max-height: 135px; border-bottom: 1px solid #dedede;}
 .detailDataSetList li .dbDataShow .tablesOfaData p,.detailDataSetList li .panelDataShow .panelFileSheetData p{padding-top: 10px;padding-right: 10px;height:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor: pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 .detailDataSetList li .panelDataShow .panelTitle{color: #808080;padding-top: 15px;}

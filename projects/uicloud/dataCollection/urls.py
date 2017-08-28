@@ -11,6 +11,6 @@ urlpatterns = [
     url(r"^tableFileds$", views.showTableFiledsOFaTable),
     url(r"^uploadFile$", panelFileHandle.upload),
     url(r"^detailTableData$", views.showTableDetailDataOfFileds),
-    url(r"^filterTable/(?P<modeName>\w+)$", views.filterTable)
-
+    url(r"^filterTable/(?P<modeName>\w+)$", views.filterTable),
+    url(r"^dataBuildView$", views.dataBuildView.as_view())
 ]

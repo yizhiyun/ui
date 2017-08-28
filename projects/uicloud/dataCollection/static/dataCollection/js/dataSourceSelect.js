@@ -26,8 +26,23 @@ $(function () {
     		$("#connectDataBaseInfo #dataBaseName").html(dataBaseName)
   			$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName)
     		$("#loginBtn").click(function(event){
-    			
-    			$("#dataBaseConnectForm").submit();
+//  			$("#dataBaseConnectForm").submit();
+			var formData = new FormData($("#dataBaseConnectForm").get(0));
+			formData.append("username","yzy");
+			$.ajax({
+				url:"/dataCollection/connectDataBaseHandle",
+				type:"POST",
+				processData: false,
+	            contentType:false,
+	            data:formData,
+	            success:function(data){
+					if(data.status == "ok"){
+						dbAndPanelInfoSaveHandle(data.data);
+						window.location.href = "/dataCollection/dataBuildView";
+						navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
+					}
+	            }
+			})
     			
     			$("#connectDataBaseInfo").hide();
     			$("#dataList").hide();
@@ -58,7 +73,11 @@ $(function () {
             contentType:false,
             data:formData,
             success:function(data){
-            		console.log(data);
+            		if(data.status == "ok"){
+            			dbAndPanelInfoSaveHandle(data.data);
+					window.location.href = "/dataCollection/dataBuildView";
+					navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
+            		}
             }
 		})
    		
@@ -67,8 +86,7 @@ $(function () {
   // 点击选择平面文件，选中一个或者多个文件后
   $("#selectedPanelFile").change(function(){
   		$(".maskLayer").show();
-  		$("#panelFileSettingOption").show();
-		
+  		$("#panelFileSettingOption").show();	
   });
   
 })

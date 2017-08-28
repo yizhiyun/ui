@@ -13,12 +13,12 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 .topInfo #loginInfo .userHead{width:30px;height: 30px;border-radius: 50%;background: #f8eaa8;float: left;margin-right:10px; margin-top: 20px;}
 .topInfo #loginInfo .sepreate{width: 1px;height: 10px;margin-top: 30px;background: #b0b0b0;}
 .main .leftNav{float: left;width: 60px;background: linear-gradient(#0d53a4,#00bdc9);min-height: 100%;height: 100%;position: relative;z-index: 9999}
-.leftNav .ableFlag{width: 100%;height: 60px; position: relative;margin-top: 20px;cursor: pointer}
+.leftNav .functionBtn{width: 100%;height: 60px; position: relative;margin-top: 20px;cursor: pointer}
 
-.leftNav #first {margin-top: 0;}
-.ableFlag div{position: absolute;left: 0;top: 0;right: 0;bottom: 0;margin: auto;width: 100%;height: 100%;}
-.ableFlag img{position: absolute;left: 0;top: 0;right: 0;bottom: 0;margin: auto;}
-.ableFlag .active{background: #000000;opacity: 0.2;}
+.main .leftNav #navDataBaseAndPanleFileConnectionViewBtn {margin-top: 0;}
+.main .leftNav .functionBtn div{position: absolute;left: 0;top: 0;right: 0;bottom: 0;margin: auto;width: 100%;height: 100%;}
+.main .leftNav .functionBtn img{position: absolute;left: 0;top: 0;right: 0;bottom: 0;margin: auto;}
+.main .leftNav .functionBtn .active{background: #000000;opacity: 0.2;}
 
 .main .rightConent{margin-left: 60px;background: #f1f2f4;min-height:100%;position: relative;}
 .maskLayer{position: absolute;top: 0px;left:0px;width: 100%;height: 100%;background: #000000;opacity: 0.3;z-index: 400;}

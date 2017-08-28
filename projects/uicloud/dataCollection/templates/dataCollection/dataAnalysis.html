@@ -32,27 +32,12 @@
 					</div>
 					<div id="addSourceSelects">
 						<img src={%static "dataCollection/images/SANJIAO_11.png" %} alt="" />
-						<p>新增数据平台</p>
+						<p class="addDataBase">新增数据平台</p>
 						<input type="file"  multiple="multiple" name="file" id="addPanelFileInput"/>
 						<p class="last">新增本地文件</p>
 					</div>
 				</div>
 				<ul class="paltFormList">
-					{% for item,value in paltInfoList.db.items %}
-                        <li>
-                        		<img src={%static "dataCollection/images/data.png" %} alt="" />
-                       	 	<span>{{ value.dbPaltName }}</span>
-                        </li>
-                    {% endfor %}
-                    
-                    
-                    {% for item in paltInfoList.panel %}
-                        <li>
-                        		<img src={%static "dataCollection/images/file.png" %} alt="" />
-                       	 	<span>{{ item.fileName }}</span>
-                        </li>
-                    {% endfor %}
-                    
                     
 				</ul>
 				<div class="line"></div>
@@ -71,30 +56,10 @@
 						</div>
 						<div class="theDataSetContent">
 								<div class="dataSetDetail">
-								{% for key,value in paltInfoList.db.items %}
-									<div class="dbDataShow">
-										<select dbIndex={{key}} class="custom-select">
-										{% for op in value.dataBasesRs %}
-										<option value={{op}}>{{op}}</option>
-										{% endfor %}
-										</select>
-										<div class="tablesOfaData">
-									
-										</div>
-									</div>
-								{% endfor %}	
-									
-									{% for item in paltInfoList.panel %}	
-										<div class="panelDataShow">
-											<p class="panelTitle">{{item.fileName}}</p>
-											<div class="panelFileSheetData">
-												{% for t in item.fileConent%}
-													<p>{{t}}</p>
-												{%endfor%}
-											</div>
-										</div>
-									{% endfor %}
-											
+									<div class="didBuildTables">
+										<p class="buildTableTitle">已构建数据表</p>
+										<ul class="tablesList"></ul>
+									</div>	
 								</div>
 								
 						</div>
@@ -326,4 +291,5 @@
  			</ul>
  		</div>
  	</div>
+ 	{% include "dataCollection/panelFileOption.html" %}
  {% endblock %}

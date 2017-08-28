@@ -189,3 +189,119 @@ function equalCompare(objA, objB)
 
 }
 
+// 切换页面
+$(function(){
+	
+	pallasdaraFunctionNavBtnHandle();
+	
+});
+
+
+function pallasdaraFunctionNavBtnHandle(){
+	
+	var currentPath = window.location.pathname;
+//	if(/dataCollection\/pallasdata/.test(currentPath)){
+//		$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").addClass("active");
+//	}
+	if(/dataCollection\/dataBuildView/.test(currentPath)){
+		$(".container .main .leftNav #navBuildDataViewBtn").siblings(".functionBtn").children("div.active").removeClass("active");
+		$(".container .main .leftNav #navBuildDataViewBtn").children("div").addClass("active");
+	}
+	
+	if(/dashboard\/pallasdata2/.test(currentPath)){
+		$(".container .main .leftNav #navDashBoardViewBtn").siblings(".functionBtn").children("div.active").removeClass("active");
+		$(".container .main .leftNav #navDashBoardViewBtn").children("div").addClass("active");
+	}
+	
+	if(/statements\/pallasdata3/.test(currentPath)){
+		$(".container .main .leftNav #navReporttingViewBtn").siblings(".functionBtn").children("div.active").removeClass("active");
+		$(".container .main .leftNav #navReporttingViewBtn").children("div").addClass("active");
+	}
+	
+	
+	var navArr = navBtnAbleAndDisablegetHandle();
+	if(navArr.indexOf("navBuildDataViewBtn") != -1){
+		buildDataFunction_able();
+	}
+	if(navArr.indexOf("navDashBoardViewBtn") != -1){
+		dashBoradFunction_able();
+	}
+	if(navArr.indexOf("navReporttingViewBtn") != -1){
+		reporttingFunction_abale();
+	}
+	
+	$(".container .main .leftNav .ableFlag").unbind("click");
+	$(".container .main .leftNav .ableFlag").click(function(event){
+		if ($(this).children("div").hasClass("active")) {
+			event.preventDefault();
+			return;
+		}
+//		$(this).siblings(".ableFlag").children("div.active").removeClass("active");	
+//		$(this).children("div").addClass("active");
+		switch ($(this).attr("id")){
+			case"navDataBaseAndPanleFileConnectionViewBtn":
+				window.location.href = "/dataCollection/pallasdata";
+				break;
+			case "navBuildDataViewBtn":
+				window.location.href = "/dataCollection/dataBuildView";
+				break;
+			case "navDashBoardViewBtn":
+				window.location.href = "/dashboard/pallasdata2";
+				break;
+			case "navReporttingViewBtn":
+				window.location.href = "/statements/pallasdata3";
+				break;
+			default:
+				break;
+		}
+	});
+}
+
+function buildDataFunction_able(){
+	$(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/icon_nor_06.png");
+	$(".container .main .leftNav #navBuildDataViewBtn").removeClass("disableFlag");
+	$(".container .main .leftNav #navBuildDataViewBtn").addClass("ableFlag");
+
+}
+function dashBoradFunction_able(){
+	$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/icon_nor_08.png");
+	$(".container .main .leftNav #navDashBoardViewBtn").removeClass("disableFlag");
+	$(".container .main .leftNav #navDashBoardViewBtn").addClass("ableFlag");
+
+}
+function reporttingFunction_abale(){
+	$(".container .main .leftNav #navReporttingViewBtn").find("img").attr("src","/static/images/icon_nor_10.png");
+	$(".container .main .leftNav #navReporttingViewBtn").removeClass("disableFlag");
+	$(".container .main .leftNav #navReporttingViewBtn").addClass("ableFlag");
+}
+
+function dbAndPanelInfoSaveHandle(info){
+	
+	window.localStorage.setItem("dbandPanelInfo",JSON.stringify(info));
+	
+}
+function dbAndPanelInfoGetHandle(){
+	var res =  JSON.parse(window.localStorage.getItem("dbandPanelInfo"));
+	if(!res){res= ""};
+	return res; 
+}
+
+function dbAndPanelInfoDeleteHandle(){
+	window.localStorage.removeItem("dbandPanelInfo");
+}
+
+function navBtnAbleAndDisablesaveHandle(info){
+	var arr = navBtnAbleAndDisablegetHandle();
+	if(arr.indexOf(info) == -1){
+		arr.push(info)
+	}
+	window.localStorage.setItem("navAbleAndDisable",JSON.stringify(arr));
+}
+function navBtnAbleAndDisablegetHandle(){
+	var res =  JSON.parse(window.localStorage.getItem("navAbleAndDisable"));
+	if(!res){res= []};
+	return res; 
+}
+function navBtnAbleAndDisabledeleteHandle(){
+	window.localStorage.removeItem("navAbleAndDisable");
+}

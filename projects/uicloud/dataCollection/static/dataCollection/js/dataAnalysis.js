@@ -5,13 +5,85 @@ var preBuildDataName = null; // 之前构建数据集的名称
 var bottom_panel_fileds = []; // 底部表格详情，所需要的字段
  // 用来记录当前正在表详细中操作的列或者行元素
 var currentHandleColOrRowEles = null;
+
+
+
 $(function(){
-//	$( document ).tooltip({
-//		position:{
-////			my:"left top",
-////			at:"right bottom"
-//		}
-//	}); // 提示框
+
+function getDBAndPannelList(){
+	// 获取当前数据库信息
+var dbAndPanelInfo = dbAndPanelInfoGetHandle();
+var dbBaseList = dbAndPanelInfo["db"];
+$("#analysisContainer .leftSlide #connectDirector ul.paltFormList").empty();
+$("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail").empty();
+for (var key in dbBaseList) {
+	var currentConnect =  $("#analysisContainer .leftSlide #connectDirector ul.paltFormList li");
+//	if (currentConnect.) {
+//		
+//	}
+	
+	var detailInfo = dbBaseList[key];
+	var li = $("<li><img src= '/static/dataCollection/images/data.png' alt='' /><span>"+detailInfo.dbtype+"-"+detailInfo.dbuser+"-"+detailInfo.dbport+"</span></li>");
+	$("#analysisContainer .leftSlide #connectDirector ul.paltFormList").append(li);
+	li.data("dbIndex",key);
+	
+	var dbDataShow_div = $("<div class='dbDataShow'><select class='custom-select'></select><div class='tablesOfaData'></div></div>");
+	$("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail").append(dbDataShow_div);
+	var dbselect =  dbDataShow_div.find(".custom-select");
+	dbselect.attr("dbIndex",key);
+	for (var i = 0;i < detailInfo.dblist.length;i++) {
+		var dbVal = detailInfo.dblist[i];
+		var selectoption = $("<option value="+dbVal+">"+dbVal+"</option>");
+		dbselect.append(selectoption);
+	}	
+}
+var panelList = dbAndPanelInfo["panel"];
+for(var key in panelList){
+	var detialInfo = panelList[key];
+	var li = $("<li><img src= '/static/dataCollection/images/file.png' alt='' /><span>"+key+"</span></li>");
+	$("#analysisContainer .leftSlide #connectDirector ul.paltFormList").append(li);
+	
+	var paneFileShow = $("<div class='panelDataShow'><p class='panelTitle'>"  + key + "</p><div class='panelFileSheetData'></div></div>");
+	for (var i = 0; i < detialInfo.length;i++) {
+		var p  = $("<p>"+detialInfo[i]+"</p>");
+		p.data("sourcetype","panel")
+		paneFileShow.find(".panelFileSheetData").append(p);
+	}
+	$("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail").append(paneFileShow);
+	}
+	
+	
+ 	$('.custom-select').comboSelect();
+ 	bindEventToPerTable();
+ 	$(".dataSetDetail select").change(function() {
+		getTablesOfaDataBase($(this));
+	});
+	getTablesOfaDataBase($(".dataSetDetail select"));
+	
+}
+ getDBAndPannelList();
+
+// 获取当前已经构建的数据表
+$.ajax({
+		url:"/cloudapi/v1/tables",
+		type:"get",
+		dataType:"json",
+		contentType: "application/json; charset=utf-8",
+		success:function(data){
+			if (data["status"] == "success") {
+				$("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables ul.tablesList").empty();
+				for (var i = 0;i < data.results.length;i++) {
+					var li = $("<li>"+data.results[i]+"</li>");
+					li.data("sourcetype","hdfs");
+					$("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables ul.tablesList").append(li);
+				}
+				bindEventToPerTable();
+			}	
+		}	
+});
+
+
+
 	
 // select选项卡问题
 	$('.custom-select').comboSelect();
@@ -90,6 +162,7 @@ $(function(){
 		$("#prompt_message #data_success_content").removeClass().addClass("data_success_img");
 		$("#loading_percentage").css("right","-10px");
 		//构建数据成功隐藏构建数据弹窗--显示选择进入模块弹窗
+		navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
 		$("#build_upload").hide("blind",1000,function(){
 			$("#choose_menu").css("display","block");
 		});
@@ -142,10 +215,10 @@ $("#analysisContainer .mainDragArea").css({"margin-left":$("#analysisContainer .
 	})
 
 // 数据平台下具体数据库变化的时候
-$(".dataSetDetail select").change(function() {
-//	var theSelect = this;
-	getTablesOfaDataBase($(this));
-});
+//$(".dataSetDetail select").change(function() {
+////	var theSelect = this;
+//	getTablesOfaDataBase($(this));
+//});
 
 // 取消滑动事件的冒泡行为
 $("#analysisContainer .tablesOfaData").scroll(function(event){
@@ -156,61 +229,80 @@ var tableDragrecords = {};
 
 // 展示某个数据库下方的数据表格
 function getTablesOfaDataBase(theSelect){
+	
 	if (!theSelect.length || theSelect.length < 1) {
 		return;
 	}
+	
 	$.ajax({
 		url: "/dataCollection/tablesOfaDB",
 		type: "post",
 		data: {
 			"theDBName": $(theSelect).val(),
-			"dbObjIndex": $(theSelect).attr("dbIndex")
+			"dbObjIndex": $(theSelect).attr("dbIndex"),
+			"username":"yzy"
 		},
 		success: function(data) {
-			var rs = $.parseJSON(data);
 			$(theSelect).parents(".dbDataShow").children(".tablesOfaData").eq(0).empty();
-			for(var i = 0; i < rs.data.length; i++) {
-				var p = $("<p>" + rs.data[i] + "</p>");
+			for(var i = 0; i < data.data.length; i++) {
+				var p = $("<p>" + data.data[i] + "</p>");
+				p.data("sourcetype","db");
 				$(theSelect).parents(".dbDataShow").children(".tablesOfaData").eq(0).append(p);
 			}
-			bindEventToPerTable($(theSelect).val(),$(theSelect).attr("dbIndex"));
+			bindEventToPerTable();
 		}
 	})
 }
 	
-getTablesOfaDataBase($(".dataSetDetail select"));
+//getTablesOfaDataBase($(".dataSetDetail select"));
 
 // 处理表格的拖拽和点击事件
 //dbPaltIndexForBack 主要记录了这个数据库表格在后台属于哪个数据连接平台下的，是一个下标，后台通过这个索引值去寻找
-	function bindEventToPerTable(dataBaseName,dbPaltIndexForBack){
+	function bindEventToPerTable(){
 		
-		
-		dragUIHandle($(".tablesOfaData p"),$("#analysisContainer .mainDragArea"),function(ui,event){
+			dragUIHandle($(".tablesOfaData p").add("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables ul.tablesList li").add("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .panelDataShow .panelFileSheetData p"),$("#analysisContainer .mainDragArea"),function(ui,event){
 			event.stopPropagation();
 			event.preventDefault();
 			tableName = $(ui.draggable).html();
+			var sourceType = $(ui.draggable).data("sourcetype");
+			var dataBaseName = null;
+			var dbPaltIndexForBack = null;
+			var dataUrl ="";
+			var postData = null;
+			if(sourceType == "db"){
+				dataBaseName = $(ui.draggable).parents(".dbDataShow").find(".custom-select").val();
+				dbPaltIndexForBack = $(ui.draggable).parents(".dbDataShow").find(".custom-select").attr("dbindex");
+				dataUrl = "/dataCollection/tableFileds";
+				postData = {"tableName":tableName,"username":"yzy","dbObjIndex":dbPaltIndexForBack};
+			}else if(sourceType == "hdfs"){
+				dataBaseName = "myfolder"; // 当前用户名
+				dbPaltIndexForBack = "hdfsnotneed";
+				dataUrl = "/cloudapi/v1/tables/" +tableName+"/schema";
+			}else if(sourceType == "panel"){
+				dataUrl = "/dataCollection/cloudapi/v1/getPanel/schema";
+				postData = {"username":"yzy","filename":tableName};
+				dbPaltIndexForBack = "panelnotneed";
+				dataBaseName = "yzy";
+			}
+			
 			targetEle = this;
 			// 已近存在的表格
 			if (allKeys(didShowDragAreaTableInfo).indexOf(dbPaltIndexForBack + "_YZYPD_"+ dataBaseName + "_YZYPD_" + tableName) != -1) {
 				return;
 				
-			}			
-			
+			}
 						// 请求后端，获取表格的具体信息
 			$.ajax({
-				url:"/dataCollection/tableFileds",
+				url:dataUrl,
 				type:"post",
-				data:{"tableName":$(ui.draggable).html()},
+				dataType:"json",
+				data:postData,
 				success:function(data){
-					var rs = $.parseJSON(data);			
-					showDataTables(dataBaseName,tableName,rs.data,ui,targetEle,dbPaltIndexForBack);
+					if(data.status == "success" ||data.status == "ok")
+					showDataTables(dataBaseName,tableName,data.results.schema,ui,targetEle,dbPaltIndexForBack);
 				}
 			})	
-			
-			
-		});
-		
-		// 点击出现表格	
+			});
 	}
 	
  // 创建可视化的表格
@@ -371,7 +463,8 @@ getTablesOfaDataBase($(".dataSetDetail select"));
  		// 获取所有连接
 		var cons = instance.getAllConnections();
 		var postConsParama = [];
-		for (var i = 0;i <  cons["green dot"].length; i++) {
+		if(cons["green dot"]){
+			for (var i = 0;i <  cons["green dot"].length; i++) {
 			var con =  cons["green dot"][i];
 			var line = con.getOverlay("connFlag");
 			var linePa = line.getParameters();
@@ -392,8 +485,8 @@ getTablesOfaDataBase($(".dataSetDetail select"));
 				aRelation["columnMap"].push(aMap);
 			}
 			relationships.push(aRelation);
-		}
-   		
+			}
+		}	
      	// 需要传递的数据
  		postData = {
  			"tables":tables,
@@ -591,12 +684,12 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
  	$("#analysisContainer .leftSlide #addDataSourceBtn").click(function(event){
  		event.stopPropagation();
  		$("#connectDirector #addSourceSelects").show();
- 	})
+ 	});
  	
  	// 数据源选择按钮点击事件
- 	$("#analysisContainer .leftSlide #addSourceSelects p").click(function(event){
+ 	$("#analysisContainer .leftSlide #addSourceSelects p.addDataBase").click(function(event){
  		event.stopPropagation();
- 		if ($(this).html() == "新增数据平台") {
+ 		
  			$("#analysisContainer .leftSlide #addSourceSelects").hide();
  			$("#dataList").show("explode",500,BindProgressToDetailBase);
 			$(".maskLayer").show();
@@ -604,11 +697,41 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
 				$("#dataList").hide();
 				$(".maskLayer").hide();
 			});
- 			
- 		}else if ($(this).html() == "新增本地文件") {
- 			
- 		}
  	});
+ 	
+ 	$("#analysisContainer .leftSlide #addSourceSelects #addPanelFileInput").change(function(){
+ 		$(".maskLayer").show();
+ 		$("#panelFileSettingOption").show();	
+ 	});
+	  $("#panelFileSettingOption a.confirmBtn").click(function(event){
+		var delimiter = $("#panelFileSettingOption .fileSettingBody .topOption .delimiterOption input").val();
+		var quote = $("#panelFileSettingOption .fileSettingBody .topOption .quoteOption input").val();
+		var header = $("#panelFileSettingOption .fileSettingBody .bottomOption  input").get(0).checked;
+		var formData = new FormData();
+		var fileInfo = $("#analysisContainer .leftSlide #addSourceSelects #addPanelFileInput").get(0).files[0];
+		formData.append("file",fileInfo);
+		formData.append("delimiter",delimiter);
+		formData.append("quote",	 quote);
+		formData.append("header",header);
+		$.ajax({
+			url:"cloudapi/v1/upload",
+			type:"POST",
+			processData: false,
+	        contentType:false,
+	        data:formData,
+	        success:function(data){
+	        		if(data.status == "ok"){
+	        			$(".maskLayer").hide();
+	        			$("#panelFileSettingOption").hide();
+	        			$("#dataList").hide();
+	        			dbAndPanelInfoSaveHandle(data.data);
+					getDBAndPannelList();
+	            		}
+	            }
+			})
+	   		
+	   });
+ 	
  	
  	 // 给具体的数据库平台按钮绑定事件函数
     function BindProgressToDetailBase(){
@@ -625,10 +748,22 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
   			$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName)
     		$("#loginBtn").click(function(event){
     			// 待处理
-    			$("#dataBaseConnectForm").submit();
-		
-//		var rs = serializeForm("dataBaseConnectForm");
-//		console.log(rs);
+			var formData = new FormData($("#dataBaseConnectForm").get(0));
+			formData.append("username","yzy");
+			$.ajax({
+				url:"/dataCollection/connectDataBaseHandle",
+				type:"POST",
+				processData: false,
+	            contentType:false,
+	            data:formData,
+	            success:function(data){
+					if(data.status == "ok"){
+						dbAndPanelInfoSaveHandle(data.data);
+						getDBAndPannelList();
+					}
+	            }
+			});
+				
 //			上面是链接数据库的字段信息
     			$("#connectDataBaseInfo").hide();
     			$(".maskLayer").hide();
@@ -901,10 +1036,26 @@ function filterSuccessFun(isNeedAllData){
 		"database":dbArr[1],
 		"tableName":dbArr[2],
 		"columns":{},
-		"conditions":conditions
+		"conditions":conditions,
+		"username":"yzy"
 	}
+	var postURL = "/dataCollection/filterTable/all";
+	if(dbArr[0] == "hdfsnotneed"){
+		postURL = "/cloudapi/v1/tables/"+dbArr[2]+"/data";
+		postFilterCondition = {
+			"conditions":conditions
+		}
+	}else if(dbArr[0] == "panelnotneed"){
+		postURL = "/dataCollection/cloudapi/v1/getPanel/data"
+		postFilterCondition = {
+			"conditions":conditions,
+			"filename":dbArr[2],
+			"username":dbArr[1]
+		}
+	}
+	
 	$.ajax({
-			url:"/dataCollection/filterTable/all",
+			url:postURL,
 			type:"post",
 			dataType:"json",
 			contentType: "application/json; charset=utf-8",
@@ -918,7 +1069,7 @@ function filterSuccessFun(isNeedAllData){
 						createTableDetailView(dbInfo,currentTableAllData);	
 						
 					}else{
-						getFilterNeedAllData_fun();
+						getFilterNeedAllData_fun(dbInfo);
 					}
 				}else{
 					
@@ -930,23 +1081,52 @@ function filterSuccessFun(isNeedAllData){
 	});
 }
 
-	function getFilterNeedAllData_fun(){
-
-		var dbInfo = $("#tableDataDetailListPanel").attr("nowShowTable");
-			var tablesSelect = {};
-			tablesSelect["dbInfo"] = dbInfo;
- 			$.ajax({
- 				url:"/dataCollection/detailTableData",
- 				type:"post",
- 				data:tablesSelect,
-   				traditional:true,
-   				async: true,
- 				dataType:'json',
- 				success:function(data){
-   					filterNeedAllData = data.data;
-   					createTableDetailView(dbInfo,currentTableAllData);	
- 				}
- 		});	
-		
+function getFilterNeedAllData_fun(dbInfo){
+			var dbArr = dbInfo.split("_YZYPD_");	
+			if(dbArr[0] == "hdfsnotneed"){
+				$.ajax({
+					url:"/cloudapi/v1/tables/"+dbArr[2]+"/data",
+					type:"post",
+					dataType:"json",
+					contentType: "application/json; charset=utf-8",
+					async: true,
+					data:JSON.stringify({"condtitions":[]}),
+					success:function(data){
+						filterNeedAllData = data.results.data;
+	   					createTableDetailView(dbInfo,currentTableAllData);
+					}
+				})
+				
+			}else if(dbArr[0] == "panelnotneed"){
+				var postdata = {"filename":dbArr[2],"username":dbArr[1]}
+				$.ajax({
+					url:"/dataCollection/cloudapi/v1/getPanel/data",
+					type:"post",
+					dataType:"json",
+					contentType: "application/json; charset=utf-8",
+					async: true,
+					data:JSON.stringify(),
+					success:function(data){
+						filterNeedAllData = data.results.data;
+	   					createTableDetailView(dbInfo,currentTableAllData);	
+					}
+				})
+				
+			}else{
+				var tablesSelect = {"dbInfo":dbInfo,"username":"yzy"};
+	 			$.ajax({
+	 				url:"/dataCollection/detailTableData",
+	 				type:"post",
+	 				data:tablesSelect,
+	   				traditional:true,
+	   				async: true,
+	 				dataType:'json',
+	 				success:function(data){
+	   					filterNeedAllData = data.data;
+	   					createTableDetailView(dbInfo,currentTableAllData);	
+	 				}
+	 			});	
+			}		
 	}
+
 });

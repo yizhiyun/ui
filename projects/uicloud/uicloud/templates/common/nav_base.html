@@ -34,10 +34,10 @@
 		</div>
 		<div class="main">
 			<div class="leftNav">
-				<div class="ableFlag" id="first"><div class="active"></div><img src={% static "images/icon_nor_03.png" %} alt="" /></div>
-				<div class="ableFlag"><div></div><img src={% static "images/icon_disable_06.png" %} alt="" /></div>
-				<div class="ableFlag"><div></div><img src={% static "images/icon_disable_08.png" %} alt="" /></div>
-				<div class="ableFlag"><div></div><img src={% static "images/icon_disable_10.png" %} alt="" /></div>
+				<div class="ableFlag functionBtn" id="navDataBaseAndPanleFileConnectionViewBtn" ><div class="active"></div><img src={% static "images/icon_nor_03.png" %} alt="" /></div>
+				<div class="disableFlag functionBtn" id="navBuildDataViewBtn"><div></div><img src={% static "images/icon_disable_06.png" %} alt="" /></div>
+				<div class="disableFlag functionBtn" id="navDashBoardViewBtn"><div></div><img src={% static "images/icon_disable_08.png" %} alt="" /></div>
+				<div class="disableFlag functionBtn" id="navReporttingViewBtn"><div></div><img src={% static "images/icon_disable_10.png" %} alt="" /></div>
 			</div>
 			<div class="rightConent">
                 {% block  content%}
@@ -52,7 +52,7 @@
 	 <div id="connectDataBaseInfo" style="display: none;">
     		<p id="dataBaseName"></p>
     		<span id="connectDataBaseInfo_close"></span>
-    		<form action="/dataCollection/connectDataBaseHandle" method="post" id="dataBaseConnectForm">
+    		<form method="post" id="dataBaseConnectForm">
     			{% csrf_token %}
 			   <input name="dataBaseName" type="hidden" id="formPostDataBaseName"/>
     			<div class="locationDiv">
