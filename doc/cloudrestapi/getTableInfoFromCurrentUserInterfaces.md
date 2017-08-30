@@ -40,7 +40,7 @@ If successful, it will response as follows
 
 Get Table From Current User Via Spark
 -------------
-### 1. Request URI: /cloudapi/v1/tables/<tableName>/['all','schema','data']
+### 1. Request URI: /cloudapi/v1/tables/{tableName}/['all','schema','data']
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
    NULL if you don't need to filter the data. Or else, please specify the following json format for the filter.
@@ -85,7 +85,7 @@ Get Table From Current User Via Spark
 ```
 ### 4. Support Format: JSON
 ### 5. Response Data:
-* As for /cloudapi/v1/tables/<tableName>/all, it will response as follows if successful
+* As for /cloudapi/v1/tables/{tableName}/all, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -111,7 +111,7 @@ Get Table From Current User Via Spark
     }
 }
 ```
-* As for /cloudapi/v1/tables/<tableName>/schema, it will response as follows if successful
+* As for /cloudapi/v1/tables/{tableName}/schema, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -124,7 +124,7 @@ Get Table From Current User Via Spark
     }
 }
 ```
-* As for /cloudapi/v1/tables/<tableName>/data, it will response as follows if successful
+* As for /cloudapi/v1/tables/{tableName}/data, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -153,7 +153,7 @@ Get Table From Current User Via Spark
 }
 ```
 ### 6. Response Example:
-* As for /cloudapi/v1/tables/<tableName>/all, it will response as follows if successful
+* As for /cloudapi/v1/tables/{tableName}/all, it will response as follows if successful
 ```
 {
     "status": "success",

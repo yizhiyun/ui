@@ -70,7 +70,7 @@ If successful, it will response as follows
 
 Get all information about the specified file
 -------------
-### 1. Request URI: cloudapi/v1/uploadedcsv/<fileName>/<tableName>/['all', 'data', 'schema']
+### 1. Request URI: cloudapi/v1/uploadedcsv/{fileName}/{tableName}/['all', 'data', 'schema']
 ### 2. Support Format: JSON
 ### 3. Request Method: POST
 ### 4. Request Data Schema:
@@ -122,7 +122,7 @@ NULL if you don't need to filter the data. Or else, please specify the following
 ```
 
 ### 6. Response Data:
-* As for /cloudapi/v1/getuploadedcsv/<fileName>/<tableName>/all, it will response as follows if successful
+* As for /cloudapi/v1/uploadedcsv/{fileName}/{tableName}/all, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -148,7 +148,7 @@ NULL if you don't need to filter the data. Or else, please specify the following
     }
 }
 ```
-* As for /cloudapi/v1/getuploadedcsv/<fileName>/<tableName>/schema, it will response as follows if successful
+* As for /cloudapi/v1/uploadedcsv/{fileName}/{tableName}/schema, it will response as follows if successful
 ```
 {
     "status": "success",
@@ -161,7 +161,7 @@ NULL if you don't need to filter the data. Or else, please specify the following
     }
 }
 ```
-* As for /cloudapi/v1/getuploadedcsv/<fileName>/<tableName>/data, it will response as follows if successful
+* As for /cloudapi/v1/uploadedcsv/{fileName}/{tableName}/data, it will response as follows if successful
 ```
 {
     "status": "success",

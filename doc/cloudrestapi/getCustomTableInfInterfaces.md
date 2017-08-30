@@ -41,7 +41,7 @@ If successful, it will response as follows
 
 Get Table From Custom User Via Spark
 -------------
-1. URI: /cloudapi/v1/customtables/(?P<tableName>\w+)/['all','schema','data']
+1. URI: /cloudapi/v1/customtables/{tableName}/['all','schema','data']
 2. Request Method: POST
 3. Request Data Schema:
    NULL if you don't need to filter the data. Or else, please specify the following json format for the filter.
@@ -86,7 +86,7 @@ Get Table From Custom User Via Spark
 
 4. Support Format: JSON
 5. Response Data:
-5.1 As for /cloudapi/v1/customtables/<tableName>/all, it will response as follows if successful
+5.1 As for /cloudapi/v1/customtables/{tableName}/all, it will response as follows if successful
 {
     "status": "success",
     "results": {
@@ -111,7 +111,7 @@ Get Table From Custom User Via Spark
     }
 }
 
-5.2 As for /cloudapi/v1/customtables/<tableName>/schema, it will response as follows if successful
+5.2 As for /cloudapi/v1/customtables/{tableName}/schema, it will response as follows if successful
 {
     "status": "success",
     "results": {
@@ -123,7 +123,7 @@ Get Table From Custom User Via Spark
     }
 }
 
-5.3 As for /cloudapi/v1/customtables/<tableName>/data, it will response as follows if successful
+5.3 As for /cloudapi/v1/customtables/{tableName}/data, it will response as follows if successful
 {
     "status": "success",
     "results": {
@@ -150,7 +150,7 @@ Get Table From Custom User Via Spark
 }
 
 6. Response Example:
-6.1 As for /cloudapi/v1/customtables/<tableName>/all, it will response as follows if successful
+6.1 As for /cloudapi/v1/customtables/{tableName}/all, it will response as follows if successful
 {
     "status": "success",
     "results": {
