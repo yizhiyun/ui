@@ -39,39 +39,22 @@ class Singleton(object):
 
         if username not in self.dataPaltForm.keys():
             self.dataPaltForm[username] = {}
-        if 'db' not in self.dataPaltForm[username].keys():
-            self.dataPaltForm[username]['db'] = {}
-        for key in self.dataPaltForm[username]['db'].keys():
+        for key in self.dataPaltForm[username].keys():
             if key == info:
                 return False
-        self.dataPaltForm[username]['db'][info] = palt
+        self.dataPaltForm[username][info] = palt
         return True
 
     # 删除某个数据库平台
 
     def deletePalt(self, source, username):
         try:
-            for item in self.dataPaltForm[username]["db"]:
+            for item in self.dataPaltForm[username]:
                 if item == source:
-                    self.dataPaltForm[username]["db"].pop(item)
+                    self.dataPaltForm[username].pop(item)
                     return True
                 else:
                     return False
         except Exception as f:
             logger.error(f)
             return False
-
-    # 添加平面文件
-
-    def addPanelFile(self, filename, file, username):
-        if username not in self.dataPaltForm.keys():
-            self.dataPaltForm[username] = {}
-        if 'panel' not in self.dataPaltForm[username].keys():
-            self.dataPaltForm[username]['panel'] = {}
-        if filename not in self.dataPaltForm[username]['panel'].keys():
-            self.dataPaltForm[username]['panel'][filename] = []
-        for f in self.dataPaltForm[username]['panel'][filename]:
-            if f.name == file.name:
-                del self.dataPaltForm[username]['panel'][filename]
-                self.dataPaltForm[username]['panel'][filename] = []
-        self.dataPaltForm[username]['panel'][filename].append(file)
