@@ -229,7 +229,7 @@ class ConnectDataBase():
 
     # 根据条件查询. 返回表格数据
 
-    def filterTableData(self, jsonData):
+    def filterTableData(self, jsonData, mode):
         columnstr = ', '.join(jsonData['columns'].keys())
         if columnstr:
             sql = 'select {0} from {1} where 1=1 '.format(columnstr, jsonData['tableName'])
@@ -290,14 +290,30 @@ class ConnectDataBase():
             elif condType == "notendswith":
                 sql += "and {0} not like '%{1}' ".format(condIt['columnName'], condIt["value"])
 
+        results = {}
+
         if self.dbPaltName == "mysql":
             try:
                 self.con.select_db(jsonData['database'])
                 cursor = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-                sql += mysqlstr
-                cursor.execute(sql)
-                rows = cursor.fetchall()
-                return rows
+                if mode == 'all' or mode == 'data':
+                    sql += mysqlstr
+                    cursor.execute(sql)
+                    results['data'] = cursor.fetchall()
+
+                if mode == 'all' or mode == 'schema':
+                    results['schema'] = []
+                    if columnstr:
+                        for column in jsonData['columns'].items():
+                            results['schema'].append('{0}:{1}'.format(column[0], column[1]["columnType"]))
+                    else:
+                        cursor.execute("show columns from " + jsonData['tableName'])
+                        datas = cursor.fetchall()
+                        for data in datas:
+                            dic = {}
+                            for key, value in data.items():
+                                dic[key.lower()] = value
+                            results['schema'].append(dic)
 
             except Exception:
                 logger.error("Exception: {0}".format(sys.exc_info()))
@@ -305,23 +321,38 @@ class ConnectDataBase():
 
         elif self.dbPaltName == 'sqlserver':
             try:
-                self.con = pymssql.connect(
-                    host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd, database=jsonData['database'])
+                self.con = pymssql.connect(host=self.dbLocation, user=self.dbUserName,
+                                           password=self.dbUserPwd, database=jsonData['database'])
                 cursor = self.con.cursor()
-                sql = sql[:6] + sqlserverstr + sql[6:]
-                cursor.execute(sql)
-                dataList = cursor.fetchall()
+                if mode == 'all' or mode == 'data':
+                    sql = sql[:6] + sqlserverstr + sql[6:]
+                    cursor.execute(sql)
+                    dataList = cursor.fetchall()
 
-                cursor.execute('sp_columns ' + jsonData['tableName'])
-                colList = cursor.fetchall()
+                    cursor.execute('sp_columns ' + jsonData['tableName'])
+                    colList = cursor.fetchall()
 
-                rows = []
-                for data in dataList:
-                    dic = {}
-                    for i in range(len(colList)):
-                        dic[colList[i][3]] = data[i]
-                    rows.append(dic)
-                return rows
+                    results['data'] = []
+                    for data in dataList:
+                        dic = {}
+                        for i in range(len(colList)):
+                            dic[colList[i][3]] = data[i]
+                        results['data'].append(dic)
+
+                if mode == 'all' or mode == 'schema':
+                    results['schema'] = []
+                    if columnstr:
+                        for column in jsonData['columns'].items():
+                            results['schema'].append('{0}:{1}'.format(column[0], column[1]["columnType"]))
+                    else:
+                        cursor.execute('sp_columns ' + jsonData['tableName'])
+                        rs = cursor.fetchall()
+                        results['schema'] = []
+                        for obj in rs:
+                            results['schema'].append({
+                                'field': obj[3],
+                                'type': obj[5]
+                            })
 
             except Exception:
                 logger.error("Exception: {0}".format(sys.exc_info()))
@@ -330,18 +361,33 @@ class ConnectDataBase():
         elif self.dbPaltName == 'oracle':
             try:
                 cursor = self.con.cursor()
-                sql += oraclestr
-                cursor.execute(sql)
-                dataList = cursor.fetchall()
-                colList = cursor.description
+                if mode == 'all' or mode == 'data':
+                    sql += oraclestr
+                    cursor.execute(sql)
+                    dataList = cursor.fetchall()
+                    colList = cursor.description
 
-                rows = []
-                for data in dataList:
-                    dic = {}
-                    for i in range(len(colList)):
-                        dic[colList[i][0]] = data[i]
-                    rows.append(dic)
-                return rows
+                    results['data'] = []
+                    for data in dataList:
+                        dic = {}
+                        for i in range(len(colList)):
+                            dic[colList[i][0]] = data[i]
+                        results['data'].append(dic)
+
+                if mode == 'all' or mode == 'schema':
+                    if columnstr:
+                        for column in jsonData['columns'].items():
+                            results['schema'].append('{0}:{1}'.format(column[0], column[1]["columnType"]))
+                    else:
+                        rs = cursor.execute(
+                            "select column_name,data_type From all_tab_columns where table_name='{0}'".format(
+                                jsonData['tableName'])).fetchall()
+                        results['schema'] = []
+                        for obj in rs:
+                            results['schema'].append({
+                                'field': obj[0],
+                                'type': obj[1]
+                            })
 
             except Exception:
                 logger.error("Exception: {0}".format(sys.exc_info()))

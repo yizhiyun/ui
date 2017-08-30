@@ -3,12 +3,7 @@ from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
 from .gxmHandleClass.Singleton import Singleton
-import json
-import decimal
-import datetime
 import time
-
-
 import logging
 
 # Get an instance of a logger
@@ -146,10 +141,6 @@ def filterTable(request, modeName):
             context = {'status': 'failed', 'reason': "can't connect db"}
             return JsonResponse(context)
 
-    data = dataBaseObj.filterTableData(jsonData)
-    if data == 'failed':
-        return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
-
     if request.method == 'POST':
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
@@ -157,19 +148,12 @@ def filterTable(request, modeName):
                        "reason": "the mode must one of {0}".format(modeList)}
             return JsonResponse(failObj, status=400)
 
-        results = {}
-        schema = []
-        for column in jsonData['columns'].items():
-            schema.append('{0}:{1}'.format(column[0], column[1]["columnType"]))
-
-        if modeName == 'all' or modeName == 'schema':
-            results['schema'] = schema
-
-        if modeName == 'all' or modeName == 'data':
-            results['data'] = data
+        data = dataBaseObj.filterTableData(jsonData, modeName)
+        if data == 'failed':
+            return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
 
         context = {
             "status": "success",
-            "results": results
+            "results": data
         }
         return JsonResponse(context)
