@@ -130,7 +130,7 @@ This document describe return All fields under a table.
 * it will response as follows if successful
 ```
 {
-    "status": "ok",
+    "status": "success",
     "data": [
         {
             "field": <fieldname>,
