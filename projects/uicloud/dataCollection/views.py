@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
@@ -15,18 +15,6 @@ import logging
 logger = logging.getLogger("uicloud.dataCollection.views")
 logger.setLevel(logging.DEBUG)
 # Create your views here.
-
-
-class SpecialDataTypesEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, decimal.Decimal):
-            return float(obj)
-        elif isinstance(obj, (datetime.datetime, datetime.date)):
-            return obj.isoformat()
-        elif isinstance(obj, datetime.timedelta):
-            return (datetime.datetime.min + obj).time().isoformat()
-        else:
-            return super(SpecialDataTypesEncoder, self).default(obj)
 
 
 class IndexView(TemplateView):
@@ -109,15 +97,21 @@ def showAllTablesOfaDataBase(request):
         return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
 
     context = {
-        "status": "ok",
+        "status": "success",
         "data": data
     }
     return JsonResponse(context)
 
-# 返回某个表格下的all字段.
+# 返回表格数据
 
 
-def showTableFiledsOFaTable(request):
+def showTableInfo(request, modeName):
+    modeList = ['all', 'data', 'schema']
+    if modeName not in modeList:
+        failObj = {"status": "failed",
+                   "reason": "the mode must one of {0}".format(modeList)}
+        return JsonResponse(failObj, status=400)
+
     username = request.POST['username'] if 'username' in request.POST else 'yzy'
     dbObjIndex = request.POST['dbObjIndex']
     dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
@@ -127,39 +121,15 @@ def showTableFiledsOFaTable(request):
             context = {'status': 'failed', 'reason': "can't connect db"}
             return JsonResponse(context)
 
-    data = dataBaseObj.fetchFiledsOfATable(request.POST["tableName"])
+    data = dataBaseObj.fetchTableData(request.POST["tableName"], modeName, request.POST['database'])
     if data == 'failed':
         return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
 
     context = {
         "status": "success",
-        "results": {"schema": data}
+        "results": data
     }
     return JsonResponse(context)
-
-# 返回这个表格的所有的数据
-
-
-def showTableDetailDataOfFileds(request):
-    username = request.POST['username'] if 'username' in request.POST else 'yzy'
-    dbInfoArr = request.POST["dbInfo"].split("_YZYPD_")
-    dbindex = dbInfoArr[0]
-    tbName = dbInfoArr[2]
-    dataBaseObj = Singleton().dataPaltForm[username][dbindex]
-    if not dataBaseObj.con:
-        isConnect = dataBaseObj.connectDB()
-        if not isConnect:
-            context = {'status': 'failed', 'reason': "can't connect db"}
-            return JsonResponse(context)
-
-    data = dataBaseObj.fetchAllDataOfaTableByFields(tbName)
-    if data == 'failed':
-        return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
-
-    return HttpResponse(json.dumps({
-        "status": "ok",
-        "data": data
-    }, cls=SpecialDataTypesEncoder))
 
 # 根据条件查询. 返回表格数据
 
@@ -192,19 +162,11 @@ def filterTable(request, modeName):
         for column in jsonData['columns'].items():
             schema.append('{0}:{1}'.format(column[0], column[1]["columnType"]))
 
-        if modeName == 'all':
-            results = {
-                "schema": schema,
-                "data": data
-            }
-        elif modeName == 'schema':
-            results = {
-                "schema": schema
-            }
-        elif modeName == 'data':
-            results = {
-                "data": data
-            }
+        if modeName == 'all' or modeName == 'schema':
+            results['schema'] = schema
+
+        if modeName == 'all' or modeName == 'data':
+            results['data'] = data
 
         context = {
             "status": "success",

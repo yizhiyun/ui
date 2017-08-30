@@ -132,22 +132,29 @@ class ConnectDataBase():
                 logger.error("Exception: {0}".format(sys.exc_info()))
                 return 'failed'
 
-    # 获取某个表格下面的所有字段
+    # 返回表格数据
 
-    def fetchFiledsOfATable(self, tableName):
+    def fetchTableData(self, tableName, modeName, dataBaseName=None):
         if self.dbPaltName == "mysql":
             try:
+                self.con.select_db(dataBaseName)
+                results = {}
                 cur = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-                cur.execute("show columns from " + tableName)
-                datas = cur.fetchall()
+                if modeName == 'all' or modeName == 'schema':
+                    cur.execute("show columns from " + tableName)
+                    datas = cur.fetchall()
 
-                rows = []
-                for data in datas:
-                    dic = {}
-                    for key, value in data.items():
-                        dic[key.lower()] = value
-                    rows.append(dic)
-                return rows
+                    results['schema'] = []
+                    for data in datas:
+                        dic = {}
+                        for key, value in data.items():
+                            dic[key.lower()] = value
+                        results['schema'].append(dic)
+
+                if modeName == 'all' or modeName == 'data':
+                    cur.execute("select * from " + tableName)
+                    results['data'] = cur.fetchall()
+                return results
 
             except Exception:
                 logger.error("Exception: {0}".format(sys.exc_info()))
@@ -155,17 +162,31 @@ class ConnectDataBase():
 
         elif self.dbPaltName == 'oracle':
             try:
+                results = {}
                 cursor = self.con.cursor()
-                rs = cursor.execute(
-                    "select column_name,data_type From all_tab_columns where table_name='{0}'".format(
-                        tableName)).fetchall()
-                rows = []
-                for obj in rs:
-                    rows.append({
-                        'field': obj[0],
-                        'type': obj[1]
-                    })
-                return rows
+                if modeName == 'all' or 'schema':
+                    rs = cursor.execute(
+                        "select column_name,data_type From all_tab_columns where table_name='{0}'".format(
+                            tableName)).fetchall()
+                    results['schema'] = []
+                    for obj in rs:
+                        results['schema'].append({
+                            'field': obj[0],
+                            'type': obj[1]
+                        })
+
+                if modeName == 'all' or 'data':
+                    cursor.execute('select * from ' + tableName)
+                    dataList = cursor.fetchall()
+                    colList = cursor.description
+
+                    results['data'] = []
+                    for data in dataList:
+                        dic = {}
+                        for i in range(len(colList)):
+                            dic[colList[i][0]] = data[i]
+                        results['data'].append(dic)
+                return results
 
             except Exception:
                 logger.error("Exception: {0}".format(sys.exc_info()))
@@ -173,70 +194,34 @@ class ConnectDataBase():
 
         elif self.dbPaltName == 'sqlserver':
             try:
+                self.con = pymssql.connect(
+                    host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd, database=dataBaseName)
                 cursor = self.con.cursor()
-                cursor.execute('sp_columns ' + tableName)
-                rs = cursor.fetchall()
-                rows = []
-                for obj in rs:
-                    rows.append({
-                        'field': obj[3],
-                        'type': obj[5]
-                    })
-                return rows
+                results = {}
+                if modeName == 'all' or 'schema':
+                    cursor.execute('sp_columns ' + tableName)
+                    rs = cursor.fetchall()
+                    results['schema'] = []
+                    for obj in rs:
+                        results['schema'].append({
+                            'field': obj[3],
+                            'type': obj[5]
+                        })
 
-            except Exception:
-                logger.error("Exception: {0}".format(sys.exc_info()))
-                return 'failed'
+                if modeName == 'all' or 'data':
+                    cursor.execute('select * from ' + tableName)
+                    dataList = cursor.fetchall()
 
-    # 获取某个表格的所有数据, filedsArr
+                    cursor.execute('sp_columns ' + tableName)
+                    colList = cursor.fetchall()
 
-    def fetchAllDataOfaTableByFields(self, tableName):
-        if self.dbPaltName == "mysql":
-            try:
-                cur = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-                cur.execute("select * from " + tableName)
-                rows = cur.fetchall()
-                return rows
-
-            except Exception:
-                logger.error("Exception: {0}".format(sys.exc_info()))
-                return 'failed'
-
-        elif self.dbPaltName == 'oracle':
-            try:
-                cursor = self.con.cursor()
-                cursor.execute('select * from ' + tableName)
-                dataList = cursor.fetchall()
-                colList = cursor.description
-
-                rows = []
-                for data in dataList:
-                    dic = {}
-                    for i in range(len(colList)):
-                        dic[colList[i][0]] = data[i]
-                    rows.append(dic)
-                return rows
-
-            except Exception:
-                logger.error("Exception: {0}".format(sys.exc_info()))
-                return 'failed'
-
-        elif self.dbPaltName == 'sqlserver':
-            try:
-                cursor = self.con.cursor()
-                cursor.execute('select * from ' + tableName)
-                dataList = cursor.fetchall()
-
-                cursor.execute('sp_columns ' + tableName)
-                colList = cursor.fetchall()
-
-                rows = []
-                for data in dataList:
-                    dic = {}
-                    for i in range(len(colList)):
-                        dic[colList[i][3]] = data[i]
-                    rows.append(dic)
-                return rows
+                    results['data'] = []
+                    for data in dataList:
+                        dic = {}
+                        for i in range(len(colList)):
+                            dic[colList[i][3]] = data[i]
+                        results['data'].append(dic)
+                return results
 
             except Exception:
                 logger.error("Exception: {0}".format(sys.exc_info()))

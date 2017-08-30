@@ -95,8 +95,8 @@ This document describe how to get users' tables filter information.
             ...
         ],
         "schema": [
-            "<columnName1>:<columnType1>",
-            "<columnName2>:<columnType2>",
+            <columnName1>:<columnType1>,
+            <columnName2>:<columnType2>,
             ...
         ]
     }
@@ -108,8 +108,8 @@ This document describe how to get users' tables filter information.
     "status": "success",
     "results": {
         "schema": [
-            "<columnName1>:<columnType1>",
-            "<columnName2>:<columnType2>",
+            <columnName1>:<columnType1>,
+            <columnName2>:<columnType2>,
             ...
         ]
     }

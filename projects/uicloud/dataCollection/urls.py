@@ -8,8 +8,7 @@ urlpatterns = [
     url(r"^connectDataBaseHandle$", views.connectDataBaseHandle),
     url(r"^showAllDbOfPalt$", views.showAllDbOfPalt),
     url(r"^tablesOfaDB$", views.showAllTablesOfaDataBase),
-    url(r"^tableFileds$", views.showTableFiledsOFaTable),
-    url(r"^detailTableData$", views.showTableDetailDataOfFileds),
+    url(r"^showTableInfo/(?P<modeName>\w+)$", views.showTableInfo),
     url(r"^filterTable/(?P<modeName>\w+)$", views.filterTable),
     url(r"^dataBuildView$", views.dataBuildView.as_view())
 ]
