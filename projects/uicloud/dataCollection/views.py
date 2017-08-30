@@ -5,7 +5,6 @@ from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
 # from .DataModels.PaltInfoModel import PaltInfoModel
 from .gxmHandleClass.Singleton import Singleton
-from cloudrestapi.upload import *
 import json
 import decimal
 import datetime
@@ -34,72 +33,73 @@ class SpecialDataTypesEncoder(json.JSONEncoder):
 
 class IndexView(TemplateView):
     template_name = 'dataCollection/dataSourceSelect.html'
+
+
 class dataBuildView(TemplateView):
     template_name = 'dataCollection/dataAnalysis.html'
 
 # 连接数据库平台
 
 
-def connectDataBaseHandle(req):
-    dbPaltName = req.POST["dataBaseName"].lower()
+def connectDataBaseHandle(request):
+    dbPaltName = request.POST["dataBaseName"].lower()
     dbSid = None
     if dbPaltName == 'oracle':
-        dbSid = req.POST["dbSid"]
+        dbSid = request.POST["dbSid"]
     dataBaseObj = ConnectDataBase(
         dbPaltName,
-        req.POST["location"],
-        req.POST["port"],
-        req.POST["dbuserName"],
-        req.POST["dbuserPwd"],
+        request.POST["location"],
+        request.POST["port"],
+        request.POST["dbuserName"],
+        request.POST["dbuserPwd"],
         dbSid,
         time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
     )
     isConnect = dataBaseObj.connectDB()
     if isConnect:
-        username = req.POST['username']
-        isAlreadyIn = Singleton().addPalt(dataBaseObj, username)
-        if not isAlreadyIn:
-            return JsonResponse({'status': 'false', 'reason': 'the palt is already has'})
-        context = {
-            'status': 'ok',
-            'data': {
-                'db': {},
-                'panel': {}
-            }
-        }
-        for md5, dbObj in Singleton().dataPaltForm[username]['db'].items():
-            if not dbObj.con:
-                dbObj.connectDB()
-            dbObj.fetchAllDabaBase()
-            context['data']['db'][md5] = {
-                'dbtype': dbObj.dbPaltName,
-                'dbport': dbObj.dbPort,
-                'dbuser': dbObj.dbUserName,
-                'dblist': dbObj.dataBasesRs
-            }
-
-        if 'panel' in Singleton().dataPaltForm[username].keys():
-            for key, value in Singleton().dataPaltForm[username]['panel'].items():
-                context['data']['panel'][key] = []
-                for file in value:
-                    context['data']['panel'][key].append(chName(file.name))
-
-        return JsonResponse(context)
+        username = request.POST['username'] if 'username' in request.POST else 'yzy'
+        notIn = Singleton().addPalt(dataBaseObj, username)
+        if not notIn:
+            return JsonResponse({'status': 'failed', 'reason': 'the palt is already has'})
+        return JsonResponse({'status': 'success'})
 
     else:
         context = {
-            'status': 'false',
+            'status': 'failed',
             'reason': "can't connect db"
         }
         return JsonResponse(context)
 
+
+# 返回当前平台所有数据库
+
+
+def showAllDbOfPalt(request):
+    username = request.POST['username'] if 'username' in request.POST else 'yzy'
+    context = {
+        'status': 'success',
+        'results': {}
+    }
+    for md5, dbObj in Singleton().dataPaltForm[username].items():
+        if not dbObj.con:
+            dbObj.connectDB()
+        dbObj.fetchAllDabaBase()
+        context['results'][md5] = {
+            'dbtype': dbObj.dbPaltName,
+            'dbport': dbObj.dbPort,
+            'dbuser': dbObj.dbUserName,
+            'dblist': dbObj.dataBasesRs
+        }
+    return JsonResponse(context)
+
+
 # 选择具体数据库下的表格
 
 
-def showAllTablesOfaDabaBase(request):
-    username = request.POST['username']
+def showAllTablesOfaDataBase(request):
+    username = request.POST['username'] if 'username' in request.POST else 'yzy'
     dbObjIndex = request.POST['dbObjIndex']
-    dataBaseObj = Singleton().dataPaltForm[username]['db'][dbObjIndex]
+    dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
     if not dataBaseObj.con:
         dataBaseObj.connectDB()
     data = dataBaseObj.fetchTableBydataBaseName(request.POST["theDBName"])
@@ -109,31 +109,31 @@ def showAllTablesOfaDabaBase(request):
     }
     return JsonResponse(context)
 
-# 返回某个表格下的具体字段.
+# 返回某个表格下的all字段.
 
 
 def showTableFiledsOFaTable(request):
-    username = request.POST['username']
+    username = request.POST['username'] if 'username' in request.POST else 'yzy'
     dbObjIndex = request.POST['dbObjIndex']
-    dataBaseObj = Singleton().dataPaltForm[username]['db'][dbObjIndex]
+    dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
     if not dataBaseObj.con:
         dataBaseObj.connectDB()
     data = dataBaseObj.fetchFiledsOfATable(request.POST["tableName"])
     context = {
         "status": "success",
-        "results": {"schema":data}
+        "results": {"schema": data}
     }
     return JsonResponse(context)
 
 # 返回这个表格的所有的数据
 
 
-def showTableDetailDataOfFileds(req):
-    username = req.POST['username']
-    dbInfoArr = req.POST["dbInfo"].split("_YZYPD_")
+def showTableDetailDataOfFileds(request):
+    username = request.POST['username'] if 'username' in request.POST else 'yzy'
+    dbInfoArr = request.POST["dbInfo"].split("_YZYPD_")
     dbindex = dbInfoArr[0]
     tbName = dbInfoArr[2]
-    dataBaseObj = Singleton().dataPaltForm[username]["db"][dbindex]
+    dataBaseObj = Singleton().dataPaltForm[username][dbindex]
     if not dataBaseObj.con:
         dataBaseObj.connectDB()
     data = dataBaseObj.fetchAllDataOfaTableByFields(tbName)
@@ -149,8 +149,8 @@ def showTableDetailDataOfFileds(req):
 def filterTable(request, modeName):
     jsonData = request.data
     Singleton().currentDBObjIndex = jsonData['source']
-    username = jsonData['username']
-    dataBaseObj = Singleton().dataPaltForm[username]["db"][Singleton().currentDBObjIndex]
+    username = jsonData['username'] if 'username' in jsonData else 'yzy'
+    dataBaseObj = Singleton().dataPaltForm[username][Singleton().currentDBObjIndex]
     if not dataBaseObj.con:
         dataBaseObj.connectDB()
     if request.method == 'POST':

@@ -1,7 +1,7 @@
 
 Description
 -----------
-This document describe how to connect and add users' database , and return user's db info. panel info.
+This document describe how to connect and add users' database.
 -------------
 1. URI: /dataCollection/connectDataBaseHandle
 2. Request Method: POST
@@ -12,8 +12,7 @@ This document describe how to connect and add users' database , and return user'
     "location": <dbhost>,
     "port": <dbport>,
     "dbuserName": <dbusername>,
-    "dbuserPwd": <dbpassword>,
-    "username": <username>
+    "dbuserPwd": <dbpassword>
 }
 5. Request Example:
 {
@@ -21,44 +20,53 @@ This document describe how to connect and add users' database , and return user'
     "location": "192.168.1.250",
     "port": "3306",
     "dbuserName": "root",
-    "dbuserPwd": "password",
-    "username": "yzy"
+    "dbuserPwd": "password"
 }
 
 6. Support Format: JSON
 7. Response Data:
 7.1 it will response as follows if successful
 {
-    "status": "ok",
-    "data": {
-        "db": {
-            "md5": {
-                "dbtype": <dbtype>,
-                "dbport": <dbport>,
-                "dbuser": <dbuser>,
-                "dblist": <dblist>
-            },
-            ...
-        },
-        "panel": {
-            "excelName": ["sheetname", "sheetname"],
-            "csvName": ["csvname"],
-            ...
-        }
-    }
+    "status": "success"
 }
 
 7.21 it will response as follows if con't connect db
 {
-    "status": "false",
+    "status": "failed",
     "reason": "can't connect db"
 }
 
 7.22 it will response as follows if the db is already has
 {
-    "status": "false",
+    "status": "failed",
     "reason": "the palt is already has"
 }
+
+
+
+
+-----------
+This document describe return all database of a palt.
+-------------
+1. URI: /dataCollection/showAllDbOfPalt
+2. Request Method: POST
+3. Request Data Schema: NULL
+4. Support Format: JSON
+5. Response Data:
+it will response as follows if successful
+{
+    "status": "success",
+    "results": {
+        "md5": {
+            "dbtype": <dbtype>,
+            "dbport": <dbport>,
+            "dbuser": <dbuser>,
+            "dblist": <dblist>
+        },
+        ...
+    }
+}
+
 
 
 
@@ -71,13 +79,11 @@ This document describe return The table below the specific database.
 4. Request Data:
 {
     "dbObjIndex": <dbMD5>,
-    "username": <username>,
     "theDBName": <dbname>
 }
 5. Request Example:
 {
     "dbObjIndex": "MD5",
-    "username": "yzy",
     "theDBName": "db1"
 }
 
@@ -102,13 +108,11 @@ This document describe return All fields under a table.
 4. Request Data:
 {
     "dbObjIndex": <dbMD5>,
-    "username": <username>,
     "tableName": <tablename>
 }
 5. Request Example:
 {
     "dbObjIndex": "MD5",
-    "username": "yzy",
     "tableName": "test1"
 }
 
@@ -140,13 +144,11 @@ This document describe return All info under a table.
 3. Request Data Schema: JSON
 4. Request Data:
 {
-    "dbinfo": <dbinfo>,
-    "username": <username>
+    "dbinfo": <dbinfo>
 }
 5. Request Example:
 {
-    "dbinfo": "MD5_YZYPD_?_YZYPD_tablename",
-    "username": "yzy"
+    "dbinfo": "MD5_YZYPD_?_YZYPD_tablename"
 }
 
 6. Support Format: JSON
@@ -156,11 +158,11 @@ This document describe return All info under a table.
     "status": "ok",
     "data": [
         {
-            "name": "xiaoli",
+            "name": "zhangsan",
             "age": 18
         },
         {
-            "name": "jack",
+            "name": "lisi",
             "age": 11
         },
         ...
