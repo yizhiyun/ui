@@ -3,10 +3,11 @@ Description
 -----------
 This document describe how to get users' tables filter information.
 -------------
-1. URI: /dataCollection/filterTable/['all','schema','data']
-2. Request Method: POST
-3. Request Data Schema: JSON
-4. Request Data:
+### 1. Request URI: /dataCollection/filterTable/['all','schema','data']
+### 2. Request Method: POST
+### 3. Request Data Schema: JSON
+### 4. Request Data:
+```
 {
     "source": <sourceName or connectString>,
     "database": <databasename>,
@@ -39,7 +40,9 @@ This document describe how to get users' tables filter information.
         ...
     ]
 }
-5. Request Example:
+```
+### 5. Request Example:
+```
 {
     "source": "mysqlDB1",
     "database": "db1",
@@ -70,10 +73,12 @@ This document describe how to get users' tables filter information.
         }
     ]
 }
+```
 
-6. Support Format: JSON
-7. Response Data:
-7.1 As for /dataCollection/filterTable/all, it will response as follows if successful
+### 6. Support Format: JSON
+### 7. Response Data:
+* As for /dataCollection/filterTable/all, it will response as follows if successful
+```
 {
     "status": "success",
     "results": {
@@ -97,7 +102,9 @@ This document describe how to get users' tables filter information.
         ]
     }
 }
-7.2 As for /dataCollection/filterTable/schema, it will response as follows if successful
+```
+* As for /dataCollection/filterTable/schema, it will response as follows if successful
+```
 {
     "status": "success",
     "results": {
@@ -108,7 +115,9 @@ This document describe how to get users' tables filter information.
         ]
     }
 }
-7.2 As for /dataCollection/filterTable/data, it will response as follows if successful
+```
+* As for /dataCollection/filterTable/data, it will response as follows if successful
+```
 {
     "status": "success",
     "results": {
@@ -127,8 +136,11 @@ This document describe how to get users' tables filter information.
         ]
     }
 }
-8. if failed, it will response as follows
+
+### 8. if failed, it will response as follows
+```
 {
     "status": "failed",
     "reason": "the mode must one of ['all', 'data', 'schema']"
 }
+```

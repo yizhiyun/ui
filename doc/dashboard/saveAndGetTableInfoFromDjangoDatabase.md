@@ -6,31 +6,40 @@ This document describe how to get users' tables information from RESTful API.
 
 Get All Tables From Current User
 -------------
-1. URI: /dashboard/getAllData
-2. Request Method: POST
-3. Request Data Schema:
-3.1 if you want all data:
+### 1. Request URI: /dashboard/getAllData
+### 2. Request Method: POST
+### 3. Request Data Schema:
+* if you want all data:
+```
 {
     "username": <username>
 }
-3.2 if you want just folder data:
+```
+* if you want just folder data:
+```
 {
     "username": <username>,
     "datatype": <datatype>
 }
-4. Request Example:
-4.1 if you want all data:
+```
+### 4. Request Example:
+* if you want all data:
+```
 {
     "username": "yzy"
 }
-4.2 if you want just folder data:
+```
+* if you want just folder data:
+```
 {
     "username": "yzy",
     "datatype": "folder"
 }
-5. Support Format: JSON
-6. Response Data:
-6.1 if you want all data:
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+* if you want all data:
+```
 {
     <parentfoldername>: {
         <foldername>: {
@@ -116,7 +125,9 @@ Get All Tables From Current User
     },
     ...
 }
-6.2 if you want just folder data:
+```
+* if you want just folder data:
+```
 {
     <parentfoldername>: [
         <foldername>,
@@ -130,14 +141,16 @@ Get All Tables From Current User
     ],
     ...
 }
+```
 
 
 
 Save TableInfo From Current User And Return TableInfo
 -------------
-1. URI: /dashboard/dashboardTableAdd
-2. Request Method: POST
-3. Request Data Schema:
+### 1. Request URI: /dashboard/dashboardTableAdd
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
     "username": <username>,
     "foldername": <foldername>,
@@ -147,7 +160,9 @@ Save TableInfo From Current User And Return TableInfo
     "viewtype": <viewtype>,
     "defaultparent": <defaultparentfoldername>
 }
-4. Request Example:
+```
+### 4. Request Example:
+```
 {
     "username": "yzy",
     "foldername": "folder1",
@@ -157,60 +172,76 @@ Save TableInfo From Current User And Return TableInfo
     "viewtype": "typedata",
     "defaultparent": "nmnf"
 }
-5. Support Format: JSON
-6. Response Data:
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+```
 {
     "status": "ok"
 }
+```
 
 
 
 Save Folder From Current User
 -------------
-1. URI: /dashboard/dashboardFolderAdd
-2. Request Method: POST
-3. Request Data Schema:
+### 1. Request URI: /dashboard/dashboardFolderAdd
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
     "username": <username>,
     "foldername": <foldername>
 }
-4. Request Example:
+```
+### 4. Request Example:
+```
 {
     "username": "yzy",
     "foldername": "folder1"
 }
-5. Support Format: JSON
-6. Response Data:
-6.1 if successful, it will response as follows
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+* if successful, it will response as follows
+```
 {
     "status": "ok"
 }
-6.2 if failed, it will response as follows
+```
+* if failed, it will response as follows
+```
 {
     "status": "false",
     "reason": "the name has been used"
 }
+```
 
 
 
- Relevance Folder And ParentFolder From Current User
+Relevance Folder And ParentFolder From Current User
 -------------
-1. URI: /dashboard/RelevanceFolder
-2. Request Method: POST
-3. Request Data Schema:
+### 1. Request URI: /dashboard/RelevanceFolder
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
     "foldername": <foldername>,
     "parentfoldername": <parentfoldername>,
     "username": <username>
 }
-4. Request Example:
+```
+### 4. Request Example:
+```
 {
     "foldername": "folder1",
     "parentfoldername": "parentfolder",
     "username": "yzy"
 }
-5. Support Format: JSON
-6. Response Data:
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+```
 {
     <parentfoldername>: {
         <foldername>: {
@@ -296,46 +327,56 @@ Save Folder From Current User
     },
     ...
 }
+```
 
 
 
 update Name From Current User
 -------------
-1. URI: /dashboard/changeViewName
-2. Request Method: POST
-3. Request Data Schema:
-notice: if you objtype is view, oldname should be table's id!
+### 1. Request URI: /dashboard/changeViewName
+### 2. Request Method: POST
+### 3. Request Data Schema:
+* if you objtype is view, oldname should be table's id.
+```
 {
     "objtype": <type>,
     "oldname": <oldname>,
     "newname": <new>
 }
-4. Request Example:
+```
+### 4. Request Example:
+```
 {
     "objtype": "view/folder/parentfolder",
     "oldname": "oldname/table's id",
     "newname": "newviewname"
 }
-5. Support Format: JSON
-6. Response Data:
-if success:
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+* if success:
+```
 {
     "status": "ok"
 }
-if faild:
+```
+* if faild:
+```
 {
     "status": "false", 
     "reason": "this name has been used"
 }
+```
 
 
 
 Delete Folder From Current User
 -------------
-1. URI: /dashboard/deleteFolder
-2. Request Method: POST
-3. Request Data Schema:
-3.1 if datatype is parentfolder:
+### 1. Request URI: /dashboard/deleteFolder
+### 2. Request Method: POST
+### 3. Request Data Schema:
+* if datatype is parentfolder:
+```
 {
     "datatype": <foldertype>,
     "isdeleteall": <yes/no>,
@@ -343,20 +384,26 @@ Delete Folder From Current User
     "defaultparent": <defaultparentfoldername>,
     "username": <username>
 }
-3.2 if datatype is folder:
+```
+* if datatype is folder:
+```
 {
     "datatype": <foldertype>,
     "foldername": <foldername>,
     "username": <username>
 }
-3.3 if datatype is view:
+```
+* if datatype is view:
+```
 {
     "datatype": "view",
     "tableid": "tableid",
     "username": "username"
 }
-4. Request Example:
-4.1 if datatype is parentfolder
+```
+### 4. Request Example:
+* if datatype is parentfolder
+```
 {
     "datatype": "parentfolder",
     "isdeleteall": "yes",
@@ -364,20 +411,26 @@ Delete Folder From Current User
     "defaultparent": "nmnf",
     "username": "yzy"
 }
-4.2 if datatype is folder
+```
+* if datatype is folder
+```
 {
     "datatype": "folder",
     "foldername": "testfolder",
     "username": "yzy"
 }
-4.3 if datatype is view:
+```
+* if datatype is view:
+```
 {
     "datatype": "view",
     "tableid": 333,
     "username": "yzy"
 }
-5. Support Format: JSON
-6. Response Data:
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+```
 {
     <parentfoldername>: {
         <foldername>: {
@@ -463,28 +516,34 @@ Delete Folder From Current User
     },
     ...
 }
+```
 
 
 
 Save User's Note
 -------------
-1. URI: /dashboard/addNote
-2. Request Method: POST
-3. Request Data Schema:
-3.1 if foldertype is parentfolder
+### 1. Request URI: /dashboard/addNote
+### 2. Request Method: POST
+### 3. Request Data Schema:
+* if foldertype is parentfolder
+```
 {
     "note": <note>,
     "id": <tableid>,
     "username": <username>
 }
-4. Request Example:
+```
+### 4. Request Example:
+```
 {
     "note": "it's for Patients with cough",
     "id": 21,
     "username": "yzy"
 }
-5. Support Format: JSON
-6. Response Data:
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+```
 {
     <parentfoldername>: {
         <foldername>: {
@@ -570,26 +629,32 @@ Save User's Note
     },
     ...
 }
+```
 
 
 
 remember User's Note is or not is show
 -------------
-1. URI: /dashboard/setShow
-2. Request Method: POST
-3. Request Data Schema:
-3.1 if foldertype is parentfolder
+### 1. Request URI: /dashboard/setShow
+### 2. Request Method: POST
+### 3. Request Data Schema:
+* if foldertype is parentfolder
+```
 {
     "id": <tableid>,
     "username": <username>
 }
-4. Request Example:
+```
+### 4. Request Example:
+```
 {
     "id": 21,
     "username": "yzy"
 }
-5. Support Format: JSON
-6. Response Data:
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+```
 {
     <parentfoldername>: {
         <foldername>: {
@@ -675,24 +740,30 @@ remember User's Note is or not is show
     },
     ...
 }
+```
 
 
 
 remember User's view is or not is open
 -------------
-1. URI: /dashboard/setIsopen
-2. Request Method: POST
-3. Request Data Schema:
-3.1 if foldertype is parentfolder
+### 1. Request URI: /dashboard/setIsopen
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
 {
     "id": <tableid>
 }
-4. Request Example:
+```
+### 4. Request Example:
+```
 {
     "id": 21
 }
-5. Support Format: JSON
-6. Response Data:
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+```
 {
     "status": "ok"
 }
+```
