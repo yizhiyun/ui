@@ -568,36 +568,43 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
     return {"status": True, "results": outputList}
 
 
-def convertCsvToParquetSparkCode(uploadedCsvUri, delimiter, quote="\"", header='false',
-                                 hdfsHost="spark-master0", port="9000"):
-    '''
+def convertCsvToParquetSparkCode(uploadedCsvUri, csvOpts={}, hdfsHost="spark-master0", port="9000"):
+    """
     uploadedCsvUri must have the format of <rootFolder>/csv/<parentFolder>/<fileName>.
-    For example, '/users/myfolder/csv/test/test'
-    '''
+    For example, "/users/myfolder/csv/test/test"
+    """
 
     csvUrl = "hdfs://{0}:{1}/{2}".format(hdfsHost, port, uploadedCsvUri)
     rootFolder, filePath = uploadedCsvUri.split("/csv/")
-    parquetUrl = 'hdfs://{0}:{1}/{2}/parquet/{3}'.format(hdfsHost, port, rootFolder, filePath)
+    parquetUrl = "hdfs://{0}:{1}/{2}/parquet/{3}".format(hdfsHost, port, rootFolder, filePath)
     logger.debug("csvUrl: {0}, parquetUrl: {1}".format(csvUrl, parquetUrl))
     sparkCode = setupLoggingSparkCode() + '''
     import traceback
-    def convertCsvToParquet(csvUrl, parquetUrl, header, delimiter, quote):
+    def convertCsvToParquet(csvUrl, parquetUrl, csvOpts="{}"):
+        """
+        """
+        logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
+        csvOpts = json.loads(csvOpts, encoding='utf-8')
+        header = csvOpts["header"] if "header" in csvOpts else False
+        delimiter = csvOpts["delimiter"] if "delimiter" in csvOpts else ","
+        quote = csvOpts["quote"] if "quote" in csvOpts else "\""
+
         try:
             spark.read.option("inferSchema", "true") \
                       .option("header", header) \
                       .option("delimiter", delimiter) \
                       .option("quote", quote) \
-                      .csv(csvUrl) \
+                      .csv(csvUrl,) \
                       .write \
-                      .parquet(parquetUrl, 'overwrite')
+                      .parquet(parquetUrl, "overwrite")
             return csvUrl.split("/csv/")[-1]
         except Exception:
             traceback.print_exc()
             logger.error("Exception: {0}".format(sys.exc_info()))
             return False
     ''' + '''
-    print(convertCsvToParquet('{0}', '{1}', '{2}', '{3}', '\{4}'))
-    '''.format(csvUrl, parquetUrl, header, delimiter, quote)
+    print(convertCsvToParquet('{0}', '{1}', '{2}'))
+    '''.format(csvUrl, parquetUrl, csvOpts)
     return sparkCode
 
 
@@ -606,7 +613,7 @@ def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
                                   rootFolder="/tmp/users", filterJson={}, maxRowCount=1000):
     """
     return the running spark code which will get a specified uploaded table info from hdfs,
-    mode can be 'schema', 'data' and 'both'
+    mode can be "schema", "data" and "both"
     """
     rootUrl = "hdfs://{0}:{1}{2}/{3}".format(hdfsHost, port, rootFolder, userName)
     filterJson = json.dumps(filterJson, ensure_ascii=True)
@@ -623,7 +630,7 @@ def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
         dframe1 = spark.read.csv(csvUrl, header=True, inferSchema=True).limit(maxRowCount)
 
         outputDict = {}
-        if mode == 'all' or mode == 'schema':
+        if mode == "all" or mode == "schema":
             parquetUrl = "{0}/parquet/{1}".format(rootUrl, tableName)
             parquetFileds = spark.read.parquet(parquetUrl).schema.fields
 
@@ -632,24 +639,24 @@ def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
             if len(csvFields) != len(parquetFileds):
                 logger.error("csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
                 return False
-            outputDict['schema'] = []
+            outputDict["schema"] = []
             for i in range(len(csvFields)):
                 logger.debug("i:{0}, item: {1}".format(i, csvFields[i]))
                 logger.debug("field: {0}, mappedfield: {1}, type: {2}".format(
                     csvFields[i].name, parquetFileds[i].name, csvFields[i].dataType))
-                outputDict['schema'].append({"field": csvFields[i].name,
+                outputDict["schema"].append({"field": csvFields[i].name,
                     "mappedfield": parquetFileds[i].name, "type": str(csvFields[i].dataType)})
 
-        if mode == 'all' or mode == 'data':
-            outputDict['data'] = []
+        if mode == "all" or mode == "data":
+            outputDict["data"] = []
 
             logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
-            filterJson = json.loads(filterJson, encoding='utf-8')
+            filterJson = json.loads(filterJson, encoding="utf-8")
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
             for rowItem in dframe1.collect():
                 logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
-                outputDict['data'].append(rowItem.asDict())
+                outputDict["data"].append(rowItem.asDict())
         logger.debug("outputDict: {0}".format(outputDict))
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     ''' + '''

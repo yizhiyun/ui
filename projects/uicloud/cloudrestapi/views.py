@@ -412,17 +412,13 @@ def uploadCsv(request):
     file = request.FILES.get('file')
     if request.method == 'POST':
         # pre-process. If csv, save it into csv files for each worksheet.
-        csvFiles = preProUploadFile(file)
+        csvFiles = preUploadFile(file, jsonData)
         if not csvFiles:
             return JsonResponse({'status': 'false', 'reason': 'filetype is wrong'})
         nnPort = jsonData['nnport'] if 'nnport' in jsonData else "50070"
         hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData else "spark-master0"
         username = jsonData['username'] if 'username' in jsonData else "myfolder"
         rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "/tmp/users"
-        header = jsonData['header'] if 'header' in jsonData else 'false'
-        # maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData else 10000
-        delimiter = jsonData['delimiter'] if 'delimiter' in jsonData else ','
-        quote = jsonData['quote'] if 'quote' in jsonData else '"'
         port = jsonData['port'] if 'port' in jsonData else '9000'
 
         fReslist = []
