@@ -61,6 +61,10 @@ This document describe return all database of a palt.
     }
 }
 ```
+* it will response as follows if con't connect db
+> {"status": "failed", "reason": "can't connect db"}
+* it will response as follows if search failed
+> {"status": "failed", "reason": "Please see the detailed logs."}
 
 
 
@@ -95,6 +99,10 @@ This document describe return The table below the specific database.
     ]
 }
 ```
+* it will response as follows if con't connect db
+> {"status": "failed", "reason": "can't connect db"}
+* it will response as follows if search failed
+> {"status": "failed", "reason": "Please see the detailed logs."}
 
 
 -----------
@@ -136,6 +144,10 @@ This document describe return All fields under a table.
     ]
 }
 ```
+* it will response as follows if con't connect db
+> {"status": "failed", "reason": "can't connect db"}
+* it will response as follows if search failed
+> {"status": "failed", "reason": "Please see the detailed logs."}
 
 
 
@@ -160,6 +172,7 @@ This document describe return All info under a table.
 ### 6. Support Format: JSON
 ### 7. Response Data:
 * it will response as follows if successful
+```
 {
     "status": "ok",
     "data": [
@@ -174,3 +187,8 @@ This document describe return All info under a table.
         ...
     ]
 }
+```
+* it will response as follows if con't connect db
+> {"status": "failed", "reason": "can't connect db"}
+* it will response as follows if search failed
+> {"status": "failed", "reason": "Please see the detailed logs."}

@@ -1,9 +1,7 @@
-# from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view
 from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
-# from .DataModels.PaltInfoModel import PaltInfoModel
 from .gxmHandleClass.Singleton import Singleton
 import json
 import decimal
@@ -64,10 +62,7 @@ def connectDataBaseHandle(request):
         return JsonResponse({'status': 'success'})
 
     else:
-        context = {
-            'status': 'failed',
-            'reason': "can't connect db"
-        }
+        context = {'status': 'failed', 'reason': "can't connect db"}
         return JsonResponse(context)
 
 
@@ -82,7 +77,10 @@ def showAllDbOfPalt(request):
     }
     for md5, dbObj in Singleton().dataPaltForm[username].items():
         if not dbObj.con:
-            dbObj.connectDB()
+            isConnect = dbObj.connectDB()
+            if not isConnect:
+                context = {'status': 'failed', 'reason': "can't connect db"}
+                return JsonResponse(context)
         dbObj.fetchAllDabaBase()
         context['results'][md5] = {
             'dbtype': dbObj.dbPaltName,
@@ -101,8 +99,15 @@ def showAllTablesOfaDataBase(request):
     dbObjIndex = request.POST['dbObjIndex']
     dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
     if not dataBaseObj.con:
-        dataBaseObj.connectDB()
+        isConnect = dataBaseObj.connectDB()
+        if not isConnect:
+            context = {'status': 'failed', 'reason': "can't connect db"}
+            return JsonResponse(context)
+
     data = dataBaseObj.fetchTableBydataBaseName(request.POST["theDBName"])
+    if data == 'failed':
+        return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
+
     context = {
         "status": "ok",
         "data": data
@@ -117,8 +122,15 @@ def showTableFiledsOFaTable(request):
     dbObjIndex = request.POST['dbObjIndex']
     dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
     if not dataBaseObj.con:
-        dataBaseObj.connectDB()
+        isConnect = dataBaseObj.connectDB()
+        if not isConnect:
+            context = {'status': 'failed', 'reason': "can't connect db"}
+            return JsonResponse(context)
+
     data = dataBaseObj.fetchFiledsOfATable(request.POST["tableName"])
+    if data == 'failed':
+        return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
+
     context = {
         "status": "success",
         "results": {"schema": data}
@@ -135,8 +147,15 @@ def showTableDetailDataOfFileds(request):
     tbName = dbInfoArr[2]
     dataBaseObj = Singleton().dataPaltForm[username][dbindex]
     if not dataBaseObj.con:
-        dataBaseObj.connectDB()
+        isConnect = dataBaseObj.connectDB()
+        if not isConnect:
+            context = {'status': 'failed', 'reason': "can't connect db"}
+            return JsonResponse(context)
+
     data = dataBaseObj.fetchAllDataOfaTableByFields(tbName)
+    if data == 'failed':
+        return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
+
     return HttpResponse(json.dumps({
         "status": "ok",
         "data": data
@@ -152,7 +171,15 @@ def filterTable(request, modeName):
     username = jsonData['username'] if 'username' in jsonData else 'yzy'
     dataBaseObj = Singleton().dataPaltForm[username][Singleton().currentDBObjIndex]
     if not dataBaseObj.con:
-        dataBaseObj.connectDB()
+        isConnect = dataBaseObj.connectDB()
+        if not isConnect:
+            context = {'status': 'failed', 'reason': "can't connect db"}
+            return JsonResponse(context)
+
+    data = dataBaseObj.filterTableData(jsonData)
+    if data == 'failed':
+        return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
+
     if request.method == 'POST':
         modeList = ['all', 'data', 'schema']
         if modeName not in modeList:
@@ -168,7 +195,7 @@ def filterTable(request, modeName):
         if modeName == 'all':
             results = {
                 "schema": schema,
-                "data": dataBaseObj.filterTableData(jsonData)
+                "data": data
             }
         elif modeName == 'schema':
             results = {
@@ -176,7 +203,7 @@ def filterTable(request, modeName):
             }
         elif modeName == 'data':
             results = {
-                "data": dataBaseObj.filterTableData(jsonData)
+                "data": data
             }
 
         context = {

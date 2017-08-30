@@ -1,8 +1,13 @@
 import MySQLdb
-import logging
+import sys
 import cx_Oracle
 import pymssql
-logger = logging.getLogger(__name__)
+import logging
+
+
+# Get an instance of a logger
+logger = logging.getLogger("uicloud.dataCollection.ConnectDataBase")
+logger.setLevel(logging.DEBUG)
 
 
 class ConnectDataBase():
@@ -54,43 +59,31 @@ class ConnectDataBase():
 
     def fetchAllDabaBase(self):
         if self.dbPaltName == "mysql":
-            if self.con:
-                self.con.query("show databases")
-                rs = self.con.store_result()
-                result = rs.fetch_row(0)
-                self.dataBasesRs = []
-
-                for obj in result:
-                    self.dataBasesRs.append(obj[0])
-
-                return True
-            return False
+            self.con.query("show databases")
+            rs = self.con.store_result()
+            result = rs.fetch_row(0)
+            self.dataBasesRs = []
+            for obj in result:
+                self.dataBasesRs.append(obj[0])
 
         elif self.dbPaltName == 'oracle':
-            if self.con:
-                self.dataBasesRs = []
-                self.dataBasesRs.append(self.dbUserName)
-                return True
-            return False
+            self.dataBasesRs = []
+            self.dataBasesRs.append(self.dbUserName)
 
         elif self.dbPaltName == 'sqlserver':
-            if self.con:
-                cursor = self.con.cursor()
-                cursor.execute("select Name from Master..SysDatabases")
-                rs = cursor.fetchall()
-                self.dataBasesRs = []
+            cursor = self.con.cursor()
+            cursor.execute("select Name from Master..SysDatabases")
+            rs = cursor.fetchall()
+            self.dataBasesRs = []
 
-                for obj in rs:
-                    self.dataBasesRs.append(obj[0])
-
-                return True
-            return False
+            for obj in rs:
+                self.dataBasesRs.append(obj[0])
 
     # 获取某个数据库下所有的表格
 
     def fetchTableBydataBaseName(self, dataBaseName=None):
         if self.dbPaltName == "mysql":
-            if(self.con and dataBaseName):
+            try:
                 if self.tablesOfDataBase.__contains__(dataBaseName):
                     self.con.select_db(dataBaseName)
                     return self.tablesOfDataBase[dataBaseName]
@@ -104,8 +97,12 @@ class ConnectDataBase():
                 self.tablesOfDataBase[dataBaseName] = tables
                 return self.tablesOfDataBase[dataBaseName]
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
         elif self.dbPaltName == 'oracle':
-            if self.con:
+            try:
                 cursor = self.con.cursor()
                 rs = cursor.execute('select Table_name from User_tables').fetchall()
                 tables = []
@@ -114,8 +111,12 @@ class ConnectDataBase():
                 self.tablesOfDataBase[self.dbSid] = tables
                 return self.tablesOfDataBase[self.dbSid]
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
         elif self.dbPaltName == 'sqlserver':
-            if self.con:
+            try:
                 self.con = pymssql.connect(
                     host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd, database=dataBaseName)
                 cursor = self.con.cursor()
@@ -127,11 +128,15 @@ class ConnectDataBase():
                 self.tablesOfDataBase[dataBaseName] = tables
                 return self.tablesOfDataBase[dataBaseName]
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
     # 获取某个表格下面的所有字段
 
     def fetchFiledsOfATable(self, tableName):
         if self.dbPaltName == "mysql":
-            if self.con:
+            try:
                 cur = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
                 cur.execute("show columns from " + tableName)
                 datas = cur.fetchall()
@@ -142,11 +147,14 @@ class ConnectDataBase():
                     for key, value in data.items():
                         dic[key.lower()] = value
                     rows.append(dic)
-
                 return rows
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
         elif self.dbPaltName == 'oracle':
-            if self.con:
+            try:
                 cursor = self.con.cursor()
                 rs = cursor.execute(
                     "select column_name,data_type From all_tab_columns where table_name='{0}'".format(
@@ -159,8 +167,12 @@ class ConnectDataBase():
                     })
                 return rows
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
         elif self.dbPaltName == 'sqlserver':
-            if self.con:
+            try:
                 cursor = self.con.cursor()
                 cursor.execute('sp_columns ' + tableName)
                 rs = cursor.fetchall()
@@ -172,18 +184,26 @@ class ConnectDataBase():
                     })
                 return rows
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
     # 获取某个表格的所有数据, filedsArr
 
     def fetchAllDataOfaTableByFields(self, tableName):
         if self.dbPaltName == "mysql":
-            if(self.con):
+            try:
                 cur = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
                 cur.execute("select * from " + tableName)
                 rows = cur.fetchall()
                 return rows
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
         elif self.dbPaltName == 'oracle':
-            if self.con:
+            try:
                 cursor = self.con.cursor()
                 cursor.execute('select * from ' + tableName)
                 dataList = cursor.fetchall()
@@ -197,8 +217,12 @@ class ConnectDataBase():
                     rows.append(dic)
                 return rows
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
         elif self.dbPaltName == 'sqlserver':
-            if self.con:
+            try:
                 cursor = self.con.cursor()
                 cursor.execute('select * from ' + tableName)
                 dataList = cursor.fetchall()
@@ -213,6 +237,10 @@ class ConnectDataBase():
                         dic[colList[i][3]] = data[i]
                     rows.append(dic)
                 return rows
+
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
 
     # 根据条件查询. 返回表格数据
 
@@ -278,7 +306,7 @@ class ConnectDataBase():
                 sql += "and {0} not like '%{1}' ".format(condIt['columnName'], condIt["value"])
 
         if self.dbPaltName == "mysql":
-            if self.con and jsonData['database']:
+            try:
                 self.con.select_db(jsonData['database'])
                 cursor = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
                 sql += mysqlstr
@@ -286,8 +314,12 @@ class ConnectDataBase():
                 rows = cursor.fetchall()
                 return rows
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
         elif self.dbPaltName == 'sqlserver':
-            if self.con:
+            try:
                 self.con = pymssql.connect(
                     host=self.dbLocation, user=self.dbUserName, password=self.dbUserPwd, database=jsonData['database'])
                 cursor = self.con.cursor()
@@ -306,8 +338,12 @@ class ConnectDataBase():
                     rows.append(dic)
                 return rows
 
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
         elif self.dbPaltName == 'oracle':
-            if self.con:
+            try:
                 cursor = self.con.cursor()
                 sql += oraclestr
                 cursor.execute(sql)
@@ -321,3 +357,7 @@ class ConnectDataBase():
                         dic[colList[i][0]] = data[i]
                     rows.append(dic)
                 return rows
+
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'

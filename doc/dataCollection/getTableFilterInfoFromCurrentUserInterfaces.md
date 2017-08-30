@@ -136,10 +136,14 @@ This document describe how to get users' tables filter information.
     }
 }
 ```
-### 8. if failed, it will response as follows
+* it will response as follows if failed
 ```
 {
     "status": "failed",
     "reason": "the mode must one of ['all', 'data', 'schema']"
 }
 ```
+* it will response as follows if con't connect db
+> {"status": "failed", "reason": "can't connect db"}
+* it will response as follows if search failed
+> {"status": "failed", "reason": "Please see the detailed logs."}
