@@ -4,7 +4,7 @@ import os
 import csv
 import sys
 import logging
-
+import codecs
 
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.cloudrestapi.upload")
@@ -29,7 +29,7 @@ def preUploadFile(fileStream, csvOpts={}):
         for wsName in all_worksheets:
             worksheet = workbook.sheet_by_name(wsName)
             csvFileName = "{0}/{1}".format(tmpFolder, wsName)
-            with open(csvFileName, "wb") as csvFile:
+            with open(csvFileName, "w") as csvFile:
                 csvWriter = csv.writer(csvFile, delimiter=",", doublequote=True, quotechar="\"",
                                        escapechar="\\", lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL,
                                        skipinitialspace=True, strict=True)
@@ -48,14 +48,15 @@ def preUploadFile(fileStream, csvOpts={}):
         skipinitialspace = csvOpts["skipinitialspace"] if "skipinitialspace" in csvOpts.keys() else True
         strict = csvOpts["strict"] if "strict" in csvOpts.keys() else True
 
-        with open(csvFileName, "wb") as csvFile:
-            rcsv = csv.reader(fileStream, delimiter=delimiter, doublequote=doublequote, quotechar=quotechar,
-                              escapechar=escapechar, lineterminator=lineterminator,
+        with open(csvFileName, "w") as csvFile:
+            rcsv = csv.reader(codecs.iterdecode(fileStream, 'utf-8'), delimiter=delimiter, doublequote=doublequote,
+                              quotechar=quotechar, escapechar=escapechar, lineterminator=lineterminator,
                               skipinitialspace=skipinitialspace, strict=strict)
             wcsv = csv.writer(csvFile, delimiter=",", doublequote=True, quotechar="\"", escapechar="\\",
                               lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL, skipinitialspace=True,
                               strict=True)
-            wcsv.writerows(rcsv)
+            for row in rcsv:
+                wcsv.writerow(row)
             fileList.append(csvFileName)
     else:
         logger.error("At present, only 'csv','xls' and 'xlsx' can be supported.")

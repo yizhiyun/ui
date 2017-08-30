@@ -17,7 +17,7 @@ The RESTful API Details of Verify those table relationships
             "database": <databaseName>, # It's the current user name if sourcetype is hdfs
             "tableName": <tableName>,
             "source": <sourceString>,   # Optional. DB source string. If sourcetype is db, it's required. Or else it's unnecessary.
-            "sourcetype": <sourceType>  # Optional. "db" or "hdfs". By default, it's db if this item doesn't exist.
+            "sourcetype": <sourceType>  # Optional. "db","hdfs" or "tmptables". By default, it's db if this item doesn't exist.
             "columns": {
                 <columnName1>: {
                     "type": <columnType>,

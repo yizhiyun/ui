@@ -574,27 +574,32 @@ def convertCsvToParquetSparkCode(uploadedCsvUri, csvOpts={}, hdfsHost="spark-mas
     For example, "/users/myfolder/csv/test/test"
     """
 
-    csvUrl = "hdfs://{0}:{1}/{2}".format(hdfsHost, port, uploadedCsvUri)
+    csvUrl = "hdfs://{0}:{1}{2}".format(hdfsHost, port, uploadedCsvUri)
     rootFolder, filePath = uploadedCsvUri.split("/csv/")
-    parquetUrl = "hdfs://{0}:{1}/{2}/parquet/{3}".format(hdfsHost, port, rootFolder, filePath)
+    parquetUrl = "hdfs://{0}:{1}{2}/parquet/{3}".format(hdfsHost, port, rootFolder, filePath)
     logger.debug("csvUrl: {0}, parquetUrl: {1}".format(csvUrl, parquetUrl))
+    csvOpts = json.dumps(csvOpts, ensure_ascii=True)
+    logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
+
     sparkCode = setupLoggingSparkCode() + '''
     import traceback
-    def convertCsvToParquet(csvUrl, parquetUrl, csvOpts="{}"):
+    import json
+    def convertCsvToParquet(csvUrl, parquetUrl, csvOpts={}):
         """
         """
+        # logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
+        # csvOpts = json.loads(csvOpts, encoding='utf-8')
         logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
-        csvOpts = json.loads(csvOpts, encoding='utf-8')
         header = csvOpts["header"] if "header" in csvOpts else False
         delimiter = csvOpts["delimiter"] if "delimiter" in csvOpts else ","
-        quote = csvOpts["quote"] if "quote" in csvOpts else "\""
+        quote = csvOpts["quote"] if "quote" in csvOpts else "\\""
 
         try:
             spark.read.option("inferSchema", "true") \
                       .option("header", header) \
-                      .option("delimiter", delimiter) \
+                      .option("sep", delimiter) \
                       .option("quote", quote) \
-                      .csv(csvUrl,) \
+                      .csv(csvUrl) \
                       .write \
                       .parquet(parquetUrl, "overwrite")
             return csvUrl.split("/csv/")[-1]
@@ -603,7 +608,7 @@ def convertCsvToParquetSparkCode(uploadedCsvUri, csvOpts={}, hdfsHost="spark-mas
             logger.error("Exception: {0}".format(sys.exc_info()))
             return False
     ''' + '''
-    print(convertCsvToParquet('{0}', '{1}', '{2}'))
+    print(convertCsvToParquet('{0}', '{1}', {2}))
     '''.format(csvUrl, parquetUrl, csvOpts)
     return sparkCode
 

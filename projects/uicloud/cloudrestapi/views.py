@@ -15,7 +15,7 @@ logger.setLevel(logging.DEBUG)
 
 @api_view(['POST'])
 def checkTableMapping(request):
-    '''
+    """
     POST:
     Here is request data schema.
     {
@@ -61,7 +61,7 @@ def checkTableMapping(request):
 
         "conditions": [
             {
-                "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
+                "type":"equal", # type include "equal","greate than", "less than", "like" and so on.
                 "columnName": "<databaseName>.<tableName>.<columnName>",
                 "value": <value>
             },
@@ -72,13 +72,13 @@ def checkTableMapping(request):
             ...
         ]
     }
-    '''
+    """
     logger.info("type(request.data): {0}, \n request.data: {1}".format(
         type(request.data), request.data))
 
     jsonData = request.data
 
-    if request.method == 'POST':
+    if request.method == "POST":
 
         outputColumnsDict = getOutputColumns(jsonData)
 
@@ -95,7 +95,7 @@ def checkTableMapping(request):
 
 @api_view(['POST'])
 def generateNewTable(request):
-    '''
+    """
     POST:
     Here is request data schema.
     {
@@ -141,7 +141,7 @@ def generateNewTable(request):
 
         "conditions": [
             {
-                "type":"equal", # type include 'equal','greate than', 'less than', 'like' and so on.
+                "type":"equal", # type include "equal","greate than", "less than", "like" and so on.
                 "columnName": "<databaseName>.<tableName>.<columnName>",
                 "value": <value>
             },
@@ -162,13 +162,13 @@ def generateNewTable(request):
             ...
         }
     }
-    '''
+    """
 
     jsonData = request.data
 
     logger.debug("type(request.data): {0}, \n request.data: {1}".format(
         type(jsonData), jsonData))
-    if request.method == 'POST':
+    if request.method == "POST":
 
         # response all valid columns
         sparkCode = getGenNewTableSparkCode(jsonData)
@@ -185,7 +185,7 @@ def generateNewTable(request):
             failObj = {"status": "failed",
                        "reason": "Please see the detailed logs."}
             return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok" or output["data"]['text/plain'] != "True":
+        elif output["status"] != "ok" or output["data"]["text/plain"] != "True":
             failObj = {"status": "failed",
                        "reason": output}
             return JsonResponse(failObj, status=400)
@@ -196,11 +196,11 @@ def generateNewTable(request):
 
 @api_view(['GET'])
 def getAllTablesFromUser(request):
-    '''
+    """
     GET:
     Get all table from the current user.
-    '''
-    if request.method == 'GET':
+    """
+    if request.method == "GET":
         userPath = "/users/{}".format("myfolder")
         output = listDirectoryFromHdfs(path=userPath)
         if not output["status"]:
@@ -217,16 +217,16 @@ def getAllTablesFromUser(request):
 
 @api_view(['POST'])
 def getTableViaSpark(request, tableName, modeName):
-    '''
+    """
     GET:
     Get all table from the current user.
-    '''
+    """
 
     jsonData = request.data
     logger.info("request.data: {0}, tableName: {1}".format(jsonData, tableName))
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        modeList = ['all', 'data', 'schema']
+        modeList = ["all", "data", "schema"]
         if modeName not in modeList:
             failObj = {"status": "failed",
                        "reason": "the mode must one of {0}".format(modeList)}
@@ -257,15 +257,15 @@ def getTableViaSpark(request, tableName, modeName):
 
 @api_view(['POST'])
 def getAllTablesFromCustom(request):
-    '''
+    """
     GET:
     Get all table from the custom user.
-    '''
+    """
 
-    if request.method == 'POST':
+    if request.method == "POST":
         jsonData = request.data
         output = listDirectoryFromHdfs(
-            path=jsonData['rootfolder'], hdfsHost=jsonData['host'], port=jsonData['port'])
+            path=jsonData["rootfolder"], hdfsHost=jsonData["host"], port=jsonData["port"])
         if not output["status"]:
             if "RemoteException" in output["results"].keys() and \
                "message" in output["results"]["RemoteException"].keys():
@@ -280,29 +280,29 @@ def getAllTablesFromCustom(request):
 
 @api_view(['POST'])
 def getTableViaSparkCustom(request, tableName, modeName):
-    '''
+    """
     GET:
     Get all table from the custom user.
-    '''
+    """
 
     jsonData = request.data
     logger.info("request.data: {0}, tableName: {1}".format(
         jsonData, tableName))
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        modeList = ['all', 'data', 'schema']
+        modeList = ["all", "data", "schema"]
         if modeName not in modeList:
             failObj = {"status": "failed",
                        "reason": "the mode must one of {0}".format(modeList)}
             return JsonResponse(failObj, status=400)
         # response all valid columns
         sparkCode = getTableInfoSparkCode(
-            jsonData['subfolder'],
+            jsonData["subfolder"],
             tableName,
             mode=modeName,
-            hdfsHost=jsonData['host'],
-            port=jsonData['port'],
-            rootFolder=jsonData['rootfolder'],
+            hdfsHost=jsonData["host"],
+            port=jsonData["port"],
+            rootFolder=jsonData["rootfolder"],
             filterJson=jsonData
         )
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
@@ -327,14 +327,14 @@ def getTableViaSparkCustom(request, tableName, modeName):
 
 @api_view(['POST'])
 def getBasicStats(request):
-    '''
+    """
     GET:
     Get basic Statistics information.
-    '''
+    """
 
     jsonData = request.data
     logger.debug("request.data: {0}".format(jsonData))
-    if request.method == 'POST':
+    if request.method == "POST":
 
         # check the request data
         if ("sourceType" not in jsonData or "opTypes" not in jsonData):
@@ -408,28 +408,28 @@ def uploadCsv(request):
     upload csv into hdfs with the paired files, csv and parquet.
     """
 
-    jsonData = request.POST
-    file = request.FILES.get('file')
-    if request.method == 'POST':
+    jsonData = request.POST.dict()
+    file = request.FILES.get("file")
+    if request.method == "POST":
         # pre-process. If csv, save it into csv files for each worksheet.
         csvFiles = preUploadFile(file, jsonData)
         if not csvFiles:
-            return JsonResponse({'status': 'false', 'reason': 'filetype is wrong'})
-        nnPort = jsonData['nnport'] if 'nnport' in jsonData else "50070"
-        hdfsHost = jsonData['hdfshost'] if 'hdfshost' in jsonData else "spark-master0"
-        username = jsonData['username'] if 'username' in jsonData else "myfolder"
-        rootFolder = jsonData['rootfolder'] if 'rootfolder' in jsonData else "/tmp/users"
-        port = jsonData['port'] if 'port' in jsonData else '9000'
+            return JsonResponse({"status": "failed", "reason": "Only 'csv','xls' and 'xlsx' are supported. "})
+        nnPort = jsonData["nnport"] if "nnport" in jsonData else "50070"
+        hdfsHost = jsonData["hdfshost"] if "hdfshost" in jsonData else "spark-master0"
+        username = jsonData["username"] if "username" in jsonData else "myfolder"
+        rootFolder = jsonData["rootfolder"] if "rootfolder" in jsonData else "/tmp/users"
+        port = jsonData["port"] if "port" in jsonData else "9000"
 
         fReslist = []
         for fpathItem in csvFiles:
             logger.debug("fpathItem:{0}".format(fpathItem))
             uploadedCsvUri = uploadToHdfs(fpathItem, hdfsHost, nnPort, rootFolder, username)
             if not uploadedCsvUri:
-                return JsonResponse({"status": "false", 'reason': 'see the logs'})
-            logger.debug("uploadedCsvUri:{0}, delimiter:{1}, quote:{2}, header:{3}, hdfsHost:{4}, port:{5}"
-                         .format(uploadedCsvUri, delimiter, quote, header, hdfsHost, port))
-            sparkCode = convertCsvToParquetSparkCode(uploadedCsvUri, delimiter, quote, header, hdfsHost, port)
+                return JsonResponse({"status": "false", "reason": "see the logs"})
+            logger.debug("uploadedCsvUri:{0}, hdfsHost:{1}, port:{2}"
+                         .format(uploadedCsvUri, hdfsHost, port))
+            sparkCode = convertCsvToParquetSparkCode(uploadedCsvUri, jsonData, hdfsHost, port)
 
             output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
             if not output:
@@ -451,11 +451,11 @@ def uploadCsv(request):
 
 @api_view(['GET'])
 def getAllTempPairedTablesFromUser(request):
-    '''
+    """
     GET:
     Get all Temporary paired tables(csv and parquet) from the current user.
-    '''
-    if request.method == 'GET':
+    """
+    if request.method == "GET":
         rootFolder = "/tmp/users"
         username = "myfolder"
         tmpCsvPath = "{0}/{1}/csv".format(rootFolder, username)
@@ -492,17 +492,17 @@ def getAllTempPairedTablesFromUser(request):
 
 @api_view(['POST'])
 def getSpecUploadedTableViaSpark(request, fileName, tableName, modeName):
-    '''
+    """
     GET:
     Get specified table which is generated from the uploaded csv file.
-    '''
+    """
 
     jsonData = request.data
     logger.debug("request.data: {0}, fileName: {1}, tableName: {2}".format(
         jsonData, fileName, tableName))
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        modeList = ['all', 'data', 'schema']
+        modeList = ["all", "data", "schema"]
         if modeName not in modeList:
             failObj = {"status": "failed",
                        "reason": "The mode must one of {0}".format(modeList)}
