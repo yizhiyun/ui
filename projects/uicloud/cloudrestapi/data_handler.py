@@ -584,6 +584,9 @@ def convertCsvToParquetSparkCode(uploadedCsvUri, csvOpts={}, hdfsHost="spark-mas
     sparkCode = setupLoggingSparkCode() + '''
     import traceback
     import json
+    import sys
+    import re
+
     def convertCsvToParquet(csvUrl, parquetUrl, csvOpts={}):
         """
         """
@@ -595,17 +598,21 @@ def convertCsvToParquetSparkCode(uploadedCsvUri, csvOpts={}, hdfsHost="spark-mas
         quote = csvOpts["quote"] if "quote" in csvOpts else "\\""
 
         try:
-            spark.read.option("inferSchema", "true") \
+            csvDf = spark.read.option("inferSchema", "true") \
                       .option("header", header) \
                       .option("sep", delimiter) \
                       .option("quote", quote) \
                       .csv(csvUrl) \
-                      .write \
-                      .parquet(parquetUrl, "overwrite")
+
+            for i in range(len(csvDf.columns)):
+                if re.match("[a-zA-Z0-9_-]+", csvDf.columns[i]) is None:
+                    csvDf = csvDf.withColumnRenamed(csvDf.columns[i], "col_{0}".format(i))
+            csvDf.write.parquet(parquetUrl, "overwrite")
+
             return csvUrl.split("/csv/")[-1]
         except Exception:
             traceback.print_exc()
-            logger.error("Exception: {0}".format(sys.exc_info()))
+            logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
             return False
     ''' + '''
     print(convertCsvToParquet('{0}', '{1}', {2}))

@@ -411,25 +411,30 @@ def uploadCsv(request):
     jsonData = request.POST.dict()
     file = request.FILES.get("file")
     if request.method == "POST":
-        # pre-process. If csv, save it into csv files for each worksheet.
-        csvFiles = preUploadFile(file, jsonData)
-        if not csvFiles:
-            return JsonResponse({"status": "failed", "reason": "Only 'csv','xls' and 'xlsx' are supported. "})
+
         nnPort = jsonData["nnport"] if "nnport" in jsonData else "50070"
         hdfsHost = jsonData["hdfshost"] if "hdfshost" in jsonData else "spark-master0"
-        username = jsonData["username"] if "username" in jsonData else "myfolder"
+        userName = jsonData["username"] if "username" in jsonData else "myfolder"
         rootFolder = jsonData["rootfolder"] if "rootfolder" in jsonData else "/tmp/users"
         port = jsonData["port"] if "port" in jsonData else "9000"
 
+        # pre-process. If csv, save it into csv files for each worksheet.
+        fileDict = preUploadFile(file, userName, jsonData)
+        if not fileDict["tables"]:
+            return JsonResponse({"status": "failed", "reason": "Only 'csv','xls' and 'xlsx' are supported."})
+
+        # upload csv to hdfs server
+        uploadedCsvList = []
+        logger.debug("fileDict:{0}".format(fileDict))
+        uploadedCsvList = uploadToHdfs(fileDict, hdfsHost, nnPort, rootFolder, userName)
+        if not uploadedCsvList:
+            return JsonResponse({"status": "failed", "reason": "Please see the logs for details."})
+
+        # process the csv to generate the related parquet table in use.
         fReslist = []
-        for fpathItem in csvFiles:
-            logger.debug("fpathItem:{0}".format(fpathItem))
-            uploadedCsvUri = uploadToHdfs(fpathItem, hdfsHost, nnPort, rootFolder, username)
-            if not uploadedCsvUri:
-                return JsonResponse({"status": "false", "reason": "see the logs"})
-            logger.debug("uploadedCsvUri:{0}, hdfsHost:{1}, port:{2}"
-                         .format(uploadedCsvUri, hdfsHost, port))
-            sparkCode = convertCsvToParquetSparkCode(uploadedCsvUri, jsonData, hdfsHost, port)
+        for uploaduri in uploadedCsvList:
+            logger.debug("uploaduri:{0}, hdfsHost:{1}, port:{2}".format(uploaduri, hdfsHost, port))
+            sparkCode = convertCsvToParquetSparkCode(uploaduri, jsonData, hdfsHost, port)
 
             output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
             if not output:
@@ -443,7 +448,10 @@ def uploadCsv(request):
             else:
                 logger.debug("output: {}".format(output))
                 data = output["data"]["text/plain"]
-
+                if data.startswith("False"):
+                    failObj = {"status": "failed",
+                               "reason": data.replace("False", "", 1)}
+                    return JsonResponse(failObj, status=400)
                 fReslist.append(data)
         sucessObj = {"status": "success", "results": fReslist}
         return JsonResponse(sucessObj)
