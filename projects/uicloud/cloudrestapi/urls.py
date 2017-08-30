@@ -44,13 +44,18 @@ urlpatterns = [
         name='getHypothesisTest'
     ),
     url(
-        r'^dataCollection/cloudapi/v1/upload$',
-        views.upload,
-        name='upload'
+        r'^cloudapi/v1/uploadcsv$',
+        views.uploadCsv,
+        name='uploadCsv'
     ),
     url(
-        r'^dataCollection/cloudapi/v1/getPanel/(?P<modeName>\w+)$',
-        views.getPanel,
-        name='getPanel'
+        r'^cloudapi/v1/uploadedcsvs$',
+        views.getAllTempPairedTablesFromUser,
+        name='getAllTempPairedTablesFromUser'
+    ),
+    url(
+        r'^cloudapi/v1/uploadedcsv/(?P<fileName>\w+)/(?P<tableName>\w+)/(?P<modeName>\w+)$',
+        views.getSpecUploadedTableViaSpark,
+        name='getSpecUploadedTableViaSpark'
     ),
 ]

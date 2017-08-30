@@ -501,7 +501,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
 
 def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-master0",
-                          port="9000", rootFolder="users", filterJson={}, maxRowCount=10000):
+                          port="9000", rootFolder="users", filterJson={}, maxRowCount=1000):
     """
     return the running spark code which will get a specified table schema from hdfs,
     mode can be 'schema', 'data' and 'both'
@@ -512,7 +512,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
 
     sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + '''
-    def getTableInfo( url, mode, filterJson='{}', maxRowCount=10000):
+    def getTableInfo( url, mode, filterJson='{}', maxRowCount=1000):
         """
         get the specified table schema,
         note, the table format is parquet.
@@ -525,7 +525,6 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             for colItem in dframe1.schema.fields:
                 logger.debug("field: {0}, type: {1}".format( colItem.name, colItem.dataType))
                 outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
-        logger.debug("just a test")
         if mode == 'all' or mode == 'data':
             outputDict['data'] = []
 
@@ -545,9 +544,10 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     return sparkCode
 
 
-def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", fileType='DIRECTORY'):
+def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", fileTypeList=["DIRECTORY"]):
     """
     list a specified directory from HDFS using webHDFS.
+    fileType include "DIRECTORY", "FILE".
     """
 
     rootUrl = "http://{0}:{1}/webhdfs/v1".format(hdfsHost, port)
@@ -558,102 +558,102 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
     outputList = []
     if resp1.status_code < 300:
         for item in resp1.json()['FileStatuses']['FileStatus']:
-            if fileType == item['type']:
+            if item['type'] in fileTypeList:
                 outputList.append(item['pathSuffix'])
     else:
         logger.error("response Code:{0}, response Content:{1}".format(
             resp1.status_code, resp1.json()))
-        return False
+        return {"status": False, "results": resp1.json()}
 
-    return outputList
+    return {"status": True, "results": outputList}
 
 
-def csvToParquetSparkCode(fileName, delimiter, quote, hdfsHost="spark-master0", port="9000", rootFolder='tmp/users',
-                          username="myfolder", header='false'):
+def convertCsvToParquetSparkCode(uploadedCsvUri, delimiter, quote="\"", header='false',
+                                 hdfsHost="spark-master0", port="9000"):
     '''
-    把hadoop上面的csv文件转为parquet文件
+    uploadedCsvUri must have the format of <rootFolder>/csv/<parentFolder>/<fileName>.
+    For example, '/users/myfolder/csv/test/test'
     '''
 
-    hdfsUrl = "hdfs://{0}:{1}/{2}/{3}/csv/{4}".format(
-        hdfsHost, port, rootFolder, username, fileName)
-    parquetPathUrl = '/{0}/{1}/parquet/'.format(rootFolder, username)
-    sparkCode = '''
-    def test(hdfsUrl, parquetPathUrl, tableName, header, delimiter, quote):
-        if header == 'true':
-            df = spark.read.option("inferSchema", "true") \
-                           .option("header", "true") \
-                           .option("delimiter",delimiter) \
-                           .option("quote",quote) \
-                           .csv(hdfsUrl)
-        elif header == 'false':
-            df = spark.read.option("inferSchema", "true") \
-                           .option("delimiter",delimiter) \
-                           .option("quote",quote) \
-                           .csv(hdfsUrl)
-        df.write.parquet(parquetPathUrl + tableName, 'overwrite')
+    csvUrl = "hdfs://{0}:{1}/{2}".format(hdfsHost, port, uploadedCsvUri)
+    rootFolder, filePath = uploadedCsvUri.split("/csv/")
+    parquetUrl = 'hdfs://{0}:{1}/{2}/parquet/{3}'.format(hdfsHost, port, rootFolder, filePath)
+    logger.debug("csvUrl: {0}, parquetUrl: {1}".format(csvUrl, parquetUrl))
+    sparkCode = setupLoggingSparkCode() + '''
+    import traceback
+    def convertCsvToParquet(csvUrl, parquetUrl, header, delimiter, quote):
+        try:
+            spark.read.option("inferSchema", "true") \
+                      .option("header", header) \
+                      .option("delimiter", delimiter) \
+                      .option("quote", quote) \
+                      .csv(csvUrl) \
+                      .write \
+                      .parquet(parquetUrl, 'overwrite')
+            return csvUrl.split("/csv/")[-1]
+        except Exception:
+            traceback.print_exc()
+            logger.error("Exception: {0}".format(sys.exc_info()))
+            return False
     ''' + '''
-    print(test('{0}', '{1}', '{2}', '{3}', '{4}', '\{5}'))
-    '''.format(hdfsUrl, parquetPathUrl, os.path.splitext(fileName)[0], header, delimiter, quote)
+    print(convertCsvToParquet('{0}', '{1}', '{2}', '{3}', '\{4}'))
+    '''.format(csvUrl, parquetUrl, header, delimiter, quote)
     return sparkCode
 
 
-def getCsvParquetSparkCode(filename, mode, rootFolder='tmp/users', username='yzy', maxRowCount=10000, filterJson={}):
-    '''
-    获取hadoop上的指定名字的parquet dataframe， 如需要筛选，需要filterjson指定条件
-    '''
-
-    parquetPathUrl = '/{0}/{1}/parquet/{2}'.format(
-        rootFolder, username, os.path.splitext(filename)[0])
+def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
+                                  hdfsHost="spark-master0", port="9000",
+                                  rootFolder="/tmp/users", filterJson={}, maxRowCount=1000):
+    """
+    return the running spark code which will get a specified uploaded table info from hdfs,
+    mode can be 'schema', 'data' and 'both'
+    """
+    rootUrl = "hdfs://{0}:{1}{2}/{3}".format(hdfsHost, port, rootFolder, userName)
     filterJson = json.dumps(filterJson, ensure_ascii=True)
-    logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
+    logger.debug("filterJson: {0}, type: {1}".format(filterJson, type(filterJson)))
 
     sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + '''
-    import json
-    def getCsvParquet(parquetPathUrl, mode, maxRowCount=10000, filterJson='{}'):
-        dframe1 = spark.read.parquet(parquetPathUrl).limit(maxRowCount)
-        dframe1 = removeNullColumns(dframe1)
+    def getSpecUploadedTable( rootUrl, tableName, mode, filterJson='{}', maxRowCount=1000):
+        """
+        get the specified table schema,
+        tableName might be the format of <parentFolder>/<tableName>
+        """
+        csvUrl = "{0}/csv/{1}".format(rootUrl, tableName)
+        logger.debug("csvUrl:{0}".format(csvUrl))
+        dframe1 = spark.read.csv(csvUrl, header=True, inferSchema=True).limit(maxRowCount)
+
         outputDict = {}
         if mode == 'all' or mode == 'schema':
+            parquetUrl = "{0}/parquet/{1}".format(rootUrl, tableName)
+            parquetFileds = spark.read.parquet(parquetUrl).schema.fields
+
+            csvFields = dframe1.schema.fields
+            logger.debug("parquetFileds:{0}, csvFields:{1}".format(parquetFileds, csvFields))
+            if len(csvFields) != len(parquetFileds):
+                logger.error("csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
+                return False
             outputDict['schema'] = []
-            for colItem in dframe1.schema.fields:
-                outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
+            for i in range(len(csvFields)):
+                logger.debug("i:{0}, item: {1}".format(i, csvFields[i]))
+                logger.debug("field: {0}, mappedfield: {1}, type: {2}".format(
+                    csvFields[i].name, parquetFileds[i].name, csvFields[i].dataType))
+                outputDict['schema'].append({"field": csvFields[i].name,
+                    "mappedfield": parquetFileds[i].name, "type": str(csvFields[i].dataType)})
 
         if mode == 'all' or mode == 'data':
+            outputDict['data'] = []
+
             logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
             filterJson = json.loads(filterJson, encoding='utf-8')
-            dframe1 = filterDF(dframe1, filterJson)
-            dataList = removeNullLines(dframe1)
-
-            outputDict['data'] = []
-            for rowItem in dataList:
+            if len(filterJson) > 0:
+                dframe1 = filterDF(dframe1, filterJson)
+            for rowItem in dframe1.collect():
+                logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
                 outputDict['data'].append(rowItem.asDict())
-        return json.dumps(outputDict)
-
-    def removeNullColumns(dframe1):
-        count=0
-        nullIndexList = []
-        for i in dframe1.collect():
-            count = len(i)
-            for j in range(count-1, -1, -1):
-                if i[j] != None:
-                    nullIndexList.append(j)
-                    break
-        nullIndexList.sort()
-        for i in range(nullIndexList[0]+1, count):
-            dframe1 = dframe1.drop('_c{0}'.format(i))
-        return dframe1
-
-    def removeNullLines(dframe1):
-        dataList = []
-        for i in dframe1.collect():
-            count1 = 0
-            for j in range(len(i)):
-                if i[j] != None:
-                    count1 += 1
-            if count1 != 0:
-                dataList.append(i)
-        return dataList
+        logger.debug("outputDict: {0}".format(outputDict))
+        return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     ''' + '''
-    print(getCsvParquet('{0}', '{1}', {2}, '{3}'))
-    '''.format(parquetPathUrl, mode, maxRowCount, filterJson)
+    print(getSpecUploadedTable('{0}', '{1}', '{2}', '{3}', {4}))
+    '''.format(rootUrl, tableName, mode, filterJson, maxRowCount)
+
     return sparkCode
