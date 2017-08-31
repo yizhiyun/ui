@@ -111,7 +111,6 @@ Array.prototype.change_data_for = function(data_all){
 
 
 function data_handle(drag_sortable){
-			
 				var  data = {};
 				
 
@@ -123,7 +122,7 @@ function data_handle(drag_sortable){
 
 
 
-				// console.log(row_data_change_de,row_data_change_me,col_data_change_de,col_data_change_me)
+				
 				// 当前操作表的 数据
 				var current_data = _cube_all_data[current_cube_name];
 				
@@ -247,23 +246,23 @@ function data_handle(drag_sortable){
 
 			 			//.........
 
-			 		// if(row_if_col == "column" && row_col_type == "dimensionality"){
+			 		if(row_if_col == "column" && row_col_type == "dimensionality"){
 
-			 		// 	var save_temp = [];
+			 			var save_temp = [];
 			 		
-			 		// 	for(var i = 0; i < row_if_me.length;i++){
-			 		// 		var for_temp =[];
-			 		// 		var temp = row_if_me[i];
-			 		// 		for(var j = 0; j < _cube_all_data[current_cube_name]["data"].length;j++){
-			 		// 			var temp_two = _cube_all_data[current_cube_name]["data"][j];
-			 		// 			var bj = temp_two[temp];
-			 		// 			for_temp.push(bj);
-			 		// 		}
-			 		// 		save_temp.push(for_temp);
-			 		// 	}
+			 			for(var i = 0; i < row_if_me.length;i++){
+			 				var for_temp =[];
+			 				var temp = row_if_me[i];
+			 				for(var j = 0; j < _cube_all_data[current_cube_name]["data"].length;j++){
+			 					var temp_two = _cube_all_data[current_cube_name]["data"][j];
+			 					var bj = temp_two[temp];
+			 					for_temp.push(bj);
+			 				}
+			 				save_temp.push(for_temp);
+			 			}
 
-			 		// 	save_row_me_wrap = save_temp;
-			 		// }
+			 			save_row_me_wrap = save_temp;
+			 		}
 
 
 					}
@@ -288,13 +287,13 @@ function data_handle(drag_sortable){
 						col_if_me = [];
 						col_if_de = [];
 
-						var change_xm;
+					
 						if(row_col_type == "sortable_column"){
 
-							current_data["data"].XMsort(drag_row_column_data["row"]["dimensionality"]);
+							current_data["data"].XMsort(drag_row_column_data["column"]["dimensionality"]);
 						}else if(row_col_type == "sortable_row"){
-							change_xm=drag_row_column_data["row"]["dimensionality"]
-							current_data["data"].XMsort(change_xm);
+							
+							current_data["data"].XMsort(drag_row_column_data["row"]["dimensionality"]);
 						}
 
 						//..
@@ -319,6 +318,7 @@ function data_handle(drag_sortable){
 					 	})
 
 					 	//....
+					 	console.log(current_data)
 					 	save_row_de_wrap = row_if_de.change_data_for(_cube_all_data[current_cube_name]["data"]);
 					 	save_row_me_wrap = row_if_me.change_data_for(_cube_all_data[current_cube_name]["data"]);
 					 	save_col_de_wrap = col_if_de.change_data_for(_cube_all_data[current_cube_name]["data"]);

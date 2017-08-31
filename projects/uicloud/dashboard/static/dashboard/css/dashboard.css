@@ -56,7 +56,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 
 /*维度*/
-#dimensionality_show,#measure_show,#index_show,#parameter_show{width:100%;overflow-y: scroll;}
+#dimensionality_show,#measure_show,#index_show,#parameter_show{width:100%;overflow-y: auto;}
 #dimensionality,#measurement,#indicator,#parameter{border-top: 1px solid #DEDEDE;}
 #dimensionality_title,#measurement_title,#indicator_title,#parameter_title{width:176px;margin: 0 auto;height: 32px;}
 #dimensionality_title p,#measurement_title p,#indicator_title p,#parameter_title p{font-size: 12px;color: #808080;line-height: 32px;float: left;}
@@ -119,7 +119,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #drag_row{float: left;}
 #drag_date{float: right;}
 #drag_col{margin: 0 2.27%;}
-#drag_row .annotation_text .drog_row_list .dimensionality_list_text img{display: none !important;}
+.annotation_text .drog_row_list .dimensionality_list_text img{display: none !important;}
 /*度量弹窗*/
 .annotation_text .drog_row_list .me_out_content,.annotation_text .drog_row_list .me_out_content li .second_menu{width:100px;border:1px solid #DEDEDE;border-bottom: none;background: white;position: absolute;z-index: 999}
 .annotation_text .drog_row_list .me_out_content li,#drag_row .annotation_text .drog_row_list .me_out_content li .second_menu li{width:100%;height:23px;border-bottom: 1px solid #DEDEDE;box-sizing:border-box;}
@@ -182,7 +182,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 /*设计样式*/
 /*#project_style{width: 100%;height:280px;}*/
 #sizer_content{display: none;}
-.project_icon_hover{width:40px;height: 40px;float: left;margin:5px 0px 0px 6px;cursor: pointer;opacity: 0.3;box-sizing: border-box;}
+.project_icon_hover{width:40px;height: 40px;float: left;margin:5px 0px 0px 6px;cursor: pointer;opacity: 0.5;box-sizing: border-box;}
 .project_icon_hint_wrap{position: absolute;background: white;width: auto;box-shadow: 0px 3px 3px 2px #DEDEDE;z-index:999;border-radius: 2px}
 .project_icon_hint_wrap p{font-size: 12px;padding: 0px 25px 0px 11px;}
 .project_icon_hint_wrap p:nth-child(1){color: #000;padding-top: 10px;}

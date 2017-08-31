@@ -102,8 +102,8 @@ input[type=checkbox] {visibility: hidden;}
 .portlet-placeholder {border: 1px dotted black;width: 100%;height: 100%;}
 #right_folder_show_are .view_folder_show_area .new_view_content .new_view_title .new_view_table_name .title_name_input{width: 120px;height: 20px;line-height: 20px;text-indent:3px;}
 #right_folder_show_are .view_folder_show_area .new_view_content .new_view_title .title_name_change_btn{width:20px;height: 20px;background: url("../img/right-icon_03.png") no-repeat center;float: left;margin-top: 1px;cursor: pointer;}
-#right_folder_show_are .view_folder_show_area .new_view_content .textarea{width:100%;position: absolute;min-height: 23px;top: 35px;z-index:9999;left: 9px;display: none}
-#right_folder_show_are .view_folder_show_area .new_view_content .textarea textarea{width: 100%;font-size: 12px;min-height:23px;outline: none;line-height: 17px;max-height: 120px;box-sizing: border-box;padding: 2px;overflow-x: hidden;overflow-y: auto;}
+#right_folder_show_are .view_folder_show_area .new_view_content .textarea{position: absolute;min-height: 23px;top: 35px;z-index:9999;left: 9px;display: none}
+#right_folder_show_are .view_folder_show_area .new_view_content .textarea textarea{width: 100%;font-size: 12px;height:46px;outline: none;line-height: 17px;box-sizing: border-box;padding: 2px;overflow-x: hidden;overflow-y: auto;resize: none}
 
 
 /*表格样式*/

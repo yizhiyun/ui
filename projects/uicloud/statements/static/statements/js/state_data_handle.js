@@ -177,7 +177,7 @@ function data_handle(drag_sortable){
 					 		row_if_me.push(ele.split(":")[0]);
 					 		
 					 	})
-
+					 	
 					 	//....
 					 	save_row_de_wrap = row_if_de.change_data_for(_cube_all_data[current_cube_name]["data"]);
 					 	save_row_me_wrap = row_if_me.change_data_for(_cube_all_data[current_cube_name]["data"]);

@@ -12,33 +12,6 @@ function ele_each(thele,theleSon){
 	})
 }
 
-function setCookie(cookieName,cookieContent,cookieTime){
-		if(cookieTime){
-		var nowDate = new Date();
-		nowDate.setDate(nowDate.getDate()+cookieTime);
-		//"name = gxm;expires = 2018;"
-		document.cookie = cookieName + "=" + escape(cookieContent) +";"+"expires="+nowDate + "; path=/";
-		}else{
-			document.cookie = cookieName + "=" + cookieContent + ";";
-		}
-	}
-function getCookie(key){
-	var cookie=document.cookie;
-	//把cookie分割为一个数组,数组里的每个元素都是一条cookie
-	var cookieArr = cookie.split("; ");
-	//循环遍历,寻找userinfo 这个 cookie
-	//获取特定的 cookie , 例如:userInfo 这个 cookie;
-	for(var i = 0; i < cookieArr.length;i++){
-		var aStr = cookieArr[i]; // name = value;
-		var arr = aStr.split("=");
-		if(arr[0] == key){
-			return unescape(arr[1]);
-		}
-	}
-	return null;
-	}
-
-
 
 var drag_row_column_data = {
 		"row":{},
@@ -52,7 +25,6 @@ var _drag_message = {
 	"type":null, // 维度还是度量
 	"index":null // 拖拽的下标。。可能暂时不用
 };
-
 
 //展示图表的类型
 var state_view_show_type = null;
@@ -96,6 +68,9 @@ var view_count = -1;
 
 //判断table隐藏还是显示
 var table_show_hide;
+
+var loc_storage=window.localStorage;
+
 
 
 
@@ -352,16 +327,18 @@ function user_handle_change_cookie(ele){
 					$(".statement_li").removeClass("cookie_handle_view");
 					$(".statement_li").find(".view_show_name_save").css("color","");
 					$(ele).parent().parent().addClass("cookie_handle_view");
-	 				setCookie("now_add_view",$(ele).text(),24);
+					loc_storage.setItem("now_add_view",$(ele).text());
 					reason_view_drag(data_result,$(ele));
 				}
 			})
 	
 }
 
-
+	//记录操作对应元素
+	var save_handle_count = -1;
 	//动态创建每个视图
-	function fun_add_view(view_type,now_view_folder,right_view_show,viewshow_class,viewshow_class_arr,view_note){
+	function fun_add_view(view_type,now_view_folder,right_view_show,viewshow_class,viewshow_class_arr,view_note,count,data_wrap){
+		save_handle_count++;
 		if(view_note == null){
 			view_note = "";
 		}
@@ -378,45 +355,46 @@ function user_handle_change_cookie(ele){
                          resize:{
                                  	enabled:true,
                                  	min_size:[2,2],
-                                 	resize:function(){
-                                 		$(".new_view_content").find(".textarea").css("width",$(".new_view_content").width()-18 + "px");
-                                 		$(".new_view_content").find(".new_view_main").css("height",$(".new_view_content").height()-30 + "px");
+                                 	resize:function(event,ui){
+                                 		$(".new_view_content").find(".textarea").eq(ui.$player.parent().attr("data-value")).css("width",$(".new_view_content").eq(ui.$player.parent().attr("data-value")).width()-18 + "px");
+                                 		$(".new_view_content").find(".new_view_main").eq(ui.$player.parent().attr("data-value")).css("height",$(".new_view_content").eq(ui.$player.parent().attr("data-value")).height()-30 + "px");
                                  	},
-                                 	stop:function(){
-                                 		$(".new_view_content").find(".textarea").css("width",$(".new_view_content").width()-18 + "px");
-                                 		$(".new_view_content").find(".new_view_main").css("height",$(".new_view_content").height()-30 + "px");
+                                 	stop:function(event,ui){
+                                 		$(".new_view_content").find(".textarea").eq(ui.$player.parent().attr("data-value")).css("width",$(".new_view_content").eq(ui.$player.parent().attr("data-value")).width()-18 + "px");
+                                 		$(".new_view_content").find(".new_view_main").eq(ui.$player.parent().attr("data-value")).css("height",$(".new_view_content").eq(ui.$player.parent().attr("data-value")).height()-30 + "px");
                                  				for(var i = 0; i < viewshow_class_arr.length;i++){
                                  				var now_view_img=echarts.getInstanceByDom($("."+viewshow_class_arr[i]+"").get(0));
+                                 				
+
+//                                 				$("<img src="+now_view_img.getDataURL({pixelRatio:2,backgroundColor:'#fff'})+">").appendTo($("body"));
+
 								 				now_view_img.resize();
                                  			}
-                                 		
                                  	}
                                  }
 
                  }).data('gridster');
 		if(view_type == "showTable_by_dragData()"){
-				gridster.add_widget("<li class='new_view_content right_view_table' data-row='1' data-col='1'><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main new_view_table clear "+viewshow_class+"'><div class='right_module' style='display: inline-block;'> <div class='top_column_container' style='display: inline-block'><p class='top_column_name'></p><ul class='column_data_list'></ul></div><div class='content_body'><ul id='data_list_for_body'></ul></div></div><div class='left_row_container'></div></div></div><div class='textarea'><textarea id='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='160'>"+view_note+"</textarea></div></li>", 6,3);
-				var text = document.getElementById("table_view_textarea");
+				gridster.add_widget("<li class='new_view_content right_view_table' data-row='1' data-col='1' data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main new_view_table clear "+viewshow_class+"'><div class='right_module' style='display: inline-block;'> <div class='top_column_container' style='display: inline-block'><p class='top_column_name'></p><ul class='column_data_list'></ul></div><div class='content_body'><ul id='data_list_for_body'></ul></div></div><div class='left_row_container'></div></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='160'>"+view_note+"</textarea></div></li>", 6,3);
+				var text =$(".table_view_textarea").get(0);
 				autoTextarea(text,0,46);
 				
 		}else{
-			gridster.add_widget("<li class='new_view_content' data-row='1' data-col='1'><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main clear "+viewshow_class+"'></div><div class='textarea'><textarea id='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='60'>"+view_note+"</textarea></div></li>", 3,3);
-			var text = document.getElementById("table_view_textarea");
+			gridster.add_widget("<li class='new_view_content' data-row='1' data-col='1' data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main clear "+viewshow_class+"'></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='60'>"+view_note+"</textarea></div></li>", 3,3);
+			var text = $(".table_view_textarea").get(0);
 			autoTextarea(text,0,46);
 			
 		}
 		$(".new_view_content").find(".new_view_main").css("height",$(".new_view_content").height()-30 + "px");
-		if(view_note == ""){
-			$(".new_view_content .textarea textarea").css("height","23px");
-		}else{
-			$(".new_view_content .textarea textarea").css("height","46px");
-		}
+		// if(view_note != ""){
+		// 	$(".new_view_content .textarea textarea").css("height","46px");
+		// }
 		
 		
 		// $(".new_view_content").find(".textarea").on("click",function(){
 		// 	$(this).attr("contenteditable","true");
 		// })
-		$(".new_view_content").find(".textarea").css("width",$(".new_view_content").width()-18 + "px");
+		$(".new_view_content").find(".textarea").eq(save_handle_count).css("width",$(".new_view_content").eq(save_handle_count).width()-18 + "px");
 		$(".new_view_content .new_view_right_icon .add_css_img").each(function(index,ele){
 			$(ele).on("mouseenter",function(){
 				$(ele).css("background","#DEDEDE");
@@ -478,7 +456,8 @@ function user_handle_change_cookie(ele){
 			$(".right_folder_view_name").find(".combo-dropdown").find(".option-item").each(function(index,ele){
 				$(ele).on("click",function(){
 					if(!$(ele).hasClass("option-selected")){
-						setCookie("now_add_view",$(ele).text(),24);
+						loc_storage.setItem("now_add_view",$(ele).text());
+
 						view_out_handle_init(data_result);
 					}
 				})
@@ -488,7 +467,7 @@ function user_handle_change_cookie(ele){
 
 			var change_view_show_click = data_result[now_view_folder][now_click_ele.text()];
 			for(right_view_show in change_view_show_click){
-				console.log(now_view_folder+","+now_click_ele.text()+","+right_view_show)
+				
 				count++;
 				if(!change_view_show_click[right_view_show]["show"]){
 					continue;
@@ -500,7 +479,7 @@ function user_handle_change_cookie(ele){
 				}
 				
 				//创建容器
-				fun_add_view(change_view_show_click[right_view_show]["viewtype"],now_view_folder,now_click_ele.parent().parent().find(".small_view_text").eq(count).text(),viewshow_class,viewshow_class_arr,change_view_show_click[right_view_show]["note"]);
+				fun_add_view(change_view_show_click[right_view_show]["viewtype"],now_view_folder,now_click_ele.parent().parent().find(".small_view_text").eq(count).text(),viewshow_class,viewshow_class_arr,change_view_show_click[right_view_show]["note"],count,now_view_folder+","+now_click_ele.text()+","+right_view_show);
 			
 				var out_into_view = $("."+viewshow_class+"").parent();
 
@@ -556,8 +535,8 @@ function user_handle_change_cookie(ele){
 						return;
 					}else{
 
-						//更新服务器数据
-						 $.post("../dashboard/changeViewName",{"objtype":"view","oldname":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id"),"newname":$(".title_name_input").val()},function(result){
+					//更新服务器数据
+					$.post("../dashboard/changeViewName",{"objtype":"view","oldname":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id"),"newname":$(".title_name_input").val()},function(result){
 						 	if(result["status"] == "ok"){
 						 		$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").html($(".title_name_input").val());
 						 		$(ele).parent().find(".new_view_table_name").html($(".title_name_input").val()).css("textIndent","3px").css("borderColor","#DEDEDE");
@@ -600,12 +579,17 @@ function user_handle_change_cookie(ele){
 						$(".maskLayer").css("display","none");
 							})
 
-							//确定删除按钮点击事件
+						//确定删除按钮点击事件
 						$(".delete_area_ok_btn").unbind("click");
 						$(".delete_area_ok_btn").on("click",function(){
 							//服务器更新数据
 							$.post("../dashboard/deleteFolder",{"datatype":"view","tableid":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id"),"username":username},function(result){{
 								if(result != ""){
+									if(sessionStorage.getItem("edit_view_now")){
+										if(sessionStorage.getItem("edit_view_now") == $(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content")){
+											 sessionStorage.removeItem("edit_view_now");
+										}
+									}
 									view_out_handle_init(result);
 									$("#delete_area").css("display","none");
 									$(".maskLayer").css("display","none");
@@ -613,6 +597,17 @@ function user_handle_change_cookie(ele){
 							}})
 						})
 					})
+
+
+				//视图编辑功能
+				$(ele).find(".new_view_edit").on("click",function(){
+					if($(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("setopen") == false){
+						$.post("../dashboard/setIsopen",{"username":username,"id":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id")});
+					}
+					
+					sessionStorage.setItem("edit_view_now",$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content"));
+					window.location.href="../dashboard/pallasdata2";
+				})
 
 				// document点击关闭输入框
 			$(document).on("click",function(e){
@@ -729,8 +724,6 @@ function user_handle_change_cookie(ele){
 
 					var old_name = $(ele).find(".view_show_name_save").data("record_name");
 					
-					
-
 					//判断不能为空
 					if(input_value == ""){
 						$(ele).find(".click_new_folder_input").css("borderColor","red");
@@ -751,7 +744,7 @@ function user_handle_change_cookie(ele){
 					 		return;
 					 	}else{
 					 		if(folder_or_view == "folder"){
-					 			setCookie("now_add_view",input_value,24);
+					 			loc_storage.setItem("now_add_view",input_value);
 					 		}
 					 		$(".view_folder_select option").each(function(index,ele){
 					 			if($(ele).text() == old_name){
@@ -816,7 +809,7 @@ function user_handle_change_cookie(ele){
 	function statements_li_add(data_result){
 
 		//获取存在cookie中操作报表的名称
-		var cookie_view_name = getCookie("now_add_view");
+		var cookie_view_name = loc_storage.getItem("now_add_view");
 		$(".rightConent #statements_left_bar_area").html("");
 		// $(".rightConent #right_folder_show_are").html("");
 
@@ -851,7 +844,6 @@ function user_handle_change_cookie(ele){
 								oDiv.find("click_tra").css("display","block");
 								oDiv.find(".view_show_name_save").css("width","103px");
 								for(view_show in data_result[erv_data][small_view_show]){
-									
 
 									//将视图对应表存储起来
 									if(_cube_all_data_table.indexOf(data_result[erv_data][small_view_show][view_show]["tablename"]) == -1){
@@ -876,9 +868,9 @@ function user_handle_change_cookie(ele){
 										table_show_hide = false;
 									}
 									oDiv.find(".statement_li_content").find(".click_tra_statement").remove();
-							
-									view_handle.find(".small_view_text").css("width","122px").data("table_id",data_result[erv_data][small_view_show][view_show]["id"]);
-									view_handle.appendTo(oDiv.find(".view_show_content"));
+									
+									view_handle.find(".small_view_text").css("width","122px").data("table_id",data_result[erv_data][small_view_show][view_show]["id"]).data("setopen",data_result[erv_data][small_view_show][view_show]["isopen"]);
+									view_handle.data("data_result_content",erv_data+","+small_view_show+","+view_show).appendTo(oDiv.find(".view_show_content"));
 									$("<img src=../static/statements/img/left_35.png  class='click_tra click_tra_statement'/>").prependTo(oDiv.find(".statement_li_content"));
 									oDiv.find(".view_show_name_save").css("width","103px");
 
@@ -918,6 +910,7 @@ function user_handle_change_cookie(ele){
 								oDiv.find("click_tra").css("display","block");
 								oDiv.find(".view_show_name_save").css("width","120px");
 								for(view_show in data_result[erv_data][small_view_show]){
+
 									
 									//将视图对应表存储起来
 									if(_cube_all_data_table.indexOf(data_result[erv_data][small_view_show][view_show]["tablename"]) == -1){
@@ -945,8 +938,8 @@ function user_handle_change_cookie(ele){
 									oDiv.find(".statement_li_content").find(".click_tra_statement").remove();
 									
 									$("<img src=../static/statements/img/left_35.png  class='click_tra click_tra_statement'/>").prependTo(oDiv.find(".statement_li_content"));
-									view_handle.find(".small_view_text").css("width","139px").data("table_id",data_result[erv_data][small_view_show][view_show]["id"]);
-									view_handle.appendTo($(oDiv).find(".view_show_content"));
+									view_handle.find(".small_view_text").css("width","139px").data("table_id",data_result[erv_data][small_view_show][view_show]["id"]).data("setopen",data_result[erv_data][small_view_show][view_show]["isopen"]);
+									view_handle.data("data_result_content",erv_data+","+small_view_show+","+view_show).appendTo($(oDiv).find(".view_show_content"));
 
 								}
 								
@@ -1029,6 +1022,7 @@ function user_handle_change_cookie(ele){
 		$(".click_out_handle").css("display","block");
 		if($(".view_show_handle").length == 0){
 			reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
+		
 			return;
 		}
 		table_name_post(data_result);
@@ -1056,25 +1050,26 @@ function user_handle_change_cookie(ele){
 	})
 
 	function table_name_post(data_result){
-		var len  = _cube_all_data_table.length;
 		
+		var len  = _cube_all_data_table.length;
 		table_into_post(len);
 		function table_into_post(l){
+
 				if(l < 1){
-					// reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
+					reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
 					return;
 				}
+				
+				
 					$.ajax({
 					url:"/cloudapi/v1/tables/" +_cube_all_data_table[len-l]+"/all",
 					type:"post",
 					dataType:"json",
 					success:function(data){
-						
 						if (data["status"] == "success") {
+							// reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
 							var cube_all_data = data["results"];
-							_cube_all_data[[_cube_all_data_table][len - l]] = cube_all_data;
-							reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
-							
+							_cube_all_data[_cube_all_data_table[len - l]] = cube_all_data;
 							return table_into_post(--l);
 						}
 					
@@ -1098,7 +1093,6 @@ function user_handle_change_cookie(ele){
 				
 			var new_folder= $("<div class='clear "+type_content+"'><div class='empty_folder "+type_wrap+"'><img src='../static/statements/img/"+type+".png'  class='click_folder'/><div class='view_show_name_save new_element'><input type='text' class='click_new_folder_input' placeholder="+text+" maxlength='10'></div><div class='mouse_img "+btn_type+"'><img src=../static/statements/img/right-icon_03.png/></div></div></div>")
 			
-
 			new_folder.prependTo($("#statements_left_bar_area"));
 			if(type == "folder"){
 						folder_count++;
@@ -1190,12 +1184,12 @@ function user_handle_change_cookie(ele){
 					// .....
 					function new_view_show_and(result){
 						$(".mouse_img").find("img").unbind("click").attr("src","../static/statements/img/"+tra_type+".png").removeClass().addClass(tra_class);
-					$("."+btn_type+"").removeClass("mouse_img");
+						$("."+btn_type+"").removeClass("mouse_img");
 
-					$("."+type_content+"").find(".new_element").html(input_val_name).removeClass("new_element");
-					 $("."+type_content+"").find(".click_folder").removeClass().addClass("click_or");
+						$("."+type_content+"").find(".new_element").html(input_val_name).removeClass("new_element");
+						$("."+type_content+"").find(".click_folder").removeClass().addClass("click_or");
 
-					 $("."+btn_type+"").css("background","").unbind("mouseenter");
+					 	$("."+btn_type+"").css("background","").unbind("mouseenter");
 
 					 //报表的移入移出事件
 					 

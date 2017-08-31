@@ -9,6 +9,7 @@ var isagainDrawTable = false; // 是否需要重新绘制 table
 var rescordCurrentTableData = null;
 
 function showTable_by_dragData(isTabChart){
+	
 	//drag_row_column_data 拖到行列 列名
 	//current_cube_name  当前操作的表名
 	//_cube_all_data 所有表的数据
@@ -21,7 +22,7 @@ function showTable_by_dragData(isTabChart){
 	 	var need_handle_column =  drag_row_column_data["column"]["dimensionality"][handle_index];
 	 // 创建对应的----”维度“---列
 	 		var co_info = need_handle_column.split(":");
-	 		var co_name = co_info[0];		
+	 		var co_name = co_info[0];
 	 		/*全部都是处理列的维度*/
 	 		// 顶部 p 标签显示内容
 	 		var titleArr=[];
@@ -46,7 +47,7 @@ function showTable_by_dragData(isTabChart){
 	 			var theData = current_data["data"][j];
 	 			var span = $("<span>"+theData[co_name]+"</span>");
 	 			span.attr("index",j);  // 以备后续使用
-	 			li.append(span);		
+	 			li.append(span);
 	 			if (!column_repeat_merge_help[j]) {
 	 				column_repeat_merge_help[j] = "";
 	 			}

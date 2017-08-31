@@ -5,37 +5,17 @@ var current_data = null;
 
 var save_data_handle;
 
-function switch_chart_handle_fun(drag_sortable){
 
-	function save_btn_fun(){
-	
-
-	$("#action_save").unbind("click");
-	//保存按钮下拉框
-	$("#action_save").on("click", function() {
-
-		$("#action_save_view").stop(true).toggle();
-	
-	});
-
-	$("#action_save").on("mouseleave", function() {
-		$("#action_save_view").css("display", "none")
-	})
-		
-	$("#action_save_view p").each(function(index, ele) {
-		$(ele).on("mouseenter", function() {
-			$(ele).css("background", "#DEDEDE")
-		})
-
-		$(ele).on("mouseleave", function() {
-			$(ele).css("background", "white")
-		})
-	})
-	}
+//记录当前要展示的视图
+var save_now_show_view_text = null;
 
 
+//判断点击图标后不切换图形
 
-	
+var click_view_icon  = false;
+
+
+function switch_chart_handle_fun(drag_sortable,edit_view){
 
 	//记录拖入行列里维度度量的数量
 
@@ -55,18 +35,20 @@ function switch_chart_handle_fun(drag_sortable){
 	var show_btn_change = $("#project_chart ul li");
 	//满足条件给定指定样式
 	function change_view_css(element){
-		return $(element).css("border","1px solid #0d53a4").css("opacity","1").data("if_show","true");
+		return $(element).css("border","1px solid #0d53a4").css("opacity","1");
 	}
 
 
 	//初始化图例
 	function view_init(){
-		show_btn_change.data("if_show","").css("border","").css("opacity","0.3");
+		show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
 		$("#text_table_need_show").css("display","none");
 	}
 
 	//拖拽元素存储数据
 	save_data_handle = data_handle(drag_sortable);
+
+	console.log(save_data_handle,current_data)
 
 	if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
 			view_init();
@@ -82,26 +64,25 @@ function switch_chart_handle_fun(drag_sortable){
 		if((switch_col_di > 0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0) || (switch_row_di > 0 && switch_row_me == 0 && switch_col_di == 0 && switch_col_me == 0) || (switch_col_di > 0 && switch_col_me == 0 && switch_row_di > 0 && switch_row_me == 0) || (switch_row_di > 0 && switch_row_me == 0 && switch_col_di > 0 && switch_col_me == 0)){
 			//隐藏其他视图
 			$("#main").css("display","none");
-			//跳转到文本表
-			showTable_by_dragData();
-
-			view_name = "showTable_by_dragData()";
-			
 			change_view_css("#show_table");
+
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_table");
+			}
 		}
 
 
 		if((switch_col_di > 0 && switch_col_me > 0 ) || (switch_row_di > 0 && switch_row_me > 0)){
-			show_btn_change.data("if_show","").css("border","").css("opacity","0.3");
+			show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
 
 			//隐藏其他视图
 			$("#main").css("display","none");
-			//跳转到文本表
-			showTable_by_dragData();
-
-			view_name = "showTable_by_dragData()";
 
 			change_view_css("#show_table");
+
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_table");
+			}
 		}
 
 
@@ -111,32 +92,40 @@ function switch_chart_handle_fun(drag_sortable){
 	//只拖入度量显示柱状图或者条形图
 	if((switch_row_me > 0 && switch_col_di ==0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me > 0 && switch_col_di ==0 && switch_row_me == 0 && switch_row_di == 0)){
 		view_init();
-		histogram_show(save_data_handle);
-
-		view_name = "histogram_show(save_data_handle)";
-
 		$("#show_table").css("opacity","1");
+
+		
 		//判断是条形图还是柱状图为默认
 		if(switch_col_me > 0){
 			change_view_css("#show_bar");
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_bar");
+			}
 		}else{
 			change_view_css("#show_histogram");
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_histogram");
+			}
 		}
 	}
 
 	//1维度1度量展示
 	if((switch_col_di == 1 && switch_row_me ==1 && switch_col_me == 0 && switch_row_di == 0 ) || (switch_row_di == 1 && switch_col_me ==1 && switch_row_me ==0 && switch_col_di == 0)){
+		
 		view_init();
-		histogram_show(save_data_handle);
-		view_name = "histogram_show(save_data_handle)";
-
+		
 		show_btn_change.not($("#show_storehis,#show_percontrasth,#show_storebar,#show_contrastbar,#prestorebar,#show_histogram,#show_bar,#show_treemap")).css("opacity","1");
 		//判断是条形图还是柱状图为默认
 		if(switch_col_me > 0){
 			change_view_css("#show_bar");
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_bar");
+			}
 		}else{
 			change_view_css("#show_histogram");
-			
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_histogram");
+			}
 		}
 
 	}
@@ -145,11 +134,7 @@ function switch_chart_handle_fun(drag_sortable){
 	// 1维度多度量
 	if(switch_col_di == 1 && switch_col_me == 0 && switch_row_me >1 && switch_row_di ==0 || switch_col_di == 0 && switch_col_me >1 && switch_row_me ==0 && switch_row_di ==1){
 		view_init();
-		//调用柱状图
-		histogram_show(save_data_handle);
-
-		view_name = "histogram_show(save_data_handle)";
-
+		
 		$("#show_table,#show_polyline,#show_randar").css("opacity","1");
 
 		if(switch_col_me > 1){
@@ -163,23 +148,15 @@ function switch_chart_handle_fun(drag_sortable){
 	if(switch_col_di > 1 && switch_col_di < 4 && switch_col_me == 0 && switch_row_me == 1 && switch_row_di ==0 || switch_col_di == 0 && switch_col_me == 1 && switch_row_me ==0 && switch_row_di >1 && switch_row_di <4){
 		view_init();
 		if(switch_col_di > 1 && switch_col_di < 4){
-			//展示堆积柱状图,百分比堆积柱状图
-			many_de_many_me_handle('number_bar');
-
-			view_name = "many_de_many_me_handle('number_bar')";
 
 			$("#show_storehis,#show_percontrasth,#show_table,#show_histogram").css("opacity","1");
-			$("#show_storehis").css("border","1px solid #0d53a4").data("if_show","true");
+			$("#show_storehis").css("border","1px solid #0d53a4");
 		}
 
 		if(switch_row_di > 1 && switch_row_di < 4){
-			//展示堆积条形图,百分比堆积条形图
-			many_de_many_me_handle('number_liner');
-
-			view_name = "many_de_many_me_handle('number_liner')";
 
 			$("#show_storebar,#prestorebar,#show_table,#show_bar").css("opacity","1");
-			$("#show_storebar").css("border",	"1px solid #0d53a4").data("if_show","true");
+			$("#show_storebar").css("border","1px solid #0d53a4");
 		}
 
 	}
@@ -188,17 +165,14 @@ function switch_chart_handle_fun(drag_sortable){
 	if((switch_col_di > 1 && switch_col_me ==0 && switch_row_me == 1 && switch_row_di == 0) || (switch_row_di > 1 && switch_row_me == 0 && switch_col_di == 0 && switch_col_me ==1)){
 		$("#show_treemap").css("opacity","1")
 	}else{
-		$("#show_treemap").css("opacity","0.3")
+		$("#show_treemap").css("opacity","0.5")
 	}
 
 
 	//多维度多度量
 	if(switch_col_di > 1 && switch_col_me == 0 && switch_row_me >1 && switch_row_di ==0 || switch_col_di == 0 && switch_col_me > 1 && switch_row_me ==0 && switch_row_di > 1){
 		view_init();
-				//调用柱条图
-				histogram_show(save_data_handle);
-				view_name = "histogram_show(save_data_handle)";
-
+				
 				$("#show_table").css("opacity","1");
 				if(switch_col_me > 1){
 					change_view_css("#show_bar");
@@ -216,10 +190,6 @@ function switch_chart_handle_fun(drag_sortable){
 		if(switch_row_me  == 1 || switch_col_me == 1){
 			$("#show_treemap").css("opacity","1");
 		}
-			histogram_show(save_data_handle);
-
-			view_name = "histogram_show(save_data_handle)";
-
 				if(switch_col_me >= 1){
 					change_view_css("#show_bar");
 				}else{
@@ -234,76 +204,91 @@ function switch_chart_handle_fun(drag_sortable){
 	if((switch_row_di == 1 && switch_col_me == 2 && switch_row_me == 0 && switch_col_di == 0) || (switch_row_di == 0 && switch_col_me == 0 && switch_row_me == 2 && switch_col_di == 1)){
 		$("#show_contrastbar").css("opacity","1");
 	}else{
-		$("#show_contrastbar").css("opacity","0.3");
+		$("#show_contrastbar").css("opacity","0.5");
 	}
 
 
 
 	//存储视图切换按钮对应的方法
 
-	var save_show_click_change = ["showTable_by_dragData()","one_de_one_me_handle('cake')","many_de_many_me_handle('polyline')","histogram_show(save_data_handle)","many_de_many_me_handle('number_bar')","one_de_one_me_handle('waterWall')","many_de_many_me_handle('percentage_bar')","histogram_show(save_data_handle)","many_de_many_me_handle('number_liner')","many_de_many_me_handle('comparisonStrip')","many_de_many_me_handle('percentage_liner')","one_de_one_me_handle('area')","one_de_one_me_handle('scale')","one_de_one_me_handle('gantt')","drag_radarChart(save_data_handle)","many_de_many_me_handle('reliationTree')"]
+//	var save_show_click_change = ["showTable_by_dragData()","one_de_one_me_handle('cake')","many_de_many_me_handle('polyline')","histogram_show(save_data_handle)","many_de_many_me_handle('number_bar')","one_de_one_me_handle('waterWall')","many_de_many_me_handle('percentage_bar')","histogram_show(save_data_handle)","many_de_many_me_handle('number_liner')","many_de_many_me_handle('comparisonStrip')","many_de_many_me_handle('percentage_liner')","one_de_one_me_handle('area')","one_de_one_me_handle('scale')","one_de_one_me_handle('gantt')","drag_radarChart(save_data_handle)","many_de_many_me_handle('reliationTree')"]
 
 	//[文本表,饼图,折线图,柱状图,堆积柱状图,瀑布图,百分比堆积柱状图,条形图,堆积条形图,对比条形图,百分比堆积条形图,面积图,范围图,甘特图,雷达图,树状图]
 
 
 
-		//遍历所有视图按钮给定绘图方法
+		
+	
+
+	
+show_btn_change.removeClass("show_view_success");
+// end-----------
+for(var i = 0 ; i < show_btn_change.length;i++){
+	if(show_btn_change.eq(i).css("opacity") == "1"){
+		show_btn_change.eq(i).addClass("show_view_success");
+	}
+}
+
+
+
+//遍历所有视图按钮给定绘图方法
 		show_btn_change.each(function(index,ele){
 			$(ele).on("click",function(){
 				if($(ele).css("opacity") == 1){
 					if($(ele).data("if_show") != "true"){
 						show_btn_change.data("if_show","");
 						$(ele).data("if_show","true");
+						click_view_icon = true;
+						save_now_show_view_text = $(ele);
+						if(save_now_show_view_text.attr("id") == "show_table"){
+								$("#view_show_area #view_show_area_content #view_show_wrap #main").css("display","none");
+							}else{
+								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
+							}
 						
-						switch(index)
-							{
-							//点击文本表隐藏其他视图
-							case 0:
-							$("#main").css("display","none");
-							showTable_by_dragData();
-							view_name = "showTable_by_dragData()";
-							break;
-							case 3:
-							$("#text_table_need_show").css("display","none");
-							histogram_show(save_data_handle);
-							view_name = "histogram_show()";
-							break;
-							case 7:
-							$("#text_table_need_show").css("display","none");
-							histogram_show(save_data_handle);
-							view_name = "histogram_show()";
-							break;
-							case 14:
-							$("#text_table_need_show").css("display","none");
-							drag_radarChart(save_data_handle);
-							view_name = "drag_radarChart(save_data_handle)";
-
-							break;
-							default:
-							$("#text_table_need_show").css("display","none");
-							eval(save_show_click_change[index]);
-							view_name = save_show_click_change[index];
-							break;
-						}
+						eval(save_now_show_view_text.data("show_view_fun"));
+						view_name = save_now_show_view_text.data("show_view_fun");
+						return;
 					}
 				}
 			})
 		})
-	
 
-	if($("#main").css("display") != "none" || $("#text_table_need_show").css("display") != "none"){
 
-		$("#action_save").css("opacity","1");
+
+
+//编辑视图直接生成对应视图
+	if(edit_view != undefined){
+		$("#main").css("display","none");
+		eval(edit_view);
+		view_name = edit_view;
+		show_btn_change.data("if_show","");
+		for(var i = 0 ; i < show_btn_change.length;i++){
+		if(show_btn_change.eq(i).data("show_view_fun") == edit_view){
+			show_btn_change.eq(i).data("if_show","true");
+			}
+		}
+		return;
+	}else{
+
+		if(!save_now_show_view_text.hasClass("show_view_success")){
+		save_now_show_view_text = $("#show_histogram");
+		}
+		eval(save_now_show_view_text.data("show_view_fun"));
+		view_name = save_now_show_view_text.data("show_view_fun");
+		save_now_show_view_text.data("if_show","true");
+		show_btn_change.not(save_now_show_view_text).data("if_show","");
+	}
+
+console.log(save_now_show_view_text)
+if(switch_col_di !=  0 || switch_col_me != 0 || switch_row_di != 0 || switch_row_me != 0){
+
+		$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
 		save_btn_fun();
 	}
 
-	if($("#main").css("display") == "none" && $("#text_table_need_show").css("display") == "none"){
-		
-		$("#action_save").css("opacity","0.5").unbind("mouseleave");
+if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
+	$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","0.5").unbind("mouseleave click");
+}
 
-		$("#action_save").unbind("click");
-
-	}
-
-// end-----------
 }

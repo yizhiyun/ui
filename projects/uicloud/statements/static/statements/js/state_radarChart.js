@@ -114,8 +114,7 @@ function drag_radarChart(data_handle){
 
 
 function radar_row(){
-	console.log(row_if_de)
-			if(row_if_de.length > 0){
+				if(row_if_de.length > 0){
 				//存放第一个重复维度的数组
 				var radar_content=[];
 			//判断拖入的第一个维度是否存在重复元素
@@ -150,7 +149,7 @@ function radar_row(){
 				//雷达图最大值范围
 				var no_change =  Math.ceil((data_me_max-data_me_min)/data_me_num)*data_me_num+data_me_min;
 
-				console.log(no_change)
+				
 				// 没有重复元素正常显示图形
 				drag_Chart(current_cube_name,col_if_me,save_row_de_wrap[0],no_change,save_col_me_wrap,col_if_me);
 			}
