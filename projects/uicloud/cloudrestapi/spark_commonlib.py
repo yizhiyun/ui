@@ -67,7 +67,7 @@ def getDataFrameFromSourceSparkCode():
         removedColsDict, it's just used for the generateNewDataFrame function.
         """
 
-        if ("sourcetype" in jsonData.keys()) and (jsonData["sourcetype"] == "hdfs"):
+        if ("sourcetype" in jsonData.keys()) and (jsonData["sourcetype"] in ["hdfs", "tmptables"]):
             if ("hdfsurl" in jsonData.keys()) and jsonData["hdfsurl"].startswith("hdfs:"):
                 url = jsonData["hdfsurl"]
             else:
@@ -81,7 +81,8 @@ def getDataFrameFromSourceSparkCode():
                 df1 = spark.read.parquet(url)
             except Exception:
                 traceback.print_exc()
-                logger.error("There is an error while reading {0}. Exception:{1}".format(url, sys.exc_info()))
+                logger.error("There is an error while reading {0}. Exception:{1}, Traceback: {2}"
+                             .format(url, sys.exc_info(), traceback.format_exc()))
                 return False
 
         else:
@@ -135,7 +136,7 @@ def getDataFrameFromSourceSparkCode():
 
             except Exception:
                 traceback.print_exc()
-                logger.error("Exception: {0}".format(sys.exc_info()))
+                logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
                 return False
 
         # set the maxRow if it exists.

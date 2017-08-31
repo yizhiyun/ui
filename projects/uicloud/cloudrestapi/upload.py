@@ -6,6 +6,7 @@ import sys
 import logging
 import codecs
 import shutil
+import traceback
 
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.cloudrestapi.upload")
@@ -117,7 +118,8 @@ def uploadToHdfs(fileDict, hdfsHost="spark-master0", nnPort="50070", rootFolder=
             logger.error("cannot find the file of {0}".format(filePath))
             return False
         except Exception:
-            logger.error("Exception: {0}".format(sys.exc_info()))
+            logger.error("Exception: {0}, Traceback: {1}"
+                         .format(sys.exc_info(), traceback.format_exc()))
             return False
     return uploadedCsvList
 
