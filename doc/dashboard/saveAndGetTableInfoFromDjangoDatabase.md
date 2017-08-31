@@ -213,7 +213,7 @@ Add Folder to ParentFolder
 
 Change Name From Current User
 -------------
-### 1. Request URI: /dashboard/changeViewName
+### 1. Request URI: /dashboard/changeName
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
 * if you objtype is view, oldname should be view's id.
@@ -375,7 +375,7 @@ Delete Folder From Current User
 
 
 
-Remember User's Note is or not is show
+Switch to remember User's state
 -------------
 ### 1. Request URI: /dashboard/setSwitch
 ### 2. Request Method: POST

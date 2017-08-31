@@ -179,7 +179,7 @@ def RelevanceFolder(request):
 
 
 @api_view(['POST'])
-def changeViewName(request):
+def changeName(request):
     '''
     用户自定义view的名字
     '''
