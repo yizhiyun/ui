@@ -136,6 +136,7 @@ This document describe how to get users' tables filter information.
         ]
     }
 }
+```
 
 ### 8. if failed, it will response as follows
 ```
