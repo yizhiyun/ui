@@ -97,35 +97,6 @@ def showAllTablesOfaDataBase(request):
     }
     return JsonResponse(context)
 
-# 返回表格数据
-
-
-def showTableInfo(request, modeName):
-    modeList = ['all', 'data', 'schema']
-    if modeName not in modeList:
-        failObj = {"status": "failed",
-                   "reason": "the mode must one of {0}".format(modeList)}
-        return JsonResponse(failObj, status=400)
-
-    username = request.POST['username'] if 'username' in request.POST else 'yzy'
-    dbObjIndex = request.POST['dbObjIndex']
-    dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-    if not dataBaseObj.con:
-        isConnect = dataBaseObj.connectDB()
-        if not isConnect:
-            context = {'status': 'failed', 'reason': "can't connect db"}
-            return JsonResponse(context)
-
-    data = dataBaseObj.fetchTableData(request.POST["tableName"], modeName, request.POST['database'])
-    if data == 'failed':
-        return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
-
-    context = {
-        "status": "success",
-        "results": data
-    }
-    return JsonResponse(context)
-
 # 根据条件查询. 返回表格数据
 
 
