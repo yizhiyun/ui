@@ -28,9 +28,9 @@ def preUploadFile(fileStream, userName="myfolder", csvOpts={}):
     fileDict["tables"] = []
 
     logger.debug("csvOpts:{0}".format(csvOpts))
-    addHeader = False
+    hasHeader = True
     if "header" in csvOpts.keys():
-        addHeader = convertBool(csvOpts["header"])
+        hasHeader = convertBool(csvOpts["header"])
 
     if fileName.endswith("xls") or fileName.endswith("xlsx"):
         workbook = xlrd.open_workbook(filename=None, file_contents=fileStream.read())
@@ -71,8 +71,8 @@ def preUploadFile(fileStream, userName="myfolder", csvOpts={}):
             wcsv = csv.writer(csvFile, delimiter=",", doublequote=True, quotechar="\"", escapechar="\\",
                               lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL, skipinitialspace=True,
                               strict=True)
-            if addHeader:
-                r1 = rcsv.next()
+            if not hasHeader:
+                r1 = rcsv.__next__()
                 # write one header to be used
                 wcsv.writerow(["col_{0}".format(i) for i in range(len(r1))])
                 wcsv.writerow(r1)

@@ -433,7 +433,7 @@ def uploadCsv(request):
         # process the csv to generate the related parquet table in use.
         sparkCode = convertCsvToParquetSparkCode(uploadedCsvList, jsonData, hdfsHost, port)
 
-        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.2)
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
