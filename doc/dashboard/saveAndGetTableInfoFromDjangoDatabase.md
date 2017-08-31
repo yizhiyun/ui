@@ -331,7 +331,7 @@ Relevance Folder And ParentFolder From Current User
 
 
 
-update Name From Current User
+Update Name From Current User
 -------------
 ### 1. Request URI: /dashboard/changeViewName
 ### 2. Request Method: POST
@@ -633,7 +633,7 @@ Save User's Note
 
 
 
-remember User's Note is or not is show
+Remember User's Note is or not is show
 -------------
 ### 1. Request URI: /dashboard/setShow
 ### 2. Request Method: POST
@@ -744,7 +744,7 @@ remember User's Note is or not is show
 
 
 
-remember User's view is or not is open
+Remember User's view is or not is open
 -------------
 ### 1. Request URI: /dashboard/setIsopen
 ### 2. Request Method: POST
