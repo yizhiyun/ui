@@ -274,7 +274,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             newDF.write.parquet(savedPathUrl, mode=mode)
         return True
 
-    def generateNewDataFrame(jsonData, maxRowCount=10000,
+    def generateNewDataFrame(jsonData, maxRowCount=10000, userName="myfolder",
                              hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
 
         # check the json format
@@ -298,6 +298,9 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 userTableUrl = False
                 if "sourcetype" not in tables[0].keys() or tables[0]["sourcetype"] == "db":
                     tables[0]["dbsource"] = jsonData["dbsources"][tables[0]["source"]]
+                elif tables[0]["sourcetype"] == "tmptables":
+                    userTableUrl = "hdfs://{0}:{1}/tmp/{2}/{3}/parquet/{4}/{5}".format(
+                        hdfsHost, hdfsPort, rootFolder, userName, dbName, tableName)
                 else:
                     userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
                         hdfsHost, hdfsPort, rootFolder, dbName, tableName)
