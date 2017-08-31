@@ -392,3 +392,5 @@ class ConnectDataBase():
             except Exception:
                 logger.error("Exception: {0}".format(sys.exc_info()))
                 return 'failed'
+
+        return results
