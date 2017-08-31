@@ -332,6 +332,9 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 userTableUrl = False
                 if "sourcetype" not in tables[seq].keys() or tables[seq]["sourcetype"] == "db":
                     tables[seq]["dbsource"] = jsonData["dbsources"][tables[seq]["source"]]
+                elif tables[seq]["sourcetype"] == "tmptables":
+                    userTableUrl = "hdfs://{0}:{1}/tmp/{2}/{3}/parquet/{4}/{5}".format(
+                        hdfsHost, hdfsPort, rootFolder, userName, dbName, tableName)
                 else:
                     userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
                         hdfsHost, hdfsPort, rootFolder, dbName, tableName)
@@ -357,11 +360,11 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
         except KeyError:
             traceback.print_exc()
-            logger.error("KeyError Exception: {0}".format(sys.exc_info()))
+            logger.error("KeyError Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
             return False
         except Exception:
             traceback.print_exc()
-            logger.error("Exception: {0}".format(sys.exc_info()))
+            logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
             return False
         return outputDf
 
