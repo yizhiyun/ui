@@ -1,5 +1,4 @@
 import pyhdfs
-import xlrd
 import os
 import csv
 import sys
@@ -7,6 +6,7 @@ import logging
 import codecs
 import shutil
 import traceback
+import pandas as pd
 
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.cloudrestapi.upload")
@@ -34,26 +34,12 @@ def preUploadFile(fileStream, userName="myfolder", csvOpts={}):
         hasHeader = convertBool(csvOpts["header"])
 
     if fileName.endswith("xls") or fileName.endswith("xlsx"):
-        workbook = xlrd.open_workbook(filename=None, file_contents=fileStream.read())
-        all_worksheets = workbook.sheet_names()
-        for wsName in all_worksheets:
-            worksheet = workbook.sheet_by_name(wsName)
-            csvFileName = "{0}/{1}".format(tmpFolder, wsName)
-            with open(csvFileName, "w") as csvFile:
-                csvWriter = csv.writer(csvFile, delimiter=",", doublequote=True, quotechar="\"",
-                                       escapechar="\\", lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL,
-                                       skipinitialspace=True, strict=True)
-                for r in range(worksheet.nrows):
-                    row = []
-                    for c in range(worksheet.ncols):
-                        if(worksheet.cell(r, c).ctype == 3):
-                            year, month, day, hour, minute, second = \
-                                xlrd.xldate.xldate_as_tuple(worksheet.cell_value(r, c), 0)
-                            row.append("{0}-{1}-{2}T{3}:{4}:{5}".format(year, month, day, hour, minute, second))
-                        else:
-                            row.append(worksheet.cell_value(r, c))
-                    csvWriter.writerow(row)
-                fileDict["tables"].append(wsName)
+        xls = pd.ExcelFile(fileStream)
+        for shName in xls.sheet_names:
+            df = xls.parse(sheetname=shName)
+            csvFileName = "{0}/{1}".format(tmpFolder, shName)
+            df.to_csv(csvFileName, header=True, index=False, encoding='utf-8', escapechar='\\')
+            fileDict["tables"].append(shName)
     elif fileName.endswith("csv"):
         csvFileName = "{0}/{1}".format(tmpFolder, abbrFileName)
 
@@ -61,7 +47,7 @@ def preUploadFile(fileStream, userName="myfolder", csvOpts={}):
         doublequote = convertBool(csvOpts["doublequote"]) if "doublequote" in csvOpts.keys() else True
         quotechar = csvOpts["quote"] if "quote" in csvOpts.keys() else "\""
         escapechar = csvOpts["escapechar"] if "escapechar" in csvOpts.keys() else "\\"
-        lineterminator = csvOpts["lineterminator"] if "lineterminator" in csvOpts.keys() else "\r\n"
+        lineterminator = csvOpts["lineterminator"] if "lineterminator" in csvOpts.keys() else "\n"
         skipinitialspace = convertBool(csvOpts["skipinitialspace"]) if "skipinitialspace" in csvOpts.keys() else True
         strict = convertBool(csvOpts["strict"]) if "strict" in csvOpts.keys() else True
 
@@ -70,7 +56,7 @@ def preUploadFile(fileStream, userName="myfolder", csvOpts={}):
                               quotechar=quotechar, escapechar=escapechar, lineterminator=lineterminator,
                               skipinitialspace=skipinitialspace, strict=strict)
             wcsv = csv.writer(csvFile, delimiter=",", doublequote=True, quotechar="\"", escapechar="\\",
-                              lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL, skipinitialspace=True,
+                              lineterminator="\n", quoting=csv.QUOTE_MINIMAL, skipinitialspace=True,
                               strict=True)
             if not hasHeader:
                 r1 = rcsv.__next__()

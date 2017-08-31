@@ -539,9 +539,9 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
             for rowItem in dframe1.collect():
-                logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
+                # logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
                 outputDict['data'].append(rowItem.asDict())
-        logger.debug("outputDict: {0}".format(outputDict))
+        logger.debug("outputDict length: {0}".format(len(outputDict)))
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     ''' + '''
     print(getTableInfo('{0}', '{1}', '{2}', {3}))
