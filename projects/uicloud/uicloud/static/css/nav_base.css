@@ -24,7 +24,7 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 .maskLayer{position: absolute;top: 0px;left:0px;width: 100%;height: 100%;background: #000000;opacity: 0.3;z-index: 400;}
 
 #connectDataBaseInfo{width: 400px;height:350px;position: absolute;margin: auto;left: 0;top: 0;right: 0;bottom: 0;font-size: 12px;z-index: 430;background: #ffffff;border-radius: 10px;}
-#connectDataBaseInfo #dataBaseName{height: 40px;line-height: 40px;border-bottom: 1px solid #dedede;text-indent: 20px;}
+#connectDataBaseInfo .common-head{border-bottom: 1px solid #dedede;}
 #connectDataBaseInfo .locationDiv{/*padding: 20px,20px,0px,20px;*/padding-top: 20px;padding-left: 20px;padding-right: 20px;}
 #connectDataBaseInfo .locationDiv .server{float: left;}
 #connectDataBaseInfo .locationDiv .server input{width: 200px;height: 21px;border:1px solid #dedede;border-radius: 2px;}
@@ -220,3 +220,9 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 #date-filter  .common-date-settering .date-slider-box  .range-flag .max-date-flag{float: right;}
 
 #date-filter .bottomDateIndictor{position: absolute;width: 100%;height: 22px;line-height: 22px;text-indent: 20px;text-align:left; left:0;bottom: 60px;}
+
+/*搜索框*/
+.searchModule .searchReasultsList{position: fixed;z-index: 1000;background: #f5f5f5;border-radius: 2px;}
+.searchModule .searchReasultsList li{cursor: pointer;height: 14px;min-width: 100px;padding-bottom: 5px;}
+.searchModule .searchReasultsList li:hover{background: #dedede;}
+.searchModule .searchReasultsList li span{margin-left: 10px;line-height: 14px;height: 14px;font-size: 10px;}

@@ -202,7 +202,7 @@ function showTable_by_dragData(isTabChart){
 	for(var key in needShowSpan){
 		
 		var span = $("<span class="+measure_name+"></span>");
-		span.html(needShowSpan[key][measure_name]["sum"]);
+		span.html(needShowSpan[key][measure_name][drag_measureCalculateStyle[measure_name]]);
 		var positionInfo = key.split("_needseprate_");
 		var row_info = positionInfo[0];
 		var column_info = positionInfo[1];

@@ -50,8 +50,15 @@
 	
 	<div class="maskLayer" style="display: none;"> </div>
 	 <div id="connectDataBaseInfo" style="display: none;">
-    		<p id="dataBaseName"></p>
-    		<span id="connectDataBaseInfo_close"></span>
+    		<div class="topline"></div>
+		<div class="common-head">
+			<span class="logo">数据库:</span>
+			<span class="flag"></span>
+			<div class="close">
+				<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+			</div>
+	
+		</div>
     		<form method="post" id="dataBaseConnectForm">
     			{% csrf_token %}
 			   <input name="dataBaseName" type="hidden" id="formPostDataBaseName"/>

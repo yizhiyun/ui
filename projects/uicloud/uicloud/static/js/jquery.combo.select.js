@@ -808,13 +808,3 @@
 
 }));
 
-window.getAbsCoordinates=function(e){
-	e = e[0];
-    var pos = {top: 0, left: 0};
-    while(e && e.tagName != "HTML"){
-        pos.left += e.offsetLeft;
-        pos.top += e.offsetTop;
-        e=e.offsetParent;
-    }
-    return pos;
-};

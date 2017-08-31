@@ -29,7 +29,7 @@ function one_de_one_me_handle (chart_type_need) {
 		var dimensionalityArr = allKeys(needMeasureData).sort();
 		var count_help = 0;
 		for (var i = 0;i < dimensionalityArr.length;i++) {
-			var value = needMeasureData[dimensionalityArr[i]][need_handle_measureName]["sum"];
+			var value = needMeasureData[dimensionalityArr[i]][need_handle_measureName][drag_measureCalculateStyle[need_handle_measureName]];
 			measure_need_show.push(value);
 			measure_help_show.push(count_help);
 			count_help += value;
@@ -130,7 +130,7 @@ function one_de_one_me_handle (chart_type_need) {
 		var measure_need_show = [];
 		var dimensionalityArr = allKeys(needMeasureData).sort();
 		for (var i = 0;i < dimensionalityArr.length;i++) {
-			var value = needMeasureData[dimensionalityArr[i]][need_handle_measureName]["sum"];
+			var value = needMeasureData[dimensionalityArr[i]][need_handle_measureName][drag_measureCalculateStyle[need_handle_measureName]];
 			
 			var the_dime = dimensionalityArr[i].replace(/_YZY_$/g,"");
 			the_dime = the_dime.split("_equal_")[1];
@@ -319,7 +319,7 @@ function one_de_one_me_handle (chart_type_need) {
 		var dimensionalityArr = allKeys(needMeasureData).sort();
 		var count_help = 0;
 		for (var i = 0;i < dimensionalityArr.length;i++) {
-			var value = needMeasureData[dimensionalityArr[i]][need_handle_measureName]["sum"];
+			var value = needMeasureData[dimensionalityArr[i]][need_handle_measureName][drag_measureCalculateStyle[need_handle_measureName]];
 			measure_need_show.push(value);
 			measure_help_show.push(count_help);
 			count_help += value;
@@ -483,7 +483,7 @@ function many_de_many_me_handle(chart_type_need){
 				
 				for (var m = 0; m < all_measure.length;m++) {
 					var real_measure_name = all_measure[m];
-					var value = measure_info[real_measure_name]["sum"];
+					var value = measure_info[real_measure_name][drag_measureCalculateStyle[real_measure_name]];
 					if(!measure_show_arr[m]){
 						measure_show_arr[m] = [];
 						measure_name_arr.push(real_measure_name);
@@ -600,7 +600,7 @@ function comparisonStrip_generate_fun(){
 				
 				for (var m = 0; m < all_measure.length;m++) {
 					var real_measure_name = all_measure[m];
-					var value = measure_info[real_measure_name]["sum"];
+					var value = measure_info[real_measure_name][drag_measureCalculateStyle[real_measure_name]];
 					if(!measure_show_arr[m]){
 						measure_show_arr[m] = [];
 						measure_name_arr.push(real_measure_name);
@@ -985,13 +985,13 @@ function comparisonStrip_generate_fun(){
 				if (!confir_max_obj[name]) {
 					confir_max_obj[name] = 1;
 					groupArr.push([nowdime]);
-					measure_Data_arr.push([needMeasureData[sort_dimensionality[i]][measureName]["sum"]]);
+					measure_Data_arr.push([needMeasureData[sort_dimensionality[i]][measureName][drag_measureCalculateStyle[measureName]]]);
 				}else{
 					if(i>0){
 						if (predime != nowdime) {
 							confir_max_obj[name] ++;
 							groupArr[groupArr.length - 1].push(nowdime)
-							measure_Data_arr[measure_Data_arr.length - 1].push(needMeasureData[sort_dimensionality[i]][measureName]["sum"]);
+							measure_Data_arr[measure_Data_arr.length - 1].push(needMeasureData[sort_dimensionality[i]][measureName][drag_measureCalculateStyle[measureName]]);
 							max = max > confir_max_obj[name] ? max:confir_max_obj[name];
 						}
 					}
@@ -1052,7 +1052,7 @@ function comparisonStrip_generate_fun(){
 		for (var i = 0;i < sort_dimensionality.length;i++) {
 			var dimensionality_info = sort_dimensionality[i];
 			var measure_info = needMeasureData[dimensionality_info]; // 等会处理	
-			var value = measure_info[all_measure[0]]["sum"];
+			var value = measure_info[all_measure[0]][drag_measureCalculateStyle[all_measure[0]]];
 			var dime_arr =  dimensionality_info.split("_needseprate_"); // 放有行维度和列维度
 			var all_dime = dime_arr[0];
 			if (dime_arr[1]) {

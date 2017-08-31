@@ -59,3 +59,39 @@ String.prototype.image_Name_Find = function(){
 		return "/static/dataCollection/images/tableDataDetail/String.png";
 	}
 }
+// 检测输入的算法是否正确，有待完善，目前只是简单的检测
+function  measureCalculateVertify (formula) {
+	//1、剔除空白符号
+	formula = formula.replace(/\s/g, ''); 
+	//2、字符长度小于1
+	if(formula.length < 1){
+		return false;
+	}
+	//3、运算符连续
+	if( /[\+\-\*\/]{2,}/.test(formula) ){  
+            return false;  
+    }  
+    //4、括号不匹配
+     var leftbrackets = [];
+     var rightbrackets = [];
+    for(var i = 0; i < formula.length; i++){  
+        var item = formula.charAt(i);  
+        if('(' == item){  
+            leftbrackets.push('(');  
+        }else if(')' == item){  
+            rightbrackets.push(')');  
+        }  
+    } 
+    if(leftbrackets.length != rightbrackets.length){
+    	return false;
+    }
+    //5、左小括号后面不能直接跟运算符号
+	if(/\([\+\-\*\/]/.test(formula)){  
+	    return false;  
+	} 
+     //6、)前面是运算符 
+    if(/[\+\-\*\/]\)/.test(formula)){  
+        return false;  
+    }  
+    return true;
+}

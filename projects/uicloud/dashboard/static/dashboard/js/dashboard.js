@@ -10,6 +10,8 @@ var drag_row_column_data = {
 	}
 }
 
+var drag_measureCalculateStyle = {};
+
 
 
 var view_name;
@@ -378,7 +380,10 @@ $(function() {
 					$.post("../dashboard/setIsopen",{"username":username,"id":ajax_data_post[edit_view_save_data.split(",")[0]][edit_view_save_data.split(",")[1]][edit_view_save_data.split(",")[2]]["id"]});
 				}
 		})
+
 	}
+
+	
 
 	//小部件操作栏事件
 	function small_handle_btn(){
@@ -602,11 +607,7 @@ $(function() {
 				
 				
 				$("#"+_show_type+"_show ul").append(aLi);
-				
-
-				
-
-				
+							
 			}
 			// 启动拖拽功能
 			drag();
@@ -625,7 +626,10 @@ $(function() {
 							open_or_close = false;
 								//创建最外层元素
 							var out_wrap_click = $("<ul class='me_out_content'></ul>");
-							out_wrap_click.appendTo($(ele).parent().parent()).data("pop_data_handle",username+"_YZY_"+ $("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY_"+ element.parent().find("span").text());
+							var columnName = element.parent().parent().data("field_name");
+							
+							out_wrap_click.appendTo($(ele).parent().parent()).data("pop_data_handle",username+"_YZY_"+ $("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY_"+ columnName);
+							
 							out_wrap_click.css({
 								"left":$(ele).parent().parent().offset().left + $(ele).parent().parent().width() - 60 -50+ "px",
 								"top":$(ele).parent().parent().offset().top - 47+  "px",
@@ -679,37 +683,91 @@ $(function() {
 
 						// 点击事件-------------
 						//编辑计算
+						//编辑计算
 						out_wrap_click.find(".edit_calculation").on("click",function(){
-							console.log("编辑计算");
-							console.log(out_wrap_click.data("pop_data_handle"));
-						})
+							$("#editMeasureCalculateView").show();
+							$(".maskLayer").show();
+							var measureList = $(this).parents(".me_out_content").eq(0);
+							var measureInfo = measureList.data("pop_data_handle");
+							$("#editMeasureCalculateView").data("measureInfo",measureInfo);
+							$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val(measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html());					
+							$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").unbind("click");
+							$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").click(function(event){
+								event.stopPropagation();
+								$("#editMeasureCalculateView").hide();
+								$(".maskLayer").hide();
+							});
+							$("#editMeasureCalculateView .common-filer-footer .confirmBtn").click(function(event){
+								event.stopPropagation();
+								var meausureInfo = $(this).parents("#editMeasureCalculateView").data('measureInfo');
+								var measureName = meausureInfo.split("_YZY_")[2];
+								drag_measureCalculateStyle[measureName] = "custom";
+								customCalculate[measureName] = $(this).parents("#editMeasureCalculateView").find(".arithmeticInputTextArea").val();
+								isagainDrawTable = true;
+								switch_chart_handle_fun("sortable");	
+								$("#editMeasureCalculateView").hide();
+								$(".maskLayer").hide();
+							})
+							
+						});
 
 						//移除
 						out_wrap_click.find(".deleting").on("click",function(){
 							console.log("移除");
-						})
+						});
+
 
 						//度量里点击事件
 						//总计
 						out_wrap_click.find(".pop_total").on("click",function(){
-							console.log("总计");
-						})
+							
+							var measureList = $(this).parents(".me_out_content").eq(0);
+							var measureInfo = measureList.data("pop_data_handle");
+							var measureName = measureInfo.split("_YZY_")[2];
+							drag_measureCalculateStyle[measureName] = "sum";
+							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("总计("+measureName+")");
+							isagainDrawTable = true;
+							switch_chart_handle_fun("sortable");	
+						});
 						//平均值
 						out_wrap_click.find(".pop_mean").on("click",function(){
-							console.log("平均数");
-						})
+//							console.log("平均数");
+							var measureList = $(this).parents(".me_out_content").eq(0);
+							var measureInfo = measureList.data("pop_data_handle");
+							var measureName = measureInfo.split("_YZY_")[2];
+							drag_measureCalculateStyle[measureName] = "average";
+							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("平均值("+measureName+")");
+							isagainDrawTable = true;
+							switch_chart_handle_fun("sortable");			
+						});
 						//中位数
 						out_wrap_click.find(".pop_median").on("click",function(){
 							console.log("中位数");
-						})
+						});
 						//最大值
 						out_wrap_click.find(".pop_max").on("click",function(){
 							console.log("最大值");
-						})
+							var measureList = $(this).parents(".me_out_content").eq(0);
+							var measureInfo = measureList.data("pop_data_handle");
+							var measureName = measureInfo.split("_YZY_")[2];
+							drag_measureCalculateStyle[measureName] = "max";
+							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("最大值("+measureName+")");
+							isagainDrawTable = true;
+							switch_chart_handle_fun("sortable");	
+						});
 						//最小值
 						out_wrap_click.find(".pop_min").on("click",function(){
-							console.log("最小值");
-						})
+							
+							var measureList = $(this).parents(".me_out_content").eq(0);
+							
+							var measureInfo = measureList.data("pop_data_handle");
+							var measureName = measureInfo.split("_YZY_")[2];
+							drag_measureCalculateStyle[measureName] = "min";
+							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("最小值("+measureName+")");
+							isagainDrawTable = true;
+							switch_chart_handle_fun("sortable");	
+						});
+						// -------------------
 						// -------------------
 						})
 
@@ -932,7 +990,11 @@ $(function() {
 								$("#sizer_content").css("display", "block");
 							}
 							$(this).find(".drag_text").css("display", "none");
-							$("<li class='drog_row_list'></li>").html($(ui.draggable).parent().html()).appendTo(this);	
+
+							var current_li = $("<li class='drog_row_list'></li>").html($(ui.draggable).parent().html());
+							current_li.appendTo(this);
+							$(current_li).data("field_name",$(ui.draggable).find("span.measure_list_text_left").text());
+							
 							
 							$(".drog_row_list").each(function(index, ele) {
 								if($(ele).parent().attr("class") != "list_wrap") {
@@ -1068,12 +1130,11 @@ $(function() {
 										
 									}
 
-
 									$(this).find("li").css({
 										width: view_show * 0.85 + "px",
 									}).addClass("date_list").addClass("bj_information");
 						
-								})
+								});
 
 								markShow();
 
@@ -1083,10 +1144,15 @@ $(function() {
 							var _dataType = dragObj.data("type");// 元素数据类型
 							var _wd_type = _dataType.w_d_typeCat();// 维度还是度量。。。
 							var _field_name =dragObj.children("span").eq(0).html(); // 字段名
-								_drag_message["type"] = _wd_type;
-
+							_drag_message["type"] = _wd_type;
+							if(_wd_type == "measure"){
+								if(allKeys(drag_measureCalculateStyle).indexOf(_field_name) == -1){
+									drag_measureCalculateStyle[_field_name] = "sum";
+									$(current_li).find("span.measure_list_text_left").html("总计("+_field_name+")");
+								}
+							}
 								//给予li id名 记录元素对应的内容
-								$(this).find("li").eq($(this).find("li").length-1).attr("id",_wd_type+":"+_field_name + ":" + _dataType)
+							$(this).find("li").eq($(this).find("li").length-1).attr("id",_wd_type+":"+_field_name + ":" + _dataType);
 							//判断拖入的区域
 							switch($(this).attr("id")) {
 								
@@ -1096,10 +1162,7 @@ $(function() {
 								// 判断是维度还是度量
 								drag_row_column_data["row"][_wd_type].push(_field_name + ":" + _dataType);
 								_drag_message["position"] = "row";
-								_drag_message["type"] = _wd_type;	
 								
-								
-
 								break;
 
 									//判断拖入列
@@ -1110,7 +1173,6 @@ $(function() {
 									drag_row_column_data["column"][_wd_type].push(_field_name + ":" + _dataType);
 								
 									_drag_message["position"] = "column";
-									_drag_message["type"] = _wd_type;	
 									break;
 
 								case 'handle_color_text':
@@ -1154,7 +1216,6 @@ $(function() {
 								default:
 									break;
 							}
-				
 							// 展现 table
 					rightFilterListDraw("add",_field_name+":"+_dataType);
 					switch_chart_handle_fun();
@@ -1557,7 +1618,7 @@ $(function() {
 
 				})
 			});
-
+	
 			//指标拖拽
 			$(".index_list_text").each(function(index, ele) {
 

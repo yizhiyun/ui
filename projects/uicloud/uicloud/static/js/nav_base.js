@@ -2,13 +2,14 @@
  * Created by guoxiaomin on 2017/6/14.
  */
 (function(doc,win){
-	win.onload = function(){
+	window.onload = function(){
 		win.onresize = function(){
-			initWindowSize(doc,win);
-		}
 		initWindowSize(doc,win);
-		
 	}
+	initWindowSize(doc,win);
+	
+	}
+	
 })(document,window);
 
 function initWindowSize(doc,win,paHeight){
@@ -194,15 +195,21 @@ $(function(){
 	
 	pallasdaraFunctionNavBtnHandle();
 	
+	// 连接数据库关闭按钮
+	$("#connectDataBaseInfo .common-head .close").unbind("click");
+	$("#connectDataBaseInfo .common-head .close").click(function(event){
+		event.stopPropagation();
+		$("#connectDataBaseInfo").hide();
+		$(".maskLayer").hide();
+	})
+	
 });
 
 
 function pallasdaraFunctionNavBtnHandle(){
 	
 	var currentPath = window.location.pathname;
-//	if(/dataCollection\/pallasdata/.test(currentPath)){
-//		$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").addClass("active");
-//	}
+
 	if(/dataCollection\/dataBuildView/.test(currentPath)){
 		$(".container .main .leftNav #navBuildDataViewBtn").siblings(".functionBtn").children("div.active").removeClass("active");
 		$(".container .main .leftNav #navBuildDataViewBtn").children("div").addClass("active");
@@ -305,3 +312,14 @@ function navBtnAbleAndDisablegetHandle(){
 function navBtnAbleAndDisabledeleteHandle(){
 	window.localStorage.removeItem("navAbleAndDisable");
 }
+
+window.getAbsCoordinates=function(e){
+	e = e[0];
+    var pos = {top: 0, left: 0};
+    while(e && e.tagName != "HTML"){
+        pos.left += e.offsetLeft;
+        pos.top += e.offsetTop;
+        e=e.offsetParent;
+    }
+    return pos;
+};

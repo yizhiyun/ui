@@ -1,11 +1,11 @@
 // 维度和数据处理
 // 数组排序
 Array.prototype.max = function(){ 
-return Math.max.apply({},this) 
+return Math.max.apply({},this); 
 } 
 Array.prototype.min = function(){ 
-return Math.min.apply({},this) 
-} 
+return Math.min.apply({},this); 
+}
 Array.prototype.XMsort = function(propertyNameArray){
 		
 	function createComparisonFunction(obj1,obj2){
@@ -25,7 +25,8 @@ Array.prototype.XMsort = function(propertyNameArray){
 	}
 	this.sort(createComparisonFunction);
 }
-
+var customCalculate = {}
+var needShowData = {};
 // 给定维度，处理度量的计算，目前做的是求和运算
 function measure_Hanlde(measure_name_arr,pop_last_dimensionality){
 	var row_filter_condition = [];
@@ -44,7 +45,7 @@ function measure_Hanlde(measure_name_arr,pop_last_dimensionality){
 		}
 	}
 		
-	var needShowData = {};
+	needShowData = {};
 	for (var i = 0;i < current_data["data"].length;i++) {
 		var theData = current_data["data"][i];
 		var key = "";
@@ -83,6 +84,27 @@ function measure_Hanlde(measure_name_arr,pop_last_dimensionality){
 			data[measureName]["average"] = (sum / data[measureName]["allValue"].length).toFixed(2); // 平均值
 			data[measureName]["min"] = data[measureName]["allValue"].min();
 			data[measureName]["max"] = data[measureName]["allValue"].max();
+		}
+		for(var need_custom_measureName in customCalculate){
+			var way = customCalculate[need_custom_measureName];
+			
+			if (!way) {
+				continue;
+			}
+			way = way.replace(/\s/g, '');
+			var sumArray = way.match(/(SUM|AVERAGE|MIN|MAX)\([A-Za-z0-9_]+\)/g);
+			for (var i = 0;i < sumArray.length;i++) {
+				var obj = sumArray[i];
+				var name = obj.substring(obj.indexOf("(")+1,obj.indexOf(")"));
+				var type = obj.substring(0,obj.indexOf("("));
+				if(data[name]){
+					way = way.replace(obj,data[name][type.toLowerCase()]);
+				}else{
+					return measure_Hanlde([name]);
+				}
+			}
+			data[need_custom_measureName]["custom"] = eval(way);
+			
 		}
 		
 	}

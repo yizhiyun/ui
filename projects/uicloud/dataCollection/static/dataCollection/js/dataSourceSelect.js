@@ -13,7 +13,7 @@ $(function () {
     		$("#dataList .baseDetail li").click(function(){
     			dataBaseName = $(this).html();
     			$("#dataList").hide();
-    			if(dataBaseName == "ORACLE" && !$("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").is(":visible")){
+    			if(dataBaseName == "ORACLE"){
     				$("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").show();
     			}else{
     				$("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").hide();
@@ -23,12 +23,13 @@ $(function () {
     }
     //  连接数据库的弹框显示之后，处理里面的点击事件
     function baseInfoShowCallBack(){
-    		$("#connectDataBaseInfo #dataBaseName").html(dataBaseName)
-  			$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName)
+		$("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
+		
+  		$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
+  		
     		$("#loginBtn").click(function(event){
-//  			$("#dataBaseConnectForm").submit();
+    			
 			var formData = new FormData($("#dataBaseConnectForm").get(0));
-			formData.append("username","yzy");
 			$.ajax({
 				url:"/dataCollection/connectDataBaseHandle",
 				type:"POST",
@@ -36,13 +37,15 @@ $(function () {
 	            contentType:false,
 	            data:formData,
 	            success:function(data){
-					if(data.status == "ok"){
-						dbAndPanelInfoSaveHandle(data.data);
+					if(data.status == "success"){
+//						dbAndPanelInfoSaveHandle(data.data);
 						window.location.href = "/dataCollection/dataBuildView";
 						navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
+					}else{
+						alert("请检查数据库是否开启");
 					}
 	            }
-			})
+			});
     			
     			$("#connectDataBaseInfo").hide();
     			$("#dataList").hide();
@@ -67,16 +70,18 @@ $(function () {
 		formData.append("quote",	 quote);
 		formData.append("header",header);
 		$.ajax({
-			url:"cloudapi/v1/upload",
+			url:"/cloudapi/v1/uploadcsv",
 			type:"POST",
 			processData: false,
             contentType:false,
             data:formData,
             success:function(data){
-            		if(data.status == "ok"){
-            			dbAndPanelInfoSaveHandle(data.data);
+            		if(data.status == "success"){
+//          			dbAndPanelInfoSaveHandle(data.data);
 					window.location.href = "/dataCollection/dataBuildView";
 					navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
+            		}else{
+            			alert("上传文件失败:"+data.reason);
             		}
             }
 		})
@@ -84,9 +89,14 @@ $(function () {
    });
    
   // 点击选择平面文件，选中一个或者多个文件后
-  $("#selectedPanelFile").change(function(){
-  		$(".maskLayer").show();
-  		$("#panelFileSettingOption").show();	
-  });
+	  $("#selectedPanelFile").change(function(){
+		$(".maskLayer").show();
+		$("#panelFileSettingOption").show();	
+	  });
+	$("#panelFileSettingOption .common-head .close,#panelFileSettingOption a.cancleBtn").click(function(event){
+			$("#panelFileSettingOption").hide();
+			$(".maskLayer").hide();
+			$("#selectedPanelFile").val("");
+	});
   
 })
