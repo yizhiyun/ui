@@ -68,7 +68,7 @@ def executeSpark(sparkCode,
         # requests.delete(sessionUrl, headers=headers)
         return False
     elif resultReqJson["state"] == "waitting":
-        return {"status": "waitting", "msg": "The job hasn't been finished. You can check it latter."}
+        return {"status": "waitting", "msg": "The job hasn't been finished. You can check it later."}
 
     # pprint.pprint(resultReqJson)
     logger.debug("resultReqJson:{0}".format(resultReqJson))
@@ -366,7 +366,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         """
         # sort the jsonData["relationships"] list to follow the below rule
         # 1. saved both tables from the first relationship into joinedTableSet.
-        # 2. At least one table from the latter relationship exist in the joinedTableSet.
+        # 2. At least one table from the later relationship exist in the joinedTableSet.
         """
 
         joinedTableSet = set()
@@ -568,16 +568,13 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
     return {"status": True, "results": outputList}
 
 
-def convertCsvToParquetSparkCode(uploadedCsvUri, csvOpts={}, hdfsHost="spark-master0", port="9000"):
+def convertCsvToParquetSparkCode(uploadedCsvList, csvOpts={}, hdfsHost="spark-master0", port="9000"):
     """
-    uploadedCsvUri must have the format of <rootFolder>/csv/<parentFolder>/<fileName>.
+    uploadedCsvList's item must have the format of <rootFolder>/csv/<parentFolder>/<fileName>.
     For example, "/users/myfolder/csv/test/test"
     """
 
-    csvUrl = "hdfs://{0}:{1}{2}".format(hdfsHost, port, uploadedCsvUri)
-    rootFolder, filePath = uploadedCsvUri.split("/csv/")
-    parquetUrl = "hdfs://{0}:{1}{2}/parquet/{3}".format(hdfsHost, port, rootFolder, filePath)
-    logger.debug("csvUrl: {0}, parquetUrl: {1}".format(csvUrl, parquetUrl))
+    logger.debug("uploadedCsvList: {0}, hdfsHost: {1}, port:{2}".format(uploadedCsvList, hdfsHost, port))
     csvOpts = json.dumps(csvOpts, ensure_ascii=True)
     logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
 
@@ -590,23 +587,16 @@ def convertCsvToParquetSparkCode(uploadedCsvUri, csvOpts={}, hdfsHost="spark-mas
     def convertCsvToParquet(csvUrl, parquetUrl, csvOpts={}):
         """
         """
-        # logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
-        # csvOpts = json.loads(csvOpts, encoding='utf-8')
-        logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
-        header = csvOpts["header"] if "header" in csvOpts else False
-        delimiter = csvOpts["delimiter"] if "delimiter" in csvOpts else ","
-        quote = csvOpts["quote"] if "quote" in csvOpts else "\\""
-
         try:
-            csvDf = spark.read.option("inferSchema", "true") \
-                      .option("header", header) \
-                      .option("sep", delimiter) \
-                      .option("quote", quote) \
-                      .csv(csvUrl) \
+            # Given all csv has been converted into the standard format.
+            dateFormat = csvOpts["dateformat"] if "dateformat" in csvOpts else "yyyy-MM-dd"
+            timeFormat = csvOpts["timestampformat"] if "timestampformat" in csvOpts else "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+            csvDf = spark.read.csv(csvUrl, header=True, inferSchema=True,
+                                   dateFormat=dateFormat, timestampFormat=timeFormat)
 
             for i in range(len(csvDf.columns)):
                 if re.match("[a-zA-Z0-9_-]+", csvDf.columns[i]) is None:
-                    csvDf = csvDf.withColumnRenamed(csvDf.columns[i], "col_{0}".format(i))
+                    csvDf = csvDf.withColumnRenamed(csvDf.columns[i], "re_col_{0}".format(i))
             csvDf.write.parquet(parquetUrl, "overwrite")
 
             return csvUrl.split("/csv/")[-1]
@@ -614,9 +604,28 @@ def convertCsvToParquetSparkCode(uploadedCsvUri, csvOpts={}, hdfsHost="spark-mas
             traceback.print_exc()
             logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
             return False
+
+
+    def batchConvertCsvList(uploadedCsvList, csvOpts={}, hdfsHost="spark-master0", port="9000"):
+        """
+        """
+        logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
+        csvUrlList = []
+        for uploadedCsvUri in uploadedCsvList:
+            csvUrl = "hdfs://{0}:{1}{2}".format(hdfsHost, port, uploadedCsvUri)
+            rootFolder, filePath = uploadedCsvUri.split("/csv/")
+            parquetUrl = "hdfs://{0}:{1}{2}/parquet/{3}".format(hdfsHost, port, rootFolder, filePath)
+            logger.debug("csvUrl: {0}, parquetUrl: {1}".format(csvUrl, parquetUrl))
+            res = convertCsvToParquet(csvUrl, parquetUrl, csvOpts)
+            if res:
+                csvUrlList.append(res)
+            else:
+                logger.error("There is an error while converting {0} csv".format(csvUrl))
+                return False
+        return csvUrlList
     ''' + '''
-    print(convertCsvToParquet('{0}', '{1}', {2}))
-    '''.format(csvUrl, parquetUrl, csvOpts)
+    print(batchConvertCsvList({0}, {1}, '{2}', '{3}'))
+    '''.format(uploadedCsvList, csvOpts, hdfsHost, port)
     return sparkCode
 
 
@@ -632,6 +641,9 @@ def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
     logger.debug("filterJson: {0}, type: {1}".format(filterJson, type(filterJson)))
 
     sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + '''
+    import json
+
+
     def getSpecUploadedTable( rootUrl, tableName, mode, filterJson='{}', maxRowCount=1000):
         """
         get the specified table schema,
@@ -647,15 +659,15 @@ def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
             parquetFileds = spark.read.parquet(parquetUrl).schema.fields
 
             csvFields = dframe1.schema.fields
-            logger.debug("parquetFileds:{0}, csvFields:{1}".format(parquetFileds, csvFields))
+            # logger.debug("parquetFileds:{0}, csvFields:{1}".format(parquetFileds, csvFields))
             if len(csvFields) != len(parquetFileds):
                 logger.error("csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
                 return False
             outputDict["schema"] = []
             for i in range(len(csvFields)):
-                logger.debug("i:{0}, item: {1}".format(i, csvFields[i]))
-                logger.debug("field: {0}, mappedfield: {1}, type: {2}".format(
-                    csvFields[i].name, parquetFileds[i].name, csvFields[i].dataType))
+                # logger.debug("i:{0}, item: {1}".format(i, csvFields[i]))
+                # logger.debug("field: {0}, mappedfield: {1}, type: {2}".format(
+                #     csvFields[i].name, parquetFileds[i].name, csvFields[i].dataType))
                 outputDict["schema"].append({"field": csvFields[i].name,
                     "mappedfield": parquetFileds[i].name, "type": str(csvFields[i].dataType)})
 
@@ -667,9 +679,8 @@ def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
             for rowItem in dframe1.collect():
-                logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
                 outputDict["data"].append(rowItem.asDict())
-        logger.debug("outputDict: {0}".format(outputDict))
+        logger.debug("Getting {0} url successfully".format(csvUrl))
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     ''' + '''
     print(getSpecUploadedTable('{0}', '{1}', '{2}', '{3}', {4}))
