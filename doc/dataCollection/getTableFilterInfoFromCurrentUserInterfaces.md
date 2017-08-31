@@ -23,21 +23,23 @@ This document describe how to get users' tables filter information.
                 ...
             },
     "conditions": [
-        {
-            # types: "limit",">",">=","=","<","<=",'!=',like','startswith','notstartswith',
-            # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
-            # notice! if type is 'isin' or 'isnotin', the value should be a list.
-            # and if you want to filter the datetype, you should add an argument "datatype": "date".
-            "type": <typevalue>,
-            "value": <value>,
-            "columnName": <columnName>
-        },
-        {
-            "type": <type>,
-            "value": <value>,
-            "columnName": <columnName>
-        },
-        ...
+                {
+                    # types: ">",">=","=","<","<=","!=",'like','startswith','notstartswith',
+                    # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
+                    # note: if type is 'isin' or 'isnotin', the value should be a list.
+                    "type":<conditionTypeValue>,
+                    "columnName": <columnName>,
+                    "value": <value>
+                },
+                {
+                    "type":"limit",
+                    "value": <value>
+                },
+                {
+                    "type":"isnull", # or 'isnotnull'
+                    "columnName": "<columnName>"
+                },
+                ...
     ]
 }
 ```

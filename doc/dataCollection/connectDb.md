@@ -34,12 +34,12 @@ This document describe how to connect and add users' database.
 * it will response as follows if con't connect db
 > {"status": "failed", "reason": "can't connect db"}
 * it will response as follows if the db is already has
-> {"status": "failed", "reason": "the palt is already has"}
+> {"status": "failed", "reason": "the platform is already has"}
 
 
 
 -----------
-This document describe return all database of a palt.
+This document describe return all database of a platform.
 -------------
 ### 1. Request URI: /dataCollection/showAllDbOfPalt
 ### 2. Request Method: POST

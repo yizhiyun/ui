@@ -55,69 +55,6 @@ Get All Tables From Current User
                 "show": <True/False>,
                 "isopen": <True/False>
             },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-           ...
-        },
-        <foldername>: {
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
            ...
         },
         ...
@@ -142,6 +79,8 @@ Get All Tables From Current User
     ...
 }
 ```
+* if failed. it should be:
+> {'status': 'false', 'reason': 'Please see the detailed logs.'}
 
 
 
@@ -180,6 +119,8 @@ Save TableInfo From Current User And Return TableInfo
     "status": "ok"
 }
 ```
+* if failed. it should be:
+> {'status': 'false', 'reason': 'Please see the detailed logs.'}
 
 
 
@@ -219,7 +160,7 @@ Save Folder From Current User
 
 
 
-Relevance Folder And ParentFolder From Current User
+Add Folder to ParentFolder
 -------------
 ### 1. Request URI: /dashboard/RelevanceFolder
 ### 2. Request Method: POST
@@ -253,63 +194,68 @@ Relevance Folder And ParentFolder From Current User
                 "viewtype": <viewtype>,
                 "viewname": <viewname>,
                 "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
+                "id": <viewid>,
                 "show": <True/False>,
                 "isopen": <True/False>
             },
            ...
         },
+        ...
+
+    },
+    ...
+}
+```
+* if failed. it should be:
+> {'status': 'false', 'reason': 'Please see the detailed logs.'}
+
+
+
+Change Name From Current User
+-------------
+### 1. Request URI: /dashboard/changeViewName
+### 2. Request Method: POST
+### 3. Request Data Schema:
+* if you objtype is view, oldname should be view's id.
+```
+{
+    "objtype": ["view", "folder", "parentfolder"],
+    "oldname": <oldname>,
+    "newname": <new>
+}
+```
+* if you objtype is note, request schema should be this.
+```
+{
+    "objtype": <note>,
+    "note": <notedata>,
+    "id": <viewid>,
+    "username": <username>
+}
+```
+### 4. Request Example:
+```
+{
+    "objtype": "view",
+    "oldname": "oldname",
+    "newname": "newviewname"
+}
+```
+### 5. Support Format: JSON
+### 6. Response Data:
+* if success:
+```
+{
+    "status": "ok"
+}
+```
+* if you objtype is note, success data should be this.
+```
+{
+    <parentfoldername>: {
         <foldername>: {
             <tablename>: {
                 "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
                 "column": <column>,
                 "username": <username>,
                 "tablename": <tablename>,
@@ -328,45 +274,15 @@ Relevance Folder And ParentFolder From Current User
     ...
 }
 ```
-
-
-
-Update Name From Current User
--------------
-### 1. Request URI: /dashboard/changeViewName
-### 2. Request Method: POST
-### 3. Request Data Schema:
-* if you objtype is view, oldname should be table's id.
-```
-{
-    "objtype": <type>,
-    "oldname": <oldname>,
-    "newname": <new>
-}
-```
-### 4. Request Example:
-```
-{
-    "objtype": "view/folder/parentfolder",
-    "oldname": "oldname/table's id",
-    "newname": "newviewname"
-}
-```
-### 5. Support Format: JSON
-### 6. Response Data:
-* if success:
-```
-{
-    "status": "ok"
-}
-```
-* if faild:
+* if name has been used:
 ```
 {
     "status": "false", 
     "reason": "this name has been used"
 }
 ```
+* if failed. it should be:
+> {'status': 'false', 'reason': 'Please see the detailed logs.'}
 
 
 
@@ -379,7 +295,7 @@ Delete Folder From Current User
 ```
 {
     "datatype": <foldertype>,
-    "isdeleteall": <yes/no>,
+    "recursive": <yes/no>,
     "foldername": <foldername>,
     "defaultparent": <defaultparentfoldername>,
     "username": <username>
@@ -446,69 +362,6 @@ Delete Folder From Current User
                 "show": <True/False>,
                 "isopen": <True/False>
             },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-           ...
-        },
-        <foldername>: {
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
            ...
         },
         ...
@@ -517,212 +370,48 @@ Delete Folder From Current User
     ...
 }
 ```
-
-
-
-Save User's Note
--------------
-### 1. Request URI: /dashboard/addNote
-### 2. Request Method: POST
-### 3. Request Data Schema:
-* if foldertype is parentfolder
-```
-{
-    "note": <note>,
-    "id": <tableid>,
-    "username": <username>
-}
-```
-### 4. Request Example:
-```
-{
-    "note": "it's for Patients with cough",
-    "id": 21,
-    "username": "yzy"
-}
-```
-### 5. Support Format: JSON
-### 6. Response Data:
-```
-{
-    <parentfoldername>: {
-        <foldername>: {
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-           ...
-        },
-        <foldername>: {
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-           ...
-        },
-        ...
-
-    },
-    ...
-}
-```
+* if failed. it should be:
+> {'status': 'false', 'reason': 'Please see the detailed logs.'}
 
 
 
 Remember User's Note is or not is show
 -------------
-### 1. Request URI: /dashboard/setShow
+### 1. Request URI: /dashboard/setSwitch
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
-* if foldertype is parentfolder
+* if switch is show
 ```
 {
-    "id": <tableid>,
+    "id": <viewid>,
+    "switch": <show>,
     "username": <username>
+}
+```
+* if switch is isopen
+```
+{
+    "id": <viewid>,
+    "switch": <isopen>
 }
 ```
 ### 4. Request Example:
 ```
 {
     "id": 21,
+    "switch": "show",
     "username": "yzy"
 }
 ```
 ### 5. Support Format: JSON
 ### 6. Response Data:
+* if switch is show
 ```
 {
     <parentfoldername>: {
         <foldername>: {
             <tablename>: {
                 "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-           ...
-        },
-        <foldername>: {
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row": <row>,
-                "column": <column>,
-                "username": <username>,
-                "tablename": <tablename>,
-                "viewtype": <viewtype>,
-                "viewname": <viewname>,
-                "note": <note>,
-                "id": <itabled>,
-                "show": <True/False>,
-                "isopen": <True/False>
-            },
-            <tablename>: {
-                "row" <row>,
                 "column": <column>,
                 "username": <username>,
                 "tablename": <tablename>,
@@ -741,29 +430,11 @@ Remember User's Note is or not is show
     ...
 }
 ```
-
-
-
-Remember User's view is or not is open
--------------
-### 1. Request URI: /dashboard/setIsopen
-### 2. Request Method: POST
-### 3. Request Data Schema:
-```
-{
-    "id": <tableid>
-}
-```
-### 4. Request Example:
-```
-{
-    "id": 21
-}
-```
-### 5. Support Format: JSON
-### 6. Response Data:
+* if switch is isopen
 ```
 {
     "status": "ok"
 }
 ```
+* if failed. it should be:
+> {'status': 'false', 'reason': 'Please see the detailed logs.'}

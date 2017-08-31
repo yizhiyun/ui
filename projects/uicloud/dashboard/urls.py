@@ -13,7 +13,5 @@ urlpatterns = [
     url(r'^RelevanceFolder$', views.RelevanceFolder, name='RelevanceFolder'),
     url(r'^changeViewName$', views.changeViewName, name='changeViewName'),
     url(r'^deleteFolder$', views.deleteFolder, name='deleteFolder'),
-    url(r'^addNote$', views.addNote, name='addNote'),
-    url(r'^setShow$', views.setShow, name='setShow'),
-    url(r'^setIsopen$', views.setIsopen, name='setIsopen'),
+    url(r'^setSwitch$', views.setSwitch, name='setSwitch'),
 ]
