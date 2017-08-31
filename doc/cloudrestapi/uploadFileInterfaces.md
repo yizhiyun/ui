@@ -9,9 +9,16 @@ This document describe the RESTful API of how to upload the csv file to hdfs
 ### 4. Request Data Schema:
 ```
 {
-    "header": <True/False>,   # Optional. It's True by default.
-    "delimiter": <delimiter>, # Optional.
-    "quote": <quote>          # Optional.
+    "header": <True/False>,          # Optional. It's True by default.
+    "delimiter": <delimiter>,        # Optional. By default, it's ","
+    "quote": <quote>,                # Optional. By default, it's "\""
+    "doublequote": <True/False>      # Optional. By default, it's True
+    "escapechar": <escapechar>       # Optional. By default, it's "\"
+    "lineterminator": <chars>        # Optional. By default, it's "\r\n"
+    "skipinitialspace": <True/False> # Optional. By default, it's True
+    "strict": <True/False>           # Optional. By default, it's True
+    "dateformat": <format>           # Optional. By default, it's "yyyy-MM-dd"
+    "timestampFormat": <format>      # Optional. By default, it's "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
 }
 ```
 

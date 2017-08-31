@@ -431,30 +431,26 @@ def uploadCsv(request):
             return JsonResponse({"status": "failed", "reason": "Please see the logs for details."})
 
         # process the csv to generate the related parquet table in use.
-        fReslist = []
-        for uploaduri in uploadedCsvList:
-            logger.debug("uploaduri:{0}, hdfsHost:{1}, port:{2}".format(uploaduri, hdfsHost, port))
-            sparkCode = convertCsvToParquetSparkCode(uploaduri, jsonData, hdfsHost, port)
+        sparkCode = convertCsvToParquetSparkCode(uploadedCsvList, jsonData, hdfsHost, port)
 
-            output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
-            if not output:
+        output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.1)
+        if not output:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        elif output["status"] != "ok":
+            failObj = {"status": "failed",
+                       "reason": output}
+            return JsonResponse(failObj, status=400)
+        else:
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+            if data.startswith("False"):
                 failObj = {"status": "failed",
-                           "reason": "Please see the logs for details."}
+                           "reason": data.replace("False", "", 1)}
                 return JsonResponse(failObj, status=400)
-            elif output["status"] != "ok":
-                failObj = {"status": "failed",
-                           "reason": output}
-                return JsonResponse(failObj, status=400)
-            else:
-                logger.debug("output: {}".format(output))
-                data = output["data"]["text/plain"]
-                if data.startswith("False"):
-                    failObj = {"status": "failed",
-                               "reason": data.replace("False", "", 1)}
-                    return JsonResponse(failObj, status=400)
-                fReslist.append(data)
-        sucessObj = {"status": "success", "results": fReslist}
-        return JsonResponse(sucessObj)
+            sucessObj = {"status": "success", "results": data}
+            return JsonResponse(sucessObj)
 
 
 @api_view(['GET'])
@@ -531,7 +527,7 @@ def getSpecUploadedTableViaSpark(request, fileName, tableName, modeName):
                        "reason": output}
             return JsonResponse(failObj, status=400)
         else:
-            logger.debug("output: {}".format(output))
+            # logger.debug("output: {}".format(output))
             data = output["data"]["text/plain"]
 
             results = json.loads(data)
