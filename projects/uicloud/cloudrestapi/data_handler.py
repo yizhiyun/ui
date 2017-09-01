@@ -191,30 +191,24 @@ def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) +
     }
     '''
     username = "yzy"
-    palts = Singleton().dataPaltForm[username]
     dbSourceDict = {}
-    logger.debug("palts: {}".format(palts))
-    if palts:
-        for key, value in palts.items():
+    curDbDict = Singleton().dataPaltForm
 
-            dbSourceDict[key] = {
-                "dbtype": value.dbPaltName,
-                "dbserver": value.dbLocation,
-                "dbport": value.dbPort,
-                "user": value.dbUserName,
-                "password": value.dbUserPwd,
-                'sid': value.dbSid
-            }
-        return dbSourceDict
+    if username in curDbDict.keys():
+        palts = curDbDict[username]
+        logger.debug("palts: {}".format(palts))
+        if palts:
+            for key, value in palts.items():
+                dbSourceDict[key] = {
+                    "dbtype": value.dbPaltName,
+                    "dbserver": value.dbLocation,
+                    "dbport": value.dbPort,
+                    "user": value.dbUserName,
+                    "password": value.dbUserPwd,
+                    'sid': value.dbSid
+                }
 
-    try:
-        with open(sourcesMappingFile) as f:
-            dbSourceDict = json.load(f)
-            logger.debug("dbSourceDict: {}".format(dbSourceDict))
-            return dbSourceDict
-    except Exception as e:
-        logger.error("Cannot get the db sources mapping!\nExcpetion:{0}".format(e))
-        return False
+    return dbSourceDict
 
 
 def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", folder="myfolder",
@@ -278,10 +272,13 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                              hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
 
         # check the json format
-        if (("tables" not in jsonData.keys()) or
-            ("relationships" not in jsonData.keys()) or
-                ("outputs" not in jsonData.keys())):
-            errMsg = "ERROR, The jsonData don't include 'tables', 'relationships' or 'outputs'."
+        if (("tables" not in jsonData.keys()) or ("outputs" not in jsonData.keys())):
+            errMsg = "ERROR, The jsonData don't include 'tables' or 'outputs'."
+            logger.error(errMsg)
+            print(errMsg)
+            return False
+        elif (len(jsonData["tables"]) > 1) and ("relationships" not in jsonData.keys()):
+            errMsg = "ERROR, The jsonData don't include 'relationships' to join more tables."
             logger.error(errMsg)
             print(errMsg)
             return False
@@ -358,8 +355,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             for key, newCol in jsonData["outputs"]['columnRenameMapping'].items():
                 oldCol = key.replace('.', '_')
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
-        except KeyError:
-            traceback.print_exc()
+        except KeyError as e:
+            print("Mapping key {0} not found.".format(e.message))
             logger.error("KeyError Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
             return False
         except Exception:
