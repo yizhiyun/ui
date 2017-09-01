@@ -589,6 +589,7 @@ def convertCsvToParquetSparkCode(uploadedCsvList, csvOpts={}, hdfsHost="spark-ma
     import json
     import sys
     import re
+    import pyspark.sql.utils as utils
 
     def convertCsvToParquet(csvUrl, parquetUrl, csvOpts={}):
         """
@@ -606,6 +607,10 @@ def convertCsvToParquetSparkCode(uploadedCsvList, csvOpts={}, hdfsHost="spark-ma
             csvDf.write.parquet(parquetUrl, "overwrite")
 
             return csvUrl.split("/csv/")[-1]
+        except utils.AnalysisException as e:
+            print("AnalysisException: {0}".format(e.desc))
+            logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
+            return False
         except Exception:
             traceback.print_exc()
             logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))

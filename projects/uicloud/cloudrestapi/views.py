@@ -445,7 +445,7 @@ def uploadCsv(request):
         else:
             logger.debug("output: {}".format(output))
             data = output["data"]["text/plain"]
-            if data.startswith("False"):
+            if data.startswith("False") or data.endswith("False"):
                 failObj = {"status": "failed",
                            "reason": data.replace("False", "", 1)}
                 return JsonResponse(failObj, status=400)
@@ -462,11 +462,12 @@ def getAllTempPairedTablesFromUser(request):
     if request.method == "GET":
         rootFolder = "/tmp/users"
         username = "myfolder"
-        tmpCsvPath = "{0}/{1}/csv".format(rootFolder, username)
-        output = listDirectoryFromHdfs(path=tmpCsvPath)
+        # tmpCsvPath = "{0}/{1}/csv".format(rootFolder, username)
+        # output = listDirectoryFromHdfs(path=tmpCsvPath)
+
+        tmpTablePath = "{0}/{1}/parquet".format(rootFolder, username)
+        output = listDirectoryFromHdfs(path=tmpTablePath)
         logger.debug("output: {0}".format(output))
-        # tmpParquetPath = "{0}/{1}/parquet".format(rootFolder, username)
-        # logger.debug("tmpParquetPath: {0}".format(listDirectoryFromHdfs(path=tmpParquetPath)))
         if not output["status"]:
             if "RemoteException" in output["results"].keys() and \
                "message" in output["results"]["RemoteException"].keys():
@@ -478,7 +479,7 @@ def getAllTempPairedTablesFromUser(request):
 
         resDict = {}
         for tableItem in output["results"]:
-            tmpCsvTable = "{0}/{1}".format(tmpCsvPath, tableItem)
+            tmpCsvTable = "{0}/{1}".format(tmpTablePath, tableItem)
             subOutput = listDirectoryFromHdfs(path=tmpCsvTable, fileTypeList=["DIRECTORY", "FILE"])
             if not subOutput["status"]:
                 if "RemoteException" in subOutput["results"].keys() and \
