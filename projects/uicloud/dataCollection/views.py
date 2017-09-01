@@ -22,80 +22,91 @@ class dataBuildView(TemplateView):
 # 连接数据库平台
 
 
+@api_view(['POST'])
 def connectDataBaseHandle(request):
-    dbPaltName = request.POST["dataBaseName"].lower()
-    dbSid = None
-    if dbPaltName == 'oracle':
-        dbSid = request.POST["dbSid"]
-    dataBaseObj = ConnectDataBase(
-        dbPaltName,
-        request.POST["location"],
-        request.POST["port"],
-        request.POST["dbuserName"],
-        request.POST["dbuserPwd"],
-        dbSid,
-        time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-    )
-    isConnect = dataBaseObj.connectDB()
-    if isConnect:
-        username = request.POST['username'] if 'username' in request.POST else 'yzy'
-        notIn = Singleton().addPalt(dataBaseObj, username)
-        if not notIn:
-            return JsonResponse({'status': 'failed', 'reason': 'the palt is already has'})
-        return JsonResponse({'status': 'success'})
+    jsonData = request.data
+    if request.method == 'POST':
+        dbPaltName = jsonData["dataBaseName"].lower()
+        dbSid = None
+        if dbPaltName == 'oracle':
+            dbSid = jsonData["dbSid"]
+        dataBaseObj = ConnectDataBase(
+            dbPaltName,
+            jsonData["location"],
+            jsonData["port"],
+            jsonData["dbuserName"],
+            jsonData["dbuserPwd"],
+            dbSid,
+            time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        )
+        isConnect = dataBaseObj.connectDB()
+        if isConnect:
+            username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+            notIn = Singleton().addPalt(dataBaseObj, username)
+            if not notIn:
+                return JsonResponse({'status': 'failed', 'reason': 'the palt is already has'})
+            return JsonResponse({'status': 'success'})
 
-    else:
-        context = {'status': 'failed', 'reason': "can't connect db"}
-        return JsonResponse(context)
+        else:
+            context = {'status': 'failed', 'reason': "can't connect db"}
+            return JsonResponse(context)
 
 
 # 返回当前平台所有数据库
 
 
+@api_view(['POST'])
 def showAllDbOfPalt(request):
-    username = request.POST['username'] if 'username' in request.POST else 'yzy'
-    context = {
-        'status': 'success',
-        'results': {}
-    }
-    for md5, dbObj in Singleton().dataPaltForm[username].items():
-        if not dbObj.con:
-            isConnect = dbObj.connectDB()
-            if not isConnect:
-                context = {'status': 'failed', 'reason': "can't connect db"}
-                return JsonResponse(context)
-        dbObj.fetchAllDabaBase()
-        context['results'][md5] = {
-            'dbtype': dbObj.dbPaltName,
-            'dbport': dbObj.dbPort,
-            'dbuser': dbObj.dbUserName,
-            'dblist': dbObj.dataBasesRs
+    jsonData = request.data
+    if request.method == 'POST':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        context = {
+            'status': 'success',
+            'results': {}
         }
-    return JsonResponse(context)
+        if username not in Singleton().dataPaltForm.keys():
+            return JsonResponse({'status': 'failed', 'reason': 'there is no db connecting'})
+        for md5, dbObj in Singleton().dataPaltForm[username].items():
+            if not dbObj.con:
+                isConnect = dbObj.connectDB()
+                if not isConnect:
+                    context = {'status': 'failed', 'reason': "can't connect db"}
+                    return JsonResponse(context)
+            dbObj.fetchAllDabaBase()
+            context['results'][md5] = {
+                'dbtype': dbObj.dbPaltName,
+                'dbport': dbObj.dbPort,
+                'dbuser': dbObj.dbUserName,
+                'dblist': dbObj.dataBasesRs
+            }
+        return JsonResponse(context)
 
 
 # 选择具体数据库下的表格
 
 
+@api_view(['POST'])
 def showAllTablesOfaDataBase(request):
-    username = request.POST['username'] if 'username' in request.POST else 'yzy'
-    dbObjIndex = request.POST['dbObjIndex']
-    dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-    if not dataBaseObj.con:
-        isConnect = dataBaseObj.connectDB()
-        if not isConnect:
-            context = {'status': 'failed', 'reason': "can't connect db"}
-            return JsonResponse(context)
+    jsonData = request.data
+    if request.method == 'POST':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        dbObjIndex = jsonData['dbObjIndex']
+        dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
+        if not dataBaseObj.con:
+            isConnect = dataBaseObj.connectDB()
+            if not isConnect:
+                context = {'status': 'failed', 'reason': "can't connect db"}
+                return JsonResponse(context)
 
-    data = dataBaseObj.fetchTableBydataBaseName(request.POST["theDBName"])
-    if data == 'failed':
-        return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
+        data = dataBaseObj.fetchTableBydataBaseName(jsonData["theDBName"])
+        if data == 'failed':
+            return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
 
-    context = {
-        "status": "success",
-        "data": data
-    }
-    return JsonResponse(context)
+        context = {
+            "status": "success",
+            "data": data
+        }
+        return JsonResponse(context)
 
 # 根据条件查询. 返回表格数据
 
