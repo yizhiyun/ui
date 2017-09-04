@@ -316,17 +316,24 @@ def setSwitch(request):
 
     if request.method == 'POST':
         try:
-            table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
             if jsonData['switch'] == 'show':
-                if table.show:
-                    table.show = False
-                else:
-                    table.show = True
-                table.save()
                 username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+                if 'showall' in jsonData.keys() and jsonData['showall'] == 'yes':
+                    tableList = DashboardViewByUser.objects.filter(username=username)
+                    for table in tableList:
+                        table.show = True
+                        table.save()
+                else:
+                    table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
+                    if table.show:
+                        table.show = False
+                    else:
+                        table.show = True
+                    table.save()
                 context = getAllDataFunction(username)
                 return JsonResponse(context)
             elif jsonData['switch'] == 'isopen':
+                table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
                 if table.isopen:
                     table.isopen = False
                 else:

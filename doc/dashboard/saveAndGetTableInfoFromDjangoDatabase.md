@@ -389,6 +389,14 @@ Switch to remember User's state
 ### 1. Request URI: /dashboard/setSwitch
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
+* if switch is show and you want show all
+```
+{
+    "switch": <show>,
+    "username": <username>,
+    "showall": <yes>
+}
+```
 * if switch is show
 ```
 {
