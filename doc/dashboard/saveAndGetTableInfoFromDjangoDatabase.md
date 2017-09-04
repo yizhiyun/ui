@@ -291,6 +291,15 @@ Delete Folder From Current User
 ### 1. Request URI: /dashboard/deleteFolder
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
+* if datatype is parentfolder and you want to delete all:
+```
+{
+    "datatype": <foldertype>,
+    "recursive": <yes/no>,
+    "defaultparent": <defaultparentfoldername>,
+    "username": <username>
+}
+```
 * if datatype is parentfolder:
 ```
 {
@@ -380,6 +389,14 @@ Switch to remember User's state
 ### 1. Request URI: /dashboard/setSwitch
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
+* if switch is show and you want show all
+```
+{
+    "switch": <show>,
+    "username": <username>,
+    "showall": <yes>
+}
+```
 * if switch is show
 ```
 {
