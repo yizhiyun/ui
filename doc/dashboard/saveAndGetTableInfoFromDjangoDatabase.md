@@ -291,6 +291,15 @@ Delete Folder From Current User
 ### 1. Request URI: /dashboard/deleteFolder
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
+* if datatype is parentfolder and you want to delete all:
+```
+{
+    "datatype": <foldertype>,
+    "recursive": <yes/no>,
+    "defaultparent": <defaultparentfoldername>,
+    "username": <username>
+}
+```
 * if datatype is parentfolder:
 ```
 {

@@ -246,17 +246,50 @@ def deleteFolder(request):
             if datatype == 'parentfolder':
                 isDeleteAll = jsonData['recursive']
                 if isDeleteAll == 'yes':
-                    folderList = DashboardFolderByUser.objects.filter(parentfoldername=jsonData['foldername'])
-                    for folder in folderList:
-                        folder.dashboardviewbyuser_set.all().delete()
-                        folder.delete()
+                    if 'foldername' in jsonData.keys():
+                        folderList = DashboardFolderByUser.objects.filter(parentfoldername=jsonData['foldername'])
+                        for folder in folderList:
+                            folder.dashboardviewbyuser_set.all().delete()
+                            folder.delete()
+                        parentfolder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
+                        parentfolder.delete()
+
+                    else:
+                        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+                        folderList = DashboardFolderByUser.objects.filter(username=username,
+                                                                          parentfoldername=jsonData['defaultparent'])
+                        for folder in folderList:
+                            folder.dashboardviewbyuser_set.all().delete()
+                            folder.delete()
+
+                        pFolderList = DashboardFolderByUser.objects.filter(username=username,
+                                                                           parentfoldername=None)
+                        for pFolder in pFolderList:
+                            cFolderList = DashboardFolderByUser.objects.filter(parentfoldername=pFolder)
+                            for cfolder in cFolderList:
+                                cfolder.dashboardviewbyuser_set.all().delete()
+                                cfolder.delete()
+                            pFolder.delete()
+
                 else:
-                    folderList = DashboardFolderByUser.objects.filter(parentfoldername=jsonData['foldername'])
-                    for folder in folderList:
-                        folder.parentfoldername = jsonData['defaultparent']
-                        folder.save()
-                parentfolder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
-                parentfolder.delete()
+                    if 'foldername' in jsonData.keys():
+                        folderList = DashboardFolderByUser.objects.filter(parentfoldername=jsonData['foldername'])
+                        for folder in folderList:
+                            folder.parentfoldername = jsonData['defaultparent']
+                            folder.save()
+                        parentfolder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
+                        parentfolder.delete()
+
+                    else:
+                        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+                        pFolderList = DashboardFolderByUser.objects.filter(username=username,
+                                                                           parentfoldername=None)
+                        for pFolder in pFolderList:
+                            cFolderList = DashboardFolderByUser.objects.filter(parentfoldername=pFolder)
+                            for cfolder in cFolderList:
+                                cfolder.parentfoldername = jsonData['defaultparent']
+                                cfolder.save()
+                            pFolder.delete()
 
             elif datatype == 'folder':
                 folder = DashboardFolderByUser.objects.get(foldername=jsonData['foldername'])
