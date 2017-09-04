@@ -514,7 +514,8 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     filterJson = json.dumps(filterJson, ensure_ascii=True)
     logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
 
-    sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + '''
+    sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + \
+        aggDataFrameSparkCode() + '''
     def getTableInfo( url, mode, filterJson='{}', maxRowCount=1000):
         """
         get the specified table schema,
@@ -535,6 +536,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             filterJson = json.loads(filterJson, encoding='utf-8')
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
+                dframe1 = aggDF(dframe1, filterJson)
             for rowItem in dframe1.collect():
                 # logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
                 outputDict['data'].append(rowItem.asDict())

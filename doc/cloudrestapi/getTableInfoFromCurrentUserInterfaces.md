@@ -79,6 +79,17 @@ Get Table From Current User Via Spark
            },
            ...
        ],
+       "aggs": {
+           "groupby": <columnList>,
+           "orderby": <columnList>, # Optional,
+           "aggregations": {
+               # aggTypes: "avg","max","min","sum","pivot"
+               "column": <aggType>,
+               # if aggType is count, column is "*".
+               "*": "count"
+           }
+
+       },
        <otherProperty>:<otherValue>,
        ...
    }

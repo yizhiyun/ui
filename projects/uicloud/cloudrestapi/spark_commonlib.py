@@ -121,7 +121,7 @@ def getDataFrameFromSourceSparkCode():
             elif dbType == "sqlserver":
                 connUrl = "jdbc:{0}://{1}:{2};databaseName={3}".format(dbType, dbServer, dbPort, dbName)
                 connDbTable = tableName
-            logger.debug("connUrl:{0},connDbTable:{1}".format(connUrl, connDbTable))
+            logger.debug(u"connUrl:{0},connDbTable:{1}".format(connUrl, connDbTable))
 
             try:
                 df1 = spark.read \
@@ -164,10 +164,10 @@ def filterDataFrameSparkCode():
         """
         """
         columnList = "*"
-        logger.debug("tableDict:{0}".format(tableDict))
+        logger.debug(u"tableDict:{0}".format(tableDict))
         if 'columns' in tableDict.keys():
             columnList = list(tableDict['columns'].keys())
-            logger.debug("columnList:{0}".format(columnList))
+            logger.debug(u"columnList:{0}".format(columnList))
             inDataFrame=inDataFrame.select(columnList)
 
         if "conditions" in tableDict.keys():
@@ -175,7 +175,7 @@ def filterDataFrameSparkCode():
             for condIt in tableDict["conditions"]:
                 condType = condIt["type"]
                 colName = condIt["columnName"] if "columnName" in condIt.keys() else ""
-                logger.debug("condIt:{0}".format(condIt))
+                logger.debug(u"condIt:{0}".format(condIt))
                 if condType == "limit" and type(condIt["value"]) == int:
                     inDataFrame = inDataFrame.limit(condIt["value"])
                 elif condType in [">",">=","=","==","<","<=","!="]:
@@ -206,4 +206,49 @@ def filterDataFrameSparkCode():
                 else:
                     pass
         return inDataFrame
+    '''
+
+
+def aggDataFrameSparkCode():
+    """
+    return the spark code which aggregate the DataFrame according the specified format.
+    """
+
+    return '''
+    def aggDF(inDF, tableDict):
+        """
+        """
+        logger.debug(u"tableDict:{0}".format(tableDict))
+        if "aggs" in tableDict.keys():
+            # add the specified aggregations in the DataFrame
+            aggDict = tableDict["aggs"]
+            if "groupby" in aggDict.keys():
+                inDF = inDF.groupby(aggDict["groupby"])
+            else:
+                inDF = inDF.groupby()
+            if "aggregations" in aggDict:
+                inDF = inDF.agg(aggDict["aggregations"])
+                # for aggIt in aggDict["aggregations"]:
+                #     aggType = aggIt["type"]
+                #     logger.debug(u"aggIt:{0}".format(aggIt))
+                #     if aggType == "pivot":
+                #         if "values" in aggIt.keys():
+                #             inDF = inDF.pivot(aggIt["col"], aggIt["value"])
+                #         else:
+                #             inDF = inDF.pivot(aggIt["col"])
+                #     elif "count" == aggType:
+                #         inDF = inDF.count
+                #     elif "sum" == aggType:
+                #         inDF = inDF.sum(aggIt["cols"])
+                #     elif "min" == aggType:
+                #         inDF = inDF.min(aggIt["cols"])
+                #     elif "max" == aggType:
+                #         inDF = inDF.max(aggIt["cols"])
+                #     elif "avg" == aggType:
+                #         inDF = inDF.avg(aggIt["cols"])
+                #     else:
+                #         pass
+            if "orderby" in aggDict.keys():
+                inDF = inDF.orderBy(aggDict["orderby"])
+        return inDF
     '''
