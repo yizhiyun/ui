@@ -9,5 +9,6 @@ urlpatterns = [
     url(r"^showAllDbOfPalt$", views.showAllDbOfPalt),
     url(r"^tablesOfaDB$", views.showAllTablesOfaDataBase),
     url(r"^filterTable/(?P<modeName>\w+)$", views.filterTable),
+    url(r"^deletePlat$", views.deletePlat),
     url(r"^dataBuildView$", views.dataBuildView.as_view())
 ]

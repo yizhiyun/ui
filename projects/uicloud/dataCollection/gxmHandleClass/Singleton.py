@@ -49,7 +49,7 @@ class Singleton(object):
 
     def deletePalt(self, source, username):
         try:
-            for item in self.dataPaltForm[username]:
+            for item in self.dataPaltForm[username].keys():
                 if item == source:
                     self.dataPaltForm[username].pop(item)
                     return True

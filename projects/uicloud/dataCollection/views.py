@@ -65,7 +65,7 @@ def showAllDbOfPalt(request):
             'results': {}
         }
         if username not in Singleton().dataPaltForm.keys():
-            return JsonResponse({'status': 'failed', 'reason': 'there is no db connecting'})
+            return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
         for md5, dbObj in Singleton().dataPaltForm[username].items():
             if not dbObj.con:
                 isConnect = dbObj.connectDB()
@@ -91,6 +91,11 @@ def showAllTablesOfaDataBase(request):
     if request.method == 'POST':
         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
         dbObjIndex = jsonData['dbObjIndex']
+
+        if username not in Singleton().dataPaltForm.keys():
+            return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
+        if dbObjIndex not in Singleton().dataPaltForm[username].keys():
+            return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
         dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
         if not dataBaseObj.con:
             isConnect = dataBaseObj.connectDB()
@@ -114,9 +119,14 @@ def showAllTablesOfaDataBase(request):
 @api_view(['POST'])
 def filterTable(request, modeName):
     jsonData = request.data
-    Singleton().currentDBObjIndex = jsonData['source']
+    dbObjIndex = jsonData['source']
     username = jsonData['username'] if 'username' in jsonData else 'yzy'
-    dataBaseObj = Singleton().dataPaltForm[username][Singleton().currentDBObjIndex]
+    if username not in Singleton().dataPaltForm.keys():
+        return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
+    if dbObjIndex not in Singleton().dataPaltForm[username].keys():
+        return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
+
+    dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
     if not dataBaseObj.con:
         isConnect = dataBaseObj.connectDB()
         if not isConnect:
@@ -139,3 +149,21 @@ def filterTable(request, modeName):
             "results": data
         }
         return JsonResponse(context)
+
+
+@api_view(['POST'])
+def deletePlat(request):
+    jsonData = request.data
+    if request.method == 'POST':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        dbObjIndex = jsonData['dbObjIndex']
+        if username not in Singleton().dataPaltForm.keys():
+            return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
+        if dbObjIndex not in Singleton().dataPaltForm[username].keys():
+            return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
+
+        result = Singleton().deletePalt(dbObjIndex, username)
+        if result:
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})

@@ -103,3 +103,36 @@ This document describe return The table below the specific database.
 > {"status": "failed", "reason": "can't connect db"}
 * it will response as follows if search failed
 > {"status": "failed", "reason": "Please see the detailed logs."}
+
+
+
+-----------
+This document describe how to delete platform.
+-------------
+### 1. Request URI: /dataCollection/deletePlat
+### 2. Request Method: POST
+### 3. Request Data Schema: JSON
+### 4. Request Data:
+```
+{
+    "dbObjIndex": <dbMD5>
+}
+```
+### 5. Request Example:
+```
+{
+    "dbObjIndex": "MD5"
+}
+```
+### 6. Support Format: JSON
+### 7. Response Data:
+* it will response as follows if successful
+```
+{
+    "status": "success"
+}
+```
+* it will response as follows if can't find username
+> {'status': 'failed', 'reason': 'username has not connected to any database'}
+* it will response as follows if search failed
+> {"status": "failed", "reason": "Please see the detailed logs."}
