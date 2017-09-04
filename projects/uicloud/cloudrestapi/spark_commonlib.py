@@ -72,7 +72,7 @@ def getDataFrameFromSourceSparkCode():
                 url = jsonData["hdfsurl"]
             else:
                 url = userTableUrl
-            logger.debug("url:{0}".format(url))
+            logger.debug(u"url:{0}".format(url))
             if url is None:
                 errmsg = "The url hasn't been given. Please provide it."
                 logger.error(errmsg)
@@ -81,7 +81,7 @@ def getDataFrameFromSourceSparkCode():
                 df1 = spark.read.parquet(url)
             except Exception:
                 traceback.print_exc()
-                logger.error("There is an error while reading {0}. Exception:{1}, Traceback: {2}"
+                logger.error(u"There is an error while reading {0}. Exception:{1}, Traceback: {2}"
                              .format(url, sys.exc_info(), traceback.format_exc()))
                 return False
 

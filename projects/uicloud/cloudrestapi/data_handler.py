@@ -296,15 +296,15 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 if "sourcetype" not in tables[0].keys() or tables[0]["sourcetype"] == "db":
                     tables[0]["dbsource"] = jsonData["dbsources"][tables[0]["source"]]
                 elif tables[0]["sourcetype"] == "tmptables":
-                    userTableUrl = "hdfs://{0}:{1}/tmp/{2}/{3}/parquet/{4}/{5}".format(
+                    userTableUrl = u"hdfs://{0}:{1}/tmp/{2}/{3}/parquet/{4}/{5}".format(
                         hdfsHost, hdfsPort, rootFolder, userName, dbName, tableName)
                 else:
-                    userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+                    userTableUrl = u"hdfs://{0}:{1}/{2}/{3}/{4}".format(
                         hdfsHost, hdfsPort, rootFolder, dbName, tableName)
 
                 df0 = getDataFrameFromSource(tables[0], userTableUrl, maxRowCount=maxRowCount)
                 if not df0:
-                    logger.error("The data cannot be gotten from source. dbName: {0}, tableName: {1}"
+                    logger.error(u"The data cannot be gotten from source. dbName: {0}, tableName: {1}"
                                  .format(dbName, tableName))
                     return False
                 return df0
@@ -325,20 +325,21 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 # get the table connection information
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
-                dbTable = "{0}.{1}".format(dbName, tableName)
+                dbTable = u"{0}.{1}".format(dbName, tableName)
                 userTableUrl = False
                 if "sourcetype" not in tables[seq].keys() or tables[seq]["sourcetype"] == "db":
                     tables[seq]["dbsource"] = jsonData["dbsources"][tables[seq]["source"]]
                 elif tables[seq]["sourcetype"] == "tmptables":
-                    userTableUrl = "hdfs://{0}:{1}/tmp/{2}/{3}/parquet/{4}/{5}".format(
+                    userTableUrl = u"hdfs://{0}:{1}/tmp/{2}/{3}/parquet/{4}/{5}".format(
                         hdfsHost, hdfsPort, rootFolder, userName, dbName, tableName)
+                    logger.debug(u"userTableUrl: {0}".format(userTableUrl))
                 else:
-                    userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+                    userTableUrl = u"hdfs://{0}:{1}/{2}/{3}/{4}".format(
                         hdfsHost, hdfsPort, rootFolder, dbName, tableName)
 
                 dfDict[dbTable] = getDataFrameFromSource(tables[seq], userTableUrl, removedColsDict, maxRowCount)
                 if not dfDict[dbTable]:
-                    logger.error("The data cannot be gotten from source. dbTable: {0}".format(dbTable))
+                    logger.error(u"The data cannot be gotten from source. dbTable: {0}".format(dbTable))
                     return False
 
             # check if all columns is available. BTW, it maybe is unnecessary.
@@ -429,7 +430,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             for colItem in dfDict[dbTable].columns:
                 dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(
                     colItem,
-                    "{0}_{1}".format(dbTable.replace('.', '_'), colItem))
+                    u"{0}_{1}".format(dbTable.replace('.', '_'), colItem))
 
         # TBD, this mapping need to be researched again for the details.
         # joinType must be one of below
@@ -450,7 +451,6 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         outputDf = None
         joinCols = []
         repeatedJoinCols = []
-
         for relItem in sortedRelList:
             # check if two column types is different
             fromDbTable = relItem['fromTable']
@@ -461,9 +461,9 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             # print(dfDict[fromDbTable].printSchema())
             # print(dfDict[toDbTable].printSchema())
             for mapit in columnMapList:
-                fromCol = "{0}_{1}".format(fromDbTable.replace('.', '_'), mapit["fromCol"])
-                toCol = "{0}_{1}".format(toDbTable.replace('.', '_'), mapit["toCol"])
-                logger.debug("fromCol: {0}, toCol: {1}".format(fromCol, toCol))
+                fromCol = u"{0}_{1}".format(fromDbTable.replace('.', '_'), mapit["fromCol"])
+                toCol = u"{0}_{1}".format(toDbTable.replace('.', '_'), mapit["toCol"])
+                logger.debug(u"fromCol: {0}, toCol: {1}".format(fromCol, toCol))
                 cond.append(dfDict[fromDbTable][fromCol] == dfDict[toDbTable][toCol])
 
                 # just want to get all repeated joined columns.
@@ -493,7 +493,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
 
             else:
                 outputDf = outputDf.join(dfDict[fromDbTable], cond, joinType)
-        logger.debug("repeatedJoinCols: {0}, outputDf columns:{1}".format(repeatedJoinCols, outputDf.columns))
+        logger.debug(u"repeatedJoinCols: {0}, outputDf columns:{1}".format(repeatedJoinCols, outputDf.columns))
         for colIt in repeatedJoinCols:
             outputDf = outputDf.drop(colIt)
 
