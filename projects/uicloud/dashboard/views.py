@@ -256,11 +256,6 @@ def deleteFolder(request):
 
                     else:
                         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
-                        # folderList = DashboardFolderByUser.objects.filter(username=username,
-                        #                                                   parentfoldername=jsonData['defaultparent'])
-                        # for folder in folderList:
-                        #     folder.dashboardviewbyuser_set.all().delete()
-                        #     folder.delete()
 
                         pFolderList = DashboardFolderByUser.objects.filter(username=username,
                                                                            parentfoldername=None)
@@ -290,7 +285,7 @@ def deleteFolder(request):
                                 username=jsonData['username'],
                                 foldername=jsonData['defaultparent']
                             )
-                        defaultfolder.save()
+                            defaultfolder.save()
                         pFolderList = DashboardFolderByUser.objects.filter(username=username,
                                                                            parentfoldername=None)
                         for pFolder in pFolderList:
