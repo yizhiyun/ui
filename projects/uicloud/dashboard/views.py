@@ -256,16 +256,18 @@ def deleteFolder(request):
 
                     else:
                         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
-                        folderList = DashboardFolderByUser.objects.filter(username=username,
-                                                                          parentfoldername=jsonData['defaultparent'])
-                        for folder in folderList:
-                            folder.dashboardviewbyuser_set.all().delete()
-                            folder.delete()
+                        # folderList = DashboardFolderByUser.objects.filter(username=username,
+                        #                                                   parentfoldername=jsonData['defaultparent'])
+                        # for folder in folderList:
+                        #     folder.dashboardviewbyuser_set.all().delete()
+                        #     folder.delete()
 
                         pFolderList = DashboardFolderByUser.objects.filter(username=username,
                                                                            parentfoldername=None)
                         for pFolder in pFolderList:
-                            cFolderList = DashboardFolderByUser.objects.filter(parentfoldername=pFolder)
+                            if pFolder.foldername == jsonData['defaultparent']:
+                                continue
+                            cFolderList = DashboardFolderByUser.objects.filter(parentfoldername=pFolder.foldername)
                             for cfolder in cFolderList:
                                 cfolder.dashboardviewbyuser_set.all().delete()
                                 cfolder.delete()
@@ -282,10 +284,19 @@ def deleteFolder(request):
 
                     else:
                         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+                        defaultfolderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['defaultparent'])
+                        if len(defaultfolderlist) == 0:
+                            defaultfolder = DashboardFolderByUser(
+                                username=jsonData['username'],
+                                foldername=jsonData['defaultparent']
+                            )
+                        defaultfolder.save()
                         pFolderList = DashboardFolderByUser.objects.filter(username=username,
                                                                            parentfoldername=None)
                         for pFolder in pFolderList:
-                            cFolderList = DashboardFolderByUser.objects.filter(parentfoldername=pFolder)
+                            if pFolder.foldername == jsonData['defaultparent']:
+                                continue
+                            cFolderList = DashboardFolderByUser.objects.filter(parentfoldername=pFolder.foldername)
                             for cfolder in cFolderList:
                                 cfolder.parentfoldername = jsonData['defaultparent']
                                 cfolder.save()
