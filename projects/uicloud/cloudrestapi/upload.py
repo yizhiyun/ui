@@ -99,7 +99,7 @@ def uploadToHdfs(fileDict, hdfsHost="spark-master0", nnPort="50070", rootFolder=
         try:
             logger.debug("filePath:{0}, uploadedCsvUri:{1}".format(filePath, uploadedCsvUri))
             client.copy_from_local(filePath, uploadedCsvUri, overwrite=True)
-            uploadedCsvList.append(uploadedCsvUri)
+            uploadedCsvList.append(uploadedCsvUri.encode(encoding="utf-8", errors="strict"))
         except FileNotFoundError:
             logger.error("cannot find the file of {0}".format(filePath))
             return False

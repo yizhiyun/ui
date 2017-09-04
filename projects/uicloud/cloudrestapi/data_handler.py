@@ -556,6 +556,7 @@ def listDirectoryFromHdfs(path="/", hdfsHost="spark-master0", port="50070", file
     rootUrl = "http://{0}:{1}/webhdfs/v1".format(hdfsHost, port)
     # headers = {'Content-Type': 'application/json'}
     listUrl = rootUrl + path + "?op=LISTSTATUS"
+    logger.debug("listUrl: {0}".format(listUrl))
     resp1 = requests.get(listUrl)
 
     outputList = []
@@ -578,8 +579,8 @@ def convertCsvToParquetSparkCode(uploadedCsvList, csvOpts={}, hdfsHost="spark-ma
     """
 
     logger.debug("uploadedCsvList: {0}, hdfsHost: {1}, port:{2}".format(uploadedCsvList, hdfsHost, port))
-    csvOpts = json.dumps(csvOpts, ensure_ascii=True)
-    logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
+    uploadedCsvs = str(uploadedCsvList).encode(encoding="utf-8", errors='strict')
+    logger.debug("csvOpts:{0}, uploadedCsvs:{1}".format(csvOpts, uploadedCsvs))
 
     sparkCode = setupLoggingSparkCode() + '''
     import traceback
@@ -592,6 +593,7 @@ def convertCsvToParquetSparkCode(uploadedCsvList, csvOpts={}, hdfsHost="spark-ma
         """
         """
         try:
+            logger.debug(u"csvUrl: {0}, parquetUrl: {1}".format(csvUrl, parquetUrl))
             # Given all csv has been converted into the standard format.
             dateFormat = csvOpts["dateformat"] if "dateformat" in csvOpts else "yyyy-MM-dd"
             timeFormat = csvOpts["timestampformat"] if "timestampformat" in csvOpts else "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -617,13 +619,15 @@ def convertCsvToParquetSparkCode(uploadedCsvList, csvOpts={}, hdfsHost="spark-ma
     def batchConvertCsvList(uploadedCsvList, csvOpts={}, hdfsHost="spark-master0", port="9000"):
         """
         """
-        logger.debug("csvOpts:{0}, type:{1}".format(csvOpts, type(csvOpts)))
+        logger.debug("csvOpts:{0}, uploadedCsvList:{1}".format(csvOpts, uploadedCsvList))
         csvUrlList = []
         for uploadedCsvUri in uploadedCsvList:
-            csvUrl = "hdfs://{0}:{1}{2}".format(hdfsHost, port, uploadedCsvUri)
-            rootFolder, filePath = uploadedCsvUri.split("/csv/")
-            parquetUrl = "hdfs://{0}:{1}{2}/parquet/{3}".format(hdfsHost, port, rootFolder, filePath)
-            logger.debug("csvUrl: {0}, parquetUrl: {1}".format(csvUrl, parquetUrl))
+            decodeUri = uploadedCsvUri.decode(encoding="utf-8", errors="strict")
+            csvUrl = u"hdfs://{0}:{1}{2}".format(hdfsHost, port, decodeUri)
+            rootFolder, filePath = decodeUri.split("/csv/")
+            logger.debug(u"csvUrl: {0}, filePath: {1}".format(csvUrl, filePath))
+            parquetUrl = u"hdfs://{0}:{1}{2}/parquet/{3}".format(hdfsHost, port, rootFolder, filePath)
+            logger.debug(u"csvUrl: {0}, parquetUrl: {1}".format(csvUrl, parquetUrl))
             res = convertCsvToParquet(csvUrl, parquetUrl, csvOpts)
             if res:
                 csvUrlList.append(res)
