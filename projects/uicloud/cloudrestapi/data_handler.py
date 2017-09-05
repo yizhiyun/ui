@@ -643,7 +643,7 @@ def convertCsvToParquetSparkCode(uploadedCsvList, csvOpts={}, hdfsHost="spark-ma
     return sparkCode
 
 
-def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
+def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
                                   hdfsHost="spark-master0", port="9000",
                                   rootFolder="/tmp/users", filterJson={}, maxRowCount=1000):
     """
@@ -651,36 +651,39 @@ def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
     mode can be "schema", "data" and "both"
     """
     rootUrl = "hdfs://{0}:{1}{2}/{3}".format(hdfsHost, port, rootFolder, userName)
+    fileTable = fileTable.encode(encoding="utf-8", errors='strict')
     filterJson = json.dumps(filterJson, ensure_ascii=True)
-    logger.debug("filterJson: {0}, type: {1}".format(filterJson, type(filterJson)))
+    logger.debug("rootUrl: {0}, filterJson: {1}, type: {2}".format(rootUrl, filterJson, type(filterJson)))
 
     sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + '''
     import json
 
 
-    def getSpecUploadedTable( rootUrl, tableName, mode, filterJson='{}', maxRowCount=1000):
+    def getSpecUploadedTable( rootUrl, fileTable, mode, filterJson='{}', maxRowCount=1000):
         """
         get the specified table schema,
-        tableName might be the format of <parentFolder>/<tableName>
+        fileTable might be the format of <parentFolder>/<fileTable>
         """
-        csvUrl = "{0}/csv/{1}".format(rootUrl, tableName)
-        logger.debug("csvUrl:{0}".format(csvUrl))
+        fileTable = fileTable.decode(encoding="utf-8", errors="strict")
+        logger.debug(u"fileTable: {0}".format(fileTable))
+        csvUrl = u"{0}/csv/{1}".format(rootUrl, fileTable)
+        logger.debug(u"csvUrl:{0}".format(csvUrl))
         dframe1 = spark.read.csv(csvUrl, header=True, inferSchema=True).limit(maxRowCount)
 
         outputDict = {}
         if mode == "all" or mode == "schema":
-            parquetUrl = "{0}/parquet/{1}".format(rootUrl, tableName)
+            parquetUrl = u"{0}/parquet/{1}".format(rootUrl, fileTable)
             parquetFileds = spark.read.parquet(parquetUrl).schema.fields
 
             csvFields = dframe1.schema.fields
-            # logger.debug("parquetFileds:{0}, csvFields:{1}".format(parquetFileds, csvFields))
+            # logger.debug(u"parquetFileds:{0}, csvFields:{1}".format(parquetFileds, csvFields))
             if len(csvFields) != len(parquetFileds):
-                logger.error("csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
+                logger.error(u"csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
                 return False
             outputDict["schema"] = []
             for i in range(len(csvFields)):
-                # logger.debug("i:{0}, item: {1}".format(i, csvFields[i]))
-                # logger.debug("field: {0}, mappedfield: {1}, type: {2}".format(
+                # logger.debug(u"i:{0}, item: {1}".format(i, csvFields[i]))
+                # logger.debug(u"field: {0}, mappedfield: {1}, type: {2}".format(
                 #     csvFields[i].name, parquetFileds[i].name, csvFields[i].dataType))
                 outputDict["schema"].append({"field": csvFields[i].name,
                     "mappedfield": parquetFileds[i].name, "type": str(csvFields[i].dataType)})
@@ -694,10 +697,10 @@ def getSpecUploadedTableSparkCode(tableName, userName="myfolder", mode="all",
                 dframe1 = filterDF(dframe1, filterJson)
             for rowItem in dframe1.collect():
                 outputDict["data"].append(rowItem.asDict())
-        logger.debug("Getting {0} url successfully".format(csvUrl))
+        logger.debug(u"Getting {0} url successfully".format(csvUrl))
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     ''' + '''
-    print(getSpecUploadedTable('{0}', '{1}', '{2}', '{3}', {4}))
-    '''.format(rootUrl, tableName, mode, filterJson, maxRowCount)
+    print(getSpecUploadedTable(u'{0}', {1}, '{2}', '{3}', {4}))
+    '''.format(rootUrl, fileTable, mode, filterJson, maxRowCount)
 
     return sparkCode

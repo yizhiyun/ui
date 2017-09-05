@@ -513,6 +513,7 @@ def getSpecUploadedTableViaSpark(request, fileName, tableName, modeName):
                        "reason": "The mode must one of {0}".format(modeList)}
             return JsonResponse(failObj, status=400)
         fileTable = "{0}/{1}".format(fileName, tableName)
+        logger.debug("fileTable: {0}".format(fileTable))
         # response all valid columns
         sparkCode = getSpecUploadedTableSparkCode(
             fileTable, userName="myfolder", mode=modeName, filterJson=jsonData)

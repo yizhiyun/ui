@@ -2,6 +2,8 @@
 Description
 -----------
 This document describe the RESTful API of how to upload the csv file to hdfs
+
+Upload The Specified CSV/XLS/XLSX File
 -------------
 ### 1. Request URI: cloudapi/v1/uploadcsv
 ### 2. Support Format: JSON
