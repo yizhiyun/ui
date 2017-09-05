@@ -120,7 +120,7 @@ def showAllTablesOfaDataBase(request):
 def filterTable(request, modeName):
     jsonData = request.data
     dbObjIndex = jsonData['source']
-    username = jsonData['username'] if 'username' in jsonData else 'yzy'
+    username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
     if username not in Singleton().dataPaltForm.keys():
         return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
     if dbObjIndex not in Singleton().dataPaltForm[username].keys():
@@ -140,7 +140,8 @@ def filterTable(request, modeName):
                        "reason": "the mode must one of {0}".format(modeList)}
             return JsonResponse(failObj, status=400)
 
-        data = dataBaseObj.filterTableData(jsonData, modeName)
+        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData.keys() else 200
+        data = dataBaseObj.filterTableData(jsonData, modeName, maxRowCount)
         if data == 'failed':
             return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
 

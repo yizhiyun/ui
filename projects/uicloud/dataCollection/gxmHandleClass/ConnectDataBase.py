@@ -134,7 +134,7 @@ class ConnectDataBase():
 
     # 根据条件查询. 返回表格数据
 
-    def filterTableData(self, jsonData, mode):
+    def filterTableData(self, jsonData, mode, maxRowCount):
         columnstr = ', '.join(jsonData['columns'].keys())
         if columnstr:
             sql = 'select {0} from {1} where 1=1 '.format(columnstr, jsonData['tableName'])
@@ -144,7 +144,11 @@ class ConnectDataBase():
         sqlserverstr = ''
         oraclestr = ''
 
+        count = 0
         for condIt in jsonData['conditions']:
+            if 'limit' == condIt['type']:
+                count += 1
+
             condType = condIt['type']
             if condType == 'limit' and type(condIt["value"]) == int:
                 mysqlstr = mysqlstr + 'limit {0}'.format(condIt["value"])
@@ -194,6 +198,11 @@ class ConnectDataBase():
 
             elif condType == "notendswith":
                 sql += "and {0} not like '%{1}' ".format(condIt['columnName'], condIt["value"])
+
+        if count == 0:
+            mysqlstr = mysqlstr + 'limit {0}'.format(maxRowCount)
+            sqlserverstr = sqlserverstr + ' top {0}'.format(maxRowCount)
+            oraclestr += oraclestr + 'and rownum<={0} '.format(maxRowCount)
 
         results = {}
 
