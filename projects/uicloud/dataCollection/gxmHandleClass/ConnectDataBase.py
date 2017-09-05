@@ -28,7 +28,7 @@ class ConnectDataBase():
         self.tablesOfDataBase = {}
     # 连接到数据库
 
-    def connectDB(self):
+    def connectDB(self, nls_lang):
         # 转化数据平台 name 小写
         # print(self.dbPaltName.lower())
         if self.dbPaltName == "mysql":
@@ -41,6 +41,8 @@ class ConnectDataBase():
 
         elif self.dbPaltName == 'oracle':
             try:
+                import os
+                os.environ['NLS_LANG'] = nls_lang
                 self.con = cx_Oracle.connect('{0}/{1}@{2}:{3}/{4}'.format(
                     self.dbUserName, self.dbUserPwd, self.dbLocation, self.dbPort, self.dbSid))
                 return True
