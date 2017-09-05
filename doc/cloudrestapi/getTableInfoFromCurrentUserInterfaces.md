@@ -82,16 +82,13 @@ Get Table From Current User Via Spark
        "trans": {
            "pretrans": [                 # Optional,
                {
-                   "col": <baseColumn>,
+                   # iterDict also has the same structure with the parent dict.
+                   "col": <number> or <columnString> or <iterDict>,
                    "operations": [
                        # types: "+","-","*","/"
                        {
                            "type":<type>,
-                           "col": <columnString>
-                       },
-                       {
-                           "type":<type>,
-                           "value": <number>
+                           "col": <number> or <columnString> or <iterDict>,
                        },
                        ...
                    ],
@@ -101,7 +98,6 @@ Get Table From Current User Via Spark
                ...
            ],
            "groupby": <columnList>,
-           "orderby": <columnList>,       # Optional,
            "aggdict": {
                # aggTypes: "avg","max","min","sum","pivot"
                "column": <aggType>,
@@ -109,17 +105,35 @@ Get Table From Current User Via Spark
            },
            "aggregations": [
                {
-                   # aggTypes: "avg","max","min","sum","count","approximate"
+                   # aggTypes: "avg","max","min","sum","count","approx_count_distinct"
                    "type":<aggType>,
                    "col": <column>,
                    "alias": <newName>     # Optional,
                },
                ...
            ],
-           "pivot": {
+           "posttrans": [                 # Optional,
+               {
+                   # iterDict also has the same structure with the parent dict.
+                   "col": <number> or <columnString> or <iterDict>,
+                   "operations": [
+                       # types: "+","-","*","/"
+                       {
+                           "type":<type>,
+                           "col": <number> or <columnString> or <iterDict>,
+                       },
+                       ...
+                   ],
+                   "alias": <newColumnName>
+                   ...
+               },
+               ...
+           ],
+           "pivot": {                     # Optional
                "col": <column>,
-               "values": <valueList>, # Optional
+               "values": <valueList>,     # Optional
            },
+           "orderby": <columnList>,       # Optional,
        },
        <otherProperty>:<otherValue>,
        ...

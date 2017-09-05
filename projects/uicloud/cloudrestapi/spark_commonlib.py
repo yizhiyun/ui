@@ -226,7 +226,8 @@ def aggDataFrameSparkCode():
             # add the specified aggregations in the DataFrame
             transDict = tableDict["trans"]
             if "pretrans" in transDict.keys():
-                inDF = colsOperators(inDF, transDict["pretrans"])
+                colList = getCols(transDict["pretrans"])
+                inDF = inDF.select(*colList)
             if "groupby" in transDict.keys():
                 grpData = inDF.groupby(transDict["groupby"])
             else:
@@ -240,7 +241,7 @@ def aggDataFrameSparkCode():
                     grpData = grpData.pivot(ptdict["col"])
 
             if "aggdict" in transDict:
-                outDF = grpData.agg(transDict["aggdict"])
+                inDF = grpData.agg(transDict["aggdict"])
             elif "aggregations" in transDict:
                 cols = []
                 for aggIt in transDict["aggregations"]:
@@ -254,44 +255,95 @@ def aggDataFrameSparkCode():
                     else:
                         pass
                 inDF = grpData.agg(*cols)
+            elif "posttrans" in transDict.keys():
+                colList = getCols(transDict["posttrans"])
+                inDF = inDF.select(*colList)
             if "orderby" in transDict.keys():
                 outDF = inDF.orderBy(transDict["orderby"])
         return outDF
 
 
-    def colsOperators(inDF, OperList):
+    def getCols(operList):
         """
         get the columns operations' results.
         """
         selectCols = []
-        for itemdt in OperList:
-            baseColStr = itemdt["col"]
-            col = inDF.__getattr__(baseColStr)
-            if "operations" in itemdt.keys():
-                for opIt in itemdt["operations"]:
-                    if "+" == opIt["type"]:
-                        if "value" in opIt.keys():
-                            col = col + opIt["value"]
+        for itemdt in operList:
+            selectCols.append(getOperCol(itemdt))
+        return selectCols
+
+
+    def getOperCol(operDict):
+        """
+        """
+        colVal = operDict["col"]
+        if isinstance(colVal, int) or isinstance(colVal, float):
+            col = colVal
+        elif isinstance(colVal, str) or isinstance(colVal, unicode):
+            col = F.col(colVal)
+        elif isinstance(colVal, dict):
+            col = getOperCol(colVal)
+        else:
+            logger.error("The col's value doesn't meet the requirement. \
+                value: {0}, type: {1}".format(colVal, type(colVal)))
+            return False
+
+        if "operations" in operDict.keys():
+            for opIt in operDict["operations"]:
+                opColVal = opIt["col"]
+                if "+" == opIt["type"]:
+                    if isinstance(opColVal, int) or isinstance(opColVal, float):
+                        col = col + opColVal
+                    elif isinstance(opColVal, str) or isinstance(opColVal, unicode):
+                        col = col + F.col(opIt["col"])
+                    elif isinstance(opColVal, dict):
+                        resCol = getOperCol(opColVal)
+                        if resCol:
+                            col = col + resCol
                         else:
-                            # col = col + inDF.__getattr__(opIt["col"])
-                            col = col + F.col(opIt["col"])
-                    elif "-" == opIt["type"]:
-                        if "value" in opIt.keys():
-                            col = col - opIt["value"]
+                            logger.error("The col's value doesn't meet the \
+                                requirement. column value: {0}".format(opColVal))
+                            return False
+                elif "-" == opIt["type"]:
+                    if isinstance(opColVal, int) or isinstance(opColVal, float):
+                        col = col - opColVal
+                    elif isinstance(opColVal, str) or isinstance(opColVal, unicode):
+                        col = col - F.col(opIt["col"])
+                    elif isinstance(opColVal, dict):
+                        resCol = getOperCol(opColVal)
+                        if resCol:
+                            col = col - resCol
                         else:
-                            col = col - F.col(opIt["col"])
-                    elif "*" == opIt["type"]:
-                        if "value" in opIt.keys():
-                            col = col * opIt["value"]
+                            logger.error("The col's value doesn't meet the \
+                                requirement. column value: {0}".format(opColVal))
+                            return False
+                elif "*" == opIt["type"]:
+                    if isinstance(opColVal, int) or isinstance(opColVal, float):
+                        col = col * opColVal
+                    elif isinstance(opColVal, str) or isinstance(opColVal, unicode):
+                        col = col * F.col(opIt["col"])
+                    elif isinstance(opColVal, dict):
+                        resCol = getOperCol(opColVal)
+                        if resCol:
+                            col = col * resCol
                         else:
-                            col = col * F.col(opIt["col"])
-                    elif "/" == opIt["type"]:
-                        if "value" in opIt.keys():
-                            col = col / opIt["value"]
+                            logger.error("The col's value doesn't meet the \
+                                requirement. column value: {0}".format(opColVal))
+                            return False
+                elif "/" == opIt["type"]:
+                    if isinstance(opColVal, int) or isinstance(opColVal, float):
+                        col = col / opColVal
+                    elif isinstance(opColVal, str) or isinstance(opColVal, unicode):
+                        col = col / F.col(opIt["col"])
+                    elif isinstance(opColVal, dict):
+                        resCol = getOperCol(opColVal)
+                        if resCol:
+                            col = col / resCol
                         else:
-                            col = col / F.col(opIt["col"])
-            if "alias" in itemdt.keys():
-                col = col.alias(itemdt["alias"])
-            selectCols.append(col)
-        return inDF.select(*selectCols)
+                            logger.error("The col's value doesn't meet the \
+                                requirement. column value: {0}".format(opColVal))
+                            return False
+        if "alias" in operDict.keys():
+            col = col.alias(operDict["alias"])
+        return col
     '''
