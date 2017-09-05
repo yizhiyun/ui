@@ -20,7 +20,7 @@ def setupLoggingSparkCode():
         # Set level of logger source.  Use debug for development time options, then bump it up
         # to logging.INFO after your script is working well to avoid excessive logging.
 
-        logger.setLevel(logging.INFO)
+        logger.setLevel(logging.DEBUG)
         if not logger.handlers:
             loghandler = logging.FileHandler(logpath)
             loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(funcName)s %(message)s'))
@@ -215,40 +215,83 @@ def aggDataFrameSparkCode():
     """
 
     return '''
+    from pyspark.sql import functions as F
+
     def aggDF(inDF, tableDict):
         """
         """
+
         logger.debug(u"tableDict:{0}".format(tableDict))
-        if "aggs" in tableDict.keys():
+        if "trans" in tableDict.keys():
             # add the specified aggregations in the DataFrame
-            aggDict = tableDict["aggs"]
-            if "groupby" in aggDict.keys():
-                inDF = inDF.groupby(aggDict["groupby"])
+            transDict = tableDict["trans"]
+            if "pretrans" in transDict.keys():
+                inDF = colsOperators(inDF, transDict["pretrans"])
+            if "groupby" in transDict.keys():
+                grpData = inDF.groupby(transDict["groupby"])
             else:
-                inDF = inDF.groupby()
-            if "aggregations" in aggDict:
-                inDF = inDF.agg(aggDict["aggregations"])
-                # for aggIt in aggDict["aggregations"]:
-                #     aggType = aggIt["type"]
-                #     logger.debug(u"aggIt:{0}".format(aggIt))
-                #     if aggType == "pivot":
-                #         if "values" in aggIt.keys():
-                #             inDF = inDF.pivot(aggIt["col"], aggIt["value"])
-                #         else:
-                #             inDF = inDF.pivot(aggIt["col"])
-                #     elif "count" == aggType:
-                #         inDF = inDF.count
-                #     elif "sum" == aggType:
-                #         inDF = inDF.sum(aggIt["cols"])
-                #     elif "min" == aggType:
-                #         inDF = inDF.min(aggIt["cols"])
-                #     elif "max" == aggType:
-                #         inDF = inDF.max(aggIt["cols"])
-                #     elif "avg" == aggType:
-                #         inDF = inDF.avg(aggIt["cols"])
-                #     else:
-                #         pass
-            if "orderby" in aggDict.keys():
-                inDF = inDF.orderBy(aggDict["orderby"])
-        return inDF
+                grpData = inDF.groupby()
+
+            if "pivot" in transDict.keys():
+                ptdict = transDict["pivot"]
+                if "values" in ptdict.keys():
+                    grpData = grpData.pivot(ptdict["col"], ptdict["value"])
+                else:
+                    grpData = grpData.pivot(ptdict["col"])
+
+            if "aggdict" in transDict:
+                outDF = grpData.agg(transDict["aggdict"])
+            elif "aggregations" in transDict:
+                cols = []
+                for aggIt in transDict["aggregations"]:
+                    aggType = aggIt["type"]
+                    logger.debug(u"aggIt: {0}".format(aggIt))
+                    if aggType in ["avg", "count", "max", "min", "sum", "approx_count_distinct"]:
+                        if "alias" in aggIt.keys():
+                            cols.append(F.__getattribute__(aggType)(aggIt["col"]).alias(aggIt["alias"]))
+                        else:
+                            cols.append(F.__getattribute__(aggType)(aggIt["col"]))
+                    else:
+                        pass
+                inDF = grpData.agg(*cols)
+            if "orderby" in transDict.keys():
+                outDF = inDF.orderBy(transDict["orderby"])
+        return outDF
+
+
+    def colsOperators(inDF, OperList):
+        """
+        get the columns operations' results.
+        """
+        selectCols = []
+        for itemdt in OperList:
+            baseColStr = itemdt["col"]
+            col = inDF.__getattr__(baseColStr)
+            if "operations" in itemdt.keys():
+                for opIt in itemdt["operations"]:
+                    if "+" == opIt["type"]:
+                        if "value" in opIt.keys():
+                            col = col + opIt["value"]
+                        else:
+                            # col = col + inDF.__getattr__(opIt["col"])
+                            col = col + F.col(opIt["col"])
+                    elif "-" == opIt["type"]:
+                        if "value" in opIt.keys():
+                            col = col - opIt["value"]
+                        else:
+                            col = col - F.col(opIt["col"])
+                    elif "*" == opIt["type"]:
+                        if "value" in opIt.keys():
+                            col = col * opIt["value"]
+                        else:
+                            col = col * F.col(opIt["col"])
+                    elif "/" == opIt["type"]:
+                        if "value" in opIt.keys():
+                            col = col / opIt["value"]
+                        else:
+                            col = col / F.col(opIt["col"])
+            if "alias" in itemdt.keys():
+                col = col.alias(itemdt["alias"])
+            selectCols.append(col)
+        return inDF.select(*selectCols)
     '''

@@ -70,13 +70,9 @@ def executeSpark(sparkCode,
     elif resultReqJson["state"] == "waitting":
         return {"status": "waitting", "msg": "The job hasn't been finished. You can check it later."}
 
-    # pprint.pprint(resultReqJson)
-    logger.debug("resultReqJson:{0}".format(resultReqJson))
+    # logger.debug("resultReqJson:{0}".format(resultReqJson))
 
     results = resultReqJson['result']['output']
-
-#    # close the session url.
-#    requests.delete(sessionUrl, headers=headers)
 
     return results
 
@@ -87,7 +83,7 @@ def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json
     '''
     reqCount = 0
     reqJson = requests.get(reqUrl, headers=headers).json()
-    logger.debug("Step:{0}, response:{1}".format(reqCount, reqJson))
+    logger.debug("Step:{0}, state:{1}".format(reqCount, reqJson['state']))
     while reqCount < maxReqCount and reqJson['state'] != desiredState:
         if reqJson['state'] == 'error':
             logger.error(
@@ -103,7 +99,7 @@ def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json
         reqCount = reqCount + 1
         reqJson = requests.get(reqUrl, headers=headers).json()
 
-        logger.debug("Step:{0}, response:{1}".format(reqCount, reqJson))
+        logger.debug("Step:{0}, state:{1}".format(reqCount, reqJson['state']))
 
     if reqCount >= maxReqCount:
         logger.warn("Request count has exceeded the maxReqCount({0})".format(maxReqCount))

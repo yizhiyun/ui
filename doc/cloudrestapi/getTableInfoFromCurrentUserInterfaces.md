@@ -79,16 +79,47 @@ Get Table From Current User Via Spark
            },
            ...
        ],
-       "aggs": {
+       "trans": {
+           "pretrans": [                 # Optional,
+               {
+                   "col": <baseColumn>,
+                   "operations": [
+                       # types: "+","-","*","/"
+                       {
+                           "type":<type>,
+                           "col": <columnString>
+                       },
+                       {
+                           "type":<type>,
+                           "value": <number>
+                       },
+                       ...
+                   ],
+                   "alias": <newColumnName>
+                   ...
+               },
+               ...
+           ],
            "groupby": <columnList>,
-           "orderby": <columnList>, # Optional,
-           "aggregations": {
+           "orderby": <columnList>,       # Optional,
+           "aggdict": {
                # aggTypes: "avg","max","min","sum","pivot"
                "column": <aggType>,
-               # if aggType is count, column is "*".
-               "*": "count"
-           }
-
+               "*": "count"               # if aggType is count, column is "*".
+           },
+           "aggregations": [
+               {
+                   # aggTypes: "avg","max","min","sum","count","approximate"
+                   "type":<aggType>,
+                   "col": <column>,
+                   "alias": <newName>     # Optional,
+               },
+               ...
+           ],
+           "pivot": {
+               "col": <column>,
+               "values": <valueList>, # Optional
+           },
        },
        <otherProperty>:<otherValue>,
        ...

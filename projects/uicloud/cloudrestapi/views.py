@@ -218,7 +218,7 @@ def getAllTablesFromUser(request):
 @api_view(['POST'])
 def getTableViaSpark(request, tableName, modeName):
     """
-    GET:
+    POST:
     Get all table from the current user.
     """
 
@@ -247,7 +247,6 @@ def getTableViaSpark(request, tableName, modeName):
                        "reason": output}
             return JsonResponse(failObj, status=400)
         else:
-            logger.debug("output: {}".format(output))
             data = output["data"]["text/plain"]
 
             results = json.loads(data)
@@ -258,7 +257,7 @@ def getTableViaSpark(request, tableName, modeName):
 @api_view(['POST'])
 def getAllTablesFromCustom(request):
     """
-    GET:
+    POST:
     Get all table from the custom user.
     """
 
