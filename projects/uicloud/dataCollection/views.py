@@ -5,7 +5,6 @@ from .gxmHandleClass.ConnectDataBase import ConnectDataBase
 from .gxmHandleClass.Singleton import Singleton
 import time
 import logging
-import cx_Oracle
 
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.dataCollection.views")
@@ -29,21 +28,8 @@ def connectDataBaseHandle(request):
     if request.method == 'POST':
         dbPaltName = jsonData["dataBaseName"].lower()
         dbSid = None
-        nls_lang = None
         if dbPaltName == 'oracle':
             dbSid = jsonData["dbSid"]
-            try:
-                conn = cx_Oracle.connect('{0}/{1}@{2}:{3}/{4}'.format(
-                                         jsonData["dbuserName"],
-                                         jsonData["dbuserPwd"],
-                                         jsonData["location"],
-                                         jsonData["port"],
-                                         dbSid))
-                c = conn.cursor()
-                c.execute("select userenv('language') from dual")
-                nls_lang = c.fetchall()[0][0]
-            except Exception:
-                context = {'status': 'failed', 'reason': "can't connect db"}
         dataBaseObj = ConnectDataBase(
             dbPaltName,
             jsonData["location"],
@@ -53,7 +39,7 @@ def connectDataBaseHandle(request):
             dbSid,
             time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         )
-        isConnect = dataBaseObj.connectDB(nls_lang)
+        isConnect = dataBaseObj.connectDB()
         if isConnect:
             username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
             notIn = Singleton().addPalt(dataBaseObj, username)
