@@ -83,7 +83,12 @@ Get Table From Current User Via Spark
            "pretrans": [                 # Optional,
                {
                    # iterDict also has the same structure with the parent dict.
-                   # unarytype: "from_unixtime", "hour", "isnan", "isnull"
+                   # unarytype:
+                   #   "abs","acos","cos","dayofmonth","dayofyear","exp","factorial",
+                   #   "from_unixtime","hour","isnan","isnull","log10","log1p","log2",
+                   #   "lower","ltrim","minute","month","quarter","reverse","rtrim",
+                   #   "second","sin","sqrt","tan","to_date","to_timestamp","trim","upper",
+                   #   "weekofyear","year"
                    "col": <number> or <columnString> or <iterDict>,
                    "unarytype":<unaryType>,
                    "operations": [
@@ -107,7 +112,9 @@ Get Table From Current User Via Spark
            },
            "aggregations": [
                {
-                   # aggTypes: "avg","max","min","sum","count","approx_count_distinct"
+                   # aggTypes:
+                   #   "approx_count_distinct", "avg", "collect_list", "collect_set",
+                   #   "count", "max","min", "first", "last", "sum", "sumDistinct"
                    "type":<aggType>,
                    "col": <column>,
                    "alias": <newName>     # Optional,

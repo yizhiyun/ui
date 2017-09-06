@@ -244,10 +244,12 @@ def aggDataFrameSparkCode():
                 inDF = grpData.agg(transDict["aggdict"])
             elif "aggregations" in transDict:
                 cols = []
+                aggLt = ["approx_count_distinct", "avg", "collect_list", "collect_set", "count", "max",
+                          "min", "first", "last", "sum", "sumDistinct"]
                 for aggIt in transDict["aggregations"]:
                     aggType = aggIt["type"]
                     logger.debug(u"aggIt: {0}".format(aggIt))
-                    if aggType in ["avg", "count", "max", "min", "sum", "approx_count_distinct"]:
+                    if aggType in aggLt:
                         if "alias" in aggIt.keys():
                             cols.append(F.__getattribute__(aggType)(aggIt["col"]).alias(aggIt["alias"]))
                         else:
