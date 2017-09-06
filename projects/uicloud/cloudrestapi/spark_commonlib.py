@@ -20,7 +20,7 @@ def setupLoggingSparkCode():
         # Set level of logger source.  Use debug for development time options, then bump it up
         # to logging.INFO after your script is working well to avoid excessive logging.
 
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
         if not logger.handlers:
             loghandler = logging.FileHandler(logpath)
             loghandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(funcName)s %(message)s'))
@@ -255,7 +255,8 @@ def aggDataFrameSparkCode():
                     else:
                         pass
                 inDF = grpData.agg(*cols)
-            elif "posttrans" in transDict.keys():
+
+            if "posttrans" in transDict.keys():
                 colList = getCols(transDict["posttrans"])
                 inDF = inDF.select(*colList)
             if "orderby" in transDict.keys():
@@ -268,6 +269,7 @@ def aggDataFrameSparkCode():
         get the columns operations' results.
         """
         selectCols = []
+        logger.debug("operList: {0}".format(operList))
         for itemdt in operList:
             selectCols.append(getOperCol(itemdt))
         return selectCols
@@ -276,6 +278,7 @@ def aggDataFrameSparkCode():
     def getOperCol(operDict):
         """
         """
+        logger.debug("operDict: {0}".format(operDict))
         colVal = operDict["col"]
         if isinstance(colVal, int) or isinstance(colVal, float):
             col = colVal
@@ -284,8 +287,8 @@ def aggDataFrameSparkCode():
         elif isinstance(colVal, dict):
             col = getOperCol(colVal)
         else:
-            logger.error("The col's value doesn't meet the requirement. \
-                value: {0}, type: {1}".format(colVal, type(colVal)))
+            logger.error("The col's value doesn't meet the requirement.value: {0}, \
+                type: {1}".format(colVal, type(colVal)))
             return False
 
         if "operations" in operDict.keys():
