@@ -260,8 +260,8 @@ def aggDataFrameSparkCode():
                 colList = getCols(transDict["posttrans"])
                 inDF = inDF.select(*colList)
             if "orderby" in transDict.keys():
-                outDF = inDF.orderBy(transDict["orderby"])
-        return outDF
+                inDF = inDF.orderBy(transDict["orderby"])
+        return inDF
 
 
     def getCols(operList):
@@ -290,6 +290,9 @@ def aggDataFrameSparkCode():
             logger.error("The col's value doesn't meet the requirement.value: {0}, \
                 type: {1}".format(colVal, type(colVal)))
             return False
+
+        if "unarytype" in operDict.keys():
+            col = F.__getattribute__(operDict["unarytype"])(col)
 
         if "operations" in operDict.keys():
             for opIt in operDict["operations"]:

@@ -83,7 +83,9 @@ Get Table From Current User Via Spark
            "pretrans": [                 # Optional,
                {
                    # iterDict also has the same structure with the parent dict.
+                   # unarytype: "from_unixtime", "hour", "isnan", "isnull"
                    "col": <number> or <columnString> or <iterDict>,
+                   "unarytype":<unaryType>,
                    "operations": [
                        # types: "+","-","*","/"
                        {
@@ -116,6 +118,7 @@ Get Table From Current User Via Spark
                {
                    # iterDict also has the same structure with the parent dict.
                    "col": <number> or <columnString> or <iterDict>,
+                   "unarytype":<unaryType>,
                    "operations": [
                        # types: "+","-","*","/"
                        {
