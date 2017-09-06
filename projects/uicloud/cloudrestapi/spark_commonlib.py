@@ -240,9 +240,9 @@ def aggDataFrameSparkCode():
                 else:
                     grpData = grpData.pivot(ptdict["col"])
 
-            if "aggdict" in transDict:
+            if "aggdict" in transDict.keys():
                 inDF = grpData.agg(transDict["aggdict"])
-            elif "aggregations" in transDict:
+            elif "aggregations" in transDict.keys():
                 cols = []
                 aggLt = ["approx_count_distinct", "avg", "collect_list", "collect_set", "count", "max",
                           "min", "first", "last", "sum", "sumDistinct"]
@@ -256,7 +256,8 @@ def aggDataFrameSparkCode():
                             cols.append(F.__getattribute__(aggType)(aggIt["col"]))
                     else:
                         pass
-                inDF = grpData.agg(*cols)
+                if len(cols) > 0:
+                    inDF = grpData.agg(*cols)
 
             if "posttrans" in transDict.keys():
                 colList = getCols(transDict["posttrans"])
