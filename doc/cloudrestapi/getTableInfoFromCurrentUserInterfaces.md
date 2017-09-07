@@ -85,8 +85,8 @@ Get Table From Current User Via Spark
                    # iterDict also has the same structure with the parent dict.
                    # unarytype:
                    #   "abs","acos","cos","dayofmonth","dayofyear","exp","factorial",
-                   #   "from_unixtime","hour","isnan","isnull","log10","log1p","log2",
-                   #   "lower","ltrim","minute","month","quarter","reverse","rtrim",
+                   #   "from_unixtime","hour","isnan","isnull","length","log10","log1p",
+                   #   "log2","lower","ltrim","minute","month","quarter","reverse","rtrim",
                    #   "second","sin","sqrt","tan","to_date","to_timestamp","trim","upper",
                    #   "weekofyear","year"
                    "col": <number> or <columnString> or <iterDict>,

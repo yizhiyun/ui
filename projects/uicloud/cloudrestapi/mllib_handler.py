@@ -173,6 +173,9 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
         it will output json data.
         """
         from scipy import stats
+        from pyspark.ml.feature import VectorAssembler
+        from pyspark.mllib.stat import Statistics
+        import numpy as np
 
         outputDict = {}
         if "ttype" not in inputParams.keys():
@@ -236,21 +239,46 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
             levres = stats.levene(pdf1, pdf2)
             res = stats.ttest_rel(pdf1, pdf2)
         elif "chiSqtest" == inputParams["ttype"]:
-            import pyspark.mllib.stat as stat
 
-            # df1 = dataFrame.groupBy(inputParams["col_a"]).pivot(inputParams["col_b"]).count().fillna(0)
-            pdf1 = dataFrame \
-                .groupBy(inputParams["col_a"], inputParams["col_b"]) \
-                .count() \
-                .toPandas() \
-                .pivot_table(values="count", index=[inputParams["col_a"]], columns=[inputParams["col_b"]]) \
-                .fillna(0)
-            res = stat.Statistics.chiSqTest(pdf1.as_matrix())
+            colaNum = dataFrame.select(inputParams["col_a"]).distinct().count()
+            bdf = dataFrame.select(inputParams["col_b"]).distinct()
+            colbNum = bdf.distinct().count()
+
+            # get the feature list to be used.
+            featlist = bdf.rdd.flatMap(lambda x: x).collect()
+
+            # group by col_a and pivot col_b
+            grpdf1 = dataFrame.groupBy(inputParams["col_a"]).pivot(inputParams["col_b"]).count()
+
+            # transform columns to vector feature column
+            vecAssembler = VectorAssembler(inputCols=featlist, outputCol="features")
+            vecdf1 = vecAssembler.transform(grpdf1)
+            arr1 = vecdf1.select("features").rdd.reduce(
+                lambda x, y: np.concatenate((x.features.toArray(), y.features.toArray())))
+            mat = Matrices.dense(colaNum, colbNum, arr1)
+            res = Statistics.chiSqTest(mat)
+            # pdf1 = dataFrame \
+            #     .groupBy(inputParams["col_a"], inputParams["col_b"]) \
+            #     .count() \
+            #     .toPandas() \
+            #     .pivot_table(values="count", index=[inputParams["col_a"]], columns=[inputParams["col_b"]]) \
+            #     .fillna(0)
+            # res = Statistics.chiSqTest(pdf1.as_matrix())
             logger.debug("statistic: {0}, pValue: {1}, degreesOfFreedom:{2}, method:{3}, nullHypothesis: {4}"
-                .format(res.statistic, res.pValue, res.degreesOfFreedom, res.method, res.nullHypothesis))
+                         .format(res.statistic, res.pValue, res.degreesOfFreedom, res.method, res.nullHypothesis))
+        else:
+            logger.warn("Don't support other types.")
+
         if levres:
             outputDict["levenetest"] = {"statistic": levres.statistic, "pvalue": levres.pvalue}
-        outputDict[inputParams["ttype"]] = {"statistic": res.statistic, "pvalue": res.pvalue}
+        if inputParams["ttype"] == "chiSqtest":
+            outputDict["chiSqtest"] = {"statistic": res.statistic,
+                                       "pvalue": res.pvalue,
+                                       "degreesOffreedom": res.degreesOfFreedom,
+                                       "method": res.method,
+                                       "nullhypothesis": res.nullHypothesis}
+        else:
+            outputDict[inputParams["ttype"]] = {"statistic": res.statistic, "pvalue": res.pvalue}
 
         return outputDict
     ''' + '''
