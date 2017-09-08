@@ -48,7 +48,8 @@ def getAllDataFunction(username, datatype=None):
                         'note': tablelist[i].note,
                         'id': tablelist[i].id,
                         'show': tablelist[i].show,
-                        'isopen': tablelist[i].isopen
+                        'isopen': tablelist[i].isopen,
+                        'status': tablelist[i].status
                     }
         return context
 
@@ -215,7 +216,9 @@ def changeName(request):
                 folder = DashboardFolderByUser.objects.get(foldername=jsonData['oldname'])
                 folder.foldername = jsonData['newname']
                 folder.save()
-                return JsonResponse({'status': 'ok'})
+                username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+                context = getAllDataFunction(username)
+                return JsonResponse(context)
 
             elif objtype == 'parentfolder':
                 countlist = DashboardFolderByUser.objects.filter(foldername=jsonData['newname'])
@@ -345,6 +348,14 @@ def setSwitch(request):
                     table.isopen = False
                 else:
                     table.isopen = True
+                table.save()
+                context = {
+                    'status': 'ok'
+                }
+                return JsonResponse(context)
+            elif jsonData['switch'] == 'status':
+                table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
+                table.status = jsonData['location']
                 table.save()
                 context = {
                     'status': 'ok'
