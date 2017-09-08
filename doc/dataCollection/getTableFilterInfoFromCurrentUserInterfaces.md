@@ -9,7 +9,7 @@ This document describe how to get users' tables filter information.
 ### 4. Request Data:
 ```
 {
-    # "maxrowcount" you can send if you want to set the number of rows. else. you needn't send
+    # you can send "maxrowcount" if you want to set the number of rows returned. else. you needn't send
     "maxrowcount": <number of rows returned>,
     "source": <sourceName or connectString>,
     "database": <databasename>,

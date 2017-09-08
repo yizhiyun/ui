@@ -1,25 +1,15 @@
 from django.conf.urls import url
-from django.contrib.auth import views as auth_views
+from . import views
 
-#add an app_name to set the application namespace
+# add an app_name to set the application namespace
 app_name = 'uiaccounts'
 
 urlpatterns = [
-    url(r'^login/$',
-        auth_views.login,
-        {'template_name': 'uiaccounts/login.html'},
-        name='login'),
-    url(r'^logout/$',
-        auth_views.logout,
-        {'template_name': 'uiaccounts/logged_out.html'},
-        name='logout'),
-    url(r'^password_change/$',
-        auth_views.password_change,
-        {'template_name': 'uiaccounts/password_change_form.html',
-         'post_change_redirect': '/uiaccounts/password_change/done/'},
-        name='password_change'),
-    url(r'^password_change/done/$',
-        auth_views.password_change_done,
-        {'template_name': 'uiaccounts/password_change_done.html'},
-        name='password_change_done'),
+    url(r'^register/$', views.register, name='register'),
+    url(r'^login/$', views.userLogin, name='userLogin'),
+    url(r'^active_user/(?P<token>.+)$', views.active_user, name='active_user'),
+    url(r'^logout/$', views.userLogout, name='userLogout'),
+    url(r'^afterlogin/$', views.afterLogin, name='afterLogin'),
+    url(r'^add/(?P<permission>.+)/$', views.addPermission, name='addPermission'),
+    url(r'^remove/(?P<permission>.+)/$', views.removePermission, name='removePermission'),
 ]

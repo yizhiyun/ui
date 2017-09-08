@@ -1,6 +1,8 @@
 from django.http import JsonResponse
+from django.shortcuts import render
+from django.contrib.auth.decorators import permission_required
 from rest_framework.decorators import api_view
-from django.views.generic import TemplateView
+# from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
 from .gxmHandleClass.Singleton import Singleton
 import time
@@ -12,12 +14,14 @@ logger.setLevel(logging.DEBUG)
 # Create your views here.
 
 
-class IndexView(TemplateView):
-    template_name = 'dataCollection/dataSourceSelect.html'
+# @permission_required('uiaccounts.pallasdata', login_url='/uiaccounts/afterlogin/')
+def IndexView(request):
+    return render(request, 'dataCollection/dataSourceSelect.html')
 
 
-class dataBuildView(TemplateView):
-    template_name = 'dataCollection/dataAnalysis.html'
+# @permission_required('uiaccounts.dataBuildView', login_url='/uiaccounts/afterlogin/')
+def dataBuildView(request):
+    return render(request, 'dataCollection/dataAnalysis.html')
 
 # 连接数据库平台
 

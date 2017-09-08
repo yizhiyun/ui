@@ -1,6 +1,6 @@
-# from django.shortcuts import render
+from django.shortcuts import render
 from rest_framework.decorators import api_view
-from django.views.generic import TemplateView
+from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 import sys
 
@@ -12,8 +12,9 @@ logger = logging.getLogger("uicloud.dashboard.views")
 logger.setLevel(logging.DEBUG)
 
 
-class HomeView(TemplateView):
-    template_name = 'dashboard/dashboard.html'
+# @permission_required('uiaccounts.pallasdata2', login_url='/uiaccounts/afterlogin/')
+def HomeView(request):
+    return render(request, 'dashboard/dashboard.html')
 
 
 def getAllDataFunction(username, datatype=None):

@@ -66,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'uiaccounts.middleware.CheckUserMiddleware',
 ]
 
 ROOT_URLCONF = 'uicloud.urls'
@@ -206,3 +207,13 @@ LOGGING = {
         }
     },
 }
+
+
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = '1007300061@qq.com'
+EMAIL_HOST_PASSWORD = 'vjhqklswhzlrbcbg'
+DEFAULT_FROM_EMAIL = '1007300061@qq.com'
+EMAIL_SUBJECT_PREFIX = u'django'
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

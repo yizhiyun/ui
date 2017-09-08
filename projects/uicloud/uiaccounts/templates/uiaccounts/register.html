@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>注册</h1>
+	<h3><a href="/uiaccounts/login/">登录</a></h3>
+	<form action="/uiaccounts/login/" method="post">
+	{% csrf_token %}
+		<p><label>name</label><input type="text" name="name"> </p>
+		<p><label>email</label><input type="text" name="email"></p>
+		<p><label>pwd</label><input type="text" name="password"></p>
+		<input type="submit" name="" value="提交按钮">
+	</form>
+</body>
+</html>
