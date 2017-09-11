@@ -16,9 +16,11 @@ var click_view_icon  = false;
 
 
 function switch_chart_handle_fun(edit_view){
-	console.log("asd")
-	//记录拖入行列里维度度量的数量
-
+	console.log(drag_row_column_data)
+	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
+		echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();	
+	}
+	
 	//行里维度度量的数量
 	var switch_row_di = drag_row_column_data["row"]["dimensionality"].length,
 
@@ -235,6 +237,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 						click_view_icon = true;
 						save_now_show_view_text = $(ele);
 						if(save_now_show_view_text.attr("id") == "show_table"){
+								
 								$("#view_show_area #view_show_area_content #view_show_wrap #main").css("display","none");
 							}else{
 								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");

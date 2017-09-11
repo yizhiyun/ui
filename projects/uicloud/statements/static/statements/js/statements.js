@@ -91,6 +91,7 @@ $(function(){
 	$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 64 + "px");
 	//拿到构建报表的数据
 	$.post("../dashboard/getAllData",{"username":username},function(result){
+		console.log(result)
 		view_out_handle_init(result);
 	//侧边栏关闭按钮点击收起
 	var state_left_bar_close = false;
