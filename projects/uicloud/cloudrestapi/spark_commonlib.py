@@ -79,6 +79,10 @@ def getDataFrameFromSourceSparkCode():
                 return False
             try:
                 df1 = spark.read.parquet(url)
+            except AnalysisException as e:
+                print("AnalysisException: {0}".format(e.desc))
+                logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
+                return False
             except Exception:
                 traceback.print_exc()
                 logger.error(u"There is an error while reading {0}. Exception:{1}, Traceback: {2}"

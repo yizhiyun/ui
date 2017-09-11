@@ -6,6 +6,20 @@ from .spark_commonlib import *
 logger = logging.getLogger("uicloud.cloudrestapi.mllib_handler")
 
 
+def getUserTableUrl(jsonData, hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
+    """
+    return hdfs Url if sourcetype is hdfs.
+    """
+    userTableUrl = ""
+    if ("sourcetype" in jsonData.keys()) and (jsonData["sourcetype"] == "hdfs"):
+        if ("hdfsUrl" not in jsonData.keys() or not jsonData["hdfsUrl"].startswith("hdfs:")):
+            userName = jsonData["database"]
+            tableName = jsonData["tableName"]
+            userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
+                hdfsHost, hdfsPort, rootFolder, userName, tableName)
+    return userTableUrl
+
+
 def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
     '''
     return the running spark code which will get the basic statistics information,
@@ -13,17 +27,13 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
     hdfsHost, hdfsPort, rootFolder are available if jsonData["sourceType"] is hdfs and
     the hdfsUrl key isn't provided
     '''
-    userTableUrl = ""
-    if ("sourceType" in jsonData.keys()) and (jsonData["sourceType"] == "hdfs"):
-        if ("hdfsUrl" not in jsonData.keys() or not jsonData["hdfsUrl"].startswith("hdfs:")):
-            userName = jsonData["database"]
-            tableName = jsonData["tableName"]
-            userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
-                hdfsHost, hdfsPort, rootFolder, userName, tableName)
+    userTableUrl = getUserTableUrl(jsonData, hdfsHost, hdfsPort, rootFolder)
 
     sparkCode = '''
     import sys
     import traceback
+    from pyspark.sql.types import DecimalType, FloatType, NumericType, DoubleType
+    from pyspark.sql.functions import udf
     ''' + specialDataTypesEncoderSparkCode() + getDataFrameFromSourceSparkCode() + setupLoggingSparkCode() + '''
     def getBasicStats(opTypeList, dataFrame):
         """
@@ -33,8 +43,6 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
         pandasDF1 is a pandas data frame
         it will output json data.
         """
-        from pyspark.sql.types import DecimalType, FloatType, NumericType, DoubleType
-        from pyspark.sql.functions import udf
 
         availTypeList = [
             "count", "sum", "mean", "median",
@@ -156,112 +164,130 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
     hdfsHost, hdfsPort, rootFolder are available if jsonData["sourceType"] is hdfs and
     the hdfsUrl key isn't provided
     '''
-    userTableUrl = ""
-    if ("sourceType" in jsonData.keys()) and (jsonData["sourceType"] == "hdfs"):
-        if ("hdfsUrl" not in jsonData.keys() or not jsonData["hdfsUrl"].startswith("hdfs:")):
-            userName = jsonData["database"]
-            tableName = jsonData["tableName"]
-            userTableUrl = "hdfs://{0}:{1}/{2}/{3}/{4}".format(
-                hdfsHost, hdfsPort, rootFolder, userName, tableName)
+    userTableUrl = getUserTableUrl(jsonData, hdfsHost, hdfsPort, rootFolder)
 
     sparkCode = '''
     import sys
     import traceback
+    from scipy import stats
+    from pyspark.ml.feature import VectorAssembler
+    from pyspark.mllib.linalg import Matrices
+    from pyspark.mllib.stat import Statistics
+    import numpy as np
     ''' + specialDataTypesEncoderSparkCode() + getDataFrameFromSourceSparkCode() + setupLoggingSparkCode() + '''
-    def getHypothesisTest(inputParams, dataFrame):
+    def getNormalTest(colStr, dataFrame):
+        """
+        """
+        # normal test
+        if dataFrame.count() < 5000:
+            normres = stats.shapiro(dataFrame.select(colStr).toPandas()[colStr])
+            return {"W": normres[0], "pvalue": normres[1]}
+        else:
+            normres = stats.kstest(dataFrame.select(colStr).toPandas()[colStr], "norm")
+            return {"statistic": normres.statistic, "pvalue": normres.pvalue}
+
+
+    def getHypothesisTest(inParams, dataFrame):
         """
         it will output json data.
         """
         from scipy import stats
-        from pyspark.ml.feature import VectorAssembler
-        from pyspark.mllib.stat import Statistics
-        import numpy as np
+
 
         outputDict = {}
-        if "ttype" not in inputParams.keys():
-            logger.warn("Cannot get the 'ttype' key from {0}".format(inputParams))
+        if "ttype" not in inParams.keys():
+            logger.warn("Cannot get the 'ttype' key from {0}".format(inParams))
             return outputDict
         levres = False
-        if "ttest_1samp" == inputParams["ttype"]:
-            res = stats.ttest_1samp(dataFrame.select(inputParams["col_a"]).toPandas(), inputParams["popmean"])
-        elif "ttest_ind" == inputParams["ttype"]:
+        if "ttest_1samp" == inParams["ttype"]:
+            outputDict["normaltest"] = getNormalTest(inParams["col_a"], dataFrame)
+            res = stats.ttest_1samp(dataFrame.select(inParams["col_a"]).toPandas(), inParams["popmean"])
+
+        elif "ttest_ind" == inParams["ttype"]:
             # res = stats.ttest_ind(
-            #     dataFrame.select(inputParams["col_a"]).toPandas(),
-            #     dataFrame.select(inputParams["col_b"]).toPandas(),
-            #     inputParams["popmean"]
+            #     dataFrame.select(inParams["col_a"]).toPandas(),
+            #     dataFrame.select(inParams["col_b"]).toPandas(),
+            #     inParams["popmean"]
             # )
-            disdf = dataFrame.select(inputParams["col_a"]).distinct()
+
+            disdf = dataFrame.select(inParams["col_a"]).distinct()
             if disdf.count() != 2:
                 logger.warn("The {0} column must be 2 categories while doing the ttest_ind test."
-                            .format(inputParams["col_a"]))
+                            .format(inParams["col_a"]))
                 return outputDict
-            disdf.collect()[0][inputParams["col_a"]]
+
+            outputDict["normaltest"] = getNormalTest(inParams["col_b"], dataFrame)
+
             pdf1 = dataFrame \
-                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[0][inputParams["col_a"]]) \
-                .select(inputParams["col_b"]) \
+                .filter(dataFrame[inParams["col_a"]] == disdf.collect()[0][inParams["col_a"]]) \
+                .select(inParams["col_b"]) \
                 .toPandas()
             pdf2 = dataFrame \
-                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[1][inputParams["col_a"]]) \
-                .select(inputParams["col_b"]) \
+                .filter(dataFrame[inParams["col_a"]] == disdf.collect()[1][inParams["col_a"]]) \
+                .select(inParams["col_b"]) \
                 .toPandas()
             levres = stats.levene(pdf1, pdf2)
             # decide which independent method should be used. As for equal_var parameter, if True (default),
             # perform a standard independent 2 sample test that assumes equal population variances [R643].
             # If False, perform Welch’s t-test, which does not assume equal population variance [R644].
-            if levres.pValue > inputParams["significance"]:
+            if levres.pvalue > inParams["significance"]:
                 res = stats.ttest_ind(pdf1, pdf2, equal_var=True)
             else:
                 res = stats.ttest_ind(pdf1, pdf2, equal_var=False)
-        elif "ttest_rel" == inputParams["ttype"]:
+
+        elif "ttest_rel" == inParams["ttype"]:
             # res = stats.ttest_rel(
-            #     dataFrame.select(inputParams["col_a"]).toPandas(),
-            #     dataFrame.select(inputParams["col_b"]).toPandas(),
-            #     inputParams["popmean"]
+            #     dataFrame.select(inParams["col_a"]).toPandas(),
+            #     dataFrame.select(inParams["col_b"]).toPandas(),
+            #     inParams["popmean"]
             # )
-            disdf = dataFrame.select(inputParams["col_a"]).distinct()
+            disdf = dataFrame.select(inParams["col_a"]).distinct()
             if disdf.count() != 2:
                 logger.warn("The {0} column must be 2 categories while doing the ttest_rel test."
-                            .format(inputParams["col_a"]))
+                            .format(inParams["col_a"]))
                 return outputDict
-            disdf.collect()[0][inputParams["col_a"]]
+
+            outputDict["normaltest"] = getNormalTest(inParams["col_b"], dataFrame)
+
             pdf1 = dataFrame \
-                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[0][inputParams["col_a"]]) \
-                .select(inputParams["col_b"]) \
+                .filter(dataFrame[inParams["col_a"]] == disdf.collect()[0][inParams["col_a"]]) \
+                .select(inParams["col_b"]) \
                 .toPandas()
             pdf2 = dataFrame \
-                .filter(dataFrame[inputParams["col_a"]] == disdf.collect()[1][inputParams["col_a"]]) \
-                .select(inputParams["col_b"]) \
+                .filter(dataFrame[inParams["col_a"]] == disdf.collect()[1][inParams["col_a"]]) \
+                .select(inParams["col_b"]) \
                 .toPandas()
-            if pdf1.count()[inputParams["col_b"]] != pdf2.count()[inputParams["col_b"]]:
+            if pdf1.count()[inParams["col_b"]] != pdf2.count()[inParams["col_b"]]:
                 logger.warn("The 2 categories must include the same rows' length while doing the ttest_rel test."
-                            .format(inputParams["col_a"]))
+                            .format(inParams["col_a"]))
                 return outputDict
             levres = stats.levene(pdf1, pdf2)
             res = stats.ttest_rel(pdf1, pdf2)
-        elif "chiSqtest" == inputParams["ttype"]:
 
-            colaNum = dataFrame.select(inputParams["col_a"]).distinct().count()
-            bdf = dataFrame.select(inputParams["col_b"]).distinct()
+        elif "chiSqtest" == inParams["ttype"]:
+
+            colaNum = dataFrame.select(inParams["col_a"]).distinct().count()
+            bdf = dataFrame.select(inParams["col_b"]).distinct()
             colbNum = bdf.distinct().count()
 
             # get the feature list to be used.
             featlist = bdf.rdd.flatMap(lambda x: x).collect()
 
             # group by col_a and pivot col_b
-            grpdf1 = dataFrame.groupBy(inputParams["col_a"]).pivot(inputParams["col_b"]).count()
+            grpdf1 = dataFrame.groupBy(inParams["col_a"]).pivot(inParams["col_b"]).count()
 
             # transform columns to vector feature column
             vecAssembler = VectorAssembler(inputCols=featlist, outputCol="features")
             vecdf1 = vecAssembler.transform(grpdf1)
             arr1 = vecdf1.select("features").rdd.reduce(
                 lambda x, y: np.concatenate((x.features.toArray(), y.features.toArray())))
-            mat = Matrices.dense(colaNum, colbNum, arr1)
+            mat = Matrices.dense(colbNum, colaNum, arr1)
             res = Statistics.chiSqTest(mat)
             # pdf1 = dataFrame \
-            #     .groupBy(inputParams["col_a"], inputParams["col_b"]) \
+            #     .groupBy(inParams["col_a"], inParams["col_b"]) \
             #     .count() \
             #     .toPandas() \
-            #     .pivot_table(values="count", index=[inputParams["col_a"]], columns=[inputParams["col_b"]]) \
+            #     .pivot_table(values="count", index=[inParams["col_a"]], columns=[inParams["col_b"]]) \
             #     .fillna(0)
             # res = Statistics.chiSqTest(pdf1.as_matrix())
             logger.debug("statistic: {0}, pValue: {1}, degreesOfFreedom:{2}, method:{3}, nullHypothesis: {4}"
@@ -270,21 +296,21 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
             logger.warn("Don't support other types.")
 
         if levres:
-            outputDict["levenetest"] = {"statistic": levres.statistic, "pvalue": levres.pvalue}
-        if inputParams["ttype"] == "chiSqtest":
+            outputDict["levenetest"] = {"statistic": levres.statistic.tolist(), "pvalue": levres.pvalue.tolist()}
+        if inParams["ttype"] == "chiSqtest":
             outputDict["chiSqtest"] = {"statistic": res.statistic,
-                                       "pvalue": res.pvalue,
+                                       "pvalue": res.pValue,
                                        "degreesOffreedom": res.degreesOfFreedom,
                                        "method": res.method,
                                        "nullhypothesis": res.nullHypothesis}
         else:
-            outputDict[inputParams["ttype"]] = {"statistic": res.statistic, "pvalue": res.pvalue}
-
+            outputDict[inParams["ttype"]] = {"statistic": res.statistic.tolist(), "pvalue": res.pvalue.tolist()}
+        logger.debug("outputDict: {0}".format(outputDict))
         return outputDict
     ''' + '''
     df3 = getDataFrameFromSource({0}, '{1}')
     if df3:
-        print(json.dumps(getHypothesisTest({0}["inputParams"], df3), cls = SpecialDataTypesEncoder))
+        print(json.dumps(getHypothesisTest({0}["inputparams"], df3), cls = SpecialDataTypesEncoder))
     else:
         logger.error("Cannot get data from the given source!")
         print(False)

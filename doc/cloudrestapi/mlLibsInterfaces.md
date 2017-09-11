@@ -123,7 +123,7 @@ The RESTful API Details of Getting the hypothesis testing information.
 ```
 {
     "sourcetype": <sourceType>  # "db" or "hdfs"
-    "inputParams": {
+    "inputparams": {
         "ttype": <tTestType>,   # "ttest_1samp", "ttest_ind", "ttest_rel", "chiSqtest"
         "popmean": <popmean>,   # Optional. Expected value in null hypothesis. Required if "ttest_1samp"
         "significance": <num>,  # Optional. Significance level. Required if ttest_ind type
@@ -184,7 +184,7 @@ The RESTful API Details of Getting the hypothesis testing information.
 ```
 {
     "sourcetype": "db",
-    "inputParams": {
+    "inputparams": {
         "ttype": "ttest_ind",
         "popmean": 32,
         "col_a": "col1",
@@ -203,7 +203,7 @@ The RESTful API Details of Getting the hypothesis testing information.
 ```
 {
     "sourcetype": "hdfs",
-    "inputParams": {
+    "inputparams": {
         "ttype": "ttest_ind",
         "popmean": 32,
         "col_a": "col1",

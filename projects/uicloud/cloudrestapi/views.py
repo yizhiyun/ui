@@ -238,20 +238,8 @@ def getTableViaSpark(request, tableName, modeName):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
-        if not output:
-            failObj = {"status": "failed",
-                       "reason": "Please see the logs for details."}
-            return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok":
-            failObj = {"status": "failed",
-                       "reason": output}
-            return JsonResponse(failObj, status=400)
-        else:
-            data = output["data"]["text/plain"]
 
-            results = json.loads(data)
-            sucessObj = {"status": "success", "results": results}
-            return JsonResponse(sucessObj)
+        return getRespData(output, True)
 
 
 @api_view(['POST'])
@@ -280,7 +268,7 @@ def getAllTablesFromCustom(request):
 @api_view(['POST'])
 def getTableViaSparkCustom(request, tableName, modeName):
     """
-    GET:
+    POST:
     Get all table from the custom user.
     """
 
@@ -307,27 +295,14 @@ def getTableViaSparkCustom(request, tableName, modeName):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
-        if not output:
-            failObj = {"status": "failed",
-                       "reason": "Please see the logs for details."}
-            return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok":
-            failObj = {"status": "failed",
-                       "reason": output}
-            return JsonResponse(failObj, status=400)
-        else:
-            logger.debug("output: {}".format(output))
-            data = output["data"]["text/plain"]
 
-            results = json.loads(data)
-            sucessObj = {"status": "success", "results": results}
-            return JsonResponse(sucessObj)
+        return getRespData(output, True)
 
 
 @api_view(['POST'])
 def getBasicStats(request):
     """
-    GET:
+    POST:
     Get basic Statistics information.
     """
 
@@ -336,7 +311,7 @@ def getBasicStats(request):
     if request.method == "POST":
 
         # check the request data
-        if ("sourceType" not in jsonData or "opTypes" not in jsonData):
+        if ("sourcetype" not in jsonData or "optypes" not in jsonData):
             failObj = {"status": "failed",
                        "reason": "Please make sure your request data is valid."}
             return JsonResponse(failObj, status=400)
@@ -345,27 +320,14 @@ def getBasicStats(request):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
-        if not output:
-            failObj = {"status": "failed",
-                       "reason": "Please see the logs for details."}
-            return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok":
-            failObj = {"status": "failed",
-                       "reason": output}
-            return JsonResponse(failObj, status=400)
-        else:
-            logger.debug("output: {}".format(output))
-            data = output["data"]["text/plain"]
 
-            results = json.loads(data)
-            sucessObj = {"status": "success", "results": results}
-            return JsonResponse(sucessObj)
+        return getRespData(output, True)
 
 
 @api_view(['POST'])
 def getHypothesisTest(request):
     '''
-    GET:
+    POST:
     Get hypothesis test information.
     '''
 
@@ -374,7 +336,7 @@ def getHypothesisTest(request):
     if request.method == 'POST':
 
         # check the request data
-        if ("sourceType" not in jsonData or "inputParams" not in jsonData):
+        if ("sourcetype" not in jsonData or "inputparams" not in jsonData):
             failObj = {"status": "failed",
                        "reason": "Please make sure your request data is valid."}
             return JsonResponse(failObj, status=400)
@@ -384,21 +346,8 @@ def getHypothesisTest(request):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
-        if not output:
-            failObj = {"status": "failed",
-                       "reason": "Please see the logs for details."}
-            return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok":
-            failObj = {"status": "failed",
-                       "reason": output}
-            return JsonResponse(failObj, status=400)
-        else:
-            logger.debug("output: {}".format(output))
-            data = output["data"]["text/plain"]
 
-            results = json.loads(data)
-            sucessObj = {"status": "success", "results": results}
-            return JsonResponse(sucessObj)
+        return getRespData(output, True)
 
 
 @api_view(['POST'])
@@ -433,23 +382,8 @@ def uploadCsv(request):
         sparkCode = convertCsvToParquetSparkCode(uploadedCsvList, jsonData, hdfsHost, port)
 
         output = executeSpark(sparkCode, maxCheckCount=600, reqCheckDuration=0.2)
-        if not output:
-            failObj = {"status": "failed",
-                       "reason": "Please see the logs for details."}
-            return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok":
-            failObj = {"status": "failed",
-                       "reason": output}
-            return JsonResponse(failObj, status=400)
-        else:
-            logger.debug("output: {}".format(output))
-            data = output["data"]["text/plain"]
-            if data.startswith("False") or data.endswith("False"):
-                failObj = {"status": "failed",
-                           "reason": data.replace("False", "", 1)}
-                return JsonResponse(failObj, status=400)
-            sucessObj = {"status": "success", "results": data}
-            return JsonResponse(sucessObj)
+
+        return getRespData(output)
 
 
 @api_view(['GET'])
@@ -519,18 +453,32 @@ def getSpecUploadedTableViaSpark(request, fileName, tableName, modeName):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
-        if not output:
-            failObj = {"status": "failed",
-                       "reason": "Please see the logs for details."}
-            return JsonResponse(failObj, status=400)
-        elif output["status"] != "ok":
-            failObj = {"status": "failed",
-                       "reason": output}
-            return JsonResponse(failObj, status=400)
-        else:
-            # logger.debug("output: {}".format(output))
-            data = output["data"]["text/plain"]
 
-            results = json.loads(data)
-            sucessObj = {"status": "success", "results": results}
-            return JsonResponse(sucessObj)
+        return getRespData(output, True)
+
+
+def getRespData(output, isParseJsonStr=False):
+    """
+    the output parameter is the requested result dict which is executed by spark.
+    """
+
+    if not output:
+        failObj = {"status": "failed",
+                   "reason": "Please see the logs for details."}
+        return JsonResponse(failObj, status=400)
+    elif output["status"] != "ok":
+        failObj = {"status": "failed",
+                   "reason": output}
+        return JsonResponse(failObj, status=400)
+    else:
+        logger.debug("output: {}".format(output))
+        data = output["data"]["text/plain"]
+        if data.startswith("False") or data.endswith("False"):
+            failObj = {"status": "failed",
+                       "reason": data.replace("False", "", 1)}
+            return JsonResponse(failObj, status=400)
+        elif data.startswith("{") and isParseJsonStr:
+            data = json.loads(data)
+
+        sucessObj = {"status": "success", "results": data}
+        return JsonResponse(sucessObj)
