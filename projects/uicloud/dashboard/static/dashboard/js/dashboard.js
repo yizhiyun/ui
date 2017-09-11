@@ -241,7 +241,6 @@ $(function() {
 		}
 		//度量更多操作过程
 		md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["总计_YZY_pop_total","平均值_YZY_pop_mean","中位数_YZY_pop_median","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null});
-		isagainDrawTable = true;
 		switch_chart_handle_fun(now_title_handle_view["viewtype"]);
 	}
 	//根据编辑过的视图重新展示
@@ -1650,7 +1649,6 @@ $(function() {
 
 									break;
 							}
-							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						}
 
