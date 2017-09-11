@@ -160,12 +160,7 @@ function one_de_one_me_handle (chart_type_need) {
 				mycharts.setOption(option)
 		});
 			
-		
-		
-	
-
 	}
-	 cake_generate_fun();
 	
 	// 4、面积图
 	function area_generate_fun (argument) {

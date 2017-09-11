@@ -28,6 +28,7 @@ Array.prototype.XMsort = function(propertyNameArray){
 var customCalculate = {}
 var preAllData = null;
 var recordConditon = null;
+// needColumns暂时未用到
 function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
 	
 	
@@ -65,9 +66,6 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		"conditions":conditions,
 		"trans":trans,
 	};
-	if(needColumns){
-		handleDataPost["columns"] = needColumns;
-	}
 	
 	if(equalCompare(recordConditon,handleDataPost) && preAllData){
 		handleSuccessFunction(preAllData);

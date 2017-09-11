@@ -17,6 +17,10 @@ var current_Table_allData = null;
 // 通过设置此参数可以强制重新绘制 table
 var isagainDrawTable = false;
 
+// 用来保证度量的计算正确
+var isRowFinished = false;
+var isColumnFinished = false;
+
 function showTable_by_dragData(){
 	
 	// 绘制行数据
@@ -199,6 +203,7 @@ function showTable_by_dragData(){
 			record_table_measure = objectDeepCopy(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 			record_table_calculate_measure = objectDeepCopy(drag_measureCalculateStyle);
 			record_table_custom_calculate = objectDeepCopy(customCalculate);
+			isagainDrawTable = false;
 		}
 		
 		function measureNeedDraw(finish){
@@ -226,6 +231,13 @@ function showTable_by_dragData(){
 			 	 	finish();
 			 	 }
 				});
+			}else{
+				var rowLeftTable = $("#text_table_need_show .left_row_container table").eq(0);
+				rowLeftTable.find("thead tr").empty();
+				rowLeftTable.find("tbody").empty();
+				if(finish){
+					finish("noNeed");
+				}
 			}
 			
 		}
@@ -240,28 +252,60 @@ function showTable_by_dragData(){
 		 	 	 	finish();
 		 	 	 }
 		 		 });
+			}else{
+				$("#text_table_need_show .top_column_container .column_data_list tbody").empty();
+				if(finish){
+					finish("noNeed");
+				}
 			}
 		}
 		$("#text_table_need_show").show();
 		if(isagainDrawTable){
-			rowNeedDraw();
-			columnNeedDraw();
-			measureNeedDraw();
+			isRowFinished = false;
+			isColumnFinished = false;
+			rowNeedDraw(function(){
+				isRowFinished = true;
+				if(isRowFinished&&isColumnFinished){
+					measureNeedDraw();
+				}
+			});
+			columnNeedDraw(function(){
+				isColumnFinished = true;
+				if(isRowFinished&&isColumnFinished){
+					measureNeedDraw();
+				}
+			});
+			
 		}else{
 			if(isRowDemiEqual && isColumnDemiEqual&&isMeasureEqual&&isCalculateMeasureEqual&&isCustomCalculateStyleEqual){
 				// 直接显示
 			}else if(isRowDemiEqual && isColumnDemiEqual){
 				measureNeedDraw();
 			}else if(!isRowDemiEqual && isColumnDemiEqual){
-				rowNeedDraw();
-				measureNeedDraw();
+				rowNeedDraw(function(){
+					measureNeedDraw();
+				});
+				
 			}else if(isRowDemiEqual && !isColumnDemiEqual){
-				columnNeedDraw();
-				measureNeedDraw();
+				columnNeedDraw(function(){
+					measureNeedDraw();
+				});
+				
 			}else{
-				rowNeedDraw();
-				columnNeedDraw();
-				measureNeedDraw();
+				isRowFinished = false;
+				isColumnFinished = false;
+				rowNeedDraw(function(){
+					isRowFinished = true;
+					if(isRowFinished&&isColumnFinished){
+						measureNeedDraw();
+					}
+				});
+				columnNeedDraw(function(){
+					isColumnFinished = true;
+					if(isRowFinished&&isColumnFinished){
+						measureNeedDraw();
+					}
+				});
 			}
 			
 		}
