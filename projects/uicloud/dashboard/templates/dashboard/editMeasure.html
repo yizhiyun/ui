@@ -5,9 +5,10 @@
 	#editMeasureCalculateView .edit_measure_body{padding-top: 10px;}
 	#editMeasureCalculateView .edit_measure_body #measure_show_title{width: 360px;margin-left: 20px;height: 21px;border: 1px solid #dedede;border-radius: 2px;}
 	#editMeasureCalculateView .edit_measure_body .calculate_input_box{border: 1px solid #dedede;margin-left: 19px;width: 360px;height: 100px;position: relative;margin-top: 10px;}
-	#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea{width: 100%;height: 80px;resize: none;border: 0px;outline: none;text-indent: 10px;}
+	/*#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea{width: 100%;height: 80px;resize: none;border: 0px;outline: none;text-indent: 10px;}*/
 	#editMeasureCalculateView .edit_measure_body .calculate_input_box .tip{position: absolute;left: 5px;bottom: 0px;height: 20px;color: #808080;}
 	#editMeasureCalculateView .edit_measure_body .calculate_input_box .clearInputBtn{color: #ed1111;cursor: pointer;position: absolute;right: 5px;bottom:0px;height: 20px;text-align: right;}
+	#editMeasureCalculateView .CodeMirror{height: 80px;}
 </style>
 <script src={% static "dashboard/js/measureStyle.js"%} type="text/javascript" charset="utf-8"></script>
 <div id="editMeasureCalculateView" style="z-index: 1000;display: none;">
@@ -22,7 +23,7 @@
 	<div class="edit_measure_body">
 		<input type="text" id="measure_show_title"/>
 		<div class="calculate_input_box">
-			<textarea placeholder="手动算法输入" class="arithmeticInputTextArea"></textarea>
+			<textarea  class="arithmeticInputTextArea"></textarea>
 			<p class="tip unselectable">注意:必须是英文状态输入</p>
 			<span class="clearInputBtn">清空</span>
 			
@@ -33,3 +34,10 @@
 		<a href="javascript:void(0)" class="confirmBtn">确定</a>
 	</div>
 </div>
+<link type="text/css" rel="stylesheet" href={% static "dashboard/js/codeComplete/lib/codemirror.css" %} />
+<link type="text/css" rel="stylesheet" href={% static "dashboard/js/codeComplete/addon/hint/show-hint.css" %}/>
+<script type="text/javascript" src={% static "dashboard/js/codeComplete/lib/codemirror.js" %}></script>
+<script type="text/javascript" src={% static "dashboard/js/codeComplete/addon/hint/show-hint.js" %}></script>
+<script type="text/javascript" src={% static "dashboard/js/codeComplete/mode/javascript/javascript.js" %}></script>
+<script type="text/javascript" src={% static "dashboard/js/codeComplete/addon/hint/javascript-hint.js" %}></script>
+<script type="text/javascript" src={% static "dashboard/js/codeComplete/addon/edit/closebrackets.js" %}></script>

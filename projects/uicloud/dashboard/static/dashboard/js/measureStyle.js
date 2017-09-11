@@ -1,12 +1,14 @@
+var editMeasureCalculateView_isFirstShow = true;
 $(function(){
 	
-	$("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea").change(function(event){
-		event.stopPropagation();
-		$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val($(this).val());
-	});
+//	$("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea").change(function(event){
+//		event.stopPropagation();
+//		$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val($(this).val());
+//	});
 	
-	searchTipHandle($("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea"),["SUM","AVERAGE","MAX","MIN"]);
-
+//	searchTipHandle($("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea"),["SUM","AVERAGE","MAX","MIN"]);
+	 
+	 
 });
 
 function searchTipHandle(needTipElement,allData){
@@ -30,14 +32,23 @@ function searchTipHandle(needTipElement,allData){
 			"left":pos.left + "px"
 		});
 		var cuurentVal= $(ele).val();
-		var reg = eval("/^"+cuurentVal+"/gi");
+		var reg = eval("/^"+cuurentVal+"/i");
 		var allData = $(ele).data("allData");
 		for (var i = 0;i < allData.length;i++) {
 			var aData = allData[i];
-			if(reg.test(aData)){
-				var li = $("<li><img/ src='/static/dashboard/img/F_03.png'><span>"+aData+"</span></li>");
-				$(ele).parent(".searchModule").children(".searchReasultsList").append(li);
-			}
+			(function(aData){
+				if(reg.test(aData)){
+					var li = $("<li><img/ src='/static/dashboard/img/F_03.png'><span>"+aData+"</span></li>");
+					$(ele).parent(".searchModule").children(".searchReasultsList").append(li);
+					li.click(function(event){
+						event.stopPropagation();
+						var clickValue = $(this).children("span").text();
+						$("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea").val(clickValue);
+						$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val(clickValue);
+						$(this).parent(".searchReasultsList").empty();
+					});
+				}
+			})(aData);
 		}	
 	}
 	$(needTipElement).bind("focusout",function(event){

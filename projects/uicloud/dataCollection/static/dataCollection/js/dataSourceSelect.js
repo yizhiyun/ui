@@ -38,7 +38,6 @@ $(function () {
 	            data:formData,
 	            success:function(data){
 					if(data.status == "success"){
-//						dbAndPanelInfoSaveHandle(data.data);
 						window.location.href = "/dataCollection/dataBuildView";
 						navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
 					}else{
@@ -69,30 +68,48 @@ $(function () {
 		formData.append("delimiter",delimiter);
 		formData.append("quote",	 quote);
 		formData.append("header",header);
-		$.ajax({
-			url:"/cloudapi/v1/uploadcsv",
-			type:"POST",
-			processData: false,
-            contentType:false,
-            data:formData,
-            success:function(data){
-            		if(data.status == "success"){
-//          			dbAndPanelInfoSaveHandle(data.data);
-					window.location.href = "/dataCollection/dataBuildView";
-					navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
-            		}else{
-            			alert("上传文件失败:"+data.reason);
-            		}
-            }
-		})
+		uploadCSVFIleFunction(formData);
    		
    });
    
   // 点击选择平面文件，选中一个或者多个文件后
 	  $("#selectedPanelFile").change(function(){
-		$(".maskLayer").show();
-		$("#panelFileSettingOption").show();	
+	  	var fileInfo = $("#selectedPanelFile").get(0).files[0];
+		if (fileInfo.name.substring(fileInfo.name.indexOf(".")).toLowerCase() == ".csv") {
+			$(".maskLayer").show();
+			$("#panelFileSettingOption").show();	
+		}else{
+			var formData = new FormData();
+			formData.append("file",fileInfo);
+			uploadCSVFIleFunction(formData);
+		}
+		
 	  });
+	  
+	  function uploadCSVFIleFunction(formData){
+	  	$.ajax({
+				url:"/cloudapi/v1/uploadcsv",
+				type:"POST",
+				processData: false,
+	            contentType:false,
+	            data:formData,
+	            beforeSend:function(){
+	            	 $("#panelFileSettingOption").hide();
+	            	  var target =  $("body").get(0);
+	            	  spinner.spin(target);
+	            },
+	            success:function(data){
+	            		if(data.status == "success"){
+	            			spinner.stop();
+						window.location.href = "/dataCollection/dataBuildView";
+						navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
+	            		}else{
+	            			alert("上传文件失败:"+data.reason);
+	            		}
+	            }
+			});
+	  }
+	  
 	$("#panelFileSettingOption .common-head .close,#panelFileSettingOption a.cancleBtn").click(function(event){
 			$("#panelFileSettingOption").hide();
 			$(".maskLayer").hide();

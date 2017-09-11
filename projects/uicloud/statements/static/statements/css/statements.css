@@ -12,7 +12,7 @@ html,body{-webkit-user-select:none;}
 #statements_left_bar #state_left_bar_title #statements_left_search img{width: 12px;height: 11px;vertical-align: middle;cursor: pointer;margin-left: 5px;}
 #statements_left_bar #statements_left_bar_btn_close{width:14px;height:38px;position: absolute;right:-7px;z-index: 66}
 #statements_left_bar #statements_left_bar_btn_close img{width: 14px;height: 38px;cursor: pointer;}
-
+/*.rightConent #statements_left_bar #statements_left_bar_area{overflow: auto}*/
 /*侧边栏内容展示*/
 .state_folder{width:180px;margin: 0 auto;margin: 0 auto;font-size: 12px;}
 .click_folder{margin:5px 5px 0px 0px;line-height: 23px;}
@@ -73,7 +73,8 @@ input[type=checkbox] {visibility: hidden;}
 #right_folder_show_are{float: left;height: 100%;box-sizing: border-box;margin-left: 200px;}
 
 #right_folder_show_are .view_folder_show_area{width: 100%;box-sizing:border-box;padding: 0px 10px;overflow-y: auto}
-#right_folder_show_are .view_folder_show_area ul{margin: 0;padding: 0;}
+#right_folder_show_are .view_folder_show_area ul{margin: 0;padding: 0;position: absolute !important;}
+/*#right_folder_show_are .view_folder_show_area ul li{transition: none;}*/
 #right_folder_show_are .right_folder_name_show{float: left;margin:20px 0px 20px 20px;display: none}
 #right_folder_show_are .right_folder_name_show .right_folder_name_show_img{width: 14px;height: 14px;vertical-align: middle;float: left;margin: 5px 10px 0px 0px}
 #right_folder_show_are .right_if_have_parentfolder{float: left;font-size: 16px;}
@@ -104,7 +105,9 @@ input[type=checkbox] {visibility: hidden;}
 #right_folder_show_are .view_folder_show_area .new_view_content .new_view_title .title_name_change_btn{width:20px;height: 20px;background: url("../img/right-icon_03.png") no-repeat center;float: left;margin-top: 1px;cursor: pointer;}
 #right_folder_show_are .view_folder_show_area .new_view_content .textarea{position: absolute;min-height: 23px;top: 35px;z-index:9999;left: 9px;display: none}
 #right_folder_show_are .view_folder_show_area .new_view_content .textarea textarea{width: 100%;font-size: 12px;height:46px;outline: none;line-height: 17px;box-sizing: border-box;padding: 2px;overflow-x: hidden;overflow-y: auto;resize: none}
-
+/*视图缩略图*/
+.view_show_handle .thumbnail_wrap{width: 200px;height: 200px;box-sizing:border-box;border:1px solid #DEDEDE;position:absolute;left: 190px;z-index:9999;border-radius: 3px;background: white;opacity: 1 !important;}
+.view_show_handle .thumbnail_wrap img{width:198px;float: left;}
 
 /*表格样式*/
 .new_view_table{min-width: 100%;font-size: 12px;position: relative;overflow: auto;}

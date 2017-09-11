@@ -830,7 +830,15 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
  	
  	$("#analysisContainer .leftSlide #addSourceSelects #addPanelFileInput").change(function(){
  		$(".maskLayer").show();
- 		$("#panelFileSettingOption").show();	
+ 		var fileInfo = $(this).get(0).files[0];
+		if (fileInfo.name.substring(fileInfo.name.indexOf(".")).toLowerCase() == ".csv"){
+			$("#panelFileSettingOption").show();	
+		}else{
+			var formData = new FormData();
+			formData.append("file",fileInfo);
+			uploadCSVFileFun(formData);
+		}
+		
  	});
  	
  	$("#panelFileSettingOption .common-head .close,#panelFileSettingOption a.cancleBtn").click(function(event){
@@ -838,7 +846,30 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
 			$(".maskLayer").hide();
 			$("#analysisContainer .leftSlide #addSourceSelects #addPanelFileInput").val("");
 	});
-	
+		
+	function uploadCSVFileFun(formData){
+		$.ajax({
+			url:"/cloudapi/v1/uploadcsv",
+			type:"POST",
+			processData: false,
+	        contentType:false,
+	        data:formData,
+	        beforeSend:function(){
+	        		$("#panelFileSettingOption").hide();
+	        		$("#connectDirector #addSourceSelects").hide();
+	        		var target =  $("body").get(0);
+	            	spinner.spin(target);
+	        },
+	        success:function(data){
+	        		if(data.status == "success"){
+	        			$(".maskLayer").hide();
+	        			spinner.stop();
+	        			updatePanelFileListFromNetwork();
+	            		}
+	            }
+		});
+	}
+		
 	  $("#panelFileSettingOption a.confirmBtn").click(function(event){
 		var delimiter = $("#panelFileSettingOption .fileSettingBody .topOption .delimiterOption input").val();
 		var quote = $("#panelFileSettingOption .fileSettingBody .topOption .quoteOption input").val();
@@ -849,22 +880,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
 		formData.append("delimiter",delimiter);
 		formData.append("quote",	 quote);
 		formData.append("header",header);
-		$.ajax({
-			url:"/cloudapi/v1/uploadcsv",
-			type:"POST",
-			processData: false,
-	        contentType:false,
-	        data:formData,
-	        success:function(data){
-	        		if(data.status == "success"){
-	        			$(".maskLayer").hide();
-	        			$("#panelFileSettingOption").hide();
-	        			$("#dataList").hide();
-	        			$("#connectDirector #addSourceSelects").hide();
-	        			updatePanelFileListFromNetwork();
-	            		}
-	            }
-			})
+		uploadCSVFileFun(formData);
 	   		
 	   });
  	
@@ -898,9 +914,8 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
 	            contentType:false,
 	            data:formData,
 	            success:function(data){
-					if(data.status == "ok"){
-						dbAndPanelInfoSaveHandle(data.data);
-						getDBAndPannelList();
+					if(data.status == "success"){
+						updateDBListFromNetwork();
 					}
 	            }
 			});
@@ -1199,7 +1214,12 @@ function filterSuccessFun(isNeedAllData){
 			contentType: "application/json; charset=utf-8",
 			async: true,
 			data:JSON.stringify(postFilterCondition),
+			beforeSend:function(){
+				var target =  $("body").get(0);
+	            	spinner.spin(target);
+			},
 			success:function(data){
+				spinner.stop();
 				currentTableAllData = data.results.data;
 				if(isNeedAllData){
 					if(conditions.length < 1){
@@ -1226,7 +1246,12 @@ function getFilterNeedAllData_fun(dbInfo){
 					dataType:"json",
 					contentType: "application/json; charset=utf-8",
 					async: true,
+					beforeSend:function(){
+						var target =  $("body").get(0);
+	            			spinner.spin(target);
+					},
 					success:function(data){
+						spinner.stop();
 						filterNeedAllData = data.results.data;
 	   					createTableDetailView(dbInfo,currentTableAllData);
 					}
@@ -1240,7 +1265,12 @@ function getFilterNeedAllData_fun(dbInfo){
 					dataType:"json",
 					contentType: "application/json; charset=utf-8",
 					async: true,
+					beforeSend:function(){
+						var target =  $("body").get(0);
+			            	spinner.spin(target);
+					},
 					success:function(data){
+						spinner.stop();
 						filterNeedAllData = data.results.data;
 	   					createTableDetailView(dbInfo,currentTableAllData);	
 					}
@@ -1255,8 +1285,13 @@ function getFilterNeedAllData_fun(dbInfo){
 	   				traditional:true,
 	   				async: true,
 	 				dataType:'json',
+	 				beforeSend:function(){
+						var target =  $("body").get(0);
+	         		   	spinner.spin(target);
+					},
 	 				success:function(data){
 	 					if(data.status == "success"){
+	 						spinner.stop();
 	 						filterNeedAllData = data.results.data;
 	   						createTableDetailView(dbInfo,currentTableAllData);	
 	 					}

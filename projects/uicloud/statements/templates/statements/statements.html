@@ -9,6 +9,7 @@
 	
 {% endblock %}
 {% block js %}
+
 <script src={% static "statements/js/jquery.gridster.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "dashboard/js/echarts.js"%} type="text/javascript" charset="utf-8"></script>
  <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
@@ -20,6 +21,8 @@
 <script src={% static "statements/js/state_show_view.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "statements/js/state_radarChart.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "statements/js/textarea_auto.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/html2canvas-0.4.1.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/jspdf.min.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "statements/js/statements.js"%} type="text/javascript" charset="utf-8"></script>
 	
 	
@@ -105,7 +108,7 @@
 	
 	<!-- 报表视图展示区域 -->
 	<div class="view_folder_show_area clear gridster">
-		<ul class="gridster_ui">
+		<ul class="gridster_ui" id="click_get_pdf">
 			
 		</ul>
 	</div>

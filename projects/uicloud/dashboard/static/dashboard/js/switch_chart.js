@@ -15,8 +15,8 @@ var save_now_show_view_text = null;
 var click_view_icon  = false;
 
 
-function switch_chart_handle_fun(drag_sortable,edit_view){
-
+function switch_chart_handle_fun(edit_view){
+	console.log("asd")
 	//记录拖入行列里维度度量的数量
 
 	//行里维度度量的数量
@@ -45,10 +45,6 @@ function switch_chart_handle_fun(drag_sortable,edit_view){
 		$("#text_table_need_show").css("display","none");
 	}
 
-	//拖拽元素存储数据
-	save_data_handle = data_handle(drag_sortable);
-
-	console.log(save_data_handle,current_data)
 
 	if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
 			view_init();
@@ -56,8 +52,6 @@ function switch_chart_handle_fun(drag_sortable,edit_view){
 			$("#main").css("display","none");
 			$("#view_show_empty").css("display","block");
 		}
-	
-
 	
 
 	//只拖入维度或行里或列里同时存在维度度量时跳转到展示文本表
@@ -135,7 +129,7 @@ function switch_chart_handle_fun(drag_sortable,edit_view){
 	if(switch_col_di == 1 && switch_col_me == 0 && switch_row_me >1 && switch_row_di ==0 || switch_col_di == 0 && switch_col_me >1 && switch_row_me ==0 && switch_row_di ==1){
 		view_init();
 		
-		$("#show_table,#show_polyline,#show_randar").css("opacity","1");
+		$("#show_table,#show_polyline,#show_randar,#show_polyline").css("opacity","1");
 
 		if(switch_col_me > 1){
 			change_view_css("#show_bar");
@@ -149,13 +143,13 @@ function switch_chart_handle_fun(drag_sortable,edit_view){
 		view_init();
 		if(switch_col_di > 1 && switch_col_di < 4){
 
-			$("#show_storehis,#show_percontrasth,#show_table,#show_histogram").css("opacity","1");
+			$("#show_storehis,#show_percontrasth,#show_table,#show_histogram,#show_polyline").css("opacity","1");
 			$("#show_storehis").css("border","1px solid #0d53a4");
 		}
 
 		if(switch_row_di > 1 && switch_row_di < 4){
 
-			$("#show_storebar,#prestorebar,#show_table,#show_bar").css("opacity","1");
+			$("#show_storebar,#prestorebar,#show_table,#show_bar,#show_polyline").css("opacity","1");
 			$("#show_storebar").css("border","1px solid #0d53a4");
 		}
 
@@ -173,7 +167,7 @@ function switch_chart_handle_fun(drag_sortable,edit_view){
 	if(switch_col_di > 1 && switch_col_me == 0 && switch_row_me >1 && switch_row_di ==0 || switch_col_di == 0 && switch_col_me > 1 && switch_row_me ==0 && switch_row_di > 1){
 		view_init();
 				
-				$("#show_table").css("opacity","1");
+				$("#show_table,#show_polyline").css("opacity","1");
 				if(switch_col_me > 1){
 					change_view_css("#show_bar");
 				}else{
@@ -186,9 +180,9 @@ function switch_chart_handle_fun(drag_sortable,edit_view){
 
 	if((switch_col_di > 3 && switch_col_me == 0 && switch_row_me >= 1 && switch_row_di ==0) || (switch_col_di == 0 && switch_col_me >= 1 && switch_row_me ==0 && switch_row_di > 3)){
 		view_init();
-		$("#show_table").css("opacity","1");
+		$("#show_table,#show_polyline").css("opacity","1");
 		if(switch_row_me  == 1 || switch_col_me == 1){
-			$("#show_treemap").css("opacity","1");
+			$("#show_treemap,#show_polyline").css("opacity","1");
 		}
 				if(switch_col_me >= 1){
 					change_view_css("#show_bar");
@@ -202,7 +196,7 @@ function switch_chart_handle_fun(drag_sortable,edit_view){
 
 	//1个维度2个度量展示对比条形图
 	if((switch_row_di == 1 && switch_col_me == 2 && switch_row_me == 0 && switch_col_di == 0) || (switch_row_di == 0 && switch_col_me == 0 && switch_row_me == 2 && switch_col_di == 1)){
-		$("#show_contrastbar").css("opacity","1");
+		$("#show_contrastbar,#show_polyline").css("opacity","1");
 	}else{
 		$("#show_contrastbar").css("opacity","0.5");
 	}
@@ -245,7 +239,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 							}else{
 								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
 							}
-						
+						console.log(save_now_show_view_text)
 						eval(save_now_show_view_text.data("show_view_fun"));
 						view_name = save_now_show_view_text.data("show_view_fun");
 						return;
@@ -260,6 +254,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 //编辑视图直接生成对应视图
 	if(edit_view != undefined){
 		$("#main").css("display","none");
+		console.log(edit_view)
 		eval(edit_view);
 		view_name = edit_view;
 		show_btn_change.data("if_show","");
@@ -274,13 +269,14 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 		if(!save_now_show_view_text.hasClass("show_view_success")){
 		save_now_show_view_text = $("#show_histogram");
 		}
+		console.log(save_now_show_view_text)
 		eval(save_now_show_view_text.data("show_view_fun"));
 		view_name = save_now_show_view_text.data("show_view_fun");
 		save_now_show_view_text.data("if_show","true");
 		show_btn_change.not(save_now_show_view_text).data("if_show","");
 	}
 
-console.log(save_now_show_view_text)
+
 if(switch_col_di !=  0 || switch_col_me != 0 || switch_row_di != 0 || switch_row_me != 0){
 
 		$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
