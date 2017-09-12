@@ -146,7 +146,7 @@ def getBasicStatsSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", 
 
         return outputDict
     ''' + '''
-    df3 = getDataFrameFromSource({0}, '{1}')
+    df3 = getDataFrameFromSource({0}, '{1}', maxRowCount=False)
     if df3:
         print(json.dumps(getBasicStats({0}["optypes"], df3), cls = SpecialDataTypesEncoder))
     else:
@@ -174,6 +174,7 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
     from pyspark.mllib.linalg import Matrices
     from pyspark.mllib.stat import Statistics
     import numpy as np
+    from statsmodels.stats.diagnostic import lilliefors
     ''' + specialDataTypesEncoderSparkCode() + getDataFrameFromSourceSparkCode() + setupLoggingSparkCode() + '''
     def getNormalTest(colStr, dataFrame):
         """
@@ -183,8 +184,11 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
             normres = stats.shapiro(dataFrame.select(colStr).toPandas()[colStr])
             return {"W": normres[0], "pvalue": normres[1]}
         else:
-            normres = stats.kstest(dataFrame.select(colStr).toPandas()[colStr], "norm")
-            return {"statistic": normres.statistic, "pvalue": normres.pvalue}
+            # normres = stats.kstest(dataFrame.select(colStr).toPandas()[colStr], "norm")
+            # return {"statistic": normres.statistic, "pvalue": normres.pvalue}
+            normres = lilliefors(dataFrame.select(colStr).toPandas()[colStr])
+            logger.debug("normres: {0}, count: {1}".format(normres, dataFrame.count()))
+            return {"statistic": normres[0], "pvalue": normres[1]}
 
 
     def getHypothesisTest(inParams, dataFrame):
@@ -308,7 +312,7 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
         logger.debug("outputDict: {0}".format(outputDict))
         return outputDict
     ''' + '''
-    df3 = getDataFrameFromSource({0}, '{1}')
+    df3 = getDataFrameFromSource({0}, '{1}', maxRowCount=False)
     if df3:
         print(json.dumps(getHypothesisTest({0}["inputparams"], df3), cls = SpecialDataTypesEncoder))
     else:
