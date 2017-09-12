@@ -32,9 +32,17 @@ def userLogin(request):
         pwd = request.POST['password']
         logger.error('{0}/{1}/{2}'.format(name, email, pwd))
         try:
-            user = User.objects.create_user(name, email, pwd, is_active=False)
-            user.set_password(pwd)
-            user.save()
+            userList = User.objects.filter(username=name)
+            if userList:
+                user = userList[0]
+                if user.is_active:
+                    return HttpResponse('该用户名已被注册')
+                user.set_password(pwd)
+                user.save()
+            else:
+                user = User.objects.create_user(name, email, pwd, is_active=False)
+                user.set_password(pwd)
+                user.save()
 
             token = token_confirm.generate_validate_token(name)
             msg = '''
@@ -50,7 +58,7 @@ def userLogin(request):
             user.email_user('医智云用户激活邮件', msg)
             return render(request, 'uiaccounts/login.html')
         except Exception:
-            return HttpResponse('sry. this name has been used')
+            return HttpResponse('see logs')
     else:
         next_to = request.GET.get('next', '')
         return render(request, 'uiaccounts/login.html', {'next': next_to})
@@ -127,7 +135,7 @@ def addPermission(request, permission):
             group.permissions.add(perm)
             user.groups.add(group)
         except Exception:
-            return HttpResponse('并没有该权限')
+            return HttpResponse('用户尚未登录')
 
     user = get_object_or_404(User, pk=user.id)
     if user.has_perm('uiaccounts.{0}'.format(permission)):

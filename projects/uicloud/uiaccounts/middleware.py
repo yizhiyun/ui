@@ -11,6 +11,7 @@ class CheckUserMiddleware(MiddlewareMixin):
             if request.path == '/uiaccounts/register/' \
                 or request.path.startswith('/uiaccounts/login/') \
                     or request.path.startswith('/uiaccounts/afterlogin/') \
+                    or request.path == '/uiaccounts/logout/' \
                     or request.path.startswith('/uiaccounts/active_user/'):
 
                 return None

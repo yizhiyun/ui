@@ -53,7 +53,8 @@ Get All Tables From Current User
                 "note": <note>,
                 "id": <itabled>,
                 "show": <True/False>,
-                "isopen": <True/False>
+                "isopen": <True/False>,
+                "calculation": <calculation>
             },
            ...
         },
@@ -96,7 +97,8 @@ Save TableInfo From Current User And Return TableInfo
     "row": <row>,
     "column": <column>,
     "tablename": <tablename>,
-    "viewtype": <viewtype>,
+    "viewtype": <viewtype>,,
+    "calculation": <calculation>,
     "defaultparent": <defaultparentfoldername>
 }
 ```
@@ -108,7 +110,8 @@ Save TableInfo From Current User And Return TableInfo
     "row": "rowdata",
     "column": "columndata",
     "tablename": "yzydb",
-    "viewtype": "typedata",
+    "viewtype": "typedata",,
+    "calculation": "addAndSubtract",
     "defaultparent": "nmnf"
 }
 ```
@@ -196,7 +199,8 @@ Add Folder to ParentFolder
                 "note": <note>,
                 "id": <viewid>,
                 "show": <True/False>,
-                "isopen": <True/False>
+                "isopen": <True/False>,
+                "calculation": <calculation>
             },
            ...
         },
@@ -264,7 +268,8 @@ Change Name From Current User
                 "note": <note>,
                 "id": <itabled>,
                 "show": <True/False>,
-                "isopen": <True/False>
+                "isopen": <True/False>,
+                "calculation": <calculation>
             },
            ...
         },
@@ -369,7 +374,8 @@ Delete Folder From Current User
                 "note": <note>,
                 "id": <itabled>,
                 "show": <True/False>,
-                "isopen": <True/False>
+                "isopen": <True/False>,
+                "calculation": <calculation>
             },
            ...
         },
@@ -437,7 +443,8 @@ Switch to remember User's state
                 "note": <note>,
                 "id": <itabled>,
                 "show": <True/False>,
-                "isopen": <True/False>
+                "isopen": <True/False>,
+                "calculation": <calculation>
             },
            ...
         },
