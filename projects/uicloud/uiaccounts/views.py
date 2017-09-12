@@ -226,8 +226,8 @@ def authcode(request):
     except Exception:
         return HttpResponse('对不起，验证链接已经过期')
 
-    logger.error(int(codeByUser) == authcode)
-    if int(codeByUser) == authcode:
+    logger.error(type(codeByUser))
+    if type(codeByUser) == int and int(codeByUser) == authcode:
         return render(request, 'uiaccounts/setpassword.html', {'name': name})
     else:
         return render(request, 'uiaccounts/checkcode.html', {'result': '验证码错误', 'token': token, 'name': name})
