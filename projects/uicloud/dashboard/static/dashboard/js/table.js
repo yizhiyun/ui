@@ -190,10 +190,9 @@ function showTable_by_dragData(){
 	function init(needData){
 		//1、处理维度
 		 var current_all_measure = drag_row_column_data["column"]["measure"].concat(drag_row_column_data["row"]["measure"]);
-		 
 		var isRowDemiEqual =  equalCompare(record_table_now_row_dimensionaluty,drag_row_column_data["row"]["dimensionality"]);
 		var isColumnDemiEqual = equalCompare(record_table_now_column_dimensionaluty,drag_row_column_data["column"]["dimensionality"]);
-		var isMeasureEqual = equalCompare(record_table_measure,drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]))
+		var isMeasureEqual = equalCompare(record_table_measure,drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 		var isCalculateMeasureEqual = equalCompare(record_table_calculate_measure,drag_measureCalculateStyle);
 		var isCustomCalculateStyleEqual = equalCompare(record_table_custom_calculate,customCalculate);
 		

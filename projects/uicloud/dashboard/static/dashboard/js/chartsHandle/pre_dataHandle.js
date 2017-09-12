@@ -30,11 +30,17 @@ var preAllData = null;
 var recordConditon = null;
 // needColumns暂时未用到
 function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
-	
-	
-	getCurrentTableFilterData(current_cube_name);
+	var filterNotWorkArr = getColumnFilterNotWorkedColumns(current_cube_name);
+	getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
 	conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
-	
+	var checkSelectConditionDict = getSelectionCondtion(current_cube_name);
+	for(var key in checkSelectConditionDict){
+		var valuesArr = checkSelectConditionDict[key];
+		if(valuesArr && valuesArr.length >0 && filterNotWorkArr.indexOf(key) == -1){
+			var filter = {"type":"isnotin","columnName":key,"value":valuesArr};
+			conditions.push(filter);
+		}
+	}
 	var groupby = dimensionality_array;
 	var aggregations = [];
 	var basic_opration = ["sum","max","min","avg"];
