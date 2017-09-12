@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.decorators import login_required
 import logging
-from random import randint
+import random
 
 from .token import Token
 from django.conf import settings
@@ -192,7 +192,9 @@ def getvertify(request):
     if userList:
         user = userList[0]
         if user.is_active:
-            authcode = randint(1000, 9999)
+            authcode = ''
+            for i in range(4):
+                authcode += random.choice('0123456789qwertyuiopasdfghjklzxcvbnm')
             token = token_confirm.generate_validate_token(authcode)
             msg = '''
             {0}:
@@ -227,7 +229,7 @@ def authcode(request):
         return HttpResponse('对不起，验证链接已经过期')
 
     logger.error(type(codeByUser))
-    if type(codeByUser) == int and int(codeByUser) == authcode:
+    if codeByUser == authcode:
         return render(request, 'uiaccounts/setpassword.html', {'name': name})
     else:
         return render(request, 'uiaccounts/checkcode.html', {'result': '验证码错误', 'token': token, 'name': name})
