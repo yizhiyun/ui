@@ -82,7 +82,7 @@ def getAllData(request):
 @api_view(['POST'])
 def dashboardTableAdd(request):
     '''
-    传入一个table的各项参数，保存并返回下一个页面与这些参数.
+    传入一个table的各项参数，保存并返回用户所有数据
     '''
     jsonData = request.data
 

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<form action="/uiaccounts/getvertify/" method="post">
+	{% csrf_token %}
+		<label>name</label><input type="text" name="name">
+		<input type="submit" name="" value="获取验证码">
+	</form>
+</body>
+</html>
