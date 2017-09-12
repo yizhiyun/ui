@@ -12,8 +12,6 @@ var drag_row_column_data = {
 
 var drag_measureCalculateStyle = {};
 
-
-
 var view_name;
 
 // 记录当前操作的数据块数据
@@ -98,12 +96,7 @@ $(function() {
 		$('#lateral_title .custom-select').find("option").eq(0).attr("selected","selected");
 		$('#lateral_title .custom-select').comboSelect();
 		
-		}
-
-		
-
-				
-		
+		}	
 		drag_row_column_data = {
 			"row":{
 				"dimensionality":[],
@@ -634,7 +627,7 @@ $(function() {
 							currentHandleMeasureCalculate = $(ele).parent().parent(".drog_row_list");
 								//创建最外层元素
 							var out_wrap_click = $("<ul class='me_out_content'></ul>");
-							var columnName = element.parent().parent().data("field_name");
+							var columnName = $(ele).parent().parent().data("field_name");
 							
 							out_wrap_click.appendTo($(ele).parent().parent()).data("pop_data_handle",username+"_YZY_"+ $("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY_"+ columnName);
 							
@@ -745,7 +738,6 @@ $(function() {
 								drag_measureCalculateStyle[measureName] = "custom";
 								customCalculate[measureName] = editor.getValue();
 								currentHandleMeasureCalculate.children(".drop_main").children("span.measure_list_text_left").eq(0).html($("#editMeasureCalculateView .edit_measure_body #measure_show_title").val());
-//								isagainDrawTable = true;
 								switch_chart_handle_fun();
 								$("#editMeasureCalculateView").hide();
 								$(".maskLayer").hide();
@@ -768,7 +760,6 @@ $(function() {
 							var measureName = measureInfo.split("_YZY_")[2];
 							drag_measureCalculateStyle[measureName] = "sum("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("总计("+measureName+")");
-//							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						});
 						//平均值
@@ -779,7 +770,6 @@ $(function() {
 							var measureName = measureInfo.split("_YZY_")[2];
 							drag_measureCalculateStyle[measureName] = "avg("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("平均值("+measureName+")");
-//							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						});
 						//中位数
@@ -794,7 +784,6 @@ $(function() {
 							var measureName = measureInfo.split("_YZY_")[2];
 							drag_measureCalculateStyle[measureName] = "max("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("最大值("+measureName+")");
-//							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						});
 						//最小值
@@ -806,7 +795,6 @@ $(function() {
 							var measureName = measureInfo.split("_YZY_")[2];
 							drag_measureCalculateStyle[measureName] = "min("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("最小值("+measureName+")");
-//							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						});
 						// -------------------
