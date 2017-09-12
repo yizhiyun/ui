@@ -49,7 +49,7 @@ def getAllDataFunction(username, datatype=None):
                         'id': tablelist[i].id,
                         'show': tablelist[i].show,
                         'isopen': tablelist[i].isopen,
-                        'status': tablelist[i].status
+                        'calculation': tablelist[i].calculation
                     }
         return context
 
@@ -119,6 +119,7 @@ def dashboardTableAdd(request):
                 username=jsonData['username'],
                 tablename=jsonData['tablename'],
                 viewtype=jsonData['viewtype'],
+                calculation=jsonData['calculation'],
                 folder=folder
             )
             table.save()
@@ -348,14 +349,6 @@ def setSwitch(request):
                     table.isopen = False
                 else:
                     table.isopen = True
-                table.save()
-                context = {
-                    'status': 'ok'
-                }
-                return JsonResponse(context)
-            elif jsonData['switch'] == 'status':
-                table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
-                table.status = jsonData['location']
                 table.save()
                 context = {
                     'status': 'ok'
