@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.utils.deprecation import MiddlewareMixin
 
+import logging
+logger = logging.getLogger("uicloud.uiaccounts.middleware")
+logger.setLevel(logging.DEBUG)
+
 
 class CheckUserMiddleware(MiddlewareMixin):
 
@@ -8,11 +12,7 @@ class CheckUserMiddleware(MiddlewareMixin):
         if request.user.is_authenticated():
             return None
         else:
-            if request.path == '/uiaccounts/register/' \
-                or request.path.startswith('/uiaccounts/login/') \
-                    or request.path.startswith('/uiaccounts/afterlogin/') \
-                    or request.path == '/uiaccounts/logout/' \
-                    or request.path.startswith('/uiaccounts/active_user/'):
-
+            if request.path.startswith('/uiaccounts/'):
                 return None
+            logger.error(request.path)
             return render(request, 'uiaccounts/login.html', {'next': request.path})

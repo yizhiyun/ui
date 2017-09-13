@@ -12,4 +12,8 @@ urlpatterns = [
     url(r'^afterlogin/$', views.afterLogin, name='afterLogin'),
     url(r'^add/(?P<permission>.+)/$', views.addPermission, name='addPermission'),
     url(r'^remove/(?P<permission>.+)/$', views.removePermission, name='removePermission'),
+    url(r'^loginproblem/$', views.loginproblem, name='loginproblem'),
+    url(r'^getvertify/$', views.getvertify, name='getvertify'),
+    url(r'^authcode/$', views.authcode, name='authcode'),
+    url(r'^setpassword/$', views.setpassword, name='setpassword'),
 ]
