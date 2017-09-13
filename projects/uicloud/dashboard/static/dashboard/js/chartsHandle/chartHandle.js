@@ -1146,7 +1146,7 @@ function comparisonStrip_generate_fun(){
 			        }
 			    },
 			    legend: {
-			        data: row_if_me,
+			        data: all_measure,
 			        align: 'right',
 			        right: 10
 			    },

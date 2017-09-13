@@ -2158,7 +2158,7 @@ $(function() {
 	$("#click_save_view").on("click",function(){
 		add_state_name();
 		//获取之前是否有保存的文件夹和报表
-
+		
 		$.post("../dashboard/getAllData",{"username":username},function(result){
 			//判断第一次新建报表
 			if(!result["default"]){
@@ -2256,7 +2256,7 @@ $(function() {
 			post_dict["tablename"] = current_cube_name;
 			post_dict["viewtype"] = view_name;
 			post_dict["defaultparent"] = "default";
-			
+			post_dict["calculation"] = JSON.stringify(drag_measureCalculateStyle)
 //			console.log(post_dict)
 			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
