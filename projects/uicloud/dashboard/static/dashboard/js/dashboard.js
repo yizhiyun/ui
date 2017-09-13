@@ -12,8 +12,6 @@ var drag_row_column_data = {
 
 var drag_measureCalculateStyle = {};
 
-
-
 var view_name;
 
 // 记录当前操作的数据块数据
@@ -98,12 +96,7 @@ $(function() {
 		$('#lateral_title .custom-select').find("option").eq(0).attr("selected","selected");
 		$('#lateral_title .custom-select').comboSelect();
 		
-		}
-
-		
-
-				
-		
+		}	
 		drag_row_column_data = {
 			"row":{
 				"dimensionality":[],
@@ -573,7 +566,7 @@ $(function() {
 			success:function(data){
 				if (data["status"] == "success") {
 					var cube_all_data = data["results"];
-					filterNeedAllData =  data["results"]["data"];
+					filterNeedAllData = cube_all_data["data"];
 					var schema = cube_all_data["schema"];
 
 					for(var i = 0;i < schema.length;i++){
@@ -634,7 +627,7 @@ $(function() {
 							currentHandleMeasureCalculate = $(ele).parent().parent(".drog_row_list");
 								//创建最外层元素
 							var out_wrap_click = $("<ul class='me_out_content'></ul>");
-							var columnName = element.parent().parent().data("field_name");
+							var columnName = $(ele).parent().parent().data("field_name");
 							
 							out_wrap_click.appendTo($(ele).parent().parent()).data("pop_data_handle",username+"_YZY_"+ $("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY_"+ columnName);
 							
@@ -745,7 +738,6 @@ $(function() {
 								drag_measureCalculateStyle[measureName] = "custom";
 								customCalculate[measureName] = editor.getValue();
 								currentHandleMeasureCalculate.children(".drop_main").children("span.measure_list_text_left").eq(0).html($("#editMeasureCalculateView .edit_measure_body #measure_show_title").val());
-//								isagainDrawTable = true;
 								switch_chart_handle_fun();
 								$("#editMeasureCalculateView").hide();
 								$(".maskLayer").hide();
@@ -755,7 +747,7 @@ $(function() {
 
 						//移除
 						out_wrap_click.find(".deleting").on("click",function(){
-							console.log("移除");
+//							console.log("移除");
 						});
 
 
@@ -768,7 +760,6 @@ $(function() {
 							var measureName = measureInfo.split("_YZY_")[2];
 							drag_measureCalculateStyle[measureName] = "sum("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("总计("+measureName+")");
-//							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						});
 						//平均值
@@ -779,22 +770,20 @@ $(function() {
 							var measureName = measureInfo.split("_YZY_")[2];
 							drag_measureCalculateStyle[measureName] = "avg("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("平均值("+measureName+")");
-//							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						});
 						//中位数
 						out_wrap_click.find(".pop_median").on("click",function(){
-							console.log("中位数");
+//							console.log("中位数");
 						});
 						//最大值
 						out_wrap_click.find(".pop_max").on("click",function(){
-							console.log("最大值");
+//							console.log("最大值");
 							var measureList = $(this).parents(".me_out_content").eq(0);
 							var measureInfo = measureList.data("pop_data_handle");
 							var measureName = measureInfo.split("_YZY_")[2];
 							drag_measureCalculateStyle[measureName] = "max("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("最大值("+measureName+")");
-//							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						});
 						//最小值
@@ -806,7 +795,6 @@ $(function() {
 							var measureName = measureInfo.split("_YZY_")[2];
 							drag_measureCalculateStyle[measureName] = "min("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("最小值("+measureName+")");
-//							isagainDrawTable = true;
 							switch_chart_handle_fun();
 						});
 						// -------------------
@@ -2170,7 +2158,7 @@ $(function() {
 	$("#click_save_view").on("click",function(){
 		add_state_name();
 		//获取之前是否有保存的文件夹和报表
-
+		
 		$.post("../dashboard/getAllData",{"username":username},function(result){
 			//判断第一次新建报表
 			if(!result["default"]){
@@ -2268,7 +2256,7 @@ $(function() {
 			post_dict["tablename"] = current_cube_name;
 			post_dict["viewtype"] = view_name;
 			post_dict["defaultparent"] = "default";
-			
+			post_dict["calculation"] = JSON.stringify(drag_measureCalculateStyle)
 //			console.log(post_dict)
 			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){

@@ -3,8 +3,10 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User, Permission, Group
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.decorators import login_required
 import logging
+import random
 
 from .token import Token
 from django.conf import settings
@@ -97,6 +99,7 @@ def afterLogin(request):
                     login(request, user)
                     next_to = request.POST.get('next')
                     if next_to:
+                        logger.error('next_to:{0}'.format(next_to))
                         return redirect(next_to)
                     return render(request, 'uiaccounts/afterLogin.html')
                 else:
@@ -110,6 +113,7 @@ def afterLogin(request):
         return render(request, 'uiaccounts/afterLogin.html')
 
 
+@login_required(login_url='/uiaccounts/login/')
 def addPermission(request, permission):
     '''
     为用户添加权限
@@ -145,6 +149,7 @@ def addPermission(request, permission):
     return render(request, 'uiaccounts/afterLogin.html', {'results': results})
 
 
+@login_required(login_url='/uiaccounts/login/')
 def removePermission(request, permission):
     '''
     为用户删除权限
@@ -169,3 +174,78 @@ def userLogout(request):
     else:
         results = '您还未登录'
     return render(request, 'uiaccounts/afterLogin.html', {'results': results})
+
+
+def loginproblem(request):
+    '''
+    返回获取验证码页面， 点击获取验证码
+    '''
+    return render(request, 'uiaccounts/loginproblem.html')
+
+
+def getvertify(request):
+    '''
+    发送验证码， 返回输入验证码页面
+    '''
+    username = request.POST['name']
+    userList = User.objects.filter(username=username)
+    if userList:
+        user = userList[0]
+        if user.is_active:
+            authcode = ''
+            for i in range(4):
+                authcode += random.choice('0123456789qwertyuiopasdfghjklzxcvbnm')
+            token = token_confirm.generate_validate_token(authcode)
+            msg = '''
+            {0}:
+                您的验证码是{1}
+                \n\n\n\n\n\n\n\n
+                为保证您的安全， 请在一个小时内完成验证
+            '''.format(username, authcode)
+            try:
+                user.email_user('医智云验证邮件', msg)
+                return render(request, 'uiaccounts/checkcode.html', {'token': token, 'name': username})
+            except Exception:
+                return HttpResponse('邮件发送失败')
+
+        else:
+            return HttpResponse('该用户尚未激活')
+
+    else:
+        return HttpResponse('用户名错误')
+
+
+def authcode(request):
+    '''
+    判断验证码是否正确， 过期。 返回重置密码页面或者错误信息
+    '''
+    name = request.POST['name']
+    token = request.POST['token']
+    codeByUser = request.POST['authcode']
+
+    try:
+        authcode = token_confirm.confirm_validate_token(token)
+    except Exception:
+        return HttpResponse('对不起，验证链接已经过期')
+
+    logger.error(type(codeByUser))
+    if codeByUser == authcode:
+        return render(request, 'uiaccounts/setpassword.html', {'name': name})
+    else:
+        return render(request, 'uiaccounts/checkcode.html', {'result': '验证码错误', 'token': token, 'name': name})
+
+
+def setpassword(request):
+    '''
+    重置密码
+    '''
+    name = request.POST['name']
+    pwd = request.POST['pwd']
+    userList = User.objects.filter(username=name)
+    if userList:
+        user = userList[0]
+        user.set_password(pwd)
+        user.save()
+        return render(request, 'uiaccounts/setsuccess.html')
+    else:
+        return HttpResponse('用户名错误')

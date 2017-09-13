@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>{{result}}</h1>
+	<form action="/uiaccounts/authcode/" method="post">
+	{% csrf_token %}
+		<label>请输入验证码</label><input type="text" name="authcode">
+		<input type="hidden" name="token" value="{{ token }}">
+		<input type="hidden" name="name" value="{{ name }}">
+		<input type="submit" name="" value="设置新的密码">
+	</form>
+</body>
+</html>

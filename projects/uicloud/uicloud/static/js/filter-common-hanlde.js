@@ -1321,14 +1321,14 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 			conditionFilter_record[tableInfo]["condition"][end_index]["value"] = endDate ;
 		}	
 	}
-	// 如果筛选器是从构建数据页面进入的
-		if(finishCallBackFun){
-			finishCallBackFun(false);	
-		}
+	
 		$("#filter-model #user-filter-select").hide();
 		$("#filter-model .screeningWasher").hide();
 		$(".maskLayer").hide();
 		localStorageSaveData(tableInfo,filterID,column_name,state,savedIndex);
+		if(finishCallBackFun){
+			finishCallBackFun(false);	
+		}
 }
 
 
@@ -1424,6 +1424,8 @@ function localStorageSaveData(tableInfo,type,column,state,savedIndex){
 			"indictorText":indictorText
 		}
 	}
+	
+	
 	
 	if(filterDataArr){
 		if(state == "edit" && savedIndex >= 0){

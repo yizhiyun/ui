@@ -1,8 +1,30 @@
 // 处理仪表板界面 跟筛选器相关的内容
 // 用来记录当前正在表详细中操作的列或者行元素
 var currentHandleColOrRowEles = null;
-var filterNotWorkArr = [];
 var checkSelectConditionDict = {};
+
+
+function saveSelectionCondtion(tableInfo,conditionsDict){
+	
+	window.localStorage.setItem(tableInfo+"specialSelection",JSON.stringify(conditionsDict));
+
+}
+function getSelectionCondtion(tableInfo){
+	var rs =  JSON.parse(window.localStorage.getItem(tableInfo+"specialSelection"));
+	if(!rs){rs= {}};
+	return rs;
+}
+
+function saveColumnFilterNotWorkedColumns(tableInfo,columns){
+	window.localStorage.setItem(tableInfo+"NotWorkedColumns",JSON.stringify(columns));
+}
+function getColumnFilterNotWorkedColumns(tableInfo){
+	var rs =  JSON.parse(window.localStorage.getItem(tableInfo+"NotWorkedColumns"));
+	if(!rs){rs= []};
+	return rs;
+}
+
+
 $(function(){
 	
 	$('.custom-select').comboSelect();
@@ -16,50 +38,13 @@ $(function(){
 });
 // 筛选器筛选数据成功，回调函数
 function filterSuccessFun(){
-	var tableInfo = current_cube_name;
-	var conditions = [];
-	if(conditionFilter_record[tableInfo]) {
-		conditions = conditionFilter_record[tableInfo]["common"].concat(conditionFilter_record[tableInfo]["condition"]);
-	}
-	for(var key in checkSelectConditionDict){
-		var valuesArr = checkSelectConditionDict[key];
-		if(valuesArr && valuesArr.length >0){
-			var filter = {"type":"isnotin","columnName":key,"value":valuesArr};
-			conditions.push(filter);
-		}
-	}
-	if(conditions.length < 1){ // 没有条件就不进行筛选
-		_cube_all_data[tableInfo]["data"] = filterNeedAllData.slice(0);
-		isagainDrawTable = true;
-		switch_chart_handle_fun("sortable");
-		return;
-	}
-	var postFilterCondition = {
-		"conditions": conditions
-	}
-	$.ajax({
-		url:"/cloudapi/v1/tables/"+tableInfo+"/all",
-		type:"post",
-		dataType:"json",
-		contentType: "application/json; charset=utf-8",
-		async: true,
-		data:JSON.stringify(postFilterCondition),
-		success:function(data){
-			_cube_all_data[tableInfo] = data["results"];
-			var schema = _cube_all_data[tableInfo]["schema"];
-			for(var i = 0;i < schema.length;i++){
-				schema[i]["isable"] = "yes";
-			}
-			isagainDrawTable = true;
-			switch_chart_handle_fun("sortable");
-		}
-	});
-	
+	isagainDrawTable = true;
+	switch_chart_handle_fun();
 }
 
 // drawType:add,delete；columnNameInfo:维度列名；
 function rightFilterListDraw(drawType,columnNameInfo){
-	
+	checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 	var columnInfoArr = columnNameInfo.split(":");
 	if(drawType == "add"){
 		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .cubeTableName").html(current_cube_name);
@@ -151,7 +136,13 @@ function rightFilterListDraw(drawType,columnNameInfo){
 			if(help_remove_repeatArr.indexOf(lineItem[columnInfoArr[0]]) != -1){
 				continue;
 			}
-			var detail_li = $("<li><label><input type='checkbox' checked/><span class='filedContentName'>"+lineItem[columnInfoArr[0]]+"</span></label></li>");
+			var detail_li = $("<li><label><input type='checkbox'/><span class='filedContentName'>"+lineItem[columnInfoArr[0]]+"</span></label></li>");
+			if(checkSelectConditionDict[columnInfoArr[0]]&&checkSelectConditionDict[columnInfoArr[0]].indexOf(lineItem[columnInfoArr[0]]) != -1){		
+				detail_li.find("input").eq(0).attr("checked",false);
+			}else{
+				detail_li.find("input").eq(0).prop("checked",true);
+			}
+			
 			help_remove_repeatArr.push(lineItem[columnInfoArr[0]]);
 			fieldDetailContent_ul.append(detail_li);
 			detail_li.find("input").change(function(event){
@@ -175,7 +166,7 @@ function rightFilterListDraw(drawType,columnNameInfo){
 						checkSelectConditionDict[column].push(columnContent);
 					}
 				}
-				getCurrentTableFilterData(current_cube_name);
+				saveSelectionCondtion(current_cube_name,checkSelectConditionDict);
 				filterSuccessFun();
 			});
 		}
@@ -188,12 +179,15 @@ function rightFilterListDraw(drawType,columnNameInfo){
 		filterDetialShowDiv.find(".bottomHandleDiv .switchDiv").click(function(event){
 			event.stopPropagation();
 			var column = $(this).parents(".filterBox").parents(".filterLI").eq(0).data("fieldInfo").split(":")[0];
+			
+			var filterNotWorkArr = getColumnFilterNotWorkedColumns(current_cube_name);
+			
 			if($(this).attr("switch") == "on"){
 				$(this).attr("switch","off");
 				$(this).children("img").eq(0).attr("src","/static/dashboard/img/close.png");	
 				if(filterNotWorkArr.indexOf(column) == -1){
 					filterNotWorkArr.push(column);
-					getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
+					saveColumnFilterNotWorkedColumns(current_cube_name,filterNotWorkArr);
 					filterSuccessFun();
 				}
 				
@@ -203,7 +197,7 @@ function rightFilterListDraw(drawType,columnNameInfo){
 				var index=  filterNotWorkArr.indexOf(column)
 				if( index != -1){
 					filterNotWorkArr.splice(index,1);
-					getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
+					saveColumnFilterNotWorkedColumns(current_cube_name,filterNotWorkArr);
 					filterSuccessFun();
 				}
 			}
@@ -214,7 +208,6 @@ function rightFilterListDraw(drawType,columnNameInfo){
 			var needDeleteLi = $(this).parents(".filterBox").find("ul.filter_list li.active").eq(0);
 			needDeleteLi.remove();
 			localStoragedeleteData(current_cube_name,needDeleteLi.attr("index"));
-			getCurrentTableFilterData(current_cube_name);
 			filterSuccessFun();
 		});
 		
@@ -222,6 +215,9 @@ function rightFilterListDraw(drawType,columnNameInfo){
 	}else if(drawType == "delete"){
 		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list ."+columnInfoArr[0]).eq(0).hide("blind",200,function(){
 			$(this).remove();
+			checkSelectConditionDict = getSelectionCondtion(current_cube_name);
+			delete checkSelectConditionDict[columnInfoArr[0]];
+			saveSelectionCondtion(current_cube_name,checkSelectConditionDict);
 		});
 	}
 }

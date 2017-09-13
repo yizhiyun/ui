@@ -157,7 +157,8 @@ function one_de_one_me_handle (chart_type_need) {
 				//清除上一个图例
 				mycharts.clear();
 		
-				mycharts.setOption(option)
+				mycharts.setOption(option);
+				
 		});
 			
 	}
@@ -368,7 +369,10 @@ function many_de_many_me_handle(chart_type_need){
 	//释放图表实例
 	
 	var mycharts = echarts.init($("#main").get(0));
-	
+	mycharts.off("click");
+	mycharts.on("click",function(params){
+		console.log(params);
+	});
 	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));
 	var all_measure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 	// 1、折线图
@@ -755,10 +759,17 @@ function comparisonStrip_generate_fun(){
 					var aData = data[i];
 					for(var j = 0;j < all_dimensionality.length - 1;j++){
 						if(!need_show_dimensionality_arr[j]){
-							need_show_dimensionality_arr[j] = [aData[all_dimensionality[j]]];
+							need_show_dimensionality_arr[j] = [{"value":aData[all_dimensionality[j]],"count":1}];
 						}else{
-							if(need_show_dimensionality_arr[j].indexOf(aData[all_dimensionality[j]]) == -1){
-								need_show_dimensionality_arr[j].push(aData[all_dimensionality[j]]);
+							var index = need_show_dimensionality_arr[j].hasObject("value",aData[all_dimensionality[j]]);
+							if( index== -1){
+								need_show_dimensionality_arr[j].push({"value":aData[all_dimensionality[j]],"count":1});
+							}else{
+								if(j < all_dimensionality.length - 2){
+									if(need_show_dimensionality_arr[j+1].hasObject("value",aData[all_dimensionality[j+1]]) == -1){
+										need_show_dimensionality_arr[j].push(({"value":" ","count":1}));
+									}
+								}
 							}
 						}
 					}
@@ -795,7 +806,7 @@ function comparisonStrip_generate_fun(){
 	        					var val = params.value;
 	        					if (bar_type == "percentage_liner" || bar_type == "percentage_bar") {
 	        						val = (Number(val) * 100).toFixed(2) + "%";
-	        						console.log("--------",val);
+	        						
 	        					}
 							var measureNames = "<p style='font-size;12px;height:12px;padding:3px 0 3px 0'><span style=width:12px;height:12px;border-radius:50%;float:left;line-height:12px;background:"+params.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +measureName+":  " + val+"</span></p>";
 							
@@ -850,10 +861,15 @@ function comparisonStrip_generate_fun(){
 				}
 				if (bar_type == "number_bar" || bar_type == "percentage_bar") {
 					option["xAxis"].push(obj);
-					option["yAxis"].push({type:"value",show:false,min:10,max:80});
+					if(k > 0){
+						option["yAxis"].push({type:"value",show:false,min:10,max:80});
+					}
+					
 				}else{
 					option["yAxis"].push(obj);
-					option["xAxis"].push({type:"value",show:false,min:10,max:80});
+					if(k > 0){
+						option["xAxis"].push({type:"value",show:false,min:10,max:80});
+					}	
 				}		
 			}
 				// 造多少行数据(几个去堆叠)
@@ -877,14 +893,16 @@ function comparisonStrip_generate_fun(){
 					name:name,
 					type:"bar",
 					stack:stack,
+					xAxisIndex:0,
+					yAxisIndex:0,
 					data:data
 				}
 				option["series"].push(obj);
 			}
 				//清除上一个图例
-				mycharts.clear();
-		
+				mycharts.clear();		
 				mycharts.setOption(option);	
+				
 			});
 			
  			
@@ -893,75 +911,61 @@ function comparisonStrip_generate_fun(){
 
 // 关系图
 	function reliationTree_generate_fun(){
-			var need_all_link = [];
-			var need_all_nodes = []; // 所需要的所有节点
-			var categorysHelp = []; 
-			var categorys = [];// 分类，主要用作图例
-			var categoryName = "";
-		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
-			for (var i = 0;i < data.length;i++) {
-				var aData = data[i];
-				for(var j = 1;j < all_dimensionality.length;j++){
-					var dimensionalityPre =  all_dimensionality[j - 1];
-					var dimensionalityNext =  all_dimensionality[j];
-					var obj = {"source":aData[dimensionalityPre],"target":aData[dimensionalityNext]};
-					need_all_link.push(obj);
-					if(!categorysHelp[j-1]){
-						categorysHelp[j-1] = [{"name":aData[dimensionalityPre]}];
-					}else if(categorysHelp[j-1].hasObject("name",aData[dimensionalityPre]) == -1){
-						categorysHelp[j-1].push({"name":aData[dimensionalityPre]});
-					}
-					if(!categorysHelp[j]){
-						categorysHelp[j] = [{"name":aData[dimensionalityNext]}];
-					}else if(categorysHelp[j].hasObject("name",aData[dimensionalityNext]) == -1){
-						categorysHelp[j].push({"name":aData[dimensionalityNext]});
-					}
-				}
-			}
-			categoryName = all_dimensionality[0];
-			var min = 0;
-			for(var k =0;k<categorysHelp.length;k++){
-				if(categorysHelp[min].length > categorysHelp[k].length){
-					min = k;
-				}
-			}
-			categorys = objectDeepCopy(categorysHelp[min]);
-			categoryName = all_dimensionality[min];
-			delete categorysHelp;
-			getNodeFunction();
-		});
-		function getNodeFunction(){
-			var allColumns_need= drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"],drag_row_column_data["row"]["measure"],drag_row_column_data["column"]["measure"]);
-			var needColumns = {};
-			for(var k = 0;k < allColumns_need.length;k++){
-				var infoArr = allColumns_need[k].split(":");
-				needColumns[infoArr[0]] = {"type":infoArr[1]};
-			}
-			var count = 0
-			for(var i = 0;i < all_dimensionality.length;i++){
-				(function(index){
-					measure_Hanlde(all_dimensionality[index],all_measure,needColumns,function(data){
+		
+		var categorys = [];// 分类，主要用作图例
+		var need_all_nodes = []; // 所需要的所有节点
+		var need_all_link = [];
+		var count = 0;
+		for(var i =0;i < all_dimensionality.length;i++){
+			(function(index){
+				var need_dimensionality = all_dimensionality.slice(0,index+1);
+				measure_Hanlde(need_dimensionality,all_measure,null,function(data){
 					for(var j = 0;j < data.length;j++){
 						var aData = data[j];
+						var name = "";
+						for(var k =0;k < need_dimensionality.length;k++){
+							name += aData[need_dimensionality[k]] +"_YZYPD_"; 
+						}
+						if(categorys.hasObject("name",aData[need_dimensionality[0]]) == -1){
+							categorys.push({"name":aData[need_dimensionality[0]]});
+						}
+						if(index == all_dimensionality.length - 1){
+							
+							for(var m = 1;m < all_dimensionality.length;m++){
+								var source = "";
+								var target = "";
+								for(var n = 0; n < m;n++){
+									source+= aData[all_dimensionality[n]] +"_YZYPD_"; 
+								}
+								
+								for(var n = 0;n <= m;n++){
+									target+= aData[all_dimensionality[n]] +"_YZYPD_"; 
+								}
+								var obj = {"source":source,"target":target};
+								need_all_link.push(obj);
+							}
+							
+						}
 						var aNode = {
 							"value":aData[drag_measureCalculateStyle[all_measure[0]]],
-							"name":aData[all_dimensionality[index]],
+							"name":name,
 							"fixed":false,
 							"symbolSize":[50,20],
 							"draggable":true,
-							"category":categorys.hasObject("name",aData[categoryName]),
-							label:{normal:{show:true,formatter:function(params){return params["name"];}}}
+							"category":categorys.hasObject("name",aData[need_dimensionality[0]]),
+							label:{normal:{show:true,formatter:function(params){
+							var names = params["name"].split("_YZYPD_");
+							return names[names.length - 2];}}}
 							
 						}
 						need_all_nodes.push(aNode);
 					}
 					count++;
 					if(count == all_dimensionality.length){
-						draw();
-					}	
-				 });
-				})(i);
-			}
+						 draw();
+					}
+				});
+			})(i);	
 		}
 		
 		function draw(){
@@ -970,21 +974,19 @@ function comparisonStrip_generate_fun(){
 					text:"关系图",
 				},
 				legend:[{
-					data:categorys.map(function(ele){
-						return ele.name;
-					})
+					data:categorys
 				}],
 				tooltip:{
 					formatter:function(params){
 						if(params["dataType"] == "edge"){
 							var name = params["name"];
 							var nameArr = name.split(" > ");
-							var ori = nameArr[0].split("_YZY_");
-							var target = nameArr[1].split("_YZY_");
-							return ori[ori.length - 1].split("_equal_")[1] + " > "+ target[target.length - 1].split("_equal_")[1];
+							var ori = nameArr[0].split("_YZYPD_");
+							var target = nameArr[1].split("_YZYPD_");
+							return ori[ori.length - 2] + " > "+ target[target.length - 2];
 						}else{
-							var names = params["name"].split("_YZY_");
-							return params["seriesName"]+ "<br/>" + params["marker"]+ names[names.length - 1].split("_equal_")[1] + ": " + params["value"];
+							var names = params["name"].split("_YZYPD_");
+							return params["seriesName"]+ "<br/>" + params["marker"]+ names[names.length - 2] + ": " + params["value"];
 						}
 						
 					}
@@ -1144,7 +1146,7 @@ function comparisonStrip_generate_fun(){
 			        }
 			    },
 			    legend: {
-			        data: row_if_me,
+			        data: all_measure,
 			        align: 'right',
 			        right: 10
 			    },

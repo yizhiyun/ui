@@ -165,6 +165,9 @@ function equalCompare(objA, objB)
             //判断两个对象的同名属性是否相同（数字或字符串）
             if (typeof arguments[0][o] == 'number' || typeof arguments[0][o] == 'string')
                 result = eval("arguments[0]['" + o + "'] == arguments[1]['" + o + "']");
+                if(result == false){
+                		return result;
+                }
             else {
                 //如果对象的属性也是对象，则递归判断两个对象的同名属性
                 //if (!arguments.callee(arguments[0][o], arguments[1][o]))
