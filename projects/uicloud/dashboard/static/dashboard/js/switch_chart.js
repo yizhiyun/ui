@@ -16,9 +16,8 @@ var click_view_icon  = false;
 
 
 function switch_chart_handle_fun(edit_view){
-	console.log(drag_row_column_data)
 	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
-		echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();	
+		echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).dispose();
 	}
 	
 	//行里维度度量的数量

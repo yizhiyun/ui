@@ -86,6 +86,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		},
 		success:function(data){
 			if(data.status == "success"){
+				console.log(data.results.data)
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);

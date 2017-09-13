@@ -3,9 +3,7 @@
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function one_de_one_me_handle (chart_type_need) {
-	$("."+viewshow_class+"").css({
-			"display":"block"
-	});
+	console.log(viewshow_class)
 	var mycharts = echarts.init($("."+viewshow_class+"").get(0));
  	var need_handle_measureName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]))[0];
  	var need_handle_dimensionalityName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]))[0];
@@ -165,7 +163,7 @@ function one_de_one_me_handle (chart_type_need) {
 	
 
 	}
-	 cake_generate_fun();
+	 // cake_generate_fun();
 	
 	// 4、面积图
 	function area_generate_fun (argument) {
@@ -366,12 +364,8 @@ default:
 // end------------------
 // 多个维度多个度量
 function many_de_many_me_handle(chart_type_need){
-	$("."+viewshow_class+"").css({
-			"display":"block",
-	});
-
 	//释放图表实例
-	
+	console.log(viewshow_class)
 	var mycharts = echarts.init($("."+viewshow_class+"").get(0));
 	
 	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));
@@ -1149,7 +1143,7 @@ function comparisonStrip_generate_fun(){
 			        }
 			    },
 			    legend: {
-			        data: row_if_me,
+			        data: all_measure,
 			        align: 'right',
 			        right: 10
 			    },

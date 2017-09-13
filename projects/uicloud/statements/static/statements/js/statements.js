@@ -18,6 +18,9 @@ var drag_row_column_data = {
 		"column":{}
 	}
 
+
+var drag_measureCalculateStyle = {};
+
 //记录当前当前拖拽的到底是行 还是列
 // 行为：row，列为 column
 var _drag_message = {
@@ -59,10 +62,10 @@ var username = "liuyue";
 var save_old_name_view;
  
 //存储视图对象的表
-var _cube_all_data={};
+// var _cube_all_data={};
 
 //存储表格名字的数组
-var _cube_all_data_table =[];
+// var _cube_all_data_table =[];
 
 var view_count = 0;
 
@@ -695,6 +698,8 @@ function delete_btn_handle(){
 
 						state_view_show_type = change_view_show_click[right_view_show]["viewtype"];
 
+						drag_measureCalculateStyle = JSON.parse(change_view_show_click[right_view_show]["calculation"]);
+
 						view_handle_switch_statements(viewshow_class);
 					}
 				}
@@ -1153,10 +1158,10 @@ function user_handle_change_cookie(ele,click_view_btn){
 								for(view_show in data_result[erv_data][small_view_show]){
 									save_view_class_name++;
 									//将视图对应表存储起来
-									if(_cube_all_data_table.indexOf(data_result[erv_data][small_view_show][view_show]["tablename"]) == -1){
+									// if(_cube_all_data_table.indexOf(data_result[erv_data][small_view_show][view_show]["tablename"]) == -1){
 										
-										_cube_all_data_table.push(data_result[erv_data][small_view_show][view_show]["tablename"]);
-									}
+									// 	_cube_all_data_table.push(data_result[erv_data][small_view_show][view_show]["tablename"]);
+									// }
 									//判断是否有修改过的名字 而不使用默认的展现形式
 
 									if(data_result[erv_data][small_view_show][view_show]["viewname"] != null){
@@ -1231,10 +1236,10 @@ function user_handle_change_cookie(ele,click_view_btn){
 
 									save_view_class_name++;
 									//将视图对应表存储起来
-									if(_cube_all_data_table.indexOf(data_result[erv_data][small_view_show][view_show]["tablename"]) == -1){
+									// if(_cube_all_data_table.indexOf(data_result[erv_data][small_view_show][view_show]["tablename"]) == -1){
 										
-										_cube_all_data_table.push(data_result[erv_data][small_view_show][view_show]["tablename"]);
-									}
+									// 	_cube_all_data_table.push(data_result[erv_data][small_view_show][view_show]["tablename"]);
+									// }
 									
 									//判断是否有修改过的名字 而不使用默认的展现形式
 
@@ -1333,7 +1338,8 @@ function user_handle_change_cookie(ele,click_view_btn){
 			reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
 			return;
 		}
-		table_name_post(data_result);
+		reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
+		// table_name_post(data_result);
 	}else{
 		$(".right_folder_name_show").css("display","none");
 		$(".click_out_handle").css("display","none");
@@ -1373,32 +1379,32 @@ function user_handle_change_cookie(ele,click_view_btn){
 		$("#statements_add_folder").hide();
 	})
 
-	function table_name_post(data_result){
+	// function table_name_post(data_result){
 		
-		var len  = _cube_all_data_table.length;
-		table_into_post(len);
-		function table_into_post(l){
-				if(l < 1){
-					reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
-					return;
-				}
-					$.ajax({
-					url:"/cloudapi/v1/tables/" +_cube_all_data_table[len-l]+"/all",
-					type:"post",
-					dataType:"json",
-					success:function(data){
-						if (data["status"] == "success") {
-							// reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
-							var cube_all_data = data["results"];
-							_cube_all_data[_cube_all_data_table[len - l]] = cube_all_data;
-							return table_into_post(--l);
-						}
+	// 	var len  = _cube_all_data_table.length;
+	// 	table_into_post(len);
+	// 	function table_into_post(l){
+	// 			if(l < 1){
+	// 				reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
+	// 				return;
+	// 			}
+	// 				$.ajax({
+	// 				url:"/cloudapi/v1/tables/" +_cube_all_data_table[len-l]+"/all",
+	// 				type:"post",
+	// 				dataType:"json",
+	// 				success:function(data){
+	// 					if (data["status"] == "success") {
+	// 						// reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
+	// 						var cube_all_data = data["results"];
+	// 						_cube_all_data[_cube_all_data_table[len - l]] = cube_all_data;
+	// 						return table_into_post(--l);
+	// 					}
 					
-					}
-				});
-		}
+	// 				}
+	// 			});
+	// 	}
 
-	}
+	// }
 
 	//新建文件夹新建视图方法
 	function new_folder_view(type,text,tra_type,tra_class,btn_type,type_content,type_wrap){
@@ -1722,22 +1728,52 @@ function view_content_right_handle(){
 
 	//下载视图区域为pdf格式
 	$(".rightConent #right_folder_show_are .click_out_handle .theme_down").on("click",function(){
-		html2canvas($(".view_folder_show_area ul").parent().get(0), {
-        onrendered: function(canvas) {
-        	console.log(canvas)
-            //通过html2canvas将html渲染成canvas，然后获取图片数据
-            var imgData = canvas.toDataURL('image/jpeg');
+		$(".gridster ul li").css("border","1px solid #DEDEDE");
+		// console.log($(".gridster ul li").width()/$(".gridster ul li").height())
+		// console.log($(".gridster").width()/(210/297))
+		// $(".gridster").height($(".gridster").width()/(210/297));
+	//	$(".gridster ul").height(210*3.78/$(".gridster").width() * $(".gridster ul li").height());
+		//$(".gridster ul li").width(210* 3.78/$(".gridster").width()*$(".gridster ul li").width()).height(210*3.78/$(".gridster").width() * $(".gridster ul li").height());
+		//$(".gridster ul li").find(".new_view_main").width(210* 3.78/$(".gridster").width()*$(".gridster ul li").width()).height(210* 3.78/$(".gridster").width()*$(".gridster ul li").height() - 30);
+	//	$(".gridster ul li").find(".new_view_main").find("div,canvas").css("width","100%").css("height","100%");
 
-            //初始化pdf，设置相应格式
-            var doc = new jsPDF("p", "mm", "moren");
+		html2canvas($(".gridster").get(0), {
+        // onrendered: function(canvas) {
 
-            //这里设置的是a4纸张尺寸
-            doc.addImage(imgData, 'JPEG', 0, 0,$(".view_folder_show_area").width(),$(".view_folder_show_area").height());
+        //     //通过html2canvas将html渲染成canvas，然后获取图片数据
+        //     var imgData = canvas.toDataURL('image/jpeg');
+
+        //     //初始化pdf，设置相应格式
+        //     var doc = new jsPDF("p", "mm", "b1");
+
+        //     //这里设置的是a4纸张尺寸
+        //     doc.addImage(imgData, 'JPEG', 0, 0,210,297);
 
 
-            //输出保存命名为content的pdf
-            doc.save('content.pdf');
-        },
+        //     //输出保存命名为content的pdf
+        //     doc.save('content.pdf');
+
+        //     $(".gridster ul li").css("border","none");
+        // },
+
+         onrendered: function (canvas) {
+                    var imgData = canvas.toDataURL('image/jpeg');
+                    var img = new Image();
+                    img.src = imgData;
+                    //根据图片的尺寸设置pdf的规格，要在图片加载成功时执行，之所以要*0.225是因为比例问题
+                    img.onload = function () {
+                        //此处需要注意，pdf横置和竖置两个属性，需要根据宽高的比例来调整，不然会出现显示不完全的问题
+                        if (this.width > this.height) {
+                            var doc = new jsPDF('l', 'mm', [$("body").width()/3.78, this.height * 0.305]);
+                        } else {
+                            var doc = new jsPDF('p', 'mm', [$("body").width()/3.78, this.height * 0.305]);
+                        }
+                        doc.addImage(imgData, 'jpeg', 0, 0, $("body").width()/3.78, this.height * 0.305);
+                        //根据下载保存成不同的文件名
+                        doc.save('pdf_' + new Date().getTime() + '.pdf');
+                    };
+                
+                },
         background: "#fff",
      
     });
