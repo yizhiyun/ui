@@ -16,9 +16,10 @@ var click_view_icon  = false;
 
 
 function switch_chart_handle_fun(edit_view){
-	console.log("asd")
-	//记录拖入行列里维度度量的数量
-
+	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
+		echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).dispose();
+	}
+	
 	//行里维度度量的数量
 	var switch_row_di = drag_row_column_data["row"]["dimensionality"].length,
 
@@ -239,7 +240,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 							}else{
 								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
 							}
-						console.log(save_now_show_view_text)
+//						console.log(save_now_show_view_text)
 						eval(save_now_show_view_text.data("show_view_fun"));
 						view_name = save_now_show_view_text.data("show_view_fun");
 						return;
@@ -254,7 +255,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 //编辑视图直接生成对应视图
 	if(edit_view != undefined){
 		$("#main").css("display","none");
-		console.log(edit_view)
+//		console.log(edit_view)
 		eval(edit_view);
 		view_name = edit_view;
 		show_btn_change.data("if_show","");
@@ -269,7 +270,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 		if(!save_now_show_view_text.hasClass("show_view_success")){
 		save_now_show_view_text = $("#show_histogram");
 		}
-		console.log(save_now_show_view_text)
+//		console.log(save_now_show_view_text)
 		eval(save_now_show_view_text.data("show_view_fun"));
 		view_name = save_now_show_view_text.data("show_view_fun");
 		save_now_show_view_text.data("if_show","true");
