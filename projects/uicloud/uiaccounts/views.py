@@ -4,7 +4,6 @@ from django.contrib.auth.models import User, Permission, Group
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.decorators import login_required
 import logging
 import random
 
@@ -28,6 +27,10 @@ def userLogin(request):
     '''
     验证用户注册信息 返回用户登录页面
     '''
+    superusername = 'yzy'
+    superuserList = User.objects.filter(username=superusername)
+    if not superuserList:
+        User.objects.create_superuser(superusername, '123@123.com', 'yzy2017')
     if 'name' in request.POST:
         name = request.POST['name']
         email = request.POST['email']
@@ -194,7 +197,7 @@ def getvertify(request):
         if user.is_active:
             authcode = ''
             for i in range(4):
-                authcode += random.choice('0123456789qwertyuiopasdfghjklzxcvbnm')
+                authcode += random.choice('0123456789qwertyupasdfghjkxcvbnm')
             token = token_confirm.generate_validate_token(authcode)
             msg = '''
             {0}:

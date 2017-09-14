@@ -8,6 +8,7 @@
 	<h1>{{result}}</h1>
 	<form action="/uiaccounts/authcode/" method="post">
 	{% csrf_token %}
+		<h3>验证码已发送至您的邮箱</h3>
 		<label>请输入验证码</label><input type="text" name="authcode">
 		<input type="hidden" name="token" value="{{ token }}">
 		<input type="hidden" name="name" value="{{ name }}">

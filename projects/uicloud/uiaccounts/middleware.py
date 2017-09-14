@@ -12,7 +12,7 @@ class CheckUserMiddleware(MiddlewareMixin):
         if request.user.is_authenticated():
             return None
         else:
-            if request.path.startswith('/uiaccounts/'):
+            if request.path.startswith(('/uiaccounts/', '/admin/')):
                 return None
             logger.error(request.path)
             return render(request, 'uiaccounts/login.html', {'next': request.path})
