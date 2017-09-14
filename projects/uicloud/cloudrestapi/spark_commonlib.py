@@ -221,12 +221,40 @@ def aggDataFrameSparkCode():
     return '''
     from pyspark.sql import functions as F
 
+
     def aggDF(inDF, tableDict):
         """
         """
 
         logger.debug(u"tableDict:{0}".format(tableDict))
-        if "trans" in tableDict.keys():
+        if "expressions" in tableDict.keys():
+            expresDict = tableDict["expressions"]
+            exprlist = [F.expr(exprItem["exprstr"]).alias(exprItem["alias"]) for exprItem in expresDict["exprlist"]]
+            logger.debug("exprlist: {0}".format(exprlist))
+            if "groupby" in expresDict.keys() and expresDict["groupby"]:
+                grpCols = []
+                for grpitem in expresDict["groupby"]:
+                    if isinstance(grpitem, str) or isinstance(grpitem, unicode):
+                        grpCols.append(grpitem)
+                    elif isinstance(grpitem, dict):
+                        grpCols.append(F.expr(grpitem["exprstr"]).alias(grpitem["alias"]))
+                    else:
+                        logger.warn("The groupby item of {0} is invalid. Type: {1}".format(grpitem, type(grpitem)))
+                logger.debug("grpCols: {0}".format(grpCols))
+                grpData = inDF.groupBy(grpCols)
+                if "pivot" in expresDict.keys() and expresDict["pivot"].strip()::
+                    ptdict = expresDict["pivot"].strip()
+                    if "values" in ptdict.keys():
+                        grpData = grpData.pivot(ptdict["col"], ptdict["value"])
+                    else:
+                        grpData = grpData.pivot(ptdict["col"])
+                inDF = grpData.agg(*exprlist)
+            else:
+                inDF = inDF.select(exprlist)
+            if "orderby" in expresDict.keys():
+                inDF = inDF.orderBy(expresDict["orderby"])
+
+        elif "trans" in tableDict.keys():
             # add the specified aggregations in the DataFrame
             transDict = tableDict["trans"]
             if "pretrans" in transDict.keys():
@@ -249,7 +277,7 @@ def aggDataFrameSparkCode():
             elif "aggregations" in transDict.keys():
                 cols = []
                 aggLt = ["approx_count_distinct", "avg", "collect_list", "collect_set", "count", "max",
-                          "min", "first", "last", "sum", "sumDistinct"]
+                         "min", "first", "last", "sum", "sumDistinct"]
                 for aggIt in transDict["aggregations"]:
                     aggType = aggIt["type"]
                     logger.debug(u"aggIt: {0}".format(aggIt))

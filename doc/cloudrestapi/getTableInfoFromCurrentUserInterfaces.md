@@ -79,6 +79,35 @@ Get Table From Current User Via Spark
            },
            ...
        ],
+       "expressions":{
+           "exprlist": [
+               # valid keywords in the expression string
+               # operators: "+","-","*","/"
+               # aggregate types:
+               #   "approx_count_distinct", "avg", "collect_list", "collect_set",
+               #   "count", "max","min", "first", "last", "sum"
+               # unarytype:
+               #   "abs","acos","cos","dayofmonth","dayofyear","exp","factorial",
+               #   "from_unixtime","hour","isnan","isnull","length","log10","log1p",
+               #   "log2","lower","ltrim","minute","month","quarter","reverse","rtrim",
+               #   "second","sin","sqrt","tan","to_date","to_timestamp","trim","upper",
+               #   "weekofyear","year"
+               {"alias":<columnName>, "exprstr": <expressionString>},
+               ...
+           ],
+           "groupby": [
+               <columnName>,
+               {"alias":<columnName>, "exprstr": <expressionString>},
+               ...
+           ],
+           "pivot": {                     # Optional
+               "col": <column>,
+               "values": <valueList>,     # Optional
+           },
+           "orderby": <columnList>,       # Optional,
+           ...
+       },
+       # If the "expressions" item exists, "trans" is invalid.
        "trans": {
            "pretrans": [                 # Optional,
                {
@@ -298,3 +327,5 @@ Notes
 * ArrayType
 * MapType
 * NullType
+
+2. If the "expression" item exists, "trans" is invalid.
