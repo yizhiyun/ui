@@ -32,16 +32,18 @@ def executeSpark(sparkCode,
     # is not pyspark, create one.
     rootSessionsUrl = host + '/sessions'
     curSessionsReqJson = requests.get(rootSessionsUrl, headers=headers).json()
-    if (curSessionsReqJson['total'] > 0) and \
-        (curSessionsReqJson['sessions'][-1]['kind'] == 'pyspark') and \
-            (curSessionsReqJson['sessions'][-1]['state'] == 'idle'):
-        sessionUrl = "{0}/{1}".format(rootSessionsUrl,
-                                      curSessionsReqJson['sessions'][-1]['id'])
-    else:
+    noValidSession = True
+    if (curSessionsReqJson['total'] > 0):
+        for sItem in curSessionsReqJson['sessions']:
+            if (sItem['kind'] == 'pyspark') and (sItem['state'] == 'idle'):
+                sessionUrl = "{0}/{1}".format(rootSessionsUrl, sItem['id'])
+                noValidSession = False
+                break
+    if noValidSession:
         newSessionReqJson = requests.post(
             rootSessionsUrl, data=json.dumps(sessionData), headers=headers).json()
         # pprint.pprint(newSessionReqJson)
-        logger.debug("newSessionReqJson:{0}".format(newSessionReqJson))
+        logger.debug("Start a new Session. newSessionReqJson:{0}".format(newSessionReqJson))
         sessionUrl = "{0}/{1}".format(rootSessionsUrl, newSessionReqJson['id'])
 
         reqJsonTmp = getReqFromDesiredReqState(sessionUrl)
@@ -56,7 +58,7 @@ def executeSpark(sparkCode,
     statementsUrl = sessionUrl + '/statements'
     sparkCodesReq = requests.post(
         statementsUrl, data=json.dumps(runData), headers=headers)
-    logger.debug("sparkCodesReq:{0}, headers:{1}".format(
+    logger.debug("Request a livy job. sparkCodesReq:{0}, headers:{1}".format(
         sparkCodesReq.json(), sparkCodesReq.headers))
 
     resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'],

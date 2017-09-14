@@ -1,11 +1,11 @@
 // 维度和数据处理
 // 数组排序
 Array.prototype.max = function(){ 
-return Math.max.apply({},this) 
+return Math.max.apply({},this); 
 } 
 Array.prototype.min = function(){ 
-return Math.min.apply({},this) 
-} 
+return Math.min.apply({},this); 
+}
 Array.prototype.XMsort = function(propertyNameArray){
 		
 	function createComparisonFunction(obj1,obj2){
@@ -25,66 +25,73 @@ Array.prototype.XMsort = function(propertyNameArray){
 	}
 	this.sort(createComparisonFunction);
 }
-
-// 给定维度，处理度量的计算，目前做的是求和运算
-function measure_Hanlde(measure_name_arr,pop_last_dimensionality){
-	var row_filter_condition = [];
-	var column_filter_condition = [];
-	for (var i = 0;i < drag_row_column_data["row"]["dimensionality"].length;i++) {
-		row_filter_condition.push(drag_row_column_data["row"]["dimensionality"][i].split(":")[0]);
-	}
-	for (var i = 0;i < drag_row_column_data["column"]["dimensionality"].length;i++) {
-		column_filter_condition.push(drag_row_column_data["column"]["dimensionality"][i].split(":")[0]);
-	}
-	if (pop_last_dimensionality == true) {
-		if (column_filter_condition.length > 0) {
-			column_filter_condition.pop();
-		}else{
-			row_filter_condition.pop();
-		}
-	}
-		
-	var needShowData = {};
-	for (var i = 0;i < current_data["data"].length;i++) {
-		var theData = current_data["data"][i];
-		var key = "";
-		if (row_filter_condition.length > 0) {
-			for (var j = 0;j < row_filter_condition.length;j++) {
-			key += row_filter_condition[j] + "_equal_"+theData[row_filter_condition[j]]+"_YZY_";
-			}
-		}
-		
-		if (column_filter_condition.length > 0) {
-			key += "_needseprate_"
-			for (var j = 0;j < column_filter_condition.length;j++) {
-			key += column_filter_condition[j] + "_equal_"+theData[column_filter_condition[j]]+"_YZY_";
-			}
-		}	
-		if (needShowData[key]) {
-			for (var k = 0;k < measure_name_arr.length;k++ ) {
-				needShowData[key][measure_name_arr[k]]["allValue"].push(Number(theData[measure_name_arr[k]]));
-			}
-			
-		}else{
-			needShowData[key] = {};
-			for (var k = 0;k < measure_name_arr.length;k++ ) {
-				needShowData[key][measure_name_arr[k]] = {};
-				needShowData[key][measure_name_arr[k]]["allValue"] = [];
-				needShowData[key][measure_name_arr[k]]["allValue"].push(Number(theData[measure_name_arr[k]]));
+var customCalculate = {}
+var preAllData = null;
+var recordConditon = null;
+function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
+	
+	
+	getCurrentTableFilterData(current_cube_name);
+	conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
+	
+	var groupby = dimensionality_array;
+	var aggregations = [];
+	var basic_opration = ["sum","max","min","avg"];
+	if(measure_name_arr.length >0){
+		for (var i = 0;i < measure_name_arr.length;i++) {
+			for(var j = 0;j < basic_opration.length;j++){
+				var obj = {
+					"type":basic_opration[j],
+					"col":measure_name_arr[i]
+				}
+				aggregations.push(obj);
 			}	
-		}	
-	}
-
-	for(var key in needShowData){
-		var data = needShowData[key];
-		for (var measureName in data) {
-			var sum = eval(data[measureName]["allValue"].join("+"));
-			data[measureName]["sum"] = sum;  // 总值
-			data[measureName]["average"] = (sum / data[measureName]["allValue"].length).toFixed(2); // 平均值
-			data[measureName]["min"] = data[measureName]["allValue"].min();
-			data[measureName]["max"] = data[measureName]["allValue"].max();
 		}
-		
+	}else{
+		var obj = {
+			"type":"first",
+			"col":groupby[0]
+		}
+		aggregations.push(obj);
 	}
-	return needShowData;
+	
+	
+	var trans = {
+		"groupby":groupby,
+		"aggregations":aggregations,
+		"orderby":groupby
+	};
+	var handleDataPost = {
+		"conditions":conditions,
+		"trans":trans,
+	};
+	if(needColumns){
+		handleDataPost["columns"] = needColumns;
+	}
+	
+	if(equalCompare(recordConditon,handleDataPost) && preAllData){
+		handleSuccessFunction(preAllData);
+		return;
+	}
+	
+	$.ajax({
+		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
+		type:"post",
+		dataType:"json",
+		contentType: "application/json; charset=utf-8",
+		async: true,
+		data:JSON.stringify(handleDataPost),
+		beforeSend:function(){
+			console.log("startSend");
+		},
+		success:function(data){
+			if(data.status == "success"){
+				console.log(data.results.data)
+				preAllData = data.results.data;
+				recordConditon = objectDeepCopy(handleDataPost);
+				handleSuccessFunction(data.results.data);
+			}
+		}
+	});
+	
 }

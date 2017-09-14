@@ -566,7 +566,7 @@ $(function() {
 			success:function(data){
 				if (data["status"] == "success") {
 					var cube_all_data = data["results"];
-					filterNeedAllData =  data["results"]["data"];
+					filterNeedAllData = cube_all_data["data"];
 					var schema = cube_all_data["schema"];
 
 					for(var i = 0;i < schema.length;i++){
@@ -747,7 +747,7 @@ $(function() {
 
 						//移除
 						out_wrap_click.find(".deleting").on("click",function(){
-							console.log("移除");
+//							console.log("移除");
 						});
 
 
@@ -774,11 +774,11 @@ $(function() {
 						});
 						//中位数
 						out_wrap_click.find(".pop_median").on("click",function(){
-							console.log("中位数");
+//							console.log("中位数");
 						});
 						//最大值
 						out_wrap_click.find(".pop_max").on("click",function(){
-							console.log("最大值");
+//							console.log("最大值");
 							var measureList = $(this).parents(".me_out_content").eq(0);
 							var measureInfo = measureList.data("pop_data_handle");
 							var measureName = measureInfo.split("_YZY_")[2];
@@ -2158,7 +2158,7 @@ $(function() {
 	$("#click_save_view").on("click",function(){
 		add_state_name();
 		//获取之前是否有保存的文件夹和报表
-
+		
 		$.post("../dashboard/getAllData",{"username":username},function(result){
 			//判断第一次新建报表
 			if(!result["default"]){
@@ -2256,7 +2256,7 @@ $(function() {
 			post_dict["tablename"] = current_cube_name;
 			post_dict["viewtype"] = view_name;
 			post_dict["defaultparent"] = "default";
-			
+			post_dict["calculation"] = JSON.stringify(drag_measureCalculateStyle)
 //			console.log(post_dict)
 			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
