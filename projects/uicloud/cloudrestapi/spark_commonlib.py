@@ -242,7 +242,7 @@ def aggDataFrameSparkCode():
                         logger.warn("The groupby item of {0} is invalid. Type: {1}".format(grpitem, type(grpitem)))
                 logger.debug("grpCols: {0}".format(grpCols))
                 grpData = inDF.groupBy(grpCols)
-                if "pivot" in expresDict.keys() and expresDict["pivot"].strip()::
+                if "pivot" in expresDict.keys() and expresDict["pivot"].strip():
                     ptdict = expresDict["pivot"].strip()
                     if "values" in ptdict.keys():
                         grpData = grpData.pivot(ptdict["col"], ptdict["value"])
