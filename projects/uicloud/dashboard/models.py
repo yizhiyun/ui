@@ -21,3 +21,4 @@ class DashboardViewByUser(models.Model):
     show = models.BooleanField(default=True)
     isopen = models.BooleanField(default=True)
     calculation = models.CharField(max_length=255)
+    status = models.CharField(max_length=255, null=True)

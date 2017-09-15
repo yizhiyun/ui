@@ -49,7 +49,8 @@ def getAllDataFunction(username, datatype=None):
                         'id': tablelist[i].id,
                         'show': tablelist[i].show,
                         'isopen': tablelist[i].isopen,
-                        'calculation': tablelist[i].calculation
+                        'calculation': tablelist[i].calculation,
+                        'status': tablelist[i].status
                     }
         return context
 
@@ -343,6 +344,7 @@ def setSwitch(request):
                     table.save()
                 context = getAllDataFunction(username)
                 return JsonResponse(context)
+
             elif jsonData['switch'] == 'isopen':
                 table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
                 if table.isopen:
@@ -354,8 +356,24 @@ def setSwitch(request):
                     'status': 'ok'
                 }
                 return JsonResponse(context)
+
+            elif jsonData['switch'] == 'status':
+                tableList = jsonData['tablelist']
+                for key, value in tableList:
+                    try:
+                        table = DashboardViewByUser.objects.get(id=int(key))
+                        table.status = value
+                        table.sace()
+                    except Exception:
+                        return JsonResponse({'status': 'false', 'reason': 'table id is wrong'})
+                context = {
+                    'status': 'ok'
+                }
+                return JsonResponse(context)
+
             else:
                 return JsonResponse({'status': 'false', 'reason': 'i don"t know your switch.'})
+
         except Exception:
             logger.error("Exception: {0}".format(sys.exc_info()))
             return JsonResponse({'status': 'false', 'reason': 'Please see the detailed logs.'})

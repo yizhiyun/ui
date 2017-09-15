@@ -54,7 +54,8 @@ Get All Tables From Current User
                 "id": <itabled>,
                 "show": <True/False>,
                 "isopen": <True/False>,
-                "calculation": <calculation>
+                "calculation": <calculation>,
+                "status": <status>
             },
            ...
         },
@@ -200,7 +201,8 @@ Add Folder to ParentFolder
                 "id": <viewid>,
                 "show": <True/False>,
                 "isopen": <True/False>,
-                "calculation": <calculation>
+                "calculation": <calculation>,
+                "status": <status>
             },
            ...
         },
@@ -269,7 +271,8 @@ Change Name From Current User
                 "id": <itabled>,
                 "show": <True/False>,
                 "isopen": <True/False>,
-                "calculation": <calculation>
+                "calculation": <calculation>,
+                "status": <status>
             },
            ...
         },
@@ -375,7 +378,8 @@ Delete Folder From Current User
                 "id": <itabled>,
                 "show": <True/False>,
                 "isopen": <True/False>,
-                "calculation": <calculation>
+                "calculation": <calculation>,
+                "status": <status>
             },
            ...
         },
@@ -418,6 +422,17 @@ Switch to remember User's state
     "switch": <isopen>
 }
 ```
+* if switch is status
+```
+{
+    "switch": <status>,
+    "tablelist": {
+        <tableid>: <position>,
+        <tableid>: <position>,
+        ...
+    }
+}
+```
 ### 4. Request Example:
 ```
 {
@@ -444,7 +459,8 @@ Switch to remember User's state
                 "id": <itabled>,
                 "show": <True/False>,
                 "isopen": <True/False>,
-                "calculation": <calculation>
+                "calculation": <calculation>,
+                "status": <status>
             },
            ...
         },
@@ -454,7 +470,7 @@ Switch to remember User's state
     ...
 }
 ```
-* if switch is isopen
+* if switch is isopen/status
 ```
 {
     "status": "ok"
