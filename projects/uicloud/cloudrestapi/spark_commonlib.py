@@ -183,7 +183,7 @@ def filterDataFrameSparkCode():
                 if condType == "limit" and type(condIt["value"]) == int:
                     inDataFrame = inDataFrame.limit(condIt["value"])
                 elif condType in [">",">=","=","==","<","<=","!="]:
-                    condStr = "{0} {1} {2}".format(colName, condType, condIt["value"])
+                    condStr = u"{0} {1} '{2}'".format(colName, condType, condIt["value"])
                     inDataFrame = inDataFrame.filter(condStr)
                 elif condType == "like":
                     inDataFrame = inDataFrame.filter(inDataFrame[colName].like(condIt["value"]))
