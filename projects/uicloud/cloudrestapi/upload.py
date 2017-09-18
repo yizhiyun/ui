@@ -58,11 +58,12 @@ def preUploadFile(fileStream, userName="myfolder", csvOpts={}):
             wcsv = csv.writer(csvFile, delimiter=",", doublequote=True, quotechar="\"", escapechar="\\",
                               lineterminator="\n", quoting=csv.QUOTE_MINIMAL, skipinitialspace=True,
                               strict=True)
-            if not hasHeader:
-                r1 = rcsv.__next__()
+            r0 = rcsv.__next__()
+            if hasHeader:
+                wcsv.writerow([col.replace(" ", "_") for col in r0])
+            else:
                 # write one header to be used
-                wcsv.writerow(["col_{0}".format(i) for i in range(len(r1))])
-                wcsv.writerow(r1)
+                wcsv.writerow(["col_{0}".format(i) for i in range(len(r0))])
 
             for row in rcsv:
                 wcsv.writerow(row)
