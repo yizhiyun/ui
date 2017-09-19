@@ -3,7 +3,6 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 import sys
-
 from .models import DashboardFolderByUser, DashboardViewByUser
 import logging
 
@@ -323,6 +322,7 @@ def deleteFolder(request):
 @api_view(['POST'])
 def setSwitch(request):
     '''
+    记录table的状态 show:隐藏 isopen:table是否打开 status:记录table位置信息
     '''
     jsonData = request.data
 
@@ -334,6 +334,7 @@ def setSwitch(request):
                     tableList = DashboardViewByUser.objects.filter(username=username)
                     for table in tableList:
                         table.show = True
+                        table.status = None  # 每次调用都会把status置空 防止位置冲突
                         table.save()
                 else:
                     table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
@@ -358,12 +359,12 @@ def setSwitch(request):
                 return JsonResponse(context)
 
             elif jsonData['switch'] == 'status':
-                tableList = jsonData['tablelist']
-                for key, value in tableList:
+                tableList = eval(jsonData['tablelist'])
+                for key, value in tableList.items():
                     try:
-                        table = DashboardViewByUser.objects.get(id=int(key))
+                        table = DashboardViewByUser.objects.get(id=key[1:])
                         table.status = value
-                        table.sace()
+                        table.save()
                     except Exception:
                         return JsonResponse({'status': 'false', 'reason': 'table id is wrong'})
                 context = {
