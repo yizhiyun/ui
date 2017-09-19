@@ -334,12 +334,12 @@ def setSwitch(request):
                     tableList = DashboardViewByUser.objects.filter(username=username)
                     for table in tableList:
                         table.show = True
-                        table.status = None  # 每次调用都会把status置空 防止位置冲突
                         table.save()
                 else:
                     table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
                     if table.show:
                         table.show = False
+                        table.status = None  # 每次调用都会把status置空 防止位置冲突
                     else:
                         table.show = True
                     table.save()
