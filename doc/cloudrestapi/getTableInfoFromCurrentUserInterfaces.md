@@ -86,12 +86,17 @@ Get Table From Current User Via Spark
                # aggregate types:
                #   "approx_count_distinct", "avg", "collect_list", "collect_set",
                #   "count", "max","min", "first", "last", "sum"
-               # unarytype:
-               #   "abs","acos","cos","dayofmonth","dayofyear","exp","factorial",
-               #   "from_unixtime","hour","isnan","isnull","length","log10","log1p",
+               # unary type:   (The below notes provide some types' decriptions.)
+               #   "abs","acos","coalesce(*cols)","concat(*cols)","cos",dayofmonth","dayofyear","exp",
+               #   "factorial","from_unixtime","hour","initcap","isnan","isnull","length","log10","log1p",
                #   "log2","lower","ltrim","minute","month","quarter","reverse","rtrim",
                #   "second","sin","sqrt","tan","to_date","to_timestamp","trim","upper",
                #   "weekofyear","year"
+               # binary types: (The below notes provide some types' decriptions.)
+               #   "date_add(start, days)","date_format(date, format)","date_sub(start, days)","datediff(end, start)",
+               #   "format_string(format, *cols)","format_number(col, d)","instr(str, substr)","split(str, pattern)"
+               # ternary types: (The below notes provide some types' decriptions.)
+               #   "regexp_replace(str, pattern, replacement)","substring(str, pos, len)","substring_index(str, delim, count)"
                {"alias":<columnName>, "exprstr": <expressionString>},
                ...
            ],
@@ -114,7 +119,7 @@ Get Table From Current User Via Spark
                    # iterDict also has the same structure with the parent dict.
                    # unarytype:
                    #   "abs","acos","cos","dayofmonth","dayofyear","exp","factorial",
-                   #   "from_unixtime","hour","isnan","isnull","length","log10","log1p",
+                   #   "from_unixtime","hour","initcap","isnan","isnull","length","log10","log1p",
                    #   "log2","lower","ltrim","minute","month","quarter","reverse","rtrim",
                    #   "second","sin","sqrt","tan","to_date","to_timestamp","trim","upper",
                    #   "weekofyear","year"
@@ -329,3 +334,23 @@ Notes
 * NullType
 
 2. If the "expression" item exists, "trans" is invalid.
+3. Here are some types' descriptions.
+* coalesce(*cols), Returns the first column that is not null.
+* collect_list(col), Aggregate function: returns a list of objects with duplicates.
+* collect_set(col), Aggregate function: returns a set of objects with duplicate elements eliminated.
+* concat(*cols), Concatenates multiple input string columns together into a single string column.
+* concat_ws(sep, *cols), Concatenates multiple input string columns together into a single string column, using the given separator.
+* date_add(start, days), Returns the date that is days days after start
+* date_format(date, format), Converts a date/timestamp/string to a value of string in the format specified by the date format given by the second argument.A pattern could be for instance dd.MM.yyyy and could return a string like ‘18.03.1993’.
+* date_sub(start, days), Returns the date that is days days before start
+* datediff(end, start), Returns the number of days from start to end.
+* format_number(col, d),Formats the number X to a format like ‘#,–#,–#.–’, rounded to d decimal places with HALF_EVEN round mode, and returns the result as a string. E.g. format_number('a', 4)
+* format_string(format, *cols), Formats the arguments in printf-style and returns the result as a string column. E.g. format_string('%d %s', a, b)
+* initcap(col), Translate the first letter of each word to upper case in the sentence.
+* instr(str, substr), Locate the position of the first occurrence of substr column in the given string. Returns null if either of the arguments are null.
+* isnan(col), An expression that returns true iff the column is NaN.
+* isnull(col), An expression that returns true iff the column is null.
+* regexp_replace(str, pattern, replacement), Replace all substrings of the specified string value that match regexp with rep.
+* split(str, pattern), Splits str around pattern (pattern is a regular expression). E.g. split(df.s, '[0-9]+')
+* substring(str, pos, len), Substring starts at pos and is of length len when str is String type or returns the slice of byte array that starts at pos in byte and is of length len when str is Binary type
+* substring_index(str, delim, count), Returns the substring from string str before count occurrences of the delimiter delim. If count is positive, everything the left of the final delimiter (counting from left) is returned. If count is negative, every to the right of the final delimiter (counting from the right) is returned. substring_index performs a case-sensitive match when searching for delim.
