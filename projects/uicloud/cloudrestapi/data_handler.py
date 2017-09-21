@@ -449,6 +449,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         outputDf = None
         joinCols = []
         repeatedJoinCols = []
+        joinedTableSet = set()
         for relItem in sortedRelList:
             # check if two column types is different
             fromDbTable = relItem['fromTable']
@@ -485,12 +486,15 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             if outputDf is None:
                 # The first join connection
                 outputDf = dfDict[fromDbTable].join(dfDict[toDbTable], cond, joinType)
-
+                joinedTableSet.add(fromDbTable)
+                joinedTableSet.add(toDbTable)
             elif fromDbTable in joinedTableSet:
                 outputDf = outputDf.join(dfDict[toDbTable], cond, joinType)
-
+                joinedTableSet.add(toDbTable)
             else:
                 outputDf = outputDf.join(dfDict[fromDbTable], cond, joinType)
+                joinedTableSet.add(fromDbTable)
+        logger.debug(u"joinedTableSet: {0}".format(joinedTableSet))
         logger.debug(u"repeatedJoinCols: {0}, outputDf columns:{1}".format(repeatedJoinCols, outputDf.columns))
         for colIt in repeatedJoinCols:
             outputDf = outputDf.drop(colIt)
@@ -519,7 +523,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
         get the specified table schema,
         note, the table format is parquet.
         """
-        dframe1 = spark.read.parquet(url).limit(maxRowCount)
+        dframe1 = spark.read.parquet(url)
 
         outputDict = {}
         if mode == 'all' or mode == 'schema':
@@ -535,6 +539,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
                 dframe1 = aggDF(dframe1, filterJson)
+            dframe1 = dframe1.limit(maxRowCount)
             for rowItem in dframe1.collect():
                 # logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
                 outputDict['data'].append(rowItem.asDict())
