@@ -42,6 +42,18 @@ This document describe how to get users' tables filter information.
                     "columnName": "<columnName>"
                 },
                 ...
+    ],
+    # expressions if you want to split column, if not. you don't need to send it
+    "expressions": [
+        {
+            "colname": <colname>,
+            "cutmethod": {
+                    # if method is split, you should send this:
+                    "split": {
+                        <splitsymbol>: <splitnum>
+                    }
+            }
+        }
     ]
 }
 ```
@@ -74,6 +86,12 @@ This document describe how to get users' tables filter information.
             "value": "2012-01-03",
             "columnName": "col1",
             "datatype": "date"
+        }
+    ],
+    "expressions": [
+        {
+            "colname": "table1col",
+            "cutmethod": {"split": {"=": 1}}
         }
     ]
 }

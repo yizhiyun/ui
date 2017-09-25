@@ -148,6 +148,10 @@ def filterTable(request, modeName):
         data = dataBaseObj.filterTableData(jsonData, modeName, maxRowCount)
         if data == 'failed':
             return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
+        elif data == 'name error':
+            return JsonResponse({'status': 'failed', 'reason': 'name repetition'})
+        elif data == 'limit type':
+            return JsonResponse({'status': 'failed', 'reason': 'limit type must be int'})
 
         context = {
             "status": "success",
