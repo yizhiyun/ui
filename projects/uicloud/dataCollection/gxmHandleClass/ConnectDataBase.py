@@ -183,7 +183,7 @@ class ConnectDataBase():
                         ) + oraclestr
 
                     else:
-                        filtersql += 'and {0} {1} "{2}" '.format(condIt['columnName'], condType, condIt["value"])
+                        filtersql += "and {0} {1} '{2}' ".format(condIt['columnName'], condType, condIt["value"])
 
                 elif condType == "like":
                     filtersql += "and {0} like '{1}' ".format(condIt['columnName'], condIt["value"])
@@ -302,6 +302,7 @@ class ConnectDataBase():
                 cursor = self.con.cursor()
                 if mode == 'all' or mode == 'data':
                     sql += filtersql + oraclestr
+                    logger.debug('oraclesql: {0}'.format(sql))
                     cursor.execute(sql)
                     dataList = cursor.fetchall()
                     colList = cursor.description
@@ -348,7 +349,7 @@ class ConnectDataBase():
                         num = int(list1.pop(-1)[2:])
                         insertcol = '_'.join(list1)
                         for i in range(len(results['schema'])):
-                            if results['schema'][i]['field'] == insertcol:
+                            if results['schema'][i]['field'].lower() == insertcol:
                                 results['schema'].insert(i + num, dic)
                 logger.error('addsql: {0}'.format(addsql))
                 sql = 'select {0} from {1} where 1=1 '.format(
