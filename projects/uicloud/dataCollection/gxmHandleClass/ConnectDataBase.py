@@ -353,10 +353,11 @@ class ConnectDataBase():
                             for i in range(len(results['schema'])):
                                 if results['schema'][i]['field'] == insertcol:
                                     results['schema'].insert(i + num, dic)
-                        elif lastName == 'MERGE':
+                        elif lastName.startswith('MERGE'):
+                            num = int(lastName[5:])
                             for i in range(len(results['schema'])):
                                 if results['schema'][i]['field'] == list1[0]:
-                                    results['schema'].insert(i + 1, dic)
+                                    results['schema'].insert(i + num, dic)
 
                 logger.error('addsql: {0}'.format(addsql))
                 sql = 'select {0} from {1} where 1=1 '.format(
@@ -474,16 +475,26 @@ class ConnectDataBase():
                         i + 1 + countname): conversionList[i]})
 
             elif expressions['method'] == 'merge':
+                countMergename = 0
+                for j in self.list[coldickey]:
+                    if list(j.keys())[0].startswith("_".join(expressions['colnamelist']) + '_MERGE'):
+                        countMergename += 1
 
                 dic = {
-                    "field": "_".join(expressions['colnamelist']) + '_MERGE',
+                    "field": "_".join(expressions['colnamelist']) + '_MERGE%s' % (1 + countMergename),
                     "type": 'VARCHAR'
                 }
 
+                count = 0
                 for i in range(len(results['schema'])):
                     if results['schema'][i]['field'] == expressions['colnamelist'][0]:
-                        results['schema'].insert(i + 1, dic)
-                self.list[coldickey].append({"_".join(expressions['colnamelist']) + '_MERGE': conversionList[0]})
+                        results['schema'].insert(i + 1 + countMergename, dic)
+                        count += 1
+                if count == 0:
+                    results['schema'].append(dic)
+                self.list[coldickey].append({
+                    "_".join(expressions['colnamelist']) + '_MERGE%s' % (1 + countMergename): conversionList[0]
+                })
 
         return results
 
@@ -576,6 +587,11 @@ class ConnectDataBase():
         elif expressions['method'] == 'merge':
             colnamelist = expressions['colnamelist']
 
+            countMergename = 0
+            for j in self.list[key]:
+                if list(j.keys())[0].startswith("_".join(colnamelist) + '_MERGE'):
+                    countMergename += 1
+
             aftlist = []
             for colname in colnamelist:
                 for i in self.list[key]:
@@ -586,7 +602,7 @@ class ConnectDataBase():
             concatsql = 'concat('
             for i in range(len(aftlist)):
                 concatsql += aftlist[i] + ','
-            concatsql = concatsql[:-1] + ") as " + "_".join(colnamelist) + '_MERGE'
+            concatsql = concatsql[:-1] + ") as " + "_".join(colnamelist) + '_MERGE%s' % (1 + countMergename)
             return [concatsql]
 
     def turnCols(self, colnamelist, key):
