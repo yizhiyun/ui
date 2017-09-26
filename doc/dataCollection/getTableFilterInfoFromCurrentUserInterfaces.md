@@ -49,9 +49,9 @@ This document describe how to get users' tables filter information.
             "colname": <colname>,
             "cutmethod": {
                     # if method is split, you should send this:
-                    "split": {
-                        <splitsymbol>: <splitnum>
-                    }
+                    "split": <splitsymbol>
+                    # elif method is limit, you should send this:
+                    "limit": [<cutindex>, <cutindex>]
             }
         }
     ]

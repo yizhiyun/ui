@@ -346,7 +346,7 @@ class ConnectDataBase():
                         }
 
                         list1 = key.split('_')
-                        num = int(list1.pop(-1)[2:])
+                        num = int(list1.pop(-1)[4:])
                         insertcol = '_'.join(list1)
                         for i in range(len(results['schema'])):
                             if results['schema'][i]['field'].lower() == insertcol:
@@ -399,19 +399,26 @@ class ConnectDataBase():
                     for i in range(len(results['data'])):
                             results['data'][i].update(updateList[i])
 
+                countname = 0
+                for j in self.list[coldickey]:
+                    if list(j.keys())[0].startswith(expressions['colname'] + '_part'):
+                        countname += 1
+
                 for i in range(len(conversionList)):
                     dic = {
-                        "field": expressions['colname'] + '_拆分{0}'.format(i + 1),
+                        "field": expressions['colname'] + '_part{0}'.format(i + 1 + countname),
                         "type": 'VARCHAR'
                     }
+
                     count = 0
                     for j in range(len(results['schema'])):
-                        if results['schema'][j]['field'] == expressions['colname']:
-                            results['schema'].insert(j + i + 1, dic)
+                        if results['schema'][j]['field'].lower() == expressions['colname']:
+                            results['schema'].insert(j + i + 1 + countname, dic)
                             count += 1
                     if count == 0:
                         results['schema'].append(dic)
-                    self.list[coldickey].append({expressions['colname'] + '_拆分{0}'.format(i + 1): conversionList[i]})
+                    self.list[coldickey].append({expressions['colname'] + '_part{0}'.format(
+                        i + 1 + countname): conversionList[i]})
 
         elif mode == 'all' and 'trans' in jsonData.keys():
             for trans in jsonData['trans']:
@@ -462,40 +469,64 @@ class ConnectDataBase():
             for i in self.list[key]:
                 if colname in i.keys():
                     colname = i[colname].split(' as ')[0]
+            countname = 0
+            for j in self.list[key]:
+                if list(j.keys())[0].startswith(dic['expressions']['colname'] + '_part'):
+                    countname += 1
 
             if list(dic['expressions']['cutmethod'].keys())[0] == 'split':
                 split = dic['expressions']['cutmethod']['split']
-                conversionList = []
 
-                for k, v in split.items():
-                    for i in range(v):
+                prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}".format(
+                    colname, split, dic['expressions']['colname'] + '_part%s' % (1 + countname)
+                )
 
-                        prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}".format(
-                            colname, k, dic['expressions']['colname'] + '_拆分%s' % (i + 1)
-                        )
-
-                        aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
-                            colname, k, dic['expressions']['colname'] + '_拆分%s' % (i + 2)
-                        )
-                        colname = aft.split(' as ')[0]
-                        conversionList.append(prev)
-                        if i == v - 1:
-                            conversionList.append(aft)
-
-                return conversionList
-
-            if list(dic['expressions']['cutmethod'].keys())[0] == 'limit' and type(
-                    dic['expressions']['cutmethod']['limit']) == int:
-
-                limit = dic['expressions']['cutmethod']['limit']
-
-                prev = "substr({0}, 1, {1}) as {2}".format(colname, limit, colname + '_拆分1')
-                aft = "substr({0}, {1}) as {2}".format(colname, limit + 1, colname + '_拆分2')
+                aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
+                    colname, split, dic['expressions']['colname'] + '_part%s' % (2 + countname)
+                )
 
                 conversionList = [prev, aft]
+
+                logger.debug(conversionList)
                 return conversionList
-            else:
-                return 'limit type'
+
+            if list(dic['expressions']['cutmethod'].keys())[0] == 'limit':
+
+                limit = dic['expressions']['cutmethod']['limit']
+                conversionList = []
+
+                if len(limit) == 1:
+                    prev = "substr({0}, 1, {1}) as {2}".format(
+                        colname, limit[0], dic['expressions']['colname'] + '_part{0}'.format(1 + countname))
+                    conversionList.append(prev)
+
+                    aft = "substr({0}, {1}) as {2}".format(
+                        colname, limit[0] + 1, dic['expressions']['colname'] + '_part{0}'.format(2 + countname))
+                    conversionList.append(aft)
+
+                else:
+                    for i in range(len(limit)):
+                        if i == 0:
+                            sql = "substr({0}, 1, {1}) as {2}".format(
+                                colname, limit[i], dic['expressions']['colname'] + '_part%s' % (i + 1 + countname))
+                            conversionList.append(sql)
+
+                        else:
+                            sql = "substr({0}, {1}, {2}) as {3}".format(
+                                colname, limit[i - 1] + 1,
+                                limit[i] - limit[i - 1],
+                                dic['expressions']['colname'] + '_part%s' % (i + 1 + countname))
+                            conversionList.append(sql)
+
+                            if i == len(limit) - 1:
+                                sql = "substr({0}, {1}) as {2}".format(
+                                    colname,
+                                    limit[i] + 1,
+                                    dic['expressions']['colname'] + '_part%s' % (i + 2 + countname))
+                                conversionList.append(sql)
+
+                logger.debug('limitsqllist: {0}'.format(conversionList))
+                return conversionList
 
         elif list(dic.keys())[0] == 'trans':
             logger.debug('trans: {0}'.format(dic['trans']))
