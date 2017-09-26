@@ -333,57 +333,65 @@ class ConnectDataBase():
                 logger.error("Exception: {0}".format(sys.exc_info()))
                 return 'failed'
 
-        if mode == 'all' and 'columns' not in jsonData.keys() or \
-                'columns' in jsonData.keys() and not jsonData['columns']:
-            if coldickey in self.list.keys() and self.list[coldickey]:
-                addsql = ''
-                for i in self.list[coldickey]:
-                    for key, value in i.items():
-                        addsql += value + ', '
-                        dic = {
-                            "field": key,
-                            "type": "VARCHAR"
-                        }
+        if mode == 'all' or mode == 'schema':
+            if 'columns' not in jsonData.keys() or not jsonData['columns']:
+                if coldickey in self.list.keys() and self.list[coldickey]:
+                    addsql = ''
+                    for i in self.list[coldickey]:
+                        for key, value in i.items():
+                            addsql += value + ', '
+                            dic = {
+                                "field": key,
+                                "type": "VARCHAR"
+                            }
 
-                        list1 = key.split('_')
-                        lastName = list1.pop(-1)
-                        if lastName.startswith('PART'):
-                            num = int(lastName[4:])
-                            insertcol = '_'.join(list1)
-                            for i in range(len(results['schema'])):
-                                if results['schema'][i]['field'] == insertcol:
-                                    results['schema'].insert(i + num, dic)
-                        elif lastName.startswith('MERGE'):
-                            num = int(lastName[5:])
-                            for i in range(len(results['schema'])):
-                                if results['schema'][i]['field'] == list1[0]:
-                                    results['schema'].insert(i + num, dic)
+                            list1 = key.split('_')
+                            lastName = list1.pop(-1)
+                            if lastName.startswith('PART'):
+                                num = int(lastName[4:])
+                                insertcol = '_'.join(list1)
+                                for i in range(len(results['schema'])):
+                                    if results['schema'][i]['field'] == insertcol:
+                                        results['schema'].insert(i + num, dic)
+                            elif lastName.startswith('MERGE'):
+                                num = int(lastName[5:])
+                                for i in range(len(results['schema'])):
+                                    if results['schema'][i]['field'] == list1[0]:
+                                        results['schema'].insert(i + num, dic)
 
-                logger.error('addsql: {0}'.format(addsql))
-                sql = 'select {0} from {1} where 1=1 '.format(
-                    addsql[:-2], jsonData['tableName']) + filtersql + eval(self.dbPaltName + 'str')
+        elif mode == 'all' or mode == 'data':
+            if 'columns' not in jsonData.keys() or not jsonData['columns']:
+                if coldickey in self.list.keys() and self.list[coldickey]:
+                    addsql = ''
+                    for i in self.list[coldickey]:
+                        for key, value in i.items():
+                            addsql += value + ', '
 
-                try:
-                    cursor.execute(sql)
-                except Exception:
-                    logger.error("Exception: {0}".format(sys.exc_info()))
-                    return 'failed'
+                    logger.error('addsql: {0}'.format(addsql))
+                    sql = 'select {0} from {1} where 1=1 '.format(
+                        addsql[:-2], jsonData['tableName']) + filtersql + eval(self.dbPaltName + 'str')
 
-                if self.dbPaltName == 'mysql':
-                    newDataList = cursor.fetchall()
-                    for i in range(len(results['data'])):
-                        results['data'][i].update(newDataList[i])
-                elif self.dbPaltName == 'oracle':
-                    dataList = cursor.fetchall()
-                    colList = cursor.description
-                    updateList = []
-                    for data in dataList:
-                        dic = {}
-                        for i in range(len(colList)):
-                            dic[colList[i][0]] = data[i]
-                        updateList.append(dic)
-                    for i in range(len(results['data'])):
-                            results['data'][i].update(updateList[i])
+                    try:
+                        cursor.execute(sql)
+                    except Exception:
+                        logger.error("Exception: {0}".format(sys.exc_info()))
+                        return 'failed'
+
+                    if self.dbPaltName == 'mysql':
+                        newDataList = cursor.fetchall()
+                        for i in range(len(results['data'])):
+                            results['data'][i].update(newDataList[i])
+                    elif self.dbPaltName == 'oracle':
+                        dataList = cursor.fetchall()
+                        colList = cursor.description
+                        updateList = []
+                        for data in dataList:
+                            dic = {}
+                            for i in range(len(colList)):
+                                dic[colList[i][0]] = data[i]
+                            updateList.append(dic)
+                        for i in range(len(results['data'])):
+                                results['data'][i].update(updateList[i])
 
         if mode == 'all' and 'expressions' in jsonData.keys() and jsonData['expressions']:
 
