@@ -44,17 +44,13 @@ This document describe how to get users' tables filter information.
                 ...
     ],
     # expressions if you want to split column, if not. you don't need to send it
-    "expressions": [
+    "expressions": 
         {
             "colname": <colname>,
-            "cutmethod": {
-                    # if method is split, you should send this:
-                    "split": <splitsymbol>
-                    # elif method is limit, you should send this:
-                    "limit": [<cutindex>, <cutindex>]
-            }
+            "method": <split/limit>,
+            "cutsymbol": <cutsymbol>
         }
-    ]
+    
 }
 ```
 ### 5. Request Example:
@@ -88,12 +84,13 @@ This document describe how to get users' tables filter information.
             "datatype": "date"
         }
     ],
-    "expressions": [
+    "expressions": 
         {
             "colname": "table1col",
-            "cutmethod": {"split": {"=": 1}}
+            "cutmethod": "limit",
+            "cutsymbol": [2,5]
         }
-    ]
+
 }
 ```
 ### 6. Support Format: JSON
