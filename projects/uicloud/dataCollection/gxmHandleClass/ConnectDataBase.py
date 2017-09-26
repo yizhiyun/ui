@@ -408,20 +408,17 @@ class ConnectDataBase():
                         if list(i.values())[0]:
                             newCountNumList.append(list(i.values())[0])
                     newCountNumList.sort()
-                    if newcolnamelist:
-                        expressions['count'] = newCountNumList[-1]
-                    else:
-                        expressions['count'] = 0
 
                 else:
                     for i in countNumList:
                         if i[0]:
                             newCountNumList.append(i[0])
                     newCountNumList.sort()
-                    if newcolnamelist:
-                        expressions['count'] = newCountNumList[-1]
-                    else:
-                        expressions['count'] = 0
+
+                if newCountNumList:
+                    expressions['count'] = newCountNumList[-1]
+                else:
+                    expressions['count'] = 0
 
             conversionList = self.conversionCols(expressions, coldickey)
             if conversionList == 'name error' or conversionList == 'limit type':
@@ -519,8 +516,8 @@ class ConnectDataBase():
                     )
                     conversionList.append(prev)
 
-                    aft = "substr({0}, 1000) as {2}".format(
-                        colname, expressions['colname'] + '_PART%s' % (2 + countname + i)
+                    aft = "substr({0}, 1000) as {1}".format(
+                        colname, expressions['colname'] + '_PART%s' % (2 + countname)
                     )
                     conversionList.append(aft)
 
