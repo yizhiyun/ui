@@ -333,7 +333,7 @@ class ConnectDataBase():
                 logger.error("Exception: {0}".format(sys.exc_info()))
                 return 'failed'
 
-        if mode == 'all' or mode == 'schema':
+        if mode == 'all' and 'expressions' in jsonData.keys() and jsonData['expressions']:
             if 'columns' not in jsonData.keys() or not jsonData['columns']:
                 if coldickey in self.list.keys() and self.list[coldickey]:
                     addsql = ''
@@ -358,14 +358,6 @@ class ConnectDataBase():
                                 for i in range(len(results['schema'])):
                                     if results['schema'][i]['field'] == list1[0]:
                                         results['schema'].insert(i + num, dic)
-
-        elif mode == 'all' or mode == 'data':
-            if 'columns' not in jsonData.keys() or not jsonData['columns']:
-                if coldickey in self.list.keys() and self.list[coldickey]:
-                    addsql = ''
-                    for i in self.list[coldickey]:
-                        for key, value in i.items():
-                            addsql += value + ', '
 
                     logger.error('addsql: {0}'.format(addsql))
                     sql = 'select {0} from {1} where 1=1 '.format(
