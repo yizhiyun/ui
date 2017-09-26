@@ -87,7 +87,7 @@ This document describe how to get users' tables filter information.
     "expressions": 
         {
             "colname": "table1col",
-            "cutmethod": "limit",
+            "method": "limit",
             "cutsymbol": [2,5]
         }
 

@@ -250,7 +250,7 @@ class ConnectDataBase():
                         for data in datas:
                             dic = {}
                             for key, value in data.items():
-                                dic[key] = value
+                                dic[key.lower()] = value
                             results['schema'].append(dic)
                     logger.debug('results["schema"]: {0}'.format(results['schema']))
 
@@ -346,15 +346,28 @@ class ConnectDataBase():
                         }
 
                         list1 = key.split('_')
-                        num = int(list1.pop(-1)[4:])
-                        insertcol = '_'.join(list1)
-                        for i in range(len(results['schema'])):
-                            if results['schema'][i]['field'] == insertcol:
-                                results['schema'].insert(i + num, dic)
+                        lastName = list1.pop(-1)
+                        if lastName.startswith('PART'):
+                            num = int(lastName[4:])
+                            insertcol = '_'.join(list1)
+                            for i in range(len(results['schema'])):
+                                if results['schema'][i]['field'] == insertcol:
+                                    results['schema'].insert(i + num, dic)
+                        elif lastName == 'MERGE':
+                            for i in range(len(results['schema'])):
+                                if results['schema'][i]['field'] == list1[0]:
+                                    results['schema'].insert(i + 1, dic)
+
                 logger.error('addsql: {0}'.format(addsql))
                 sql = 'select {0} from {1} where 1=1 '.format(
                     addsql[:-2], jsonData['tableName']) + filtersql + eval(self.dbPaltName + 'str')
-                cursor.execute(sql)
+
+                try:
+                    cursor.execute(sql)
+                except Exception:
+                    logger.error("Exception: {0}".format(sys.exc_info()))
+                    return 'failed'
+
                 if self.dbPaltName == 'mysql':
                     newDataList = cursor.fetchall()
                     for i in range(len(results['data'])):
@@ -381,14 +394,34 @@ class ConnectDataBase():
                     jsonData['tableName']
                 )
                 logger.debug('countsql: {0}'.format(countsql))
-                cursor.execute(countsql)
+
+                try:
+                    cursor.execute(countsql)
+                except Exception:
+                    logger.error("Exception: {0}".format(sys.exc_info()))
+                    return 'failed'
+
                 countNumList = cursor.fetchall()
                 newCountNumList = []
-                for i in countNumList:
-                    if i[0]:
-                        newCountNumList.append(i[0])
-                newCountNumList.sort()
-                expressions['count'] = newCountNumList[-1]
+                if self.dbPaltName == 'mysql':
+                    for i in countNumList:
+                        if list(i.values())[0]:
+                            newCountNumList.append(list(i.values())[0])
+                    newCountNumList.sort()
+                    if newcolnamelist:
+                        expressions['count'] = newCountNumList[-1]
+                    else:
+                        expressions['count'] = 0
+
+                else:
+                    for i in countNumList:
+                        if i[0]:
+                            newCountNumList.append(i[0])
+                    newCountNumList.sort()
+                    if newcolnamelist:
+                        expressions['count'] = newCountNumList[-1]
+                    else:
+                        expressions['count'] = 0
 
             conversionList = self.conversionCols(expressions, coldickey)
             if conversionList == 'name error' or conversionList == 'limit type':
@@ -399,7 +432,12 @@ class ConnectDataBase():
                 ', '.join(conversionList), jsonData['tableName']) + filtersql + eval(self.dbPaltName + 'str')
             logger.debug('expressionsSql: {0}'.format(sql))
 
-            cursor.execute(sql)
+            try:
+                cursor.execute(sql)
+            except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
+                return 'failed'
+
             if self.dbPaltName == 'mysql':
                 newDataList = cursor.fetchall()
                 for i in range(len(results['data'])):
@@ -416,60 +454,39 @@ class ConnectDataBase():
                 for i in range(len(results['data'])):
                         results['data'][i].update(updateList[i])
 
-            countname = 0
-            for j in self.list[coldickey]:
-                if list(j.keys())[0].startswith(expressions['colname'] + '_PART'):
-                    countname += 1
+            if expressions['method'] == 'split' or expressions['method'] == 'limit':
+                countname = 0
+                for j in self.list[coldickey]:
+                    if list(j.keys())[0].startswith(expressions['colname'] + '_PART'):
+                        countname += 1
 
-            for i in range(len(conversionList)):
+                for i in range(len(conversionList)):
+                    dic = {
+                        "field": expressions['colname'] + '_PART{0}'.format(i + 1 + countname),
+                        "type": 'VARCHAR'
+                    }
+
+                    count = 0
+                    for j in range(len(results['schema'])):
+                        if results['schema'][j]['field'] == expressions['colname']:
+                            results['schema'].insert(j + i + 1 + countname, dic)
+                            count += 1
+                    if count == 0:
+                        results['schema'].append(dic)
+                    self.list[coldickey].append({expressions['colname'] + '_PART{0}'.format(
+                        i + 1 + countname): conversionList[i]})
+
+            elif expressions['method'] == 'merge':
+
                 dic = {
-                    "field": expressions['colname'] + '_PART{0}'.format(i + 1 + countname),
+                    "field": "_".join(expressions['colnamelist']) + '_MERGE',
                     "type": 'VARCHAR'
                 }
 
-                count = 0
-                for j in range(len(results['schema'])):
-                    if results['schema'][j]['field'] == expressions['colname']:
-                        results['schema'].insert(j + i + 1 + countname, dic)
-                        count += 1
-                if count == 0:
-                    results['schema'].append(dic)
-                self.list[coldickey].append({expressions['colname'] + '_PART{0}'.format(
-                    i + 1 + countname): conversionList[i]})
-
-        elif mode == 'all' and 'trans' in jsonData.keys():
-            for trans in jsonData['trans']:
-                conversionStr = self.conversionCols({'trans': trans}, coldickey)
-                if conversionStr == 'name error':
-                    return conversionStr
-
-                sql = 'select {0} from {1} where 1=1 '.format(
-                    conversionStr, jsonData['tableName']) + filtersql + eval(self.dbPaltName + 'str')
-                logger.debug('transSql: {0}'.format(sql))
-                cursor.execute(sql)
-                if self.dbPaltName == 'mysql':
-                    newDataList = cursor.fetchall()
-                    logger.debug('newDataList: {0}'.format(newDataList))
-                    for i in range(len(results['data'])):
-                        results['data'][i].update(newDataList[i])
-                elif self.dbPaltName == 'oracle':
-                    dataList = cursor.fetchall()
-                    colList = cursor.description
-                    updateList = []
-                    for data in dataList:
-                        dic = {}
-                        for i in range(len(colList)):
-                            dic[colList[i][0]] = data[i]
-                        updateList.append(dic)
-                    for i in range(len(results['data'])):
-                            results['data'][i].update(updateList[i])
-
-                dic = {
-                    "field": trans['newcolname'],
-                    "type": 'VARCHAR'
-                }
-                results['schema'].append(dic)
-                self.list[coldickey].append({trans['newcolname']: conversionStr})
+                for i in range(len(results['schema'])):
+                    if results['schema'][i]['field'] == expressions['colnamelist'][0]:
+                        results['schema'].insert(i + 1, dic)
+                self.list[coldickey].append({"_".join(expressions['colnamelist']) + '_MERGE': conversionList[0]})
 
         return results
 
@@ -481,70 +498,80 @@ class ConnectDataBase():
         if key not in self.list.keys():
             self.list[key] = []
 
-        colname = expressions['colname']
-        for i in self.list[key]:
-            if colname in i.keys():
-                colname = i[colname].split(' as ')[0]
-        countname = 0
-        for j in self.list[key]:
-            if list(j.keys())[0].startswith(expressions['colname'] + '_PART'):
-                countname += 1
+        if 'colname' in expressions.keys() and expressions['method'] == 'limit' or expressions['method'] == 'split':
+            colname = expressions['colname']
+            for i in self.list[key]:
+                if colname in i.keys():
+                    colname = i[colname].split(' as ')[0]
 
-        if expressions['method'] == 'split':
+            countname = 0
+            for j in self.list[key]:
+                if list(j.keys())[0].startswith(expressions['colname'] + '_PART'):
+                    countname += 1
 
             conversionList = []
 
-            for i in range(expressions['count']):
-                prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}".format(
-                    colname, expressions['cutsymbol'], expressions['colname'] + '_PART%s' % (1 + countname + i)
-                )
+            if expressions['method'] == 'split':
 
-                aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
-                    colname, expressions['cutsymbol'], expressions['colname'] + '_PART%s' % (2 + countname + i)
-                )
-                colname = aft.split(' as ')[0]
+                if expressions['count'] == 0:
+                    prev = "{0} as {1}".format(
+                        colname, expressions['colname'] + '_PART%s' % (1 + countname)
+                    )
+                    conversionList.append(prev)
 
-                conversionList.append(prev)
-                if i == expressions['count'] - 1:
+                    aft = "substr({0}, 1000) as {2}".format(
+                        colname, expressions['colname'] + '_PART%s' % (2 + countname + i)
+                    )
                     conversionList.append(aft)
 
-            logger.debug(conversionList)
-            return conversionList
+                else:
+                    for i in range(expressions['count']):
+                        prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}".format(
+                            colname, expressions['cutsymbol'], expressions['colname'] + '_PART%s' % (1 + countname + i)
+                        )
 
-        elif expressions['method'] == 'limit':
+                        aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
+                            colname, expressions['cutsymbol'], expressions['colname'] + '_PART%s' % (2 + countname + i)
+                        )
+                        colname = aft.split(' as ')[0]
 
-            limit = expressions['cutsymbol']
-            conversionList = []
+                        conversionList.append(prev)
+                        if i == expressions['count'] - 1:
+                            conversionList.append(aft)
 
-            if len(limit) == 1:
-                prev = "substr({0}, 1, {1}) as {2}".format(
-                    colname, limit[0], expressions['colname'] + '_PART{0}'.format(1 + countname))
-                conversionList.append(prev)
+            elif expressions['method'] == 'limit':
 
-                aft = "substr({0}, {1}) as {2}".format(
-                    colname, limit[0] + 1, expressions['colname'] + '_PART{0}'.format(2 + countname))
-                conversionList.append(aft)
+                limit = expressions['cutsymbol']
 
-            else:
-                for i in range(len(limit)):
-                    if i == 0:
-                        sql = "substr({0}, 1, {1}) as {2}".format(
-                            colname, limit[i], expressions['colname'] + '_PART%s' % (i + 1 + countname))
-                        conversionList.append(sql)
+                if len(limit) == 1:
+                    prev = "substr({0}, 1, {1}) as {2}".format(
+                        colname, limit[0], expressions['colname'] + '_PART{0}'.format(1 + countname))
+                    conversionList.append(prev)
 
-                    else:
-                        sql = "substr({0}, {1}, {2}) as {3}".format(
-                            colname, limit[i - 1] + 1,
-                            limit[i] - limit[i - 1],
-                            expressions['colname'] + '_PART%s' % (i + 1 + countname))
-                        conversionList.append(sql)
+                    aft = "substr({0}, {1}) as {2}".format(
+                        colname, limit[0] + 1, expressions['colname'] + '_PART{0}'.format(2 + countname))
+                    conversionList.append(aft)
 
-                        if i == len(limit) - 1:
-                            sql = "substr({0}, {1}) as {2}".format(
-                                colname,
-                                limit[i] + 1,
-                                expressions['colname'] + '_PART%s' % (i + 2 + countname))
+                else:
+                    for i in range(len(limit)):
+                        if i == 0:
+                            sql = "substr({0}, 1, {1}) as {2}".format(
+                                colname, limit[i], expressions['colname'] + '_PART%s' % (i + 1 + countname))
                             conversionList.append(sql)
+
+                        else:
+                            sql = "substr({0}, {1}, {2}) as {3}".format(
+                                colname, limit[i - 1] + 1,
+                                limit[i] - limit[i - 1],
+                                expressions['colname'] + '_PART%s' % (i + 1 + countname))
+                            conversionList.append(sql)
+
+                            if i == len(limit) - 1:
+                                sql = "substr({0}, {1}) as {2}".format(
+                                    colname,
+                                    limit[i] + 1,
+                                    expressions['colname'] + '_PART%s' % (i + 2 + countname))
+                                conversionList.append(sql)
 
             logger.debug('limitsqllist: {0}'.format(conversionList))
             return conversionList
@@ -557,13 +584,13 @@ class ConnectDataBase():
                 for i in self.list[key]:
                     if colname in i.keys():
                         colname = i[colname].split(' as ')[0]
-                    aftlist.append(colname)
+                aftlist.append(colname)
             logger.debug('trans_aftlist: {0}'.format(aftlist))
             concatsql = 'concat('
             for i in range(len(aftlist)):
                 concatsql += aftlist[i] + ','
-            concatsql = concatsql[-1] + ") as " + "_".join(aftlist) + '_merge'
-            return concatsql
+            concatsql = concatsql[:-1] + ") as " + "_".join(colnamelist) + '_MERGE'
+            return [concatsql]
 
     def turnCols(self, colnamelist, key):
         newcolnamelist = []
