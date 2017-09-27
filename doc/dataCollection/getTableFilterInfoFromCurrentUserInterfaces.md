@@ -43,8 +43,8 @@ This document describe how to get users' tables filter information.
                 },
                 ...
     ],
-    # expressions if you want to split column, if not. you don't need to send it
-    "expressions": 
+    # handleCol if you want to split column, if not. you don't need to send it
+    "handleCol":
         {
             "colname": <colname>,
             "method": <split/limit>,
@@ -84,7 +84,7 @@ This document describe how to get users' tables filter information.
             "datatype": "date"
         }
     ],
-    "expressions": 
+    "handleCol":
         {
             "colname": "table1col",
             "method": "limit",

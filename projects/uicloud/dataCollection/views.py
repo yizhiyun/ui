@@ -199,6 +199,7 @@ def deleteTempCol(request):
                 return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
 
             dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-            if table['coldickey'] in dataBaseObj.list.keys():
-                dataBaseObj.list[table['coldickey']].clear()
+            coldickey = table['coldickey'].replace('_YZYPD_', '_')
+            if coldickey in dataBaseObj.list.keys():
+                dataBaseObj.list[coldickey].clear()
         return JsonResponse({'status': 'success'})
