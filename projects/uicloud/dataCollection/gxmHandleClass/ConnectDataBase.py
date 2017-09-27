@@ -340,7 +340,7 @@ class ConnectDataBase():
                 logger.error("Exception: {0}".format(sys.exc_info()))
                 return 'failed'
 
-        if mode == 'all' and 'expressions' in jsonData.keys() and jsonData['expressions']:
+        if mode == 'all' or mode == 'schema':
             if 'columns' not in jsonData.keys() or not jsonData['columns']:
                 if coldickey in self.list.keys() and self.list[coldickey]:
                     addsql = ''
@@ -366,6 +366,13 @@ class ConnectDataBase():
                                     if results['schema'][i]['field'] == list1[0]:
                                         results['schema'].insert(i + num, dic)
 
+        if mode == 'all' or mode == 'data':
+            if 'columns' not in jsonData.keys() or not jsonData['columns']:
+                if coldickey in self.list.keys() and self.list[coldickey]:
+                    addsql = ''
+                    for i in self.list[coldickey]:
+                        for key, value in i.items():
+                            addsql += value + ', '
                     logger.error('addsql: {0}'.format(addsql))
                     sql = 'select {0} from {1} where 1=1 '.format(
                         addsql[:-2], jsonData['tableName']) + filtersql + eval(self.dbPaltName + 'str')
@@ -390,7 +397,7 @@ class ConnectDataBase():
                                 dic[colList[i][0]] = data[i]
                             updateList.append(dic)
                         for i in range(len(results['data'])):
-                                results['data'][i].update(updateList[i])
+                            results['data'][i].update(updateList[i])
 
         if mode == 'all' and 'expressions' in jsonData.keys() and jsonData['expressions']:
 
@@ -427,6 +434,38 @@ class ConnectDataBase():
                     expressions['count'] = newCountNumList[-1]
                 else:
                     expressions['count'] = 0
+
+                indexSql = "select instr({0}, '{1}') from {2}".format(
+                    self.turnCols([expressions['colname']], coldickey)[0].split(' as ')[0],
+                    expressions['cutsymbol'],
+                    jsonData['tableName']
+                )
+                logger.debug('indexSql: {0}'.format(indexSql))
+
+                try:
+                    cursor.execute(indexSql)
+                except Exception:
+                    logger.error("Exception: {0}".format(sys.exc_info()))
+                    return 'failed'
+
+                indexNumList = cursor.fetchall()
+                newIndexNumList = []
+                if self.dbPaltName == 'mysql':
+                    for i in indexNumList:
+                        if list(i.values())[0]:
+                            newIndexNumList.append(list(i.values())[0])
+                    newIndexNumList.sort()
+
+                else:
+                    for i in indexNumList:
+                        if i[0]:
+                            newIndexNumList.append(i[0])
+                    newIndexNumList.sort()
+
+                if newIndexNumList and newIndexNumList[-1] <= 1:
+                    expressions['index'] = True
+                else:
+                    expressions['index'] = False
 
             conversionList = self.conversionCols(expressions, coldickey)
             if conversionList == 'name error' or conversionList == 'limit type':
@@ -534,25 +573,44 @@ class ConnectDataBase():
                     )
                     conversionList.append(prev)
 
-                    aft = "substr({0}, 1000) as {1}".format(
-                        colname, expressions['colname'] + '_PART%s' % (2 + countname)
-                    )
-                    conversionList.append(aft)
-
                 else:
-                    for i in range(expressions['count']):
-                        prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}".format(
-                            colname, expressions['cutsymbol'], expressions['colname'] + '_PART%s' % (1 + countname + i)
-                        )
+                    if not expressions['index']:
+                        for i in range(expressions['count']):
+                            prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}".format(
+                                colname,
+                                expressions['cutsymbol'],
+                                expressions['colname'] + '_PART%s' % (1 + countname + i)
+                            )
 
-                        aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
-                            colname, expressions['cutsymbol'], expressions['colname'] + '_PART%s' % (2 + countname + i)
-                        )
-                        colname = aft.split(' as ')[0]
+                            aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
+                                colname,
+                                expressions['cutsymbol'],
+                                expressions['colname'] + '_PART%s' % (2 + countname + i)
+                            )
+                            colname = aft.split(' as ')[0]
 
-                        conversionList.append(prev)
-                        if i == expressions['count'] - 1:
-                            conversionList.append(aft)
+                            conversionList.append(prev)
+                            if i == expressions['count'] - 1:
+                                conversionList.append(aft)
+                    else:
+                        for i in range(expressions['count']):
+                            prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}".format(
+                                colname,
+                                expressions['cutsymbol'],
+                                expressions['colname'] + '_PART%s' % (countname + i)
+                            )
+
+                            aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
+                                colname,
+                                expressions['cutsymbol'],
+                                expressions['colname'] + '_PART%s' % (1 + countname + i)
+                            )
+                            colname = aft.split(' as ')[0]
+
+                            if i != 0:
+                                conversionList.append(prev)
+                            if i == expressions['count'] - 1:
+                                conversionList.append(aft)
 
             elif expressions['method'] == 'limit':
 
