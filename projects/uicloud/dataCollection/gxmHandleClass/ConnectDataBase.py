@@ -372,6 +372,10 @@ class ConnectDataBase():
                     if self.dbPaltName == 'mysql':
                         newDataList = cursor.fetchall()
                         for i in range(len(results['data'])):
+                            for key, value in newDataList[i].items():
+                                if type(value) == bytes:
+                                    newDataList[i][key] = value.decode('utf8')
+
                             results['data'][i].update(newDataList[i])
                     elif self.dbPaltName == 'oracle':
                         dataList = cursor.fetchall()
