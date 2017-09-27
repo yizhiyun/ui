@@ -10,6 +10,13 @@ logger = logging.getLogger("uicloud.dataCollection.ConnectDataBase")
 logger.setLevel(logging.DEBUG)
 
 
+def specialBytes(dic):
+    for key, value in dic.items():
+        if type(value) == bytes:
+            dic[key] = value.decode('utf8')
+    return dic
+
+
 class ConnectDataBase():
     def __init__(self, dbPaltName=None, dbLocation=None, dbPort=None,
                  dbUserName=None, dbUserPwd=None, dbSid=None, dbTime=None):
@@ -372,11 +379,7 @@ class ConnectDataBase():
                     if self.dbPaltName == 'mysql':
                         newDataList = cursor.fetchall()
                         for i in range(len(results['data'])):
-                            for key, value in newDataList[i].items():
-                                if type(value) == bytes:
-                                    newDataList[i][key] = value.decode('utf8')
-
-                            results['data'][i].update(newDataList[i])
+                            results['data'][i].update(specialBytes(newDataList[i]))
                     elif self.dbPaltName == 'oracle':
                         dataList = cursor.fetchall()
                         colList = cursor.description
@@ -443,7 +446,7 @@ class ConnectDataBase():
             if self.dbPaltName == 'mysql':
                 newDataList = cursor.fetchall()
                 for i in range(len(results['data'])):
-                    results['data'][i].update(newDataList[i])
+                    results['data'][i].update(specialBytes(newDataList[i]))
             elif self.dbPaltName == 'oracle':
                 dataList = cursor.fetchall()
                 colList = cursor.description
