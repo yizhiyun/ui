@@ -524,8 +524,6 @@ class ConnectDataBase():
             conversionList = []
 
             if expressions['method'] == 'split':
-                if expressions['cutsymbol'] == 'underline':
-                    expressions['cutsymbol'] = '_'
 
                 if expressions['count'] == 0:
                     prev = "{0} as {1}".format(
