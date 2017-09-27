@@ -166,3 +166,36 @@ This document describe how to get users' tables filter information.
 > {"status": "failed", "reason": "can't connect db"}
 * it will response as follows if search failed
 > {"status": "failed", "reason": "Please see the detailed logs."}
+
+
+
+-----------
+This document describe return The table below the specific database.
+-------------
+### 1. Request URI: /dataCollection/deleteTempCol
+### 2. Request Method: POST
+### 3. Request Data Schema: JSON
+### 4. Request Data:
+```
+{
+    "source": <connect MD5>,
+    "database": <databasename>,
+    "tableName": <tablename>
+}
+```
+### 5. Request Example:
+```
+{
+    "source": "1fd70ca1e56f040006a2e5b445a4196c",
+    "database": "db1",
+    "tableName": "table1"
+}
+```
+### 6. Support Format: JSON
+### 7. Response Data:
+* it will response as follows if successful
+```
+{
+    "status": "success"
+}
+```

@@ -23,11 +23,12 @@ def IndexView(request):
 def dataBuildView(request):
     return render(request, 'dataCollection/dataAnalysis.html')
 
-# 连接数据库平台
-
 
 @api_view(['POST'])
 def connectDataBaseHandle(request):
+    '''
+    连接数据库平台
+    '''
     jsonData = request.data
     if request.method == 'POST':
         dbPaltName = jsonData["dataBaseName"].lower()
@@ -56,11 +57,11 @@ def connectDataBaseHandle(request):
             return JsonResponse(context)
 
 
-# 返回当前平台所有数据库
-
-
 @api_view(['POST'])
 def showAllDbOfPalt(request):
+    '''
+    返回当前平台所有数据库
+    '''
     jsonData = request.data
     if request.method == 'POST':
         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
@@ -86,11 +87,12 @@ def showAllDbOfPalt(request):
         return JsonResponse(context)
 
 
-# 选择具体数据库下的表格
-
 
 @api_view(['POST'])
 def showAllTablesOfaDataBase(request):
+    '''
+    选择具体数据库下的表格
+    '''
     jsonData = request.data
     if request.method == 'POST':
         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
@@ -117,11 +119,12 @@ def showAllTablesOfaDataBase(request):
         }
         return JsonResponse(context)
 
-# 根据条件查询. 返回表格数据
-
 
 @api_view(['POST'])
 def filterTable(request, modeName):
+    '''
+    根据条件查询. 返回表格数据
+    '''
     jsonData = request.data
     dbObjIndex = jsonData['source']
     username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
@@ -162,6 +165,8 @@ def filterTable(request, modeName):
 
 @api_view(['POST'])
 def deletePlat(request):
+    '''
+    '''
     jsonData = request.data
     if request.method == 'POST':
         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
@@ -176,3 +181,24 @@ def deletePlat(request):
             return JsonResponse({'status': 'success'})
         else:
             return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
+
+
+@api_view(['POST'])
+def deleteTempCol(request):
+    '''
+    '''
+    jsonData = request.data
+    if request.method == 'POST':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        dbObjIndex = jsonData['source']
+
+        if username not in Singleton().dataPaltForm.keys():
+            return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
+        if dbObjIndex not in Singleton().dataPaltForm[username].keys():
+            return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
+
+        dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
+        coldickey = '{0}_{1}'.format(jsonData['database'], jsonData['tableName'])
+        if coldickey in dataBaseObj.list.keys():
+            dataBaseObj.list[coldickey].clear()
+        return JsonResponse({'status': 'success'})
