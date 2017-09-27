@@ -180,7 +180,7 @@ This document describe return The table below the specific database.
 {
     "source": <connect MD5>,
     "database": <databasename>,
-    "tableName": <tablename>
+    "tableNameList": <tablenamelist>
 }
 ```
 ### 5. Request Example:
@@ -188,7 +188,7 @@ This document describe return The table below the specific database.
 {
     "source": "1fd70ca1e56f040006a2e5b445a4196c",
     "database": "db1",
-    "tableName": "table1"
+    "tableNameList": ["table1", "table2"]
 }
 ```
 ### 6. Support Format: JSON

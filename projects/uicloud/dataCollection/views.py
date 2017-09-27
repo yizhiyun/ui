@@ -87,7 +87,6 @@ def showAllDbOfPalt(request):
         return JsonResponse(context)
 
 
-
 @api_view(['POST'])
 def showAllTablesOfaDataBase(request):
     '''
@@ -198,7 +197,8 @@ def deleteTempCol(request):
             return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
 
         dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-        coldickey = '{0}_{1}'.format(jsonData['database'], jsonData['tableName'])
-        if coldickey in dataBaseObj.list.keys():
-            dataBaseObj.list[coldickey].clear()
+        for tablename in jsonData['tableNameList']:
+            coldickey = '{0}_{1}'.format(jsonData['database'], tablename)
+            if coldickey in dataBaseObj.list.keys():
+                dataBaseObj.list[coldickey].clear()
         return JsonResponse({'status': 'success'})
