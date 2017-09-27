@@ -178,17 +178,25 @@ This document describe return The table below the specific database.
 ### 4. Request Data:
 ```
 {
-    "source": <connect MD5>,
-    "database": <databasename>,
-    "tableNameList": <tablenamelist>
+    "tables": [
+        {
+            "source": <MD5>,
+            "coldickey": <db_table>
+        }
+        ...
+    ]
 }
 ```
 ### 5. Request Example:
 ```
 {
-    "source": "1fd70ca1e56f040006a2e5b445a4196c",
-    "database": "db1",
-    "tableNameList": ["table1", "table2"]
+    "tables": [
+        {
+            "source": "1fd70ca1e56f040006a2e5b445a4196c",
+            "coldickey": "db1_table1"
+        }
+        ...
+    ]
 }
 ```
 ### 6. Support Format: JSON

@@ -189,16 +189,16 @@ def deleteTempCol(request):
     jsonData = request.data
     if request.method == 'POST':
         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
-        dbObjIndex = jsonData['source']
+        for table in jsonData['tables']:
+            dbObjIndex = table['source']
 
-        if username not in Singleton().dataPaltForm.keys():
-            return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
-        if dbObjIndex not in Singleton().dataPaltForm[username].keys():
-            return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
+            if username not in Singleton().dataPaltForm.keys():
+                return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(
+                    username)})
+            if dbObjIndex not in Singleton().dataPaltForm[username].keys():
+                return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
 
-        dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-        for tablename in jsonData['tableNameList']:
-            coldickey = '{0}_{1}'.format(jsonData['database'], tablename)
-            if coldickey in dataBaseObj.list.keys():
-                dataBaseObj.list[coldickey].clear()
+            dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
+            if table['coldickey'] in dataBaseObj.list.keys():
+                dataBaseObj.list[table['coldickey']].clear()
         return JsonResponse({'status': 'success'})
