@@ -32,7 +32,7 @@ var recordConditon = null;
 function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
 	var filterNotWorkArr = getColumnFilterNotWorkedColumns(current_cube_name);
 	getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
-	conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
+	var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
 	var checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 	for(var key in checkSelectConditionDict){
 		var valuesArr = checkSelectConditionDict[key];
@@ -41,37 +41,73 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 			conditions.push(filter);
 		}
 	}
+	if(dirllConditions && dirllConditions.length > 0){
+		dimensionality_array.splice(dimensionality_array.length-1,1,dirllConditions[dirllConditions.length - 1].drillField);
+		for(var i = 0;i <  dirllConditions.length;i++){
+			var obj = dirllConditions[i];
+			if(obj.currentField != "全部" && obj.currentValue != "全部"){
+				conditions.push({"type":"=","columnName":obj.currentField,"value":obj.currentValue});
+			}		
+		}
+	}
+	
 	var groupby = dimensionality_array;
-	var aggregations = [];
-	var basic_opration = ["sum","max","min","avg"];
+	var basic_opration = ["sum(","max(","min(","avg(","count("];
+	var basic_names = ["求和(","最大值(","最小值(","平均值(","计数("];
+	var expressions = {};
 	if(measure_name_arr.length >0){
 		for (var i = 0;i < measure_name_arr.length;i++) {
-			for(var j = 0;j < basic_opration.length;j++){
-				var obj = {
-					"type":basic_opration[j],
-					"col":measure_name_arr[i]
+			if(measure_name_arr[i] == "记录数"){
+				var obj = {"alias":"计数("+measure_name_arr[i]+")","exprstr":"count("+dimensionality_array[dimensionality_array.length - 1]+")"};
+				if(expressions["exprlist"]){
+					expressions["exprlist"].push(obj);
+				}else{
+					expressions["exprlist"] = [obj];
 				}
-				aggregations.push(obj);
-			}	
+			}else{
+				for(var j = 0;j < basic_opration.length;j++){
+				var obj = {"alias":basic_names[j]+measure_name_arr[i]+")","exprstr":basic_opration[j]+measure_name_arr[i]+")"};
+				if(expressions["exprlist"]){
+					expressions["exprlist"].push(obj);
+				}else{
+					expressions["exprlist"] = [obj];
+				}
+			
+				}
+			}
+			
+			if(customCalculate[measure_name_arr[i]]){
+				var obj = {"alias":drag_measureCalculateStyle[measure_name_arr[i]],"exprstr":customCalculate[measure_name_arr[i]]}
+				expressions["exprlist"].push(obj);
+			}
 		}
 	}else{
-		var obj = {
-			"type":"first",
-			"col":groupby[0]
+		var obj = {"alias":"count("+groupby[0]+")","exprstr":"count("+groupby[0]+")"};
+		expressions["exprlist"] = [obj];
+	}
+	
+	if(needColumns){
+		if(needColumns["notneed"]){
+			for(var i =0;i < needColumns["notneed"].length;i++){
+				delete trans[needColumns["notneed"][i]];
+			}
 		}
-		aggregations.push(obj);
+		if(needColumns["aggregations"]){
+			trans["aggregations"] = needColumns["aggregations"];
+		}
 	}
 	
 	
-	var trans = {
-		"groupby":groupby,
-		"aggregations":aggregations,
-		"orderby":groupby
-	};
 	var handleDataPost = {
 		"conditions":conditions,
-		"trans":trans,
 	};
+	
+	if(expressions["exprlist"] && expressions["exprlist"].length > 0){
+		expressions["groupby"]  = groupby;
+		expressions["orderby"] = groupby;
+		handleDataPost["expressions"] = expressions;
+	}
+	
 	
 	if(equalCompare(recordConditon,handleDataPost) && preAllData){
 		handleSuccessFunction(preAllData);
@@ -86,13 +122,17 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		async: true,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
-			console.log("startSend");
+//			console.log("startSend");
 		},
 		success:function(data){
 			if(data.status == "success"){
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
+				
+				_cube_all_data[current_cube_name]["data"] = data.results.data;
+				filterNeedAllData = data.results.data;
+				rightFilterListDraw();
 			}
 		}
 	});

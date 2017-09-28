@@ -1,0 +1,49 @@
+{% load static %}
+<script src={% static "dashboard/js/chartSetting.js"%} type="text/javascript" charset="utf-8"></script>
+<div id="project_style">
+	<div class="module_style">
+		<p class="title">样式</p>
+		<div class="color_control">
+			<div class="defaultColors clear">
+				<span class="color_flag">颜色</span>
+				<div class="selectedColors">
+					<span class="colorCube"></span>
+					<span class="colorCube"></span>
+					<span class="colorCube"></span>
+					<span class="colorCube"></span>
+					<span class="colorCube"></span>
+				</div>
+				<div class="moreColorBtn"><img src="/static/dashboard/img/select_tra.png" alt="" /></div>
+			</div>
+			<div class="otherColorsModule" style="display: none;">
+				<div class="someColorList"></div>
+				<!--<p class="otherMoreColor">更多颜色</p>-->
+			</div>
+		</div>
+		
+		<div class="normalUnit">
+			<span class="title">单位</span>
+			<div class="content">
+				<span class="active" unit="-1">常规</span>
+				<span unit="0">0</span>
+				<span unit="1">0.0</span>
+				<span unit="2">0.00</span>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<div class="valueUnit">
+			<span class="title">值单位</span>
+			<div class="content">
+				<span class="active">个</span>
+				<span>百</span>
+				<span>千</span>
+				<span>万</span>
+				<span>百万</span>
+				<span>千万</span>
+				<span>亿</span>
+				<span>百分比</span>
+			</div>
+			
+		</div>
+	</div>
+</div>

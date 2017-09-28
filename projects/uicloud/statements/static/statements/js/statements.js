@@ -80,6 +80,35 @@ var table_auto_show  = true;
 
 $(function(){
 
+//		var post1 = {"conditions":[],"trans":{"groupby":["state","country"],"aggregations":[{"type":"sum","col":"gdp"},{"type":"max","col":"gdp"},{"type":"min","col":"gdp"},{"type":"avg","col":"gdp"}],"orderby":["state","country"]}};
+//		var post2 = {"conditions":[],"trans":{"groupby":["state"],"aggregations":[{"type":"sum","col":"gdp"},{"type":"max","col":"gdp"},{"type":"min","col":"gdp"},{"type":"avg","col":"gdp"}],"orderby":["state"]}};
+//		var arr = [post1,post2];
+//		for (var i = 0; i <  2;i++) {
+//			$.ajax({
+//				url:"/cloudapi/v1/tables/" +"TEST"+"/data",
+//				type:"post",
+//				dataType:"json",
+//				contentType: "application/json; charset=utf-8",
+//				async: true,
+//				data:JSON.stringify(arr[i]),
+//				beforeSend:function(){
+//					console.log("startSend");
+//				},
+//				success:function(data){
+//					if(data.status == "success"){
+//						console.log(data.results.data)
+//					}
+//				}
+//			});
+//		}
+//		
+//		
+//
+//
+//	return;
+
+
+
 
 	//侧边栏收起按钮top
 	$("#statements_left_bar #statements_left_bar_btn_close").css("top",($("body").height()-$(".topInfo").height())/2 - $("#statements_left_bar_btn_close").height()/2 + "px");

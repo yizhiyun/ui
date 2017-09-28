@@ -1,4 +1,4 @@
-var editMeasureCalculateView_isFirstShow = true;
+
 $(function(){
 	
 //	$("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea").change(function(event){

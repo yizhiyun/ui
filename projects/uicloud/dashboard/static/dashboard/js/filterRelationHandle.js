@@ -2,26 +2,44 @@
 // 用来记录当前正在表详细中操作的列或者行元素
 var currentHandleColOrRowEles = null;
 var checkSelectConditionDict = {};
-
-
+var rightFilter_drawType = null;
+var rightFilter_columnNameInfo = null;
+//  仪表板选择 复选框选择的记录
 function saveSelectionCondtion(tableInfo,conditionsDict){
+	var orgianlAllData = JSON.parse(window.localStorage.getItem("allTable_specialSelection"));
+	if(!orgianlAllData){
+		orgianlAllData = {};
+	}
+	orgianlAllData[tableInfo+"_specialSelection"] = conditionsDict;
 	
-	window.localStorage.setItem(tableInfo+"specialSelection",JSON.stringify(conditionsDict));
-
+	window.localStorage.setItem("allTable_specialSelection",JSON.stringify(orgianlAllData));
 }
 function getSelectionCondtion(tableInfo){
-	var rs =  JSON.parse(window.localStorage.getItem(tableInfo+"specialSelection"));
-	if(!rs){rs= {}};
-	return rs;
+	var rs = JSON.parse(window.localStorage.getItem("allTable_specialSelection"));
+	var finalRs = {};
+	if(rs && rs[tableInfo+"_specialSelection"]){
+		 finalRs = rs[tableInfo+"_specialSelection"];
+	}
+	return finalRs;
 }
 
+// 仪表板选择 开关选择是否要筛选生效
 function saveColumnFilterNotWorkedColumns(tableInfo,columns){
-	window.localStorage.setItem(tableInfo+"NotWorkedColumns",JSON.stringify(columns));
+	var orgianlAllData = JSON.parse(window.localStorage.getItem("allTable_notWorkedColumns"));
+	if(!orgianlAllData){
+		orgianlAllData = {};
+	}
+	orgianlAllData[tableInfo+"_NotWorkedColumns"] = columns;
+	
+	window.localStorage.setItem("allTable_notWorkedColumns",JSON.stringify(orgianlAllData));
 }
 function getColumnFilterNotWorkedColumns(tableInfo){
-	var rs =  JSON.parse(window.localStorage.getItem(tableInfo+"NotWorkedColumns"));
-	if(!rs){rs= []};
-	return rs;
+	var rs = JSON.parse(window.localStorage.getItem("allTable_notWorkedColumns"));
+	var finalRs = [];
+	if(rs && rs[tableInfo+"_NotWorkedColumns"]){
+		 finalRs = rs[tableInfo+"_NotWorkedColumns"];
+	}
+	return finalRs;
 }
 
 
@@ -42,16 +60,24 @@ function filterSuccessFun(){
 	switch_chart_handle_fun();
 }
 
+function recordRightFilterInfo(drawType,columnNameInfo){
+	rightFilter_drawType = drawType;
+	rightFilter_columnNameInfo = columnNameInfo;
+}
+
+
 // drawType:add,delete；columnNameInfo:维度列名；
-function rightFilterListDraw(drawType,columnNameInfo){
+function rightFilterListDraw(){
 	checkSelectConditionDict = getSelectionCondtion(current_cube_name);
-	var columnInfoArr = columnNameInfo.split(":");
-	if(drawType == "add"){
+	var columnInfoArr = rightFilter_columnNameInfo.split(":");
+	if(rightFilter_drawType == "add"){
+		if($("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+columnInfoArr[0]).length > 0){
+			return;
+		}
 		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .cubeTableName").html(current_cube_name);
-	
 		var li = $("<li openFlag='on' class='filterLI'><div class='field_header_div'><img class='openAndCloseImg' src='/static/dataCollection/images/left_40.png'/><div class='fieldWholeDiv'><span class='fieldName'>"+columnInfoArr[0]+"</span><div class='filterSelectImgDiv'><img/></div><div class='filterDetailImgDiv'><img src='/static/dashboard/img/3filter_details.png'/></div></div></div></li>");
 		li.addClass(columnInfoArr[0]);
-		li.data("fieldInfo",columnNameInfo);
+		li.data("fieldInfo",rightFilter_columnNameInfo);
 		if(columnInfoArr[1].isTypeString()){
 			li.find(".filterSelectImgDiv img").attr("src","/static/dashboard/img/3filter_text.png");
 		}else if(columnInfoArr[1].isTypeNumber()){
@@ -212,7 +238,7 @@ function rightFilterListDraw(drawType,columnNameInfo){
 		});
 		
 		
-	}else if(drawType == "delete"){
+	}else if(rightFilter_drawType == "delete"){
 		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list ."+columnInfoArr[0]).eq(0).hide("blind",200,function(){
 			$(this).remove();
 			checkSelectConditionDict = getSelectionCondtion(current_cube_name);

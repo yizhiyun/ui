@@ -10,7 +10,7 @@ String.prototype.isTypeString = function(){
 // 2.判断是否是数字类型
 String.prototype.isTypeNumber = function(){
 	var value = this.toString();
-	var reg = /int|tinyint|smallint|mediumint|bigint|decimal|float|double|real|bit|serial|BooleanType|DecimalType|DoubleType|FloatType|ByteType|IntegerType|LongType|ShortType/i;
+	var reg = /int|tinyint|smallint|mediumint|bigint|decimal|float|double|real|bit|serial|BooleanType|DecimalType|DoubleType|FloatType|ByteType|IntegerType|LongType|ShortType|number/i;
 	return reg.test(value);
 }
 //3.判断是否是日期类型
@@ -95,3 +95,12 @@ function  measureCalculateVertify (formula) {
     }  
     return true;
 }
+String.prototype.visualLength = function(fontSize) 
+{ 
+	var ruler = $("#calculateTextWidth"); 
+	ruler.css("font-size",fontSize);
+	ruler.text(this); 
+	return ruler[0].offsetWidth; 
+} 
+
+

@@ -14,11 +14,26 @@ var save_now_show_view_text = null;
 
 var click_view_icon  = false;
 
+var drawChartTimer = null;
+
 
 function switch_chart_handle_fun(edit_view){
-	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
-		echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).dispose();
+	
+	if(!edit_view){
+		if(drawChartTimer){
+			clearTimeout(drawChartTimer);
+		}
+		drawChartTimer = setTimeout(function(){
+			beginDrawChart(edit_view);
+		},200);
+	}else{
+		beginDrawChart(edit_view);
 	}
+}
+
+
+function beginDrawChart(edit_view){
+	
 	
 	//行里维度度量的数量
 	var switch_row_di = drag_row_column_data["row"]["dimensionality"].length,
@@ -269,9 +284,8 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 	}else{
 
 		if(!save_now_show_view_text.hasClass("show_view_success")){
-		save_now_show_view_text = $("#show_histogram");
+			save_now_show_view_text = $("#show_histogram");
 		}
-//		console.log(save_now_show_view_text)
 		eval(save_now_show_view_text.data("show_view_fun"));
 		view_name = save_now_show_view_text.data("show_view_fun");
 		save_now_show_view_text.data("if_show","true");
@@ -279,14 +293,13 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 	}
 
 
-if(switch_col_di !=  0 || switch_col_me != 0 || switch_row_di != 0 || switch_row_me != 0){
-
-		$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
-		save_btn_fun();
+	if(switch_col_di !=  0 || switch_col_me != 0 || switch_row_di != 0 || switch_row_me != 0){
+	
+			$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
+			save_btn_fun();
+		}
+	
+	if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
+		$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","0.5").unbind("mouseleave click");
 	}
-
-if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
-	$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","0.5").unbind("mouseleave click");
-}
-
 }

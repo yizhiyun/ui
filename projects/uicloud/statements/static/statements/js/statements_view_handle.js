@@ -6,9 +6,7 @@ function view_handle_switch_statements(viewshow_class){
 
 
 	var viewshow_class = viewshow_class;
-
-	// isagainDrawTable = true;
-	console.log(state_view_show_type)
+	
 	eval(state_view_show_type);
 
 }

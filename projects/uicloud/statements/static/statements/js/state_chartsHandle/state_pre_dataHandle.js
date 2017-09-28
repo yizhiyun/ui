@@ -82,11 +82,11 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		async: true,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
-			console.log("startSend");
+//			console.log("startSend");
 		},
 		success:function(data){
 			if(data.status == "success"){
-				console.log(data.results.data)
+//				console.log(data.results.data)
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);

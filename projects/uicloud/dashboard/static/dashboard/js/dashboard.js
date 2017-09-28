@@ -57,6 +57,7 @@ var if_or_load = false;
 var editor = null;
 // 记录当前点击哪个度量进行计算
 var currentHandleMeasureCalculate = null;
+var editMeasureCalculateView_isFirstShow = true;
 
 //保存视图触发事件
 function save_btn_fun(){
@@ -113,11 +114,8 @@ $(function() {
 		$("#view_show_area_content #view_show_empty").css("display","block");
 		$("#project_chart ul li").data("if_show","").css("border","").css("opacity","0.3");
 
-//		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .left_row_container").empty();
-//		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .content_body #data_list_for_body").empty();
-//		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .top_column_name").empty();
-//		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .column_data_list").empty();
-	
+		// 移除表格的数据
+		emptyAllTable();
 		isagainDrawTable = true;
 
 		save_row_de_wrap =[];
@@ -139,7 +137,7 @@ $(function() {
 		$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","0.6");
 		$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
 		// 展示维度和度量等
-		load_measurement_module($('#lateral_title .custom-select').val())
+//		load_measurement_module($('#lateral_title .custom-select').val());
 	}
 
 	function dashboard_edit_view_handle(){
@@ -233,7 +231,7 @@ $(function() {
 			}
 		}
 		//度量更多操作过程
-		md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["总计_YZY_pop_total","平均值_YZY_pop_mean","中位数_YZY_pop_median","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null});
+		md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null});
 		switch_chart_handle_fun(now_title_handle_view["viewtype"]);
 	}
 	//根据编辑过的视图重新展示
@@ -539,6 +537,7 @@ $(function() {
 			if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
 				if_or_load = true;
 				empty_viem_init("change");
+				load_measurement_module($('#lateral_title .custom-select').val());
 			}
 		});	
 	}
@@ -560,26 +559,27 @@ $(function() {
 
 		//1、需要加载这个表格的 column schema
 		$.ajax({
-			url:"/cloudapi/v1/tables/" +current_cube+"/all",
+			url:"/cloudapi/v1/tables/" +current_cube+"/schema",
 			type:"post",
 			dataType:"json",
 			success:function(data){
 				if (data["status"] == "success") {
 					var cube_all_data = data["results"];
-					filterNeedAllData = cube_all_data["data"];
+					
 					var schema = cube_all_data["schema"];
 
 					for(var i = 0;i < schema.length;i++){
 						schema[i]["isable"] = "yes";
 					}
 					_cube_all_data[current_cube_name] = cube_all_data;
+					
 					factory_create_li_to_measurement_module(schema);
 					
 					if(!if_or_load){
 					$("#dashboard_content #new_view ul").html("");
-					empty_viem_init("change");
-						//视图编辑修改
-					dashboard_edit_view_handle();
+						empty_viem_init("change");
+							//视图编辑修改
+						dashboard_edit_view_handle();
 					}
 				}
 			
@@ -608,6 +608,11 @@ $(function() {
 				$("#"+_show_type+"_show ul").append(aLi);
 							
 			}
+			
+			var specialLi= $("<li class=" + "measure"+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+"/static/dataCollection/images/tableDataDetail/Integer.png"+"/></div><div class='drop_list_main " + "measure" + "_list_main'"+"><p class='drop_main clear set_style " + "measure" + "_list_text'><span class=" + "measure" + "_list_text_left" + ">"+"记录数"+"</span><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></p></div></li>");
+			specialLi.find(".drop_main").eq(0).data("type","number");
+			$("#measure_show ul").append(specialLi);
+			
 			// 启动拖拽功能
 			drag();
 			
@@ -686,11 +691,11 @@ $(function() {
 						//编辑计算
 						//编辑计算
 						out_wrap_click.find(".edit_calculation").on("click",function(){
-							$("#editMeasureCalculateView").data("userCustomTile",false);
+//							$("#editMeasureCalculateView").data("userCustomTile",false);
 							$("#editMeasureCalculateView").show(0,function(){
 								if(editMeasureCalculateView_isFirstShow){
 									editMeasureCalculateView_isFirstShow = false;
-									CodeMirror.velocityContext = "SUM AVERAGE MAX MIN";  //提取到外部，方便从后台获取数据  
+									CodeMirror.velocityContext = "sum avg max min count";  //提取到外部，方便从后台获取数据  
 //								      CodeMirror.velocityCustomizedKeywords = "server.ip server.cache software.conf software.version software.tags.count";  
 								      	editor = CodeMirror.fromTextArea($("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea").get(0), {  
 								        lineNumbers: true,  
@@ -704,25 +709,17 @@ $(function() {
 								      editor.on('keypress', function() {  
 								          editor.showHint();  //满足自动触发自动联想功能  
 								      });
-								      editor.on("change",function(){
-								      	if(!$("#editMeasureCalculateView").data("userCustomTile")){
-								      		$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val(editor.getValue());
-								      	} 	
-								      });
 								}  
 							});
 							$(".maskLayer").show();
 							var measureList = $(this).parents(".me_out_content").eq(0);
 							var measureInfo = measureList.data("pop_data_handle");
-							$("#editMeasureCalculateView").data("handleEle",measureList);
 							$("#editMeasureCalculateView").data("measureInfo",measureInfo);
-							$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val(measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html());	
-							$("#editMeasureCalculateView .edit_measure_body #measure_show_title").unbind("focusin");
 							$("#editMeasureCalculateView .edit_measure_body #measure_show_title").unbind("change");
-							$("#editMeasureCalculateView .edit_measure_body #measure_show_title").focusin(function(event){
-								$("#editMeasureCalculateView .edit_measure_body #measure_show_title").change(function(){
-									$("#editMeasureCalculateView").data("userCustomTile",true);
-								})
+							$("#editMeasureCalculateView .edit_measure_body #measure_show_title").change(function(){
+								if($(this).hasClass("warn")){
+									$(this).removeClass("warn");
+								}
 							})
 							$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").unbind("click");
 							$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").click(function(event){
@@ -733,10 +730,19 @@ $(function() {
 							$("#editMeasureCalculateView .common-filer-footer .confirmBtn").unbind("click");
 							$("#editMeasureCalculateView .common-filer-footer .confirmBtn").click(function(event){
 								event.stopPropagation();
+								var  val = $("#editMeasureCalculateView .edit_measure_body #measure_show_title").val();
+								if(!val||/^\s*$/.test(val)){
+										$("#editMeasureCalculateView .edit_measure_body #measure_show_title").addClass("warn");
+									return;
+								}
 								var meausureInfo = $(this).parents("#editMeasureCalculateView").data('measureInfo');
 								var measureName = meausureInfo.split("_YZY_")[2];
-								drag_measureCalculateStyle[measureName] = "custom";
+								if(drag_measureCalculateStyle[measureName] === val && customCalculate[measureName] == editor.getValue()){
+									return;
+								}
+								drag_measureCalculateStyle[measureName] = val;
 								customCalculate[measureName] = editor.getValue();
+								
 								currentHandleMeasureCalculate.children(".drop_main").children("span.measure_list_text_left").eq(0).html($("#editMeasureCalculateView .edit_measure_body #measure_show_title").val());
 								switch_chart_handle_fun();
 								$("#editMeasureCalculateView").hide();
@@ -752,29 +758,44 @@ $(function() {
 
 
 						//度量里点击事件
-						//总计
+						out_wrap_click.find(".pop_count_all").click(function(event){
+							event.stopPropagation();
+							var measureList = $(this).parents(".me_out_content").eq(0);
+							var measureInfo = measureList.data("pop_data_handle");
+							var measureName = measureInfo.split("_YZY_")[2];
+							if(drag_measureCalculateStyle[measureName] == "计数("+measureName+")"){
+								return;
+							}
+							
+							drag_measureCalculateStyle[measureName] = "计数("+measureName+")";
+							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("计数("+measureName+")");
+							switch_chart_handle_fun();
+						})
+						
+						//求和
 						out_wrap_click.find(".pop_total").on("click",function(){
 							
 							var measureList = $(this).parents(".me_out_content").eq(0);
 							var measureInfo = measureList.data("pop_data_handle");
 							var measureName = measureInfo.split("_YZY_")[2];
-							drag_measureCalculateStyle[measureName] = "sum("+measureName+")";
-							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("总计("+measureName+")");
+							if(drag_measureCalculateStyle[measureName] == "求和("+measureName+")"){
+								return;
+							}
+							drag_measureCalculateStyle[measureName] = "求和("+measureName+")";
+							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("求和("+measureName+")");
 							switch_chart_handle_fun();
 						});
 						//平均值
 						out_wrap_click.find(".pop_mean").on("click",function(){
-//							console.log("平均数");
 							var measureList = $(this).parents(".me_out_content").eq(0);
 							var measureInfo = measureList.data("pop_data_handle");
 							var measureName = measureInfo.split("_YZY_")[2];
-							drag_measureCalculateStyle[measureName] = "avg("+measureName+")";
+							if(drag_measureCalculateStyle[measureName] == "平均值("+measureName+")"){
+								return;
+							}
+							drag_measureCalculateStyle[measureName] = "平均值("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("平均值("+measureName+")");
 							switch_chart_handle_fun();
-						});
-						//中位数
-						out_wrap_click.find(".pop_median").on("click",function(){
-//							console.log("中位数");
 						});
 						//最大值
 						out_wrap_click.find(".pop_max").on("click",function(){
@@ -782,7 +803,10 @@ $(function() {
 							var measureList = $(this).parents(".me_out_content").eq(0);
 							var measureInfo = measureList.data("pop_data_handle");
 							var measureName = measureInfo.split("_YZY_")[2];
-							drag_measureCalculateStyle[measureName] = "max("+measureName+")";
+							if(drag_measureCalculateStyle[measureName] == "最大值("+measureName+")"){
+								return;
+							}
+							drag_measureCalculateStyle[measureName] = "最大值("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("最大值("+measureName+")");
 							switch_chart_handle_fun();
 						});
@@ -793,7 +817,10 @@ $(function() {
 							
 							var measureInfo = measureList.data("pop_data_handle");
 							var measureName = measureInfo.split("_YZY_")[2];
-							drag_measureCalculateStyle[measureName] = "min("+measureName+")";
+							if(drag_measureCalculateStyle[measureName] == "最小值("+measureName+")"){
+								return;
+							}
+							drag_measureCalculateStyle[measureName] = "最小值("+measureName+")";
 							measureList.siblings("p.measure_list_text").children("span.measure_list_text_left").html("最小值("+measureName+")");
 							switch_chart_handle_fun();
 						});
@@ -1177,8 +1204,8 @@ $(function() {
 							_drag_message["type"] = _wd_type;
 							if(_wd_type == "measure"){
 								if(allKeys(drag_measureCalculateStyle).indexOf(_field_name) == -1){
-									drag_measureCalculateStyle[_field_name] = "sum("+_field_name+")";
-									$(current_li).find("span.measure_list_text_left").html("总计("+_field_name+")");
+									drag_measureCalculateStyle[_field_name] = "计数("+_field_name+")";
+									$(current_li).find("span.measure_list_text_left").html("计数("+_field_name+")");
 								}
 							}
 								//给予li id名 记录元素对应的内容
@@ -1247,10 +1274,10 @@ $(function() {
 									break;
 							}
 							// 展现 table
-					rightFilterListDraw("add",_field_name+":"+_dataType);
+					recordRightFilterInfo("add",_field_name+":"+_dataType);
 					switch_chart_handle_fun();
 					//度量更多操作过程
-					md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["总计_YZY_pop_total","平均值_YZY_pop_mean","中位数_YZY_pop_median","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null})
+					md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null})
 
 						}
 
@@ -1274,10 +1301,9 @@ $(function() {
 								height: "23px",
 							});
 						},
-						beforeStop: function() {
+						beforeStop: function(event,ui) {
 							$(".drop_view").removeClass("ui-state-default_z");
 							$("#view_show_area_content").css("border","");
-
 						},
 
 						over: function() {
@@ -1285,14 +1311,10 @@ $(function() {
 						},
 						out: function() {
 							$(this).css("background", "");
-
-//							console.log($(this).attr("id"))
-
 						},
-
 						update: function(event,ui) {
+							event.stopPropagation();
 							//排序后重新存储数据
-
 							function for_row_col(ele){
 								//遍历所有行里的li 排序后更新数据
 								for(var i = 0; i < $(ele).find("li").length;i++){
@@ -1630,13 +1652,14 @@ $(function() {
 									
 									// 移除筛选列
 									var fieldInfoArr = ui.item.attr("id").split(":");
-									rightFilterListDraw("delete",fieldInfoArr[1] + ":" + fieldInfoArr[2]);
+									recordRightFilterInfo("delete",fieldInfoArr[1] + ":" + fieldInfoArr[2]);
 
 									break;
 								default:
 
 									break;
 							}
+//							if(ui.)
 							switch_chart_handle_fun();
 						}
 

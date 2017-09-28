@@ -139,7 +139,7 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 #contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .first-line-condition .close{top: 0;}
 
 /*------------数值选择器-----------------*/
-#number-filter{width: 400px;height:350px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;font-size: 12px;}
+#number-filter{width: 400px;height:250px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;font-size: 12px;}
 #filter-model #number-filter .number-filter-head{border-bottom: 1px solid #dedede}
 /*数值选择器*/
 /* 主体部分公共部分*/
@@ -226,3 +226,6 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 .searchModule .searchReasultsList li{cursor: pointer;height: 14px;min-width: 100px;padding-bottom: 5px;}
 .searchModule .searchReasultsList li:hover{background: #dedede;}
 .searchModule .searchReasultsList li span{margin-left: 10px;line-height: 14px;height: 14px;font-size: 10px;}
+
+
+#calculateTextWidth{white-space: nowrap;visibility: hidden;}

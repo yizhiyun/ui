@@ -3,7 +3,8 @@
 	#editMeasureCalculateView{position: absolute;margin: auto;left: 0;top: 0;bottom: 0;right: 0;background: white;font-size: 12px;width: 400px;height: 260px;border-radius: 5px;}
 	#editMeasureCalculateView .common-head{border-bottom: 1px solid #dedede;}
 	#editMeasureCalculateView .edit_measure_body{padding-top: 10px;}
-	#editMeasureCalculateView .edit_measure_body #measure_show_title{width: 360px;margin-left: 20px;height: 21px;border: 1px solid #dedede;border-radius: 2px;}
+	#editMeasureCalculateView .edit_measure_body #measure_show_title{width: 360px;margin-left: 20px;height: 21px;border: 1px solid #dedede;border-radius: 2px;text-indent: 5px;}
+	#editMeasureCalculateView .edit_measure_body #measure_show_title.warn{border-color: red;}
 	#editMeasureCalculateView .edit_measure_body .calculate_input_box{border: 1px solid #dedede;margin-left: 19px;width: 360px;height: 100px;position: relative;margin-top: 10px;}
 	/*#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea{width: 100%;height: 80px;resize: none;border: 0px;outline: none;text-indent: 10px;}*/
 	#editMeasureCalculateView .edit_measure_body .calculate_input_box .tip{position: absolute;left: 5px;bottom: 0px;height: 20px;color: #808080;}
@@ -21,7 +22,7 @@
 		</div>
 	</div>
 	<div class="edit_measure_body">
-		<input type="text" id="measure_show_title"/>
+		<input type="text" id="measure_show_title" placeholder="请自定义计算标题"/>
 		<div class="calculate_input_box">
 			<textarea  class="arithmeticInputTextArea"></textarea>
 			<p class="tip unselectable">注意:必须是英文状态输入</p>

@@ -1,7 +1,7 @@
 /*筛选器的处理*/
 var conditionFilter_record = {};// 存储某个表格的帅选条件
 var filterNeedAllData = null; // 筛选器需要全部的表格数据
-var filter_from_in = null; // “buildData” "dashboard",主要为了区分筛选器从哪进入
+var filter_from_in = null; // “buildData” "dashBoard",主要为了区分筛选器从哪进入
 var finishCallBackFun = null; // 筛选完成之后回调的函数
 var currentNeedAllFields = null;
 var tableInfo;// 当前操作的表名字
@@ -46,6 +46,7 @@ function editFilterViewShow_fun(from,successFun){
 
 // 仪表板选择具体字段的时候
 function didSelectedField_needFilter(isEdit,fieldInfo,successFun){
+	filter_from_in = "dashBoard";
 	$(".maskLayer").show();
 	tableInfo = current_cube_name;
 	currentNeedAllFields = _cube_all_data[current_cube_name]["schema"];
@@ -680,7 +681,7 @@ function condition_by_field_dataFill_fun(isEdit,filterConditions){
 		
 	}
 	parent.eq(parent.length - 1).comboSelect();
-	console.log(parent);
+//	console.log(parent);
 	// select 选项变化的时候
 	parent.eq(parent.length - 1).change(function(){
 		detailSelectConidtion_content_generate_fun($(this).parents(".fieldSelctDiv:eq(0)").siblings(".conditionSelectDiv").find(".condition-selct").eq(0));
@@ -868,7 +869,7 @@ function contidon_value_change_fun(){
 		
 		$("#filter-model #number-filter .number-filter-head span.flag").eq(0).html("   " + field);
 		// 处理筛选器上的数据
-		dataHandleWork(tableInfo,field,"numberType",function(data){
+		dataHandleWork(filter_from_in,tableInfo,field,"numberType",function(data){
 			
 			// 众数处理
 			var userSelect_num =  $("#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .custom-select");
@@ -921,8 +922,8 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 	}
 	if(isEdit){
 		field = filterConditions["column"];
-		$("#filter-model #number-filter").data("state","edit");
-		$("#filter-model #number-filter").data("savedIndex",savedIndex);
+		$("#filter-model #date-filter").data("state","edit");
+		$("#filter-model #date-filter").data("savedIndex",savedIndex);
 		$("#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .radio-group .radio[data="+filterConditions["relativeRadio"]+"] .spinner").val(filterConditions["relativeValue"]);
 		$("#date-filter .date-filter-body #relative-date-box .date-unit-btns a[data="+filterConditions["relativeUnit"]+"]").trigger("click");
 		$("#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .radio-group .radio[data="+filterConditions["relativeRadio"]+"]").trigger("click");
@@ -933,7 +934,10 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 	
 	bottom_date_indictor_label_fun(); // 第一次计算相对日期里面的数据
 	// 计算日期范围里面的数据
-	dataHandleWork(tableInfo,field,"dateType",function(data){
+	dataHandleWork(filter_from_in,tableInfo,field,"dateType",function(data){
+		
+		var backgroundMinDate = new Date(data.min);
+		var backgroundMaxDate = new Date(data.max);
 		
 		var defaultMinDate = null;
 		var defaultMaxDate = null;
@@ -943,20 +947,20 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 			defaultMinDate = new Date(filterConditions["rangeMinValue"]);
 			defaultMaxDate = new Date(filterConditions["rangeMaxValue"]);
 		}else{
-			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").val(data.min.year+"/"+data.min.month+"/"+data.min.day);
-			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").val(data.max.year+"/"+data.max.month+"/"+data.max.day);
-			defaultMinDate = new Date(data.min.year,Number(data.min.month)-1,data.min.day);
-			defaultMaxDate = new Date(data.max.year,Number(data.max.month)-1,data.max.day);
+			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").val(backgroundMinDate.getFullYear()+"/"+backgroundMinDate.getMonth()+"/"+backgroundMinDate.getDate());
+			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").val(backgroundMaxDate.getFullYear()+"/"+backgroundMaxDate.getMonth()+"/"+backgroundMaxDate.getDate());
+			defaultMinDate = new Date(data.min);
+			defaultMaxDate = new Date(data.max);
 		}
-		$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(data.min.year+"/"+data.min.month+"/"+data.min.day);
-		$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(data.max.year+"/"+data.max.month+"/"+data.max.day);
+		$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(backgroundMinDate.getFullYear()+"/"+backgroundMinDate.getMonth()+"/"+backgroundMinDate.getDate());
+		$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(backgroundMaxDate.getFullYear()+"/"+backgroundMaxDate.getMonth()+"/"+backgroundMaxDate.getDate());
 		
 		// 日期范围--日期选择
 		$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").datepicker({
 			dateFormat:"yy/mm/dd",
      		 changeYear: true,
-     		 minDate:new Date(data.min.year,Number(data.min.month)-1,data.min.day),
-     		 maxDate:new Date(data.max.year,Number(data.max.month)-1,data.max.day),
+     		 minDate:backgroundMinDate,
+     		 maxDate:backgroundMaxDate,
      		 defaultDate:defaultMinDate,
      		 buttonImage:"/static/images/contentFilter/calendar.png",
      		 buttonText:"选择开始日期",
@@ -966,8 +970,8 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 		$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").datepicker({
 			dateFormat:"yy/mm/dd",
      		 changeYear: true,
-     		 minDate:new Date(data.min.year,Number(data.min.month)-1,data.min.day),
-     		 maxDate:new Date(data.max.year,Number(data.max.month)-1,data.max.day),
+     		 minDate:backgroundMinDate,
+     		 maxDate:backgroundMaxDate,
      		 defaultDate:defaultMaxDate,
      		 buttonImage:"/static/images/contentFilter/calendar.png",
      		 buttonText:"选择结束日期",
@@ -977,7 +981,7 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 			// 滑动条					
 			$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).dateRangeSlider({
 				defaultValues:{min:defaultMinDate, max:defaultMaxDate},
-				bounds:{min:new Date(data.min.year,Number(data.min.month)-1 ,data.min.day), max:new Date(data.max.year,Number(data.max.month)-1 ,data.max.day)},
+				bounds:{min:backgroundMinDate, max:backgroundMaxDate},
 				wheelMode: null,
 				valueLabels:"hide",
 				step:{
