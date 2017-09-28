@@ -113,6 +113,8 @@ $(function() {
 		$("#view_show_area_content #view_show_empty").css("display","block");
 		$("#project_chart ul li").data("if_show","").css("border","").css("opacity","0.3");
 
+		drag_measureCalculateStyle = {};
+
 //		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .left_row_container").empty();
 //		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .content_body #data_list_for_body").empty();
 //		$("#dashboard_content #view_show_area #view_show_wrap #text_table_need_show .right_module .top_column_container .top_column_name").empty();
@@ -139,7 +141,7 @@ $(function() {
 		$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","0.6");
 		$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
 		// 展示维度和度量等
-		load_measurement_module($('#lateral_title .custom-select').val())
+		// load_measurement_module($('#lateral_title .custom-select').val())
 	}
 
 	function dashboard_edit_view_handle(){
@@ -267,6 +269,7 @@ $(function() {
 			}
 		}
 		$("#view_show_empty").css("display", "none");
+		drag_measureCalculateStyle = JSON.parse(now_title_handle_view["calculation"]);
 		reason_old_show(drag_row_column_data,current_cube_name,now_title_handle_view);
 	}
 	//创建视图标题展示和新建
@@ -539,6 +542,7 @@ $(function() {
 			if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
 				if_or_load = true;
 				empty_viem_init("change");
+				load_measurement_module(cube_select.val());
 			}
 		});	
 	}
@@ -578,7 +582,7 @@ $(function() {
 					if(!if_or_load){
 					$("#dashboard_content #new_view ul").html("");
 					empty_viem_init("change");
-						//视图编辑修改
+					//视图编辑修改
 					dashboard_edit_view_handle();
 					}
 				}

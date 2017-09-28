@@ -171,11 +171,11 @@
 	<div id="tableDataDetailListPanel" style="display: none;">
 		<img src={% static "dataCollection/images/tableDataDetail/Drop-down.png" %} alt="" id="closeableDataDetailListPanel"/>
 		<div class="topInfo">
-			<div>
-				<img src={%static "dataCollection/images/tableDataDetail/Split.png" %} alt="" />
+			<div id="splitFileds_btn">
+				<img src={%static "dataCollection/images/tableDataDetail/Split.png" %} alt="" title="拆分" />
 			</div>
 			<div id="screeningWasher">
-				<img src={%static "dataCollection/images/tableDataDetail/filter.png" %} alt="" />
+				<img src={%static "dataCollection/images/tableDataDetail/filter.png" %} alt="" title="筛选" />
 			</div>
 			<div id="showHiddenEles">
 				<img src={%static "dataCollection/images/tableDataDetail/handle_33.png" %} alt="" /><span>显示隐藏字段</span>
@@ -266,15 +266,127 @@
  		</div>
  	</div>
 
+	<!-- 构建的集合表的拆分功能 -->
+	<div class="split_fileds">
+		<!-- titile_line -->
+		<div class="topline"></div>
+		<!-- title_name -->
+		<div class="common-head">
+			<span class="logo">拆分字段</span>
+			<div class="close">
+				<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+			</div>
+		</div>
+		<!-- 拆分功能区域 -->
+		<div class="splitFileds_handle_area">
+			<!--预览-->
+			<div class="split_preview">
+				<h4>预览</h4>
+				<div class="splitPreview_area">
+					<ul>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+			<!-- 拆分方式的选择 -->
+			<div class="split_manner">
+				<form>
+					<input type="radio" id="list_separator" name="splitWay" class="radio_parent">
+					<label for="list_separator" name='splitWay_separ' class="checked" id="label_separ">分隔符号</label>
+				
+					<input type="radio" name='splitSe_checked' id="slash"  class="radio_son">
+					<label for="slash" name="label_check" class="checked" id="splitSe_label" splitSymbol="symbol_YZY_/">斜杠</label>
+
+					<input type="radio" name='splitSe_checked' id="semicolon" class="radio_son">
+					<label for="semicolon" name="label_check" splitSymbol="symbol_YZY_">分号</label>
+
+					<input type="radio" name='splitSe_checked' id="comma" class="radio_son">
+					<label for="comma" name="label_check" splitSymbol="symbol_YZY_,">逗号</label>
+
+					<input type="radio" name='splitSe_checked' id="space" class="radio_son">
+					<label for="space" name="label_check" splitSymbol="symbol_YZY_ ">空格</label>
+
+<!-- 					<input type="radio" name='splitSe_checked' id="tab_btn" class="radio_son">
+					<label for="tab_btn" name="label_check">Tab键</label> -->
+
+					<input type="radio" name='splitSe_checked' id="other" class="radio_son">
+					<label for="other" name="label_check" id="label_other" id="free_handle">其他</label>
+					<input type="text" id="label_input_textarea" placeholder="- , ; : ....">
+
+					<!-- 固定宽度 -->
+					<input type="radio" id="fixed_width" name="splitWay" class="radio_parent">
+					<label for="fixed_width" name='splitWay_separ' id="label_fixed">固定宽度</label>
+					
+				</form>
+
+				<!-- 固定宽度标尺区域展示 -->
+				<div class="fixedWidth_content">
+					<div class="fixedWidth_scaleplate">
+						<ul class="clear">
+							
+						</ul>
+					</div>
+					<div class="splitPreview_area">
+					
+					</div>
+
+					<!-- fixedWidth_content footer -->
+					<p>(单击鼠标建立分列线;双击分列线清除;拖拽移动分列线)</p>
+				</div>
+			</div>
+
+
+			<!-- wraing -->
+				<div class="splitWidth_waring">
+					<img src={% static "dataCollection/images/gt_03.png" %} alt="waring">
+					<span>日期/时间类型的数据拆分后均默认为字符串类型</span>
+				</div>
+		</div>
+
+
+
+		
+		<!-- 拆分取消确定区域 -->
+		<div class="splitFileds_footer">
+			<a href="javascript:void(0)" class="cancleBtn">取消</a>
+			<a href="javascript:void(0)" class="confirmBtn">确定</a>
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
  	<!--跳转到仪表盘或者分析 -->
- 	<div id="choose_menu">
+ 	<!-- <div id="choose_menu"> -->
  		<!-- title -->
- 		<div id="choose_menu_title">选择进入模块</div>
+ 		<!-- <div id="choose_menu_title">选择进入模块</div> -->
 
  		<!--模块点击展示-->
- 		<div id="choose_menu_content">
+ <!-- 		<div id="choose_menu_content">
  			<ul>
  				<li>
  					<a href="../dashboard/pallasdata2"><img src={%static "dataCollection/images/dashboard.png" %} alt="dashboard" id="choose_dashboard"></a>
@@ -290,6 +402,6 @@
  				</li>
  			</ul>
  		</div>
- 	</div>
+ 	</div> -->
  	{% include "dataCollection/panelFileOption.html" %}
  {% endblock %}

@@ -1905,7 +1905,6 @@
 
         var colliders = this.faux_grid;
         var coords = this.$player.data('coords').coords;
-
         this.cells_occupied_by_player = this.get_cells_occupied(
             this.player_grid_data);
         this.cells_occupied_by_placeholder = this.get_cells_occupied(
@@ -3964,7 +3963,9 @@
         if (this.drag_api) {
             this.drag_api.destroy();
         }
-
+        if(this.resize_api) {
+            this.resize_api.destroy();
+        }
         this.remove_style_tags();
 
         remove && this.$el.remove();

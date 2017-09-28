@@ -28,9 +28,7 @@ Array.prototype.XMsort = function(propertyNameArray){
 var customCalculate = {}
 var preAllData = null;
 var recordConditon = null;
-function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
-	
-	
+function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){	
 	getCurrentTableFilterData(current_cube_name);
 	conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
 	
@@ -68,12 +66,12 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	if(needColumns){
 		handleDataPost["columns"] = needColumns;
 	}
-	
+
 	if(equalCompare(recordConditon,handleDataPost) && preAllData){
 		handleSuccessFunction(preAllData);
 		return;
 	}
-	
+
 	$.ajax({
 		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
 		type:"post",
@@ -86,7 +84,6 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		},
 		success:function(data){
 			if(data.status == "success"){
-				console.log(data.results.data)
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);

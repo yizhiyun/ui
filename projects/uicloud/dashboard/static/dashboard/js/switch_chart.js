@@ -256,7 +256,6 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 //编辑视图直接生成对应视图
 	if(edit_view != undefined){
 		$("#main").css("display","none");
-//		console.log(edit_view)
 		eval(edit_view);
 		view_name = edit_view;
 		show_btn_change.data("if_show","");
@@ -269,9 +268,9 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 	}else{
 
 		if(!save_now_show_view_text.hasClass("show_view_success")){
-		save_now_show_view_text = $("#show_histogram");
+			save_now_show_view_text = $("#show_histogram");
 		}
-//		console.log(save_now_show_view_text)
+
 		eval(save_now_show_view_text.data("show_view_fun"));
 		view_name = save_now_show_view_text.data("show_view_fun");
 		save_now_show_view_text.data("if_show","true");
