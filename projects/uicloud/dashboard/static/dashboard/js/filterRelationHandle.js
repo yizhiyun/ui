@@ -157,19 +157,19 @@ function rightFilterListDraw(){
 		li.append(fieldDetailContent_ul);
 		var currentData = _cube_all_data[current_cube_name]["data"];
 		var help_remove_repeatArr = [];
-		for (var i =0;i < currentData.length;i++) {
-			var lineItem = currentData[i];
-			if(help_remove_repeatArr.indexOf(lineItem[columnInfoArr[0]]) != -1){
-				continue;
+		for (var i =0;i < filterNeedAllData[columnInfoArr[0]].length;i++) {
+			var lineItem = filterNeedAllData[columnInfoArr[0]][i];
+			if(i >= dataNumberControl){
+				break;
 			}
-			var detail_li = $("<li><label><input type='checkbox'/><span class='filedContentName'>"+lineItem[columnInfoArr[0]]+"</span></label></li>");
-			if(checkSelectConditionDict[columnInfoArr[0]]&&checkSelectConditionDict[columnInfoArr[0]].indexOf(lineItem[columnInfoArr[0]]) != -1){		
+			var detail_li = $("<li><label><input type='checkbox'/><span class='filedContentName'>"+lineItem+"</span></label></li>");
+			if(checkSelectConditionDict[columnInfoArr[0]]&&checkSelectConditionDict[columnInfoArr[0]].indexOf(lineItem) != -1){		
 				detail_li.find("input").eq(0).attr("checked",false);
 			}else{
 				detail_li.find("input").eq(0).prop("checked",true);
 			}
 			
-			help_remove_repeatArr.push(lineItem[columnInfoArr[0]]);
+//			help_remove_repeatArr.push(lineItem[columnInfoArr[0]]);
 			fieldDetailContent_ul.append(detail_li);
 			detail_li.find("input").change(function(event){
 				var column = $(this).parents("li.filterLI").eq(0).data("fieldInfo").split(":")[0];

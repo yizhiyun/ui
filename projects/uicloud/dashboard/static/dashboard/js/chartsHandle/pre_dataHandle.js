@@ -116,7 +116,6 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		handleSuccessFunction(preAllData);
 		return;
 	}
-
 	$.ajax({
 		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
 		type:"post",
@@ -132,12 +131,9 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
-				
-				_cube_all_data[current_cube_name]["data"] = data.results.data;
-				filterNeedAllData = data.results.data;
-				rightFilterListDraw();
 			}
 		}
 	});
 	
 }
+
