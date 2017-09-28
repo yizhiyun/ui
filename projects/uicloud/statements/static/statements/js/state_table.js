@@ -22,8 +22,7 @@ var isRowFinished = false;
 var isColumnFinished = false;
 
 function showTable_by_dragData(){
-
-	var drag_measureCalculateStyle = JSON.parse($("."+viewshow_class+"").data("view_num_or"));
+	
 	// 绘制行数据
 	function function_draw_row_data(needAllData){
 		var need_Handle_drag_row_dimensionality = drag_row_column_data["row"]["dimensionality"];
@@ -47,11 +46,13 @@ function showTable_by_dragData(){
 						var oneRowName = need_Handle_drag_row_dimensionality[class_i].split(":")[0];
 						className += aData[oneRowName]+"_YZYPD_";
 					}
-					if ($(rowLeftTable).find("tbody tr td."+className+".active").length && $(rowLeftTable).find("tbody tr td."+className+".active").length > 0) {
-						var originrowspan = Number($(rowLeftTable).find("tbody tr td."+className+".active").attr("rowspan"));
-						$(rowLeftTable).find("tbody tr td."+className+".active").attr("rowspan",originrowspan+1);
+					className = md5(className);
+					if ($(rowLeftTable).find("tbody tr td."+className).length && $(rowLeftTable).find("tbody tr td."+className).length > 0) {
+						var originrowspan = Number($(rowLeftTable).find("tbody tr td."+className).attr("rowspan"));
+						$(rowLeftTable).find("tbody tr td."+className).attr("rowspan",originrowspan+1);
 					}else{
-						var td = $("<td class='"+className+" active' rowspan='1'>"+aData[row_name]+"</td>");
+
+						var td = $("<td class='"+className+"' rowspan='1'>"+aData[row_name]+"</td>");
 						if(row_i == 0){
 							td.addClass("firstRow");
 						}
@@ -81,11 +82,10 @@ function showTable_by_dragData(){
 					
 					var className = "";
 					for (var class_i = 0;class_i <=column_i; class_i++) {
-						var oneColumnName = need_Handle_drag_column_dimensionality[class_i].split(":")[0];
+						var oneColumnName = need_Handle_drag_column_dimensionality[class_i].split(":")[0];	
 						className += aData[oneColumnName]+"_YZYPD_";
 					}
-					
-					
+					className = md5(className);
 					if($("."+viewshow_class+" .top_column_container .column_data_list tbody tr."+aColumnName + " td."+className).length&&$("."+viewshow_class+" .top_column_container .column_data_list tbody tr."+aColumnName + " td."+className).length > 0){
 						var colsSpan = Number($("."+viewshow_class+" .top_column_container .column_data_list tbody tr."+aColumnName + " td."+className).attr("colspan"));
 						$("."+viewshow_class+" .top_column_container .column_data_list tbody tr."+aColumnName + " td."+className).attr("colspan",colsSpan+1);
@@ -164,12 +164,16 @@ function showTable_by_dragData(){
 			$("."+viewshow_class+" .content_body #data_list_for_body").append(measureDiv);
 			var rowClass = "";
 			for(var row_i = 0;row_i < allRowDemi.length;row_i++){
+				
 				rowClass += aData[allRowDemi[row_i]]+"_YZYPD_";
 			}
 			var columnClass = "";
 			for(var column_i = 0;column_i < allColumnDemi.length;column_i++){
+				
 				columnClass += aData[allColumnDemi[column_i]]+"_YZYPD_";
 			}
+			rowClass = md5(rowClass);
+			columnClass = md5(columnClass);
 			var topValue = 0;
 			var leftValue = 0;
 			if(rowClass!=""){
@@ -332,8 +336,14 @@ function showTable_by_dragData(){
 
 
 
-
-
+function emptyAllTable(){
+	$("."+viewshow_class+" .top_column_container .column_data_list tbody").empty();
+	var rowLeftTable = $("."+viewshow_class+" .left_row_container table").eq(0);
+	rowLeftTable.find("thead tr").empty();
+	rowLeftTable.find("tbody").empty();
+	$("."+viewshow_class+" #data_list_for_body div.vertical_line").remove();
+	$("."+viewshow_class+" #data_list_for_body li").remove();
+}
 
 
 

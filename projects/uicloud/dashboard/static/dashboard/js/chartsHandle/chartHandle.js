@@ -2362,8 +2362,6 @@ function valueUnitDidChangedValue(){
 }
 
 
-
-
 // 公共函数，处理层级字典
 // values是度量值
 // needobj 辅助对象

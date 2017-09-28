@@ -1,9 +1,12 @@
 
 var current_data = null;
 
-// var drag_measureCalculateStyle = {};
+var drag_measureCalculateStyle = {};
+
 //显示对应视图展示的图形
 function view_handle_switch_statements(viewshow_class,show_if_or){
+
+	
 
 	if(echarts.getInstanceByDom($("."+viewshow_class+"").get(0))){
 		echarts.getInstanceByDom($("."+viewshow_class+"").get(0)).clear();
@@ -16,10 +19,13 @@ function view_handle_switch_statements(viewshow_class,show_if_or){
 		isagainDrawTable = true;
 	}
 
-	eval(state_view_show_type);
+
+	eval(state_view_show_type.replace(/\)/,","+viewshow_class.match(/\d+/g)[1])+")");
 
 	if(!show_if_or){
 		$("."+viewshow_class+"").parent().css("display","none");
 	}
+
+	
 
 }
