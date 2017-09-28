@@ -6,6 +6,7 @@ var finishCallBackFun = null; // 筛选完成之后回调的函数
 var currentNeedAllFields = null;
 var tableInfo;// 当前操作的表名字
 var didSelectColumn = null;
+var dataNumberControl = 100;
 // 编辑筛选器出现
 function editFilterViewShow_fun(from,successFun){
 		$(".maskLayer").show();
@@ -708,15 +709,29 @@ function detailSelectConidtion_content_generate_fun(relation_select_ele){
 		var field_selct = detailConditionDiv.siblings(".fieldSelctDiv").eq(0).find(".field-selct");
 		var field = field_selct.val();
 		detailConditionDiv.find(".detail-condition").empty();
-			var repeat_record = [];
-			for (var i = 0;i <  filterNeedAllData.length;i++) {
-				if(repeat_record.indexOf(filterNeedAllData[i][field]) == -1){
-					repeat_record.push(filterNeedAllData[i][field]);	
-					var op = $("<option>"+filterNeedAllData[i][field]+"</option>");
-					op.attr("value",filterNeedAllData[i][field]);
+			if(filter_from_in == "buildData"){
+				var repeat_record = [];
+				for (var i = 0;i <  filterNeedAllData.length;i++) {
+					if(repeat_record.indexOf(filterNeedAllData[i][field]) == -1){
+						repeat_record.push(filterNeedAllData[i][field]);	
+						var op = $("<option>"+filterNeedAllData[i][field]+"</option>");
+						op.attr("value",filterNeedAllData[i][field]);
+						detailConditionDiv.find(".detail-condition").append(op);
+					}
+				}
+				delete repeat_record;
+			}else if(filter_from_in == "dashBoard"){
+				for(var i = 0;i < filterNeedAllData[field].length;i++){
+					if(i >= dataNumberControl){
+						break;
+					}
+					var thedata = filterNeedAllData[field][i];
+					var op = $("<option>"+thedata+"</option>");
+					op.attr("value",thedata);
 					detailConditionDiv.find(".detail-condition").append(op);
 				}
-		}
+			}
+			
 		detailConditionDiv.find(".detail-condition").comboSelect();
 		detailConditionDiv.children(".combo-select").show();
 		detailConditionDiv.find(".detail-condition").addClass("active");
@@ -771,39 +786,74 @@ function contidon_value_change_fun(){
 			$("#filter-model #contentChooser").data("state","normal");
 		}
 		
-		for (var i = 0;i <  filterNeedAllData.length;i++) {
-			if(repeat_record.indexOf(filterNeedAllData[i][field]) == -1){
-				repeat_record.push(filterNeedAllData[i][field]);
-				
-				var li = $("<li><label><input type='checkbox' checked='checked'/><span>"+filterNeedAllData[i][field]+"</span></label></li>");
-				li.find("input").attr("value",filterNeedAllData[i][field]);
-				$("#filter-model #contentChooser #common .detailSearchData .dataList").append(li);	
-				// 每个复选框绑定事件
-				li.find("input").change(function(){
-					if (this.checked) {
-						content_select_count++
-					}else{
-						content_select_count--;
-					}
-					if (content_select_count === content_select_max) {
-						$("#filter-model #contentChooser #common #selectAllInCommon").prop("checked",true);
-					}else{
-						$("#filter-model #contentChooser #common #selectAllInCommon").attr("checked",false);
-					}
-					content_common_summary_show_fun("common");
-				});
-				// 如果是重新编辑一个存在的筛选
-				if(isEdit){ 
-					if(filterConditions.commonSelected.indexOf(filterNeedAllData[i][field]) != -1){		
-						li.find("input").eq(0).prop("checked",true);
-					}else{
-						li.find("input").eq(0).attr("checked",false);
-					}
-				}		
+		if(filter_from_in == "buildData"){
+			for (var i = 0;i <  filterNeedAllData.length;i++) {
+				if(repeat_record.indexOf(filterNeedAllData[i][field]) == -1){
+					repeat_record.push(filterNeedAllData[i][field]);
+					
+					var li = $("<li><label><input type='checkbox' checked='checked'/><span>"+filterNeedAllData[i][field]+"</span></label></li>");
+					li.find("input").attr("value",filterNeedAllData[i][field]);
+					$("#filter-model #contentChooser #common .detailSearchData .dataList").append(li);	
+					// 每个复选框绑定事件
+					li.find("input").change(function(){
+						if (this.checked) {
+							content_select_count++
+						}else{
+							content_select_count--;
+						}
+						if (content_select_count === content_select_max) {
+							$("#filter-model #contentChooser #common #selectAllInCommon").prop("checked",true);
+						}else{
+							$("#filter-model #contentChooser #common #selectAllInCommon").attr("checked",false);
+						}
+						content_common_summary_show_fun("common");
+					});
+					// 如果是重新编辑一个存在的筛选
+					if(isEdit){ 
+						if(filterConditions.commonSelected.indexOf(filterNeedAllData[i][field]) != -1){		
+							li.find("input").eq(0).prop("checked",true);
+						}else{
+							li.find("input").eq(0).attr("checked",false);
+						}
+					}		
+				}
 			}
+			content_select_max = repeat_record.length;
+		}else if(filter_from_in == "dashBoard"){
+			for(var i =0;i < filterNeedAllData[field].length;i++){
+				if(i >= dataNumberControl){
+					break;
+				}
+				var theData = filterNeedAllData[field][i];
+				var li = $("<li><label><input type='checkbox' checked='checked'/><span>"+theData+"</span></label></li>");
+				li.find("input").attr("value",theData);
+				$("#filter-model #contentChooser #common .detailSearchData .dataList").append(li);
+									// 每个复选框绑定事件
+					li.find("input").change(function(){
+						if (this.checked) {
+							content_select_count++
+						}else{
+							content_select_count--;
+						}
+						if (content_select_count === content_select_max) {
+							$("#filter-model #contentChooser #common #selectAllInCommon").prop("checked",true);
+						}else{
+							$("#filter-model #contentChooser #common #selectAllInCommon").attr("checked",false);
+						}
+						content_common_summary_show_fun("common");
+					});
+					// 如果是重新编辑一个存在的筛选
+					if(isEdit){ 
+						if(filterConditions.commonSelected.indexOf(theData) != -1){		
+							li.find("input").eq(0).prop("checked",true);
+						}else{
+							li.find("input").eq(0).attr("checked",false);
+						}
+					}
+			}
+			content_select_max = filterNeedAllData[field].length;
 		}
 		
-		content_select_max = repeat_record.length;
 		if(isEdit){
 			content_select_count = filterConditions.commonSelected.length;
 		}else{
@@ -872,13 +922,13 @@ function contidon_value_change_fun(){
 		dataHandleWork(filter_from_in,tableInfo,field,"numberType",function(data){
 			
 			// 众数处理
-			var userSelect_num =  $("#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .custom-select");
-			if(data.modeArr.length > 0){
-				userSelect_num.find("#modeOption").attr("disabled","false");
-			}else{
-				userSelect_num.find("#modeOption").prop("disabled","true");
-			}
-			userSelect_num.comboSelect();
+//			var userSelect_num =  $("#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .custom-select");
+//			if(data.modeArr.length > 0){
+//				userSelect_num.find("#modeOption").attr("disabled","false");
+//			}else{
+//				userSelect_num.find("#modeOption").prop("disabled","true");
+//			}
+//			userSelect_num.comboSelect();
 			var sliderValues = [data.min,data.max];
 			if(isEdit){
 				sliderValues = [filterConditions["sliderMinValue"],filterConditions["sliderMaxValue"]];
@@ -1453,6 +1503,11 @@ function localStoragedeleteData(tableInfo,index){
 	filterDataArr.splice(index,1);
 	window.localStorage.setItem(tableInfo,JSON.stringify(filterDataArr));
 }
+// 清楚一个表格的筛选条件
+function deleteATableAllConditions(tableInfo){
+	window.localStorage.removeItem(tableInfo);
+}
+
 // 得到现有的当前操作表格筛选条件
 function getCurrentTableFilterData(tableInfo,filterColumnArr){
 	var arr = localStorageGetData(tableInfo);
@@ -1505,8 +1560,8 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 			startDate = startDate.replace(/\//g,"-");
 			var endDate = dateValueArr[1];
 			endDate =endDate.replace(/\//g,"-");
-			var filter1 = {"type":">=","columnName":obj.column,"value":startDate}
-			var filter2 = {"type":"<=","columnName":obj.column,"value":endDate}
+			var filter1 = {"type":">=","columnName":obj.column,"value":startDate,"datatype":"date"}
+			var filter2 = {"type":"<=","columnName":obj.column,"value":endDate,"datatype":"date"}
 			conditionFilter_record[tableInfo]["condition"].push(filter1);
 			conditionFilter_record[tableInfo]["condition"].push(filter2);
 		}		
