@@ -82,6 +82,7 @@ menu_folder_name_arr =[];
 
 $(function(){
 
+
 	function gridster_handle(){
 
 	 		  gridster.destroy();
@@ -170,6 +171,7 @@ $(function(){
 	 					now_view_img.resize();
 					})
 }
+
 
 
 

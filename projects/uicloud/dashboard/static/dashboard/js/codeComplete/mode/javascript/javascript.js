@@ -37,7 +37,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       // "this": kw("this"), "class": kw("class"), "super": kw("atom"),
       // "yield": C, "export": kw("export"), "import": kw("import"), "extends": C,
       // "await": C
-      "SUM":A,"MAX":A,"AVERAGE":A,"MIN":A
+      "sum":A,"max":A,"avg":A,"min":A,"count":A
     };
 
     // Extend the 'normal' keywords with the TypeScript language extensions

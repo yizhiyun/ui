@@ -828,6 +828,8 @@ function getTablesOfaDataBase(theSelect){
     
     
   });
+
+ 
  
 // 数据集弹框功能按钮
 $("#buildDataPanelView .build-body .cube-name-radio .radio").click(function(){

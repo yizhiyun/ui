@@ -11,6 +11,7 @@ function view_handle_switch_statements(viewshow_class,show_if_or){
 
 	var viewshow_class = viewshow_class;
 
+
 	if(state_view_show_type == "showTable_by_dragData()"){
 		isagainDrawTable = true;
 	}

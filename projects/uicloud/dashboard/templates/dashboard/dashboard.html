@@ -9,7 +9,7 @@
 {% endblock %}
 {% block js %}
 <script src={% static "js/dataWork.js"%} type="text/javascript" charset="utf-8"></script>
-<script src={% static "dashboard/js/echarts.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/echarts.min.js"%} type="text/javascript" charset="utf-8"></script>
  <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
  <script src={% static "dashboard/js/chartsHandle/pre_dataHandle.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "dashboard/js/switch_chart.js"%} type="text/javascript" charset="utf-8"></script>
@@ -349,8 +349,15 @@
 
 					<!-- echarts图形展示 -->
 					<div id="main" style="width: 100%;height: 100%;display: none"></div>
+					
 					{% include "dashboard/dashBorad_table.html" %}
 
+				</div>
+				<div class="drillUpAndDrillDownSelection" style="display: none;">
+						<span class="drillUp">上钻</span>
+						<span class="levelTitle">无</span>
+						<span class="drillDown">下钻</span>
+						<ul class="drillSelctionList"></ul>
 				</div>
 			</div>	
 		</div>
@@ -386,9 +393,10 @@
 					<ul>
 						
 					</ul>
-					
+					<div class="clear"></div>
 					<!--line-->
 					<div id="project_show_line"></div>
+					{% include "dashboard/chartSetting.html" %}
 				</div>
 				
 				
@@ -409,17 +417,7 @@
 						</ul>
 					</div>
 				</div>
-				
-				<!--样式-->
-				<div id="project_style">
-					<ul>
-						
-					</ul>
-				</div>				
-				
-				
-				
-				
+								
 				<!--提示-->
 				<div id="sizer_mpt">
 					<img src={% static "dashboard/img/sxq-sel-tis.png" %} alt="sizer_mpt" />

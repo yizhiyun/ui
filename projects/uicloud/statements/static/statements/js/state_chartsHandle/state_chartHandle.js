@@ -3,7 +3,9 @@
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function one_de_one_me_handle (chart_type_need) {
+
 	var drag_measureCalculateStyle = JSON.parse($("."+viewshow_class+"").data("view_num_or"));
+
 	var mycharts = echarts.init($("."+viewshow_class+"").get(0));
  	var need_handle_measureName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]))[0];
  	var need_handle_dimensionalityName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]))[0];
@@ -365,6 +367,7 @@ default:
 function many_de_many_me_handle(chart_type_need){
 	var drag_measureCalculateStyle = JSON.parse($("."+viewshow_class+"").data("view_num_or"))
 	//释放图表实例
+
 	var mycharts = echarts.init($("."+viewshow_class+"").get(0));
 	
 	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));

@@ -43,13 +43,24 @@ This document describe how to get users' tables filter information.
                 },
                 ...
     ],
+
     # handleCol if you want to split column, if not. you don't need to send it
     "handleCol":
         {
             "colname": <colname>,
             "method": <split/limit>,
             "cutsymbol": <cutsymbol>
-        }
+        },
+
+    # expressions if you need, if not. you don't need to send it
+    "expressions": {
+        "groupby": [<groupbyColumn>, ...],
+        "orderby": [<orderbyColumn>, ...],
+        "exprlist": [
+            {"alias":<columnName>, "exprstr": <expressionString>},
+            ...
+        ]
+    }
     
 }
 ```
@@ -89,6 +100,21 @@ This document describe how to get users' tables filter information.
             "colname": "table1col",
             "method": "limit",
             "cutsymbol": [2,5]
+        },
+    "expressions":
+        {
+            "groupby": ["id", "namdsa"],
+            "orderby": ["id"],
+            "exprlist": [
+                {
+                    "alias": "id", 
+                    "exprstr": "avg(id)"
+                },
+                {
+                    "alias": "namdsa",
+                    "exprstr": "avg(id)"
+                }
+            ]
         }
 
 }
