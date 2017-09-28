@@ -165,6 +165,7 @@ class ConnectDataBase():
         mysqlstr = ''
         sqlserverstr = ''
         oraclestr = ''
+        oracleToDate = ''
 
         filtersql = ''
 
@@ -179,13 +180,13 @@ class ConnectDataBase():
 
                 condType = condIt['type']
                 if condType == 'limit' and type(condIt["value"]) == int:
-                    mysqlstr = mysqlstr + 'limit {0}'.format(condIt["value"])
-                    sqlserverstr = sqlserverstr + ' top {0}'.format(condIt["value"])
-                    oraclestr += oraclestr + 'and rownum<={0} '.format(condIt["value"])
+                    mysqlstr = 'limit {0}'.format(condIt["value"])
+                    sqlserverstr = ' top {0}'.format(condIt["value"])
+                    oraclestr = 'and rownum<={0} '.format(condIt["value"])
 
                 elif condType in [">", ">=", "=", "<=", "<", "!="]:
                     if 'datatype' in condIt.keys() and condIt['datatype'] == 'date' and self.dbPaltName == 'oracle':
-                        oraclestr = "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
+                        oracleToDate = "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
                             condIt['columnName'], condType, condIt["value"]
                         ) + oraclestr
 
@@ -228,9 +229,10 @@ class ConnectDataBase():
                     filtersql += "and {0} not like '%{1}' ".format(condIt['columnName'], condIt["value"])
 
         if count == 0:
-            mysqlstr = mysqlstr + 'limit {0}'.format(maxRowCount)
-            sqlserverstr = sqlserverstr + ' top {0}'.format(maxRowCount)
-            oraclestr += oraclestr + 'and rownum<={0} '.format(maxRowCount)
+            if 'expressions' not in jsonData.keys() or not jsonData['expressions']:
+                mysqlstr = mysqlstr + 'limit {0}'.format(maxRowCount)
+                sqlserverstr = sqlserverstr + ' top {0}'.format(maxRowCount)
+                oraclestr += oraclestr + 'and rownum<={0} '.format(maxRowCount)
 
         results = {}
 
@@ -238,6 +240,27 @@ class ConnectDataBase():
             try:
                 self.con.select_db(jsonData['database'])
                 cursor = self.con.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+
+                if 'expressions' in jsonData.keys() and jsonData['expressions']:
+                    expressions = jsonData['expressions']
+                    exprStr = ''
+                    for expr in expressions['exprlist']:
+                        exprStr += expr['exprstr'] + ' as ' + expr['alias'] + ','
+                    if 'groupby' in expressions.keys() and expressions['groupby']:
+                        exprStr += ','.join(expressions['groupby'])
+                        exprSql = "select {0} from {1} where 1=1 ".format(exprStr, jsonData['tableName'])
+                    else:
+                        exprSql = "select {0} from {1} where 1=1 ".format(exprStr[:-1], jsonData['tableName'])
+                    exprSql += filtersql
+                    if 'groupby' in expressions.keys() and expressions['groupby']:
+                        exprSql += 'group by {0} '.format(','.join(expressions['groupby']))
+                    if 'orderby' in expressions.keys() and expressions['orderby']:
+                        exprSql += 'order by {0} '.format(','.join(expressions['orderby']))
+                    exprSql += mysqlstr
+                    logger.debug('exprSql: {0}'.format(exprSql))
+                    cursor.execute(exprSql)
+                    rs = cursor.fetchall()
+                    return rs
 
                 if mode == 'all' or mode == 'data':
                     sql += filtersql + mysqlstr
@@ -307,8 +330,37 @@ class ConnectDataBase():
         elif self.dbPaltName == 'oracle':
             try:
                 cursor = self.con.cursor()
+                if 'expressions' in jsonData.keys() and jsonData['expressions']:
+                    expressions = jsonData['expressions']
+                    exprStr = ''
+                    for expr in expressions['exprlist']:
+                        exprStr += '{0} as "{1}",'.format(expr['exprstr'], expr['alias'])
+                    if 'groupby' in expressions.keys() and expressions['groupby']:
+                        exprStr += ','.join(expressions['groupby'])
+                        exprSql = "select {0} from {1} where 1=1 ".format(exprStr, jsonData['tableName'])
+                    else:
+                        exprSql = "select {0} from {1} where 1=1 ".format(exprStr[:-1], jsonData['tableName'])
+                    exprSql += filtersql
+                    if 'groupby' in expressions.keys() and expressions['groupby']:
+                        exprSql += 'group by {0} '.format(','.join(expressions['groupby']))
+                    if 'orderby' in expressions.keys() and expressions['orderby']:
+                        exprSql += 'order by {0} '.format(','.join(expressions['orderby']))
+                    exprSql += mysqlstr
+                    logger.debug('exprSql: {0}'.format(exprSql))
+                    cursor.execute(exprSql)
+                    dataList = cursor.fetchall()
+                    colList = cursor.description
+
+                    results = []
+                    for data in dataList:
+                        dic = {}
+                        for i in range(len(colList)):
+                            dic[colList[i][0]] = data[i]
+                        results.append(dic)
+                    return results
+
                 if mode == 'all' or mode == 'data':
-                    sql += filtersql + oraclestr
+                    sql += filtersql + oracleToDate + oraclestr
                     logger.debug('oraclesql: {0}'.format(sql))
                     cursor.execute(sql)
                     dataList = cursor.fetchall()
@@ -375,7 +427,7 @@ class ConnectDataBase():
                             addsql += value + ', '
                     logger.error('addsql: {0}'.format(addsql))
                     sql = 'select {0} from {1} where 1=1 '.format(
-                        addsql[:-2], jsonData['tableName']) + filtersql + eval(self.dbPaltName + 'str')
+                        addsql[:-2], jsonData['tableName']) + filtersql + oracleToDate + eval(self.dbPaltName + 'str')
 
                     try:
                         cursor.execute(sql)
@@ -473,7 +525,8 @@ class ConnectDataBase():
 
             logger.debug('conversionList: {0}'.format(conversionList))
             sql = 'select {0} from {1} where 1=1 '.format(
-                ', '.join(conversionList), jsonData['tableName']) + filtersql + eval(self.dbPaltName + 'str')
+                ', '.join(conversionList), jsonData['tableName']) + filtersql + oracleToDate + \
+                eval(self.dbPaltName + 'str')
             logger.debug('handleColSql: {0}'.format(sql))
 
             try:
