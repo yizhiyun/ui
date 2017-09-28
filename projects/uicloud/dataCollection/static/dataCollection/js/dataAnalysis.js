@@ -342,7 +342,7 @@ function loading_bar(){
             var target =  $("body").get(0);
             spinner.spin(target);
           },
-          success:function(data){
+          success:function(result){
             if(result["status"] == "success"){
                 var gather_table_schema = result["results"]["schema"];
                 currentTableAllData = result["results"]["data"];
@@ -354,7 +354,7 @@ function loading_bar(){
                 free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 console.log(result["results"]["data"])
                 createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
-
+				spinner.stop();
 
       }
           }

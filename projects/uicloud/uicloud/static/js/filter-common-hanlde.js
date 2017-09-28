@@ -872,13 +872,13 @@ function contidon_value_change_fun(){
 		dataHandleWork(filter_from_in,tableInfo,field,"numberType",function(data){
 			
 			// 众数处理
-			var userSelect_num =  $("#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .custom-select");
-			if(data.modeArr.length > 0){
-				userSelect_num.find("#modeOption").attr("disabled","false");
-			}else{
-				userSelect_num.find("#modeOption").prop("disabled","true");
-			}
-			userSelect_num.comboSelect();
+//			var userSelect_num =  $("#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .custom-select");
+//			if(data.modeArr.length > 0){
+//				userSelect_num.find("#modeOption").attr("disabled","false");
+//			}else{
+//				userSelect_num.find("#modeOption").prop("disabled","true");
+//			}
+//			userSelect_num.comboSelect();
 			var sliderValues = [data.min,data.max];
 			if(isEdit){
 				sliderValues = [filterConditions["sliderMinValue"],filterConditions["sliderMaxValue"]];
