@@ -2289,8 +2289,8 @@ $(function() {
 			post_dict["tablename"] = current_cube_name;
 			post_dict["viewtype"] = view_name;
 			post_dict["defaultparent"] = "default";
-			post_dict["calculation"] = JSON.stringify(drag_measureCalculateStyle)
-//			console.log(post_dict)
+			post_dict["calculation"] = JSON.stringify(drag_measureCalculateStyle);
+			post_dict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue;
 			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 			
@@ -2300,6 +2300,7 @@ $(function() {
 				 //移除编辑视图storage
 				 sessionStorage.removeItem("edit_view_now");
 				 navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
+				 // console.log(currentColorGroupName,normalUnitValue,valueUnitValue)
 
 			}else{
 				alert("保存失败");

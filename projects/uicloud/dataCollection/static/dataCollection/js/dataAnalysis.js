@@ -342,7 +342,7 @@ function loading_bar(){
             var target =  $("body").get(0);
             spinner.spin(target);
           },
-          success:function(data){
+          success:function(result){
             if(result["status"] == "success"){
                 var gather_table_schema = result["results"]["schema"];
                 currentTableAllData = result["results"]["data"];
@@ -352,9 +352,8 @@ function loading_bar(){
                 }
                 didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
-                console.log(result["results"]["data"])
                 createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
-
+                spinner.stop();
 
       }
           }
@@ -374,6 +373,7 @@ function loading_bar(){
       $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #top_expression").add($(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #expression_save,.rightConent #analysisContainer #tableDataDetailListPanel .topInfo #data_reconstruction,.rightConent #analysisContainer #tableDataDetailListPanel .topInfo #table_export_excel,.rightConent #analysisContainer #tableDataDetailListPanel .topInfo #table_add_field,.rightConent #analysisContainer #tableDataDetailListPanel .topInfo #merge_table")).remove();
       $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo").css("borderLeft","1px solid #DEDEDE");
       $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent table thead tr").css("background","#F5F5F5");
+      $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").css("maxHeight","440px");
       //创建相对应的已构建的数据表
 
       $("<li>"+preBuildDataName+"</li>").data("sourcetype","hdfs").appendTo($("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables ul.tablesList"));
@@ -396,12 +396,14 @@ function loading_bar(){
       $(".rightConent #analysisContainer #tableDataDetailListPanel").css({
         "width":$(".rightConent").width() + "px",
       }).attr("nowShowTable","hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"").addClass("expression_show");
+
+      $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").css("maxHeight", $(".rightConent #analysisContainer #tableDataDetailListPanel").height()-$(".topInfo").height() + "px");
       $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent table thead tr").css("background","white");
       $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo").css("borderLeft","none");
 
       //创建之前显示表格不具有的功能
       //集合表名称显示
-      var expression_other_handle = $("<div id='top_expression'>"+preBuildDataName+"</div>><div id='data_reconstruction'><a>重构数据</a></div><div id='table_export_excel'><img src='/../../../static/dataCollection/images/tableDataDetail/export_excel.png' title='导出excel'></div><div id='table_add_field'><img src='/../../../static/dataCollection/images/tableDataDetail/add_field_ico.png' title='添加字段'></div><div id='merge_table'><img src='/../../../static/dataCollection/images/tableDataDetail/Merge_field_ico.png' title='合并'></div>");
+      var expression_other_handle = $("<div id='top_expression'>"+preBuildDataName+"</div><div id='data_reconstruction'><a>重构数据</a></div><div id='table_export_excel'><img src='/../../../static/dataCollection/images/tableDataDetail/export_excel.png' title='导出excel'></div><div id='table_add_field'><img src='/../../../static/dataCollection/images/tableDataDetail/add_field_ico.png' title='添加字段'></div><div id='merge_table'><img src='/../../../static/dataCollection/images/tableDataDetail/Merge_field_ico.png' title='合并'></div>");
 
       expression_other_handle.prependTo($(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo"));
       
@@ -1402,6 +1404,12 @@ function splitWall_init(){
     $(".split_fileds .splitFileds_handle_area .split_manner #label_input_textarea").blur().val("");
     $("#tableDataDetailListPanel .topInfo #splitFileds_btn").css("opacity","0.5");
     // $(".split_fileds .splitFileds_handle_area .split_preview .splitPreview_area ul").html("");
+          // 清除上一个选中的的列
+    if (currentHandleColOrRowEles) {
+          currentHandleColOrRowEles.css("background","");
+          currentHandleColOrRowEles.eq(0).attr("isSelect","false");
+          currentHandleColOrRowEles = null;
+    }
     $(".split_error").remove();
     $(".split_fileds .splitFileds_handle_area .split_manner .fixedWidth_content .splitPreview_area").html("");
     $('label[name="label_check"]').removeAttr('class') && $(".split_fileds .splitFileds_handle_area .split_manner #splitSe_label").addClass("checked");
