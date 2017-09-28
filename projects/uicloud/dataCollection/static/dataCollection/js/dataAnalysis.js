@@ -353,7 +353,10 @@ function loading_bar(){
                 didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
+
                 spinner.stop();
+
+
 
       }
           }
@@ -635,11 +638,11 @@ function getTablesOfaDataBase(theSelect){
            didShowDragAreaTableInfo[boxDiv[0].id] = data;
          
            free_didShowDragAreaTableInfo[boxDiv[0].id] = data;
-
-            tableDrag(allKeys(didShowDragAreaTableInfo));
-
+           tableDrag(allKeys(didShowDragAreaTableInfo));
+         }else{
+         	 instance.repaintEverything();
          }
-
+ 		
           
          // 选择框绑定事件
          bindEventToBoxDivFiledsCheckBox();
@@ -1155,7 +1158,13 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       $("#analysisContainer .mainDragArea #dragTableDetailInfo").add("#tableDataDetailListPanel").hide(); // 表信息隐藏
       // 数据的移除
       delete didShowDragAreaTableInfo[dbInfo];
-
+      // 移除筛选条件
+      deleteATableAllConditions(dbInfo);
+      // 设置当前显示的 table 为空
+	 $("#tableDataDetailListPanel").attr("nowShowTable","none");
+	 // 清楚底部的表格
+	  $("#tableDataDetailListPanel .mainContent table thead tr").html("");
+      $("#tableDataDetailListPanel .mainContent table tbody").html("");
 
       if(store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2]) != -1){
         var nowDelete_split_father = [];
@@ -1854,12 +1863,13 @@ function getFilterNeedAllData_fun(dbInfo){
       }else{
         
         var tablesSelect = {"source":dbArr[0],"database":dbArr[1],"tableName":dbArr[2],"columns":{},"conditions":[]};
+        console.log(tablesSelect);
         $.ajax({
           url:"/dataCollection/filterTable/data",
           type:"post",
-          data:tablesSelect,
-            traditional:true,
-            async: true,
+          data:JSON.stringify(tablesSelect),
+          contentType: "application/json; charset=utf-8",
+          async: true,
           dataType:'json',
           beforeSend:function(){
             var target =  $("body").get(0);

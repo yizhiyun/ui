@@ -550,6 +550,33 @@ $(function() {
 		});	
 	}
 	
+	function getFilterAllData(){
+		var exprlist = []; 
+		for(var i = 0;i < _cube_all_data[current_cube_name].schema.length;i++ ){
+			var aSchema = _cube_all_data[current_cube_name].schema[i];
+			var obj = {"alias":aSchema["field"],"exprstr":"collect_set("+aSchema["field"]+")"};
+			exprlist.push(obj);
+		}
+		var handleDataPost = {
+			"expressions":{
+				"exprlist":exprlist,
+			}
+		};
+		
+		$.ajax({
+			url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
+			type:"post",
+			dataType:"json",
+			contentType: "application/json; charset=utf-8",
+			async: true,
+			data:JSON.stringify(handleDataPost),
+			success:function(data){
+				if(data.status == "success"){
+					filterNeedAllData = data.results.data[0];
+				}
+			}
+		})	
+	}
 	
 	
 	// 加载维度、度量等，需要在 select 加载完毕之后
@@ -581,7 +608,10 @@ $(function() {
 					}
 					_cube_all_data[current_cube_name] = cube_all_data;
 					
+					getFilterAllData();
+					
 					factory_create_li_to_measurement_module(schema);
+					
 					
 					if(!if_or_load){
 					$("#dashboard_content #new_view ul").html("");
@@ -1218,6 +1248,10 @@ $(function() {
 									$(current_li).find("span.measure_list_text_left").html("计数("+_field_name+")");
 								}
 							}
+							if(_wd_type == "dimensionality"){
+								recordRightFilterInfo("add",_field_name+":"+_dataType);
+								rightFilterListDraw();
+							}		
 								//给予li id名 记录元素对应的内容
 							$(this).find("li").eq($(this).find("li").length-1).attr("id",_wd_type+":"+_field_name + ":" + _dataType);
 							//判断拖入的区域
@@ -1284,7 +1318,7 @@ $(function() {
 									break;
 							}
 							// 展现 table
-					recordRightFilterInfo("add",_field_name+":"+_dataType);
+					
 					switch_chart_handle_fun();
 					//度量更多操作过程
 					md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null})
@@ -1663,6 +1697,7 @@ $(function() {
 									// 移除筛选列
 									var fieldInfoArr = ui.item.attr("id").split(":");
 									recordRightFilterInfo("delete",fieldInfoArr[1] + ":" + fieldInfoArr[2]);
+									rightFilterListDraw();
 
 									break;
 								default:
