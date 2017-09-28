@@ -125,6 +125,7 @@ def filterTable(request, modeName):
     根据条件查询. 返回表格数据
     '''
     jsonData = request.data
+    logger.debug('jsondata: {0}'.format(jsonData))
     dbObjIndex = jsonData['source']
     username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
     if username not in Singleton().dataPaltForm.keys():
