@@ -146,7 +146,7 @@ def filterTable(request, modeName):
                        "reason": "the mode must one of {0}".format(modeList)}
             return JsonResponse(failObj, status=400)
 
-        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData.keys() else 200
+        maxRowCount = jsonData['maxrowcount'] if 'maxrowcount' in jsonData.keys() else 1000
         data = dataBaseObj.filterTableData(jsonData, modeName, maxRowCount)
         if data == 'failed':
             return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
