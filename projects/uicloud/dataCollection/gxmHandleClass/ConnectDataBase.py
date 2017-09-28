@@ -340,12 +340,12 @@ class ConnectDataBase():
                         exprSql = "select {0} from {1} where 1=1 ".format(exprStr, jsonData['tableName'])
                     else:
                         exprSql = "select {0} from {1} where 1=1 ".format(exprStr[:-1], jsonData['tableName'])
-                    exprSql += filtersql
+                    exprSql += filtersql + oracleToDate + oraclestr
                     if 'groupby' in expressions.keys() and expressions['groupby']:
                         exprSql += 'group by {0} '.format(','.join(expressions['groupby']))
                     if 'orderby' in expressions.keys() and expressions['orderby']:
                         exprSql += 'order by {0} '.format(','.join(expressions['orderby']))
-                    exprSql += mysqlstr
+
                     logger.debug('exprSql: {0}'.format(exprSql))
                     cursor.execute(exprSql)
                     dataList = cursor.fetchall()
