@@ -107,13 +107,9 @@ $(function() {
 			}
 		})
 
-		if(filterArr && filterArr.length > 0){
-			for(var i = 0; i < filterArr.length;i++){
-				recordRightFilterInfo("add",filterArr[i]);
-				rightFilterListDraw();
-			}
-		}
-
+		//右侧筛选器显示
+		rightFilterListDraw();
+		
 	}
 
 	$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
@@ -164,6 +160,7 @@ $(function() {
 		col_if_me = [];
 		col_if_de = [];
 
+		click_view_icon = false;
 
 		editView_change_color("默认_YZY_-1_YZY_个");
 		
@@ -174,15 +171,17 @@ $(function() {
 		valueUnitValue = "个";
 
 		customCalculate = {};
-		//筛选器清空
-		$("#dashboard_content #sizer_place #sizer_content").css("display","none");
-		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .cubeTableName").html("");
-		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list").html("");
 
 		//视图保存恢复
 		$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","0.6");
 		$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
-		// 展示维度和度量等
+
+		//判断之前存在视图 清空视图
+		if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
+
+			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
+
+		}
 
 	}
 
@@ -563,8 +562,20 @@ $(function() {
 		success:function(data){
 			
 			if (data["status"] == "success") {
-				// 创建数据块
+				if(sessionStorage.getItem("edit_view_now")){
+					//获取编辑的视图
+					var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
+					var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
+					// 创建数据块
+
+				cubeSelectContent_fun(data["results"],have_view_edit[3]);
+				}else{
+					// 创建数据块
+
 				cubeSelectContent_fun(data["results"]);
+				}
+
+				
 
 				save_data_sum_handle = data["results"];
 
@@ -582,9 +593,11 @@ $(function() {
 		for (var i =0; i < build_tables.length;i++) {
 			var val = build_tables[i];
 			var op = $("<option value="+val+">"+val+"</option>");
-			if(click_val == val){
+			if(click_val){
+				if(click_val == val){
 
 				op.attr("selected","selected");
+				}
 			}
 			cube_select.append(op);
 		}	
@@ -593,9 +606,14 @@ $(function() {
 		// select选项卡
 		cube_select.comboSelect();
 		
+		if(click_val){
+			// 展示维度和度量等
+			load_measurement_module(click_val)
+		}else{
+			// 展示维度和度量等
+			load_measurement_module(cube_select.val())
+		}
 		
-		// 展示维度和度量等
-		load_measurement_module(cube_select.val())
 		
 		// 数据选择 select 变化的时候，去获取新的数据
 		// cube_select.unbind("change");
