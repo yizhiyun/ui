@@ -33,7 +33,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	var filterNotWorkArr = getColumnFilterNotWorkedColumns(current_cube_name);
 	getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
 
-	var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
+	var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"],conditionFilter_record[current_cube_name]["dateCondition"]);
 
 	var checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 	for(var key in checkSelectConditionDict){

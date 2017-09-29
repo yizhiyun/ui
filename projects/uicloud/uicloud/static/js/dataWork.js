@@ -9,9 +9,7 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 		return;
 	}
 	if(handleType == "dashBoard"){
-		var handleDataPost = {
-			"expressions":{
-				"exprlist":[
+		var exprlist = [
 					{
 						"alias":"min","exprstr":"min("+field+")"
 					},
@@ -24,7 +22,23 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 					{
 						"alias":"len","exprstr":"count("+field+")"
 					}
-				]
+				];
+			if(fieldtype == "dateType"){
+				 exprlist = [
+					{
+						"alias":"min","exprstr":"min("+field+")"
+					},
+					{
+						"alias":"max","exprstr":"max("+field+")"
+					},
+					{
+						"alias":"len","exprstr":"count("+field+")"
+					}
+				];
+			}
+		var handleDataPost = {
+			"expressions":{
+				"exprlist":exprlist
 			}
 		}
 		

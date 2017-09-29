@@ -1459,7 +1459,7 @@ function comparisonStrip_generate_fun(){
 						option["series"].push(aSeriesData);
 					}	
 					aGrid["containLabel"] = false;
-					aGrid["left"] =  60 + 50*k;
+					aGrid["left"] =  150 + 50*k;
 					aGrid["bottom"] = 60;
 					
 				}
@@ -1990,6 +1990,7 @@ function comparisonStrip_generate_fun(){
 					"show":true,
 					"name":all_dimensionality[i],
 					"nameGap":10,
+					"nameRotate":15,
 					"nameLocation":"end",
 					"type":"category",
 					axisTick:{
@@ -2012,7 +2013,7 @@ function comparisonStrip_generate_fun(){
 					show:false,
 					
 				}
-				aGrid["left"] = 60 + i * 50;
+				aGrid["left"] = 150 + i * 50;
 				aGrid["bottom"] = 60;	
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}

@@ -732,7 +732,7 @@ function getTablesOfaDataBase(theSelect){
         aTable["columns"] = {};
         aTable["conditions"] = [];
         if(conditionFilter_record[key]){
-          aTable["conditions"] = conditionFilter_record[key]["common"].concat(conditionFilter_record[key]["condition"]);
+          aTable["conditions"] = conditionFilter_record[key]["common"].concat(conditionFilter_record[key]["condition"],conditionFilter_record[key]["dateCondition"]);
         }else{
           aTable["conditions"] = [];
         }
@@ -773,9 +773,9 @@ function getTablesOfaDataBase(theSelect){
       
       aRelation["joinType"] = linePa["type"];
       aRelation["columnMap"] = [];
-      for(var i  = 0;i < linePa["relation"]["connections"].length;i ++){
+      for(var j  = 0;j < linePa["relation"]["connections"].length;j ++){
         var aMap = {};
-        var mapInfo =  linePa["relation"]["connections"][i].split("===");
+        var mapInfo =  linePa["relation"]["connections"][j].split("===");
         aMap["fromCol"] = mapInfo[0];
         aMap["toCol"] = mapInfo[1];
         aRelation["columnMap"].push(aMap);
@@ -1767,7 +1767,7 @@ function filterSuccessFun(isNeedAllData){
   getCurrentTableFilterData(dbInfo);
 
   if(conditionFilter_record[dbInfo]){
-    conditions = conditionFilter_record[dbInfo]["common"].concat(conditionFilter_record[dbInfo]["condition"]);
+    conditions = conditionFilter_record[dbInfo]["common"].concat(conditionFilter_record[dbInfo]["condition"],conditionFilter_record[dbInfo]["dateCondition"]);
   }
   var postFilterCondition = {
     "source":dbArr[0],
