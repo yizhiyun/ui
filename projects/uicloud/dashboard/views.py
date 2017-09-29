@@ -49,7 +49,9 @@ def getAllDataFunction(username, datatype=None):
                         'show': tablelist[i].show,
                         'isopen': tablelist[i].isopen,
                         'calculation': tablelist[i].calculation,
-                        'status': tablelist[i].status
+                        'status': tablelist[i].status,
+                        'viewstyle': tablelist[i].viewstyle,
+                        'customcalculate':tablelist[i].customcalculate
                     }
         return context
 
@@ -120,7 +122,9 @@ def dashboardTableAdd(request):
                 tablename=jsonData['tablename'],
                 viewtype=jsonData['viewtype'],
                 calculation=jsonData['calculation'],
-                folder=folder
+                folder=folder,
+                viewstyle=jsonData['viewstyle'],
+                customcalculate=jsonData['customcalculate']
             )
             table.save()
 

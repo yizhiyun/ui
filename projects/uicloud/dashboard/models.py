@@ -22,3 +22,6 @@ class DashboardViewByUser(models.Model):
     isopen = models.BooleanField(default=True)
     calculation = models.CharField(max_length=255)
     status = models.CharField(max_length=255, null=True)
+    viewstyle = models.CharField(max_length=255)
+    customcalculate = models.CharField(max_length=255)
+
