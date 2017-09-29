@@ -253,6 +253,28 @@ def aggDataFrameSparkCode():
                 inDF = inDF.select(exprlist)
             if "orderby" in expresDict.keys():
                 inDF = inDF.orderBy(expresDict["orderby"])
+            if "postaggs" in expresDict.keys():
+                colList = getCols(expresDict["postaggs"])
+                inDF = inDF.select(*colList)
+                pdStats = False
+                postAggLt = ["median", "mode"]
+                for postAggIt in transDict["postaggs"]:
+                    aggType = postAggIt["type"]
+                    logger.debug(u"postAggIt: {0}".format(postAggIt))
+                    if aggType in postAggLt:
+                        if "alias" in postAggIt.keys():
+                            as1 = postAggIt["alias"]
+                        else:
+                            as1 = "{0}_{1}".format(postAggIt["alias"], postAggIt["col"])
+                        pdf1 = inDF.select(F.col(postAggIt["col"]).alias(as1)).toPandas()
+                        if pdStats:
+                            pdStats.append(pdf1.agg(aggType))
+                        else:
+                            pdStats = pdf1.agg(aggType)
+                    else:
+                        pass
+                if not pdStats:
+                    inDF = spark.createDataFrame(pdStats.to_frame().T)
 
         elif "trans" in tableDict.keys():
             # add the specified aggregations in the DataFrame

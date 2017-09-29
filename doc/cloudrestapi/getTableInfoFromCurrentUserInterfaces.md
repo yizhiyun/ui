@@ -110,6 +110,16 @@ Get Table From Current User Via Spark
                "values": <valueList>,     # Optional
            },
            "orderby": <columnList>,       # Optional,
+           "postagg": [                 # Optional,
+               {
+                   # aggTypes:
+                   #   "median","mode"
+                   "type":<aggType>,
+                   "col": <column> or <columnList>,
+                   "alias": <newName>     # Optional,
+               },
+               ...
+           ],
            ...
        },
        # If the "expressions" item exists, "trans" is invalid.
