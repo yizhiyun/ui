@@ -212,13 +212,12 @@ function showTable_by_dragData(){
 		
 		function measureNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])).length > 0 && specialRemoveDataTypeHandle(current_all_measure).length >0){
-				
+					recordData();
 					measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
 						function_draw_row_line();
 						function_draw_column_line();
 						function_draw_measure_data(data);
 						layout_table_size();
-						recordData();
 						if(finish){
 							finish();
 						}
@@ -227,10 +226,10 @@ function showTable_by_dragData(){
 		}
 		function rowNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"]).length > 0){
+				recordData();
 				measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"]),[],null,function(data){
 			 	function_draw_row_data(data);
-			 	layout_table_size();
-			 	recordData();
+			 	layout_table_size();		 	
 			 	 if(finish){
 			 	 	finish();
 			 	 }
@@ -248,10 +247,10 @@ function showTable_by_dragData(){
 		
 		function columnNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data["column"]["dimensionality"]).length > 0){
+				recordData();
 				measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["column"]["dimensionality"]),[],null,function(data){
 		 	 	function_draw_column_data(data);
-		 	 	layout_table_size();
-		 	 	recordData();
+		 	 	layout_table_size(); 	
 		 	 	 if(finish){
 		 	 	 	finish();
 		 	 	 }

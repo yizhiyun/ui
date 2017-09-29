@@ -1514,6 +1514,7 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 	conditionFilter_record[tableInfo] = {};
 	conditionFilter_record[tableInfo]["common"] = [];
 	conditionFilter_record[tableInfo]["condition"] = [];
+	conditionFilter_record[tableInfo]["dateCondition"]=[];
 	for(var i = 0;i < arr.length;i++){
 		var obj = arr[i];
 		if(filterColumnArr &&  filterColumnArr.indexOf(obj.column) != -1){
@@ -1562,8 +1563,8 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 			endDate =endDate.replace(/\//g,"-");
 			var filter1 = {"type":">=","columnName":obj.column,"value":startDate,"datatype":"date"}
 			var filter2 = {"type":"<=","columnName":obj.column,"value":endDate,"datatype":"date"}
-			conditionFilter_record[tableInfo]["condition"].push(filter1);
-			conditionFilter_record[tableInfo]["condition"].push(filter2);
+			conditionFilter_record[tableInfo]["dateCondition"].push(filter1);
+			conditionFilter_record[tableInfo]["dateCondition"].push(filter2);
 		}		
 	}
 }

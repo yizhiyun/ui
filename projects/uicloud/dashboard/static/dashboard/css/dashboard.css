@@ -131,6 +131,16 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #view_show_empty{width:100px;height:20px;line-height:20px;font-size: 12px;color: #808080;position:absolute;top: 0;right: 0;bottom: 0;left: 0;margin:auto;}
 #view_show_wrap{width: 90%;height: 90%;position: absolute;top: 0;right: 0;bottom: 0;left: 0;margin: auto;}
 
+
+#dashboard_content #view_show_area #view_show_area_content .MoMInfo{position:absolute;z-index: 10;top: 50px;width: 150px;}
+#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader{height: 22px;}
+#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv{float: left;height: 20px;width: 30px;margin-left: 2px;}
+#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv .combo-select{height: 18px;}
+#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv .combo-select  input{padding: 0;}
+#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .filedSelectdiv{float: left;height: 18px;width: 70px;border:1px solid #dedede;margin-left: 2px;}
+#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .filedSelectdiv input{height: 18px;width: 70px;vertical-align: top;}
+#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .productBtn{float: left;height: 18px;width: 40px;cursor: pointer;font-size: 12px;margin-left: 2px;border: 1px solid #dedede;border-radius: 2px;line-height: 18px;text-align: center;background: #6DFEB8;}
+
 #dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection{position: absolute;border-radius: 2px;top: 10px;left: 45%;background: white;}
 #dashboard_content #view_show_area #view_show_area_content .drillUpAndDrillDownSelection span{float: left;height: 28px;font-size: 12px;line-height: 28px;text-align: center;border: 1px solid #dedede;}
 #dashboard_content #view_show_area #view_show_area_content .drillUpAndDrillDownSelection span.drillUp{color: white;width: 70px;background: #d1d1d1;cursor: pointer;border-right: 0px;}
@@ -144,7 +154,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 
 /*筛选器*/
-#sizer{width: 210px;position: absolute;top:30px;right: 0;box-sizing:border-box;border: 1px solid #DEDEDE;border-bottom: none;}
+#sizer{width: 210px;position: absolute;top:30px;right: 0;box-sizing:border-box;border: 1px solid #DEDEDE;border-bottom: none;} 
 #project .sizer_line{background:#0d53a4}
 
 #sizer_wrap,#project{width: 105px;height:50px;position: absolute;cursor: pointer;}
@@ -200,7 +210,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #project_style .module_style .color_control .defaultColors .color_flag{float: left;height: 20px;line-height: 20px;margin-left: 10px;}
 #project_style .module_style .color_control .defaultColors .selectedColors{margin-left: 5px;float: left;width: 125px;}
 #project_style .module_style .color_control .defaultColors .selectedColors span.colorCube{float: left;}
-#project_style .module_style .color_control .defaultColors  .moreColorBtn{margin-left: 10px;float: left;width: 20px;height: 20px;cursor: pointer;}
+#project_style .module_style .color_control .defaultColors  .moreColorBtn{margin-left: 5px;float: left;width: 20px;height: 20px;cursor: pointer;}
 #project_style .module_style .color_control .defaultColors  .moreColorBtn img{margin-left: 6px;margin-top: 8px;}
 
 #project_style .module_style .color_control .otherColorsModule{border: 1px solid #dedede;border-radius: 2px;margin-left: 10px;margin-top: 6px;width: 180px;}

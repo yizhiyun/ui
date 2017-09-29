@@ -20,7 +20,7 @@
 	<script src={% static "js/filter-common-hanlde.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={% static "js/jQRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
 	<script src={% static "js/jQDateRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
-	
+	<script src={% static "dashboard/js/tempMoMProduct.js"%} type="text/javascript" charset="utf-8"></script>
 	
 {% endblock %}
 
@@ -338,7 +338,29 @@
 		<div id="view_show_area">
 			<div id="view_show_area_content" class="drop_view">
 			
-			
+				<div class="MoMInfo">
+					<div class="monHeader">
+						<div class="unitSelectDiv">
+							<select class="custom-select">
+								<option value="年">年</option>
+								<option value="季">季</option>
+								<option value="月">月</option>
+								<option value="周">周</option>
+							</select>
+						</div>
+						<div class="filedSelectdiv">
+							<input type="text" placeholder="输入字段"/>
+						</div>
+						<div class="productBtn">同比</div>
+					</div>
+					<div class="monBody">
+						<table>
+							<thead><tr></tr></thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					
+				</div>
 				<!--提示框-->
 				<div id="view_show_empty">
 					当前图表无数据

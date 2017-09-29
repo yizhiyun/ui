@@ -84,7 +84,8 @@ $("#action_save_view p").each(function(index, ele) {
 })
 }
 $(function() {
-
+	
+	$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
 //视图清空 页面初始化
 	function empty_viem_init(change_or_click){
 		//清空维度度量里面的数据
@@ -608,9 +609,10 @@ $(function() {
 					}
 					_cube_all_data[current_cube_name] = cube_all_data;
 					
+					filterNeedAllData = null;
 					getFilterAllData();
 					
-					factory_create_li_to_measurement_module(schema);
+					factory_create_li_to_measurement_module(_cube_all_data[current_cube_name].schema);
 					
 					
 					if(!if_or_load){
@@ -1248,10 +1250,6 @@ $(function() {
 									$(current_li).find("span.measure_list_text_left").html("计数("+_field_name+")");
 								}
 							}
-							if(_wd_type == "dimensionality"){
-								recordRightFilterInfo("add",_field_name+":"+_dataType);
-								rightFilterListDraw();
-							}		
 								//给予li id名 记录元素对应的内容
 							$(this).find("li").eq($(this).find("li").length-1).attr("id",_wd_type+":"+_field_name + ":" + _dataType);
 							//判断拖入的区域
@@ -1318,7 +1316,7 @@ $(function() {
 									break;
 							}
 							// 展现 table
-					
+					rightFilterListDraw();		
 					switch_chart_handle_fun();
 					//度量更多操作过程
 					md_click_show($(".annotation_text .measure_list_text_left").parent().find("img"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null})
@@ -1696,7 +1694,6 @@ $(function() {
 									
 									// 移除筛选列
 									var fieldInfoArr = ui.item.attr("id").split(":");
-									recordRightFilterInfo("delete",fieldInfoArr[1] + ":" + fieldInfoArr[2]);
 									rightFilterListDraw();
 
 									break;

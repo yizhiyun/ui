@@ -34,6 +34,12 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
 
 	var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
+	if(isNeedCalculateMoM){
+		conditions= 	conditions.concat(momTheDateScale);
+	}else{
+		conditions = conditions.concat(conditionFilter_record[current_cube_name]["dateCondition"]);
+	}
+	
 
 	var checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 	for(var key in checkSelectConditionDict){
@@ -128,6 +134,11 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		},
 		success:function(data){
 			if(data.status == "success"){
+				if(isNeedCalculateMoM){
+					isNeedCalculateMoM = false;
+					isCanShowMonCount++;
+					momneedDateDidFinish();			
+				}
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
