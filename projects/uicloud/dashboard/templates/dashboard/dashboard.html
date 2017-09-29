@@ -336,9 +336,7 @@
 		
 		<!--视图展示区域-->
 		<div id="view_show_area">
-			<div id="view_show_area_content" class="drop_view">
-			
-				<div class="MoMInfo">
+			<div class="MoMInfo">
 					<div class="monHeader">
 						<div class="unitSelectDiv">
 							<select class="custom-select">
@@ -351,16 +349,18 @@
 						<div class="filedSelectdiv">
 							<input type="text" placeholder="输入字段"/>
 						</div>
-						<div class="productBtn">同比</div>
-					</div>
-					<div class="monBody">
+						<div class="productBtn">环比</div>
+					</div>	
+				</div>
+				<div class="momshowArea">
 						<table>
-							<thead><tr></tr></thead>
+							<thead><tr class="title"><th>环比视图</th></tr><tr class="use"></tr></thead>
 							<tbody></tbody>
 						</table>
-					</div>
-					
-				</div>
+			</div>
+			<div id="view_show_area_content" class="drop_view">
+			
+				
 				<!--提示框-->
 				<div id="view_show_empty">
 					当前图表无数据
