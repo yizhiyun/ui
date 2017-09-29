@@ -4,8 +4,13 @@ var isCanShowMonCount = 0;
 var monAllData = null;
 $(function(){
 	
-	$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .productBtn").click(function(){
-		var value = $("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .filedSelectdiv input").val();
+	$("#dashboard_content #view_show_area  .momshowArea").draggable({
+		containment:$("#dashboard_content #view_show_area")
+	});
+	
+	
+	$("#dashboard_content #view_show_area .MoMInfo .monHeader .productBtn").click(function(){
+		var value = $("#dashboard_content #view_show_area .MoMInfo .monHeader .filedSelectdiv input").val();
 		var allSchema = _cube_all_data[current_cube_name].schema;
 		var tipUser = true;
 		if(value){
@@ -15,9 +20,8 @@ $(function(){
 				if(typeInfo.isTypeDate){
 					tipUser = false;
 					isNeedCalculateMoM = true;
-//					var theDateScale = GetDateStr(0,"年"); 
 					// 执行同比操作
-					var str = GetDateStr(0,$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").val());
+					var str = GetDateStr(0,$("#dashboard_content #view_show_area .MoMInfo .monHeader .unitSelectDiv select").val());
 					var dateArr = str.split(" 至 ");
 					momTheDateScale.push({"type":">=","columnName":value,"value":dateArr[0],"datatype":"date"});
 					momTheDateScale.push({"type":"<=","columnName":value,"value":dateArr[1],"datatype":"date"});
@@ -42,10 +46,10 @@ function showMonFunction(){
 	getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
 
 	var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
-	var str = GetDateStr(-1,$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").val());
+	var str = GetDateStr(-1,$("#dashboard_content #view_show_area .MoMInfo .monHeader .unitSelectDiv select").val());
 	var dateArr = str.split(" 至 ");
 	var temp = [];
-	var value = $("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .filedSelectdiv input").val();
+	var value = $("#dashboard_content #view_show_area .MoMInfo .monHeader .filedSelectdiv input").val();
 	temp.push({"type":">=","columnName":value,"value":dateArr[0],"datatype":"date"});
 	temp.push({"type":"<=","columnName":value,"value":dateArr[1],"datatype":"date"});
 	conditions = conditions.concat(temp);
@@ -129,7 +133,6 @@ function showMonFunction(){
 		},
 		success:function(data){
 			if(data.status == "success"){
-				isNeedCalculateMoM = false;
 				isCanShowMonCount++;
 				monAllData = data.results.data;
 				momneedDateDidFinish();
@@ -140,17 +143,18 @@ function showMonFunction(){
 // dataDidFinish
 function momneedDateDidFinish(){
 	if(isCanShowMonCount >= 2){
-		isCanShowMonCount = 0;
+		$("#dashboard_content #view_show_area .momshowArea").show();
 		var dimensionality_array = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));
 		var measure_name_arr = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 		var th = $("<th>"+dimensionality_array[dimensionality_array.length - 1]+"</th>");
-		var theTable = $("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monBody table").eq(0);
+		var theTable = $("#dashboard_content #view_show_area .momshowArea  table").eq(0);
 		var theTableHead = theTable.children("thead").eq(0);
 		var theTableBody = theTable.children("tbody").eq(0);
-		theTableHead.find("tr").append(th);
+		theTableHead.find("tr.use").append(th);
+		theTableHead.find("tr.title th").attr("colspan",measure_name_arr.length + 1);
 		for(var i= 0;i < measure_name_arr.length;i++){
-			var th = $("<th>"+measure_name_arr[i]+"</th>");
-			theTableHead.find("tr").append(th);
+			var th = $("<th>"+drag_measureCalculateStyle[measure_name_arr[i]]+"</th>");
+			theTableHead.find("tr.use").append(th);
 		}
 		for(var i =0;i < preAllData.length;i++){
 			var aNowData = preAllData[i];
@@ -160,12 +164,17 @@ function momneedDateDidFinish(){
 			var td = $("<td>"+aNowData[dimensionality_array[dimensionality_array.length - 1]]+"</td>");
 			tr.append(td);
 			for(var j = 0;j < measure_name_arr.length;j++){
-				var theMeasureNow = aNowData[drag_measureCalculateStyle[measure_name_arr[i]]];
-				var theMeasureMom = aMomData[drag_measureCalculateStyle[measure_name_arr[i]]];
-				var td = $("<td>"+(theMeasureNow - theMeasureMom) / theMeasureMom + "</td>");
+				var theMeasureNow = aNowData[drag_measureCalculateStyle[measure_name_arr[j]]];
+				var theMeasureMom = aMomData[drag_measureCalculateStyle[measure_name_arr[j]]];
+				var td = $("<td>"+((theMeasureNow - theMeasureMom) / theMeasureMom * 100).toFixed(2) + "%</td>");
 				tr.append(td);
 			}
 		}
+		 isNeedCalculateMoM = false;
+		 momTheDateScale = [];
+		 isCanShowMonCount = 0;
+		 monAllData = null;
+		 $("#dashboard_content #view_show_area .MoMInfo .monHeader .filedSelectdiv input").val("");
 	}
 	
 }

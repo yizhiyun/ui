@@ -1731,7 +1731,6 @@ $(function() {
 								//拖拽区域外消失
 									
 								case "view_show_area_content":
-								
 									$(this).find(".list_wrap").remove();
 									$(this).find(".ui-draggable").parent().remove();
 									if(ui["sender"].attr("id") == "drop_col_view"){

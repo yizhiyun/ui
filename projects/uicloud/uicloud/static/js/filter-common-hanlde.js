@@ -518,7 +518,7 @@ function GetDateStr(AddCount,unit) {
    	 var y = aDate.getFullYear();   
 	 var m = (aDate.getMonth()+1)<10?"0"+(aDate.getMonth()+1):(aDate.getMonth()+1);//获取当前月份的日期，不足10补0  
  var d = aDate.getDate()<10?"0"+aDate.getDate():aDate.getDate();//获取当前几号，不足10补0  
- return y+"/"+m+"/"+d;   
+ return y+"-"+m+"-"+d;   
    }
 	   
    function getDaysInOneMonth(year, month){
