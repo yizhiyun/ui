@@ -3,7 +3,7 @@ var copyCurrentTableData = null; // 对当前 table 数据的一份拷贝
 // fieldtype 为数字 numberType 、日期、dateType 俩种类型
 // handleType:数据构建之前和之后  buildData,dashboard
 function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
-	console.log(tableInfo);
+//	console.log(tableInfo);
 	if(numberColumn_needValueInfo[tableInfo] && numberColumn_needValueInfo[tableInfo][field]){
 		 finish(numberColumn_needValueInfo[tableInfo][field]);
 		return;

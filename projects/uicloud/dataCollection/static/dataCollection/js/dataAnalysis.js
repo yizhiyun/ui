@@ -202,7 +202,7 @@ function updateDBListFromNetwork(){
         
         bindEventToPerTable();
       }else{
-        alert("获取数据库信息失败");
+//      alert("获取数据库信息失败");
       }
     }
   });
@@ -240,7 +240,7 @@ function updatePanelFileListFromNetwork(){
         checkCurrentPanelFileConnectionNeedDelete(allKeys(panelList));
         bindEventToPerTable();
       }else{
-        alert("获取文件信息失败");
+//      alert("获取文件信息失败");
       }
     }
   })
@@ -699,7 +699,7 @@ function getTablesOfaDataBase(theSelect){
       
       // 如果当前底部显示的正是操作的这个表格
       if ($("#tableDataDetailListPanel").attr("nowShowTable") == $(this).parents(".boxDiv").eq(0)[0].id && currentTableAllData) {
-        console.log(currentTableAllData)
+//      console.log(currentTableAllData)
         createTableDetailView($("#tableDataDetailListPanel").attr("nowShowTable"),currentTableAllData);
                 
       }
@@ -919,14 +919,14 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       async: true,
       data:JSON.stringify(postData),
       success:function(data){
-        console.log(data)
-        console.log("success")
+//      console.log(data)
+//      console.log("success")
         // 构建。。。。完成
         data_success_show();
         // end-------------------
       },
       error:function(){
-        console.log("error")
+//      console.log("error")
         //构建失败
         data_error_show();
       }
@@ -1211,7 +1211,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       data:JSON.stringify(post_splitData_arr),
       success:function(result){
         if(result["status"] == "success"){
-          console.log("删除成功");
+//        console.log("删除成功");
         }
       }
   });
@@ -1512,7 +1512,7 @@ function split_change_schame(split_table_name,data,now_click_table_name){
     "conditions":now_table_filter_dict["common"].concat(now_table_filter_dict["condition"]),
     "handleCol":expressions_free_dict,
     }
-     console.log(postFilterCondition_split)
+//   console.log(postFilterCondition_split)
 
 
       $.ajax({
@@ -1527,7 +1527,7 @@ function split_change_schame(split_table_name,data,now_click_table_name){
                 spinner.spin(target);
       },
       success:function(data){
-        console.log(data)
+//      console.log(data)
         $(".split_error").remove();
         spinner.stop();
 
@@ -1735,7 +1735,7 @@ $("#tableDataDetailListPanel .topInfo  #showHiddenEles").click(function(event){
         }
     }
     setshowHiddenEles_btn_didSelected(); // 变成选中状态
-    console.log(currentTableAllData)
+//  console.log(currentTableAllData)
     createTableDetailView(dbInfo,currentTableAllData,true);
   }
 
@@ -1863,7 +1863,7 @@ function getFilterNeedAllData_fun(dbInfo){
       }else{
         
         var tablesSelect = {"source":dbArr[0],"database":dbArr[1],"tableName":dbArr[2],"columns":{},"conditions":[]};
-        console.log(tablesSelect);
+//      console.log(tablesSelect);
         $.ajax({
           url:"/dataCollection/filterTable/data",
           type:"post",
@@ -1879,7 +1879,7 @@ function getFilterNeedAllData_fun(dbInfo){
             if(data.status == "success"){
               spinner.stop();
               filterNeedAllData = data.results.data;
-              console.log(currentTableAllData)
+//            console.log(currentTableAllData)
                 createTableDetailView(dbInfo,currentTableAllData);  
             }
           }
