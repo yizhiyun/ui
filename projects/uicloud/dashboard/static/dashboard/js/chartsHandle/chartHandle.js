@@ -2298,8 +2298,18 @@ function comparisonStrip_generate_fun(){
 // 设置面板，设置了颜色
 function colorsPanelDidSelectedColor(){
 	var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
+	var op = mycharts.getOption();
+	op.title[1] = {
+		text: "单位: "+valueUnitValue,
+		show:true,
+		textStyle:{
+			fontSize:14,
+			color:allColorsDict[currentColorGroupName][0]
+		}
+	}
 	mycharts.setOption({
-		color:allColorsDict[currentColorGroupName]
+		color:allColorsDict[currentColorGroupName],
+		title:op.title
 	});
 	if(currentChatType == "number_bar" || currentChatType == "number_liner" || currentChatType == "percentage_bar" || currentChatType == "percentage_liner"){
 		var op = mycharts.getOption();

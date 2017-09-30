@@ -122,7 +122,7 @@ $(function(){
                          stop:function(event,ui){
                          	//获取所有视图的位置大小信息
                          	var gridster_view_location = gridster.serialize();
-                         	console.log(view_show_id_arr)
+//                       	console.log(view_show_id_arr)
                          	//遍历视图对应的id数组
                          	for(var i = 0; i < view_show_id_arr.length;i++){
                          		var view_save_id_o = String(view_show_id_arr[i]);
@@ -131,7 +131,7 @@ $(function(){
 
                          	$.post("../dashboard/setSwitch",{"switch":"status","tablelist":JSON.stringify(tablelist_location)},function(result){
                          		if(result["status"] == "ok"){
-                         			console.log("保存位置信息成功")
+//                       			console.log("保存位置信息成功")
                          		}
                          	});
                          }
@@ -140,12 +140,12 @@ $(function(){
                          	enabled:true,
                          	min_size:[2,2],
                          	resize:function(event,ui){
-                         		console.log(ui.$player.parent())
+//                       		console.log(ui.$player.parent())
                          		$(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".textarea").css("width",$(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").width()-18 + "px");
                          		$(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main").css("height",$(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").height()-30 + "px");
                          	},
                          	start:function(event,ui){
-                         		console.log(ui.$player.parent())
+//                       		console.log(ui.$player.parent())
                          		$(".preview-holder").css({
                          		"width":$(".new_view_content").eq(ui.$player.attr("data-value")).width() + "px",
                          		"height":$(".new_view_content").eq(ui.$player.attr("data-value")).height() + "px"
@@ -164,7 +164,7 @@ $(function(){
                          	
                          	$.post("../dashboard/setSwitch",{"switch":"status","tablelist":JSON.stringify(tablelist_location)},function(result){
                          		if(result["status"] == "ok"){
-                         			console.log('保存位置信息成功')
+//                       			console.log('保存位置信息成功')
                          		}
                          	});
                          	
@@ -205,7 +205,7 @@ $(function(){
 	$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 54+ "px");
 	//拿到构建报表的数据
 	$.post("/dashboard/getAllData",{"username":username},function(result){
-		console.log(result)
+//		console.log(result)
 		view_out_handle_init(result);
 	//侧边栏关闭按钮点击收起
 	var state_left_bar_close = false;
@@ -515,7 +515,7 @@ function delete_btn_handle(){
 
                          	$.post("/dashboard/setSwitch",{"switch":"status","tablelist":JSON.stringify(tablelist_location)},function(result){
                          		if(result["status"] == "ok"){
-                         			console.log("保存位置信息成功")
+//                       			console.log("保存位置信息成功")
                          		}
                          	});
                          }
@@ -545,7 +545,7 @@ function delete_btn_handle(){
                          	
                          	$.post("/dashboard/setSwitch",{"switch":"status","tablelist":JSON.stringify(tablelist_location)},function(result){
                          		if(result["status"] == "ok"){
-                         			console.log('保存位置信息成功')
+//                       			console.log('保存位置信息成功')
                          		}
                          	});
                          	
@@ -989,7 +989,7 @@ function delete_btn_handle(){
 				$(ele).parent().parent().find(".textarea textarea").blur(function(){
 					if($(this).val() != ""){
 						$.post("/dashboard/changeName",{"objtype":"note","username":username,"note":$(this).val(),"id":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id")},function(result){
-							console.log(result)
+//							console.log(result)
 						});
 					}else{
 						$(this).parent().stop(true).toggle(500);
@@ -1731,7 +1731,7 @@ function user_handle_change_cookie(ele,click_view_btn){
 						post_dict["viewstyle"] = "null";
 						post_dict["customcalculate"] = "null";
 						$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
-							console.log(result)
+//							console.log(result)
 							if(result["status"] == "false"){
 								$(".click_new_folder_input").css("borderColor","red");
 								return;
