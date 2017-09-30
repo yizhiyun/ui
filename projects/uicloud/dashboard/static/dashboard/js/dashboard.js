@@ -740,6 +740,45 @@ $(function() {
 		}
 			
 	}
+
+
+	//移除函数
+	function remove_viewHandle(){
+			drag_row_column_data["column"]["measure"]= [];
+			drag_row_column_data["column"]["dimensionality"] =[];
+			//遍历所有行里的li 排序后更新数据
+			for(var i = 0; i < $("#drop_col_view").find("li").length;i++){
+				//获取数据字段
+				var data_id = $("#drop_col_view").find("li").eq(i).attr("id").split(":");
+				//判断元素的类型
+				var data_wd_type = data_id[0];
+				//对应的数据
+				var sortable_data = data_id[1]+":"+data_id[2];
+
+				drag_row_column_data["column"][data_wd_type].push(sortable_data)
+			}
+
+			drag_row_column_data["row"]["measure"]= [];
+			drag_row_column_data["row"]["dimensionality"] =[];
+
+			//遍历所有行里的li 排序后更新数据
+			for(var i = 0; i < $("#drop_row_view").find("li").length;i++){
+				//获取数据字段
+				var data_id = $("#drop_row_view").find("li").eq(i).attr("id").split(":");
+				//判断元素的类型
+				var data_wd_type = data_id[0];
+				//对应的数据
+				var sortable_data = data_id[1]+":"+data_id[2];
+
+				drag_row_column_data["row"][data_wd_type].push(sortable_data)
+			}
+
+			
+			// 移除筛选列
+			rightFilterListDraw();
+			switch_chart_handle_fun();
+	}
+
 	
 	//创建弹窗
 	function md_click_show(element,data_dict){
@@ -874,7 +913,13 @@ $(function() {
 
 						//移除
 						out_wrap_click.find(".deleting").on("click",function(){
-//							console.log("移除");
+									
+									if($(this).parent().parent().parent().hasClass("list_wrap")){
+										$(this).parent().parent().parent().remove();
+									}else{
+										$(this).parent().parent().remove();
+									}
+									remove_viewHandle();
 						});
 
 
@@ -2121,7 +2166,7 @@ $(function() {
 		$(ele).on("click", function() {
 			$(".annotation_text").eq(index).find(".list_wrap").remove();
 			$(".annotation_text").eq(index).find("li").remove();
-
+			remove_viewHandle();
 			$(".drag_text").eq(index).css("display", "block");
 			//			if($("#project_chart").css("display") == "none"){
 			//				$("#sizer_mpt").css("display", "block");

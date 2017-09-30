@@ -61,6 +61,7 @@ function beginDrawChart(edit_view){
 		$("#text_table_need_show").css("display","none");
 	}
 
+	show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
 
 	if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
 			view_init();
@@ -286,7 +287,11 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 	}else{
 
 		if(!save_now_show_view_text.hasClass("show_view_success")){
-			save_now_show_view_text = $("#show_histogram");
+			if($("#show_histogram").css("opacity") == "1"){
+				save_now_show_view_text = $("#show_histogram");
+			}else{
+				save_now_show_view_text = $("#show_table");
+			}
 		}
 
 		eval(save_now_show_view_text.data("show_view_fun"));
