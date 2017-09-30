@@ -199,7 +199,7 @@ $(function(){
 	$("#statements_left_bar #statements_left_bar_btn_close").css("top",($("body").height()-$(".topInfo").height())/2 - $("#statements_left_bar_btn_close").height()/2 + "px");
 	var right_width_content = $("body").width()-$("#statements_left_bar").position().left - $("#statements_left_bar").width() - $(".leftNav").width();
 	//右侧视图展示区域宽度
-	$("#right_folder_show_are").css("width",right_width_content + "px").css("height",$("body").height() - $(".topInfo").height() + "px");
+	$("#right_folder_show_are").css("width",right_width_content - 20 +"px").css("height",$("body").height() - $(".topInfo").height() + "px");
 
 	//右侧视图展示区域高度
 	$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 54+ "px");

@@ -2163,14 +2163,14 @@ $(function() {
 	$("#view_show_area").height(leftBarW + 10 - $("#operational_view").height());
 	$("#view_show_area_content").height(leftBarW + 40 - $("#operational_view").height() - 30);
 	$("#dimensionality_show,#measure_show,#index_show,#parameter_show").height($("#dimensionality").height() - 32);
-	$("#action_box").width($("body").width() - 60 - 210);
-	$("#dashboard_content").width($("body").width() - 60);
+	$("#action_box").width($("body").width() - 70 - 210);
+	$("#dashboard_content").width($("body").width() - 70);
 	//..
 	var barHeight = $("body").height() - $(".topInfo").height() - $("#new_view").height() - $("#action_box").height();
 	var view_show_height = barHeight - $("#operational_view").height();
 	var nowContentW = $("#action_box").width();
-	$("#operational_view").width(nowContentW - 201);
-	$("#view_show_area").width(nowContentW - 201);
+
+	$(".handleAll_wrap").width(nowContentW - 201);
 	$("#view_show_area_content").width($("#drag_wrap_content").width());
 
 	//筛选器高度
