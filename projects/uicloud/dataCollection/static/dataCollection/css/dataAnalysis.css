@@ -126,7 +126,7 @@
 
 /*.split_fileds .splitFileds_handle_area .split_manner #other{margin-top: 6px;}*/
 .split_fileds .splitFileds_handle_area .split_manner label[name="splitWay_separ"],.split_fileds .splitFileds_handle_area .split_manner label[name="label_check"]{padding-left: 20px;cursor:pointer;background:url("../../images/Unselected.png") no-repeat left;font-size: 12px;display: block;margin-bottom: 5px;}
-.split_fileds .splitFileds_handle_area .split_manner label[name="label_check"]{font-size: 12px;vertical-align: middle;display: inline-block;margin-left:50px}
+.split_fileds .splitFileds_handle_area .split_manner label[name="label_check"]{font-size: 12px;vertical-align: middle;display: inline-block;margin-left:48px}
 .split_fileds .splitFileds_handle_area .split_manner label[name="splitWay_separ"].checked{background: url("../../images/selected.png") no-repeat left;}
 .split_fileds .splitFileds_handle_area .split_manner label[name="label_check"].checked{background: url("../../images/selected.png") no-repeat left;}
 .split_fileds .splitFileds_handle_area .split_manner #label_input_textarea{border: 1px solid #DEDEDE;width: 285px;height: 23px;margin-top:5px;margin-bottom: 5px;}

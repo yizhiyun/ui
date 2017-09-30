@@ -320,15 +320,15 @@ $(function() {
 		current_cube_name = now_title_handle_view["tablename"];
 
 
-		//....
-		if(now_title_handle_view["viewtype"] != "histogram_show(save_data_handle)" || "drag_radarChart(save_data_handle)"){
-			_drag_message["position"] = null;
-			if(drag_row_column_data["row"]["dimensionality"].length != 0){
-				_drag_message["type"] ="sortable_row";
-			}else{
-				_drag_message["type"] ="sortable_column";
-			}
-		}
+		// //....
+		// if(now_title_handle_view["viewtype"] != "many_de_many_me_handle(radarChart)" || "many_de_many_me_handle(save_data_handle)"){
+		// 	_drag_message["position"] = null;
+		// 	if(drag_row_column_data["row"]["dimensionality"].length != 0){
+		// 		_drag_message["type"] ="sortable_row";
+		// 	}else{
+		// 		_drag_message["type"] ="sortable_column";
+		// 	}
+		// }
 		$("#view_show_empty").css("display", "none");
 		drag_measureCalculateStyle = JSON.parse(now_title_handle_view["calculation"]);
 		reason_old_show(drag_row_column_data,current_cube_name,now_title_handle_view,drag_measureCalculateStyle);
@@ -2208,8 +2208,8 @@ $(function() {
 	$("#view_show_area").height(leftBarW + 10 - $("#operational_view").height());
 	$("#view_show_area_content").height(leftBarW + 40 - $("#operational_view").height() - 30);
 	$("#dimensionality_show,#measure_show,#index_show,#parameter_show").height($("#dimensionality").height() - 32);
-	$("#action_box").width($("body").width() - 70 - 210);
-	$("#dashboard_content").width($("body").width() - 70);
+	$("#action_box").width($("body").width() - 50 - 210);
+	$("#dashboard_content").width($("body").width() - 50);
 	//..
 	var barHeight = $("body").height() - $(".topInfo").height() - $("#new_view").height() - $("#action_box").height();
 	var view_show_height = barHeight - $("#operational_view").height();
