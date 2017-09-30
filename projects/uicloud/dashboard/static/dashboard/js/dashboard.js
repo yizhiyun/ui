@@ -1207,6 +1207,7 @@ $(function() {
 							$("#handle_color_text").removeClass("ui-state-default_z")
 						},
 						drop: function(event, ui) {
+
 							$("#sizer_mpt").css("display", "none");
 							$("#view_show_empty").css("display", "none")
 							if($("#project_chart").css("display") == "none") {
@@ -1826,6 +1827,7 @@ $(function() {
 							}
 //							if(ui.)
 							switch_chart_handle_fun();
+							
 						}
 
 

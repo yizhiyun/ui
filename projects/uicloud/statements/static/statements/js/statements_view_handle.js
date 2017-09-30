@@ -5,7 +5,7 @@ var drag_measureCalculateStyle = {};
 
 var isagainDrawTable = null;
 //显示对应视图展示的图形
-function view_handle_switch_statements(viewshow_class,show_if_or,state_view_show_type){
+function view_handle_switch_statements(viewshow_class,show_if_or,state_view_show_type,lodingNum){
 
 	
 
@@ -29,7 +29,5 @@ function view_handle_switch_statements(viewshow_class,show_if_or,state_view_show
 	if(!show_if_or){
 		$("."+viewshow_class+"").parent().css("display","none");
 	}
-
-	
 
 }

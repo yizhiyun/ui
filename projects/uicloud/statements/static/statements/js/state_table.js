@@ -26,7 +26,13 @@ var isColumnFinished = false;
 
 var storeClass = null;
 function showTable_by_dragData(storeNum_toview,storeNum_toclass){
+	
 	storeClass = "bbv"+storeNum_toclass+"view_show_class"+storeNum_toview;
+
+	var target =  $("."+storeClass+"").get(0);
+
+    spinner.spin(target);
+
 	// 绘制行数据
 	function function_draw_row_data(needAllData){
 		var need_Handle_drag_row_dimensionality = drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"];
@@ -335,7 +341,7 @@ function showTable_by_dragData(storeNum_toview,storeNum_toclass){
 		// 左侧行设置 th 的高度
 		var top_height = $("."+storeClass+" .right_module .top_column_container").eq(0).height();
 		$("."+storeClass+" .left_row_container table th").css("height",top_height -1);
-		
+		 spinner.stop();
 }
 
 

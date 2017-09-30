@@ -22,9 +22,10 @@ var isRowFinished = false;
 var isColumnFinished = false;
 
 function showTable_by_dragData(){
-	
+
 	// 绘制行数据
 	function function_draw_row_data(needAllData){
+
 		var need_Handle_drag_row_dimensionality = drag_row_column_data["row"]["dimensionality"];
 		var rowLeftTable = $("#text_table_need_show .left_row_container table").eq(0);
 		rowLeftTable.find("thead tr").empty();
@@ -220,6 +221,7 @@ function showTable_by_dragData(){
 						layout_table_size();
 						if(finish){
 							finish();
+
 						}
 				});
 			}else{
@@ -228,6 +230,7 @@ function showTable_by_dragData(){
 				$("#text_table_need_show #data_list_for_body div.vertical_line").remove();
 				$("#text_table_need_show #data_list_for_body li").remove();
 			}
+
 		}
 		function rowNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"]).length > 0){
@@ -266,6 +269,7 @@ function showTable_by_dragData(){
 					finish("noNeed");
 				}
 			}
+			
 		}
 		$("#text_table_need_show").show();
 		if(isagainDrawTable){
@@ -289,6 +293,7 @@ function showTable_by_dragData(){
 				// 直接显示
 			}else if(isRowDemiEqual && isColumnDemiEqual){
 				measureNeedDraw();
+
 			}else if(!isRowDemiEqual && isColumnDemiEqual){
 				rowNeedDraw(function(){
 					measureNeedDraw();
@@ -318,9 +323,10 @@ function showTable_by_dragData(){
 			
 		}
 		
-		
+		// spinner.stop();
 	}
 	init();
+	
 }
 
 
@@ -335,7 +341,9 @@ function showTable_by_dragData(){
 		// 左侧行设置 th 的高度
 		var top_height = $("#text_table_need_show .right_module .top_column_container").eq(0).height();
 		$("#text_table_need_show .left_row_container table th").css("height",top_height -1);
-		
+		// setTimeout(function(){
+		// 	 spinner.stop();
+		// },100)
 }
 
 

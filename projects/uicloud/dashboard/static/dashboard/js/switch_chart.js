@@ -33,8 +33,11 @@ function switch_chart_handle_fun(edit_view){
 
 
 function beginDrawChart(edit_view){
-	
-	
+	var target =  $("#view_show_wrap").get(0);
+    spinner.spin(target);
+	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
+			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
+		}
 	//行里维度度量的数量
 	var switch_row_di = drag_row_column_data["row"]["dimensionality"].length,
 
@@ -259,7 +262,12 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 							}
 //						console.log(save_now_show_view_text)
 						eval(save_now_show_view_text.data("show_view_fun"));
+						var target =  $("#view_show_wrap").get(0);
+    					spinner.spin(target);
 						view_name = save_now_show_view_text.data("show_view_fun");
+							setTimeout(function(){
+		 						spinner.stop();
+							},200)
 						return;
 					}
 				}
@@ -283,6 +291,11 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 
 			}
 		}
+
+	setTimeout(function(){
+		 spinner.stop();
+	},200)
+
 		return;
 	}else{
 
@@ -298,6 +311,9 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 		view_name = save_now_show_view_text.data("show_view_fun");
 		save_now_show_view_text.data("if_show","true");
 		show_btn_change.not(save_now_show_view_text).data("if_show","");
+		setTimeout(function(){
+			 spinner.stop();
+		},200)
 	}
 
 
@@ -310,4 +326,6 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 	if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
 		$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","0.5").unbind("mouseleave click");
 	}
+
+
 }

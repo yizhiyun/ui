@@ -199,7 +199,7 @@ $(function(){
 	$("#statements_left_bar #statements_left_bar_btn_close").css("top",($("body").height()-$(".topInfo").height())/2 - $("#statements_left_bar_btn_close").height()/2 + "px");
 	var right_width_content = $("body").width()-$("#statements_left_bar").position().left - $("#statements_left_bar").width() - $(".leftNav").width();
 	//右侧视图展示区域宽度
-	$("#right_folder_show_are").css("width",right_width_content - 20 +"px").css("height",$("body").height() - $(".topInfo").height() + "px");
+	$("#right_folder_show_are").css("width",right_width_content +"px").css("height",$("body").height() - $(".topInfo").height() + "px");
 
 	//右侧视图展示区域高度
 	$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 54+ "px");
@@ -845,8 +845,6 @@ function delete_btn_handle(){
 					for(var i = 0; i < view_contact.length;i++){
 						(function(i){
 
-					
-
 						var change_view_show_click = view_contact[i];
 
 						count++;
@@ -883,8 +881,7 @@ function delete_btn_handle(){
 
 						//创建容器
 						fun_add_view(change_view_show_click["viewtype"],now_click_ele.parent().parent().find(".small_view_text").eq(count).text(),viewshow_class,viewshow_class_arr,change_view_show_click["note"],count,JSON.parse(view_session),change_view_show_click["calculation"],change_view_show_click["show"]);
-						view_handle_switch_statements(viewshow_class,change_view_show_click["show"],change_view_show_click["viewtype"]);
-						
+						view_handle_switch_statements(viewshow_class,change_view_show_click["show"],change_view_show_click["viewtype"],view_contact.length-1);
 						})(i);
 
 					}
