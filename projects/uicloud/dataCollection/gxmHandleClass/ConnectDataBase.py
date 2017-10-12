@@ -327,15 +327,13 @@ class ConnectDataBase():
                     logger.debug('sqlserver sql :{0}'.format(sql))
                     cursor.execute(sql)
                     dataList = cursor.fetchall()
-
-                    cursor.execute('sp_columns ' + jsonData['tableName'])
-                    colList = cursor.fetchall()
+                    colList = cursor.description
 
                     results['data'] = []
                     for data in dataList:
                         dic = {}
                         for i in range(len(colList)):
-                            dic[colList[i][3]] = data[i]
+                            dic[colList[i][0]] = data[i]
                         results['data'].append(dic)
 
                 if mode == 'all' or mode == 'schema':
@@ -701,14 +699,16 @@ class ConnectDataBase():
                                 )
 
                             if self.dbPaltName == 'sqlserver':
-                                colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+1, 10000)".format(
+                                colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+{2}, 10000)".format(
                                     colname,
-                                    handleCol['cutsymbol']
+                                    handleCol['cutsymbol'],
+                                    len(handleCol['cutsymbol'])
                                 )
                             else:
-                                colname = "substr({0}, instr({0}, '{1}')+1)".format(
+                                colname = "substr({0}, instr({0}, '{1}')+{2})".format(
                                     colname,
-                                    handleCol['cutsymbol']
+                                    handleCol['cutsymbol'],
+                                    len(handleCol['cutsymbol'])
                                 )
 
                             conversionList.append(prev)
@@ -732,14 +732,16 @@ class ConnectDataBase():
                                 )
 
                             if self.dbPaltName == 'sqlserver':
-                                colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+1, 10000)".format(
+                                colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+{2}, 10000)".format(
                                     colname,
-                                    handleCol['cutsymbol']
+                                    handleCol['cutsymbol'],
+                                    len(handleCol['cutsymbol'])
                                 )
                             else:
-                                colname = "substr({0}, instr({0}, '{1}')+1)".format(
+                                colname = "substr({0}, instr({0}, '{1}')+{2})".format(
                                     colname,
-                                    handleCol['cutsymbol']
+                                    handleCol['cutsymbol'],
+                                    len(handleCol['cutsymbol'])
                                 )
 
                             if i != 0:
