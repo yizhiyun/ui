@@ -748,7 +748,7 @@ class ConnectDataBase():
                                 conversionList.append(prev)
                             if i == handleCol['count'] - 1:
                                 conversionList.append(
-                                    colname + '  as  %s' % (handleCol['colname'] + '_PART%s' % (2 + countname + i)))
+                                    colname + '  as  %s' % (handleCol['colname'] + '_PART%s' % (1 + countname + i)))
 
             elif handleCol['method'] == 'limit':
 
