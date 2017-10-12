@@ -5,7 +5,7 @@ var monAllData = null;
 $(function(){
 	
 	$("#dashboard_content #view_show_area  .momshowArea").draggable({
-		containment:$("#dashboard_content #view_show_area")
+		containment:"#dashboard_content #view_show_area"
 	});
 	
 	

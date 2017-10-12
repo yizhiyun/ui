@@ -428,7 +428,7 @@ function loading_bar(){
   }
   //构建成功
   function data_success_show(){
-    clearInterval(loading_inter)
+    clearInterval(loading_inter);
     $("#loading_percentage span").text(100);
     $("#loading_progress_bar_active").width($("#loading_progress_bar").width());
     $("#prompt_message .prompt_message_text").text("数据构建成功");
@@ -438,6 +438,7 @@ function loading_bar(){
     $("#loading_percentage").css("right","-10px");
     //构建数据成功隐藏构建数据弹窗--显示选择进入模块弹窗
     navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
+    pallasdaraFunctionNavBtnHandle();
     $("#build_upload").hide("blind",1000,function(){
       $(".rightConent #analysisContainer").css("visibility","hidden");
       //构建成功显示集合表
@@ -623,9 +624,9 @@ function getTablesOfaDataBase(theSelect){
           stop:function(){
             instance.repaintEverything();
             $("#analysisContainer .mainDragArea #dragTableDetailInfo").css({
-          left:this.offsetLeft + "px",
-          top:this.offsetTop - 40 + "px" 
-      })
+          	left:this.offsetLeft + "px",
+         	 top:this.offsetTop - 40 + "px" 
+     	 });
             $("#analysisContainer .mainDragArea #dragTableDetailInfo").show();
         }
       });       
