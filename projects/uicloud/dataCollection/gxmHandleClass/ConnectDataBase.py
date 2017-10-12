@@ -186,7 +186,7 @@ class ConnectDataBase():
 
                 elif condType in [">", ">=", "=", "<=", "<", "!="]:
                     if 'datatype' in condIt.keys() and condIt['datatype'] == 'date' and self.dbPaltName == 'oracle':
-                        oracleToDate = "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
+                        oracleToDate += "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
                             condIt['columnName'], condType, condIt["value"]
                         ) + oraclestr
 
@@ -340,12 +340,12 @@ class ConnectDataBase():
                         exprSql = "select {0} from {1} where 1=1 ".format(exprStr, jsonData['tableName'])
                     else:
                         exprSql = "select {0} from {1} where 1=1 ".format(exprStr[:-1], jsonData['tableName'])
-                    exprSql += filtersql
+                    exprSql += filtersql + oracleToDate + oraclestr
                     if 'groupby' in expressions.keys() and expressions['groupby']:
                         exprSql += 'group by {0} '.format(','.join(expressions['groupby']))
                     if 'orderby' in expressions.keys() and expressions['orderby']:
                         exprSql += 'order by {0} '.format(','.join(expressions['orderby']))
-                    exprSql += mysqlstr
+
                     logger.debug('exprSql: {0}'.format(exprSql))
                     cursor.execute(exprSql)
                     dataList = cursor.fetchall()
@@ -427,7 +427,11 @@ class ConnectDataBase():
                             addsql += value + ', '
                     logger.error('addsql: {0}'.format(addsql))
                     sql = 'select {0} from {1} where 1=1 '.format(
-                        addsql[:-2], jsonData['tableName']) + filtersql + oracleToDate + eval(self.dbPaltName + 'str')
+                        addsql[:-2], jsonData['tableName']) + filtersql + oracleToDate
+                    if self.dbPaltName == 'sqlserver':
+                        sql = sql[:6] + sqlserverstr + sql[6:]
+                    else:
+                        sql += eval(self.dbPaltName + 'str')
 
                     try:
                         cursor.execute(sql)
@@ -439,7 +443,8 @@ class ConnectDataBase():
                         newDataList = cursor.fetchall()
                         for i in range(len(results['data'])):
                             results['data'][i].update(specialBytes(newDataList[i]))
-                    elif self.dbPaltName == 'oracle':
+
+                    elif self.dbPaltName == 'oracle' or self.dbPaltName == 'sqlserver':
                         dataList = cursor.fetchall()
                         colList = cursor.description
                         updateList = []
@@ -455,11 +460,23 @@ class ConnectDataBase():
 
             handleCol = jsonData['handleCol']
             if handleCol['method'] == 'split':
-                countsql = "select length(replace({0},'{1}','--'))-length({0}) from {2}".format(
+                cutsymbolNum = len(handleCol['cutsymbol'])
+                replaceCol = '-'
+                for i in range(cutsymbolNum):
+                    replaceCol += '-'
+                countsql = "select length(replace({0},'{1}','{2}'))-length({0}) from {3}".format(
                     self.turnCols([handleCol['colname']], coldickey)[0].split(' as ')[0],
                     handleCol['cutsymbol'],
+                    replaceCol,
                     jsonData['tableName']
                 )
+                if self.dbPaltName == 'sqlserver':
+                    countsql = "select len(replace({0},'{1}','{2}'))-len({0}) from {3}".format(
+                        self.turnCols([handleCol['colname']], coldickey)[0].split(' as ')[0],
+                        handleCol['cutsymbol'],
+                        replaceCol,
+                        jsonData['tableName']
+                    )
                 logger.debug('countsql: {0}'.format(countsql))
 
                 try:
@@ -492,6 +509,12 @@ class ConnectDataBase():
                     handleCol['cutsymbol'],
                     jsonData['tableName']
                 )
+                if self.dbPaltName == 'sqlserver':
+                    indexSql = "select CHARINDEX('{1}', {0}) from {2}".format(
+                        self.turnCols([handleCol['colname']], coldickey)[0].split(' as ')[0],
+                        handleCol['cutsymbol'],
+                        jsonData['tableName']
+                    )
                 logger.debug('indexSql: {0}'.format(indexSql))
 
                 try:
@@ -525,8 +548,11 @@ class ConnectDataBase():
 
             logger.debug('conversionList: {0}'.format(conversionList))
             sql = 'select {0} from {1} where 1=1 '.format(
-                ', '.join(conversionList), jsonData['tableName']) + filtersql + oracleToDate + \
-                eval(self.dbPaltName + 'str')
+                ', '.join(conversionList), jsonData['tableName']) + filtersql + oracleToDate
+            if self.dbPaltName == 'sqlserver':
+                sql = sql[:6] + sqlserverstr + sql[6:]
+            else:
+                sql += eval(self.dbPaltName + 'str')
             logger.debug('handleColSql: {0}'.format(sql))
 
             try:
@@ -539,7 +565,7 @@ class ConnectDataBase():
                 newDataList = cursor.fetchall()
                 for i in range(len(results['data'])):
                     results['data'][i].update(specialBytes(newDataList[i]))
-            elif self.dbPaltName == 'oracle':
+            elif self.dbPaltName == 'oracle' or self.dbPaltName == 'sqlserver':
                 dataList = cursor.fetchall()
                 colList = cursor.description
                 updateList = []
@@ -635,16 +661,30 @@ class ConnectDataBase():
                                 handleCol['colname'] + '_PART%s' % (1 + countname + i)
                             )
 
-                            aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
-                                colname,
-                                handleCol['cutsymbol'],
-                                handleCol['colname'] + '_PART%s' % (2 + countname + i)
-                            )
-                            colname = aft.split(' as ')[0]
+                            if self.dbPaltName == 'sqlserver':
+                                prev = "case CHARINDEX('{0}', {1}) WHEN 0 then '' ELSE "
+                                prev += "substring(cast({1} as varchar), 1, CHARINDEX('{0}', {1})-1) END as {2}"
+                                prev = prev.format(
+                                    handleCol['cutsymbol'],
+                                    colname,
+                                    handleCol['colname'] + '_PART%s' % (1 + countname + i)
+                                )
+
+                            if self.dbPaltName == 'sqlserver':
+                                colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+1, 10000)".format(
+                                    colname,
+                                    handleCol['cutsymbol']
+                                )
+                            else:
+                                colname = "substr({0}, instr({0}, '{1}')+1)".format(
+                                    colname,
+                                    handleCol['cutsymbol']
+                                )
 
                             conversionList.append(prev)
                             if i == handleCol['count'] - 1:
-                                conversionList.append(aft)
+                                conversionList.append(
+                                    colname + ' as %s' % (handleCol['colname'] + '_PART%s' % (2 + countname + i)))
                     else:
                         for i in range(handleCol['count']):
                             prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}".format(
@@ -652,18 +692,31 @@ class ConnectDataBase():
                                 handleCol['cutsymbol'],
                                 handleCol['colname'] + '_PART%s' % (countname + i)
                             )
+                            if self.dbPaltName == 'sqlserver':
+                                prev = "case CHARINDEX('{0}', {1}) WHEN 0 then '' ELSE "
+                                prev += "substring(cast({1} as varchar), 1, CHARINDEX('{0}', {1})-1) END as {2}"
+                                prev = prev.format(
+                                    handleCol['cutsymbol'],
+                                    colname,
+                                    handleCol['colname'] + '_PART%s' % (countname + i)
+                                )
 
-                            aft = "substr({0}, instr({0}, '{1}')+1) as {2}".format(
-                                colname,
-                                handleCol['cutsymbol'],
-                                handleCol['colname'] + '_PART%s' % (1 + countname + i)
-                            )
-                            colname = aft.split(' as ')[0]
+                            if self.dbPaltName == 'sqlserver':
+                                colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+1, 10000)".format(
+                                    colname,
+                                    handleCol['cutsymbol']
+                                )
+                            else:
+                                colname = "substr({0}, instr({0}, '{1}')+1)".format(
+                                    colname,
+                                    handleCol['cutsymbol']
+                                )
 
                             if i != 0:
                                 conversionList.append(prev)
                             if i == handleCol['count'] - 1:
-                                conversionList.append(aft)
+                                conversionList.append(
+                                    colname + ' as %s' % (handleCol['colname'] + '_PART%s' % (2 + countname + i)))
 
             elif handleCol['method'] == 'limit':
 
@@ -672,10 +725,16 @@ class ConnectDataBase():
                 if len(limit) == 1:
                     prev = "substr({0}, 1, {1}) as {2}".format(
                         colname, limit[0], handleCol['colname'] + '_PART{0}'.format(1 + countname))
+                    if self.dbPaltName == 'sqlserver':
+                        prev = "substring(cast({0} as varchar), 1, {1}) as {2}".format(
+                            colname, limit[0], handleCol['colname'] + '_PART{0}'.format(1 + countname))
                     conversionList.append(prev)
 
                     aft = "substr({0}, {1}) as {2}".format(
                         colname, limit[0] + 1, handleCol['colname'] + '_PART{0}'.format(2 + countname))
+                    if self.dbPaltName == 'sqlserver':
+                        aft = "substring(cast({0} as varchar), {1}, 10000) as {2}".format(
+                            colname, limit[0] + 1, handleCol['colname'] + '_PART{0}'.format(2 + countname))
                     conversionList.append(aft)
 
                 else:
@@ -683,6 +742,9 @@ class ConnectDataBase():
                         if i == 0:
                             sql = "substr({0}, 1, {1}) as {2}".format(
                                 colname, limit[i], handleCol['colname'] + '_PART%s' % (i + 1 + countname))
+                            if self.dbPaltName == 'sqlserver':
+                                sql = "substring(cast({0} as varchar), 1, {1}) as {2}".format(
+                                    colname, limit[i], handleCol['colname'] + '_PART%s' % (i + 1 + countname))
                             conversionList.append(sql)
 
                         else:
@@ -690,6 +752,11 @@ class ConnectDataBase():
                                 colname, limit[i - 1] + 1,
                                 limit[i] - limit[i - 1],
                                 handleCol['colname'] + '_PART%s' % (i + 1 + countname))
+                            if self.dbPaltName == 'sqlserver':
+                                sql = "substring(cast({0} as varchar), {1}, {2}) as {3}".format(
+                                    colname, limit[i - 1] + 1,
+                                    limit[i] - limit[i - 1],
+                                    handleCol['colname'] + '_PART%s' % (i + 1 + countname))
                             conversionList.append(sql)
 
                             if i == len(limit) - 1:
@@ -697,9 +764,14 @@ class ConnectDataBase():
                                     colname,
                                     limit[i] + 1,
                                     handleCol['colname'] + '_PART%s' % (i + 2 + countname))
+                                if self.dbPaltName == 'sqlserver':
+                                    sql = "substring(cast({0} as varchar), {1}, 10000) as {2}".format(
+                                        colname,
+                                        limit[i] + 1,
+                                        handleCol['colname'] + '_PART%s' % (i + 2 + countname))
                                 conversionList.append(sql)
 
-            logger.debug('limitsqllist: {0}'.format(conversionList))
+            logger.debug('cutsqllist: {0}'.format(conversionList))
             return conversionList
 
         elif handleCol['method'] == 'merge':
