@@ -171,11 +171,13 @@
 //
 
 
+$(function(){
+	// 连接框可拖动帮
+$("#connectModalprompt").draggable({
+		containment:"#analysisContainer  .mainDragArea"
+});
 
-
-
-
-
+});
 
 jsPlumb.ready(function(){
 instance = jsPlumb.getInstance({
@@ -203,6 +205,10 @@ instance = jsPlumb.getInstance({
 
 // 连接框显示
  function modalPromptShowToPage(conInfo){
+ 	$("#connectModalprompt").css({
+		"left":(conInfo.source[0].offsetLeft + conInfo.target[0].offsetLeft) / 2 + "px",
+		"top":(conInfo.source[0].offsetTop + conInfo.target[0].offsetTop) / 2 + "px",
+	});
  	// 显示连接框
 	$("#connectModalprompt").show("pulsate",100,function(){
 		
@@ -264,15 +270,15 @@ function connectDetailSelect(conInfo,originalEvent){
 	lineInfo.unbind("click");
 	lineInfo.bind("click",function(){
 		 modalPromptShowToPage(conInfo);
-	})
+	});
 	
 
 	$("#connectModalprompt").css({
-		"left":(conInfo.source.offset().left + conInfo.source.offset().left) / 2 + "px",
-		"top":(conInfo.source.offset().top + conInfo.source.offset().top) / 2 + "px",
-	})
+		"left":(conInfo.source[0].offsetLeft + conInfo.target[0].offsetLeft) / 2 + "px",
+		"top":(conInfo.source[0].offsetTop + conInfo.target[0].offsetTop) / 2 + "px",
+	});
 	// 调用连接框显示的函数
-	modalPromptShowToPage(conInfo)
+	modalPromptShowToPage(conInfo);
 	
 	var sourceDataInfo = conInfo.sourceId.split("_YZYPD_");
 	var  sourceDBName =  sourceDataInfo[1];

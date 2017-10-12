@@ -1529,15 +1529,16 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 			}else if(!obj.allSelectFlag && obj.deleteFlag){
 			  common = {"type": "isnotin","columnName": obj.column,"value": obj.commonSelected}
 			}
-			conditionFilter_record[tableInfo]["common"].push(common);
-			
+			if(common){
+				conditionFilter_record[tableInfo]["common"].push(common);
+			}
 			for (var j = 0;j < obj.conditions.length;j++) {
 				var con = obj.conditions[j];
 				var filter = null;
 				if(con.relation == "limit"){
 					 filter = {"type":"limit","value":con.value}
 				}else{
-					filter = {"type":"limit","value":con.value,"columnName":con.field}
+					filter = {"type":con.relation,"value":con.value,"columnName":con.field}
 				}
 				conditionFilter_record[tableInfo]["condition"].push(filter);
 			}

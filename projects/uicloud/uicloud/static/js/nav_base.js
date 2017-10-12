@@ -204,9 +204,34 @@ $(function(){
 		event.stopPropagation();
 		$("#connectDataBaseInfo").hide();
 		$(".maskLayer").hide();
-	});	
-});
+	});
+	
+	doProhibit();
 
+});
+	function doProhibit() {
+		if(window.Event)
+			document.captureEvents(Event.MOUSEUP);
+
+		function nocontextmenu() {
+			event.cancelBubble = true
+			event.returnvalue = false;
+			return false;
+		}
+
+		function norightclick(e) {
+			if(window.Event) {
+				if(e.which == 2 || e.which == 3)
+					return false;
+			} else if(event.button == 2 || event.button == 3) {
+				event.cancelBubble = true
+				event.returnvalue = false;
+				return false;
+			}
+		}
+		document.oncontextmenu = nocontextmenu; // for IE5+ 
+		document.onmousedown = norightclick; // 
+	}
 
 function pallasdaraFunctionNavBtnHandle(){
 	
@@ -245,8 +270,6 @@ function pallasdaraFunctionNavBtnHandle(){
 			event.preventDefault();
 			return;
 		}
-//		$(this).siblings(".ableFlag").children("div.active").removeClass("active");	
-//		$(this).children("div").addClass("active");
 		switch ($(this).attr("id")){
 			case"navDataBaseAndPanleFileConnectionViewBtn":
 				window.location.href = "/dataCollection/pallasdata";
