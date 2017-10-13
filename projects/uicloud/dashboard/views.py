@@ -421,12 +421,12 @@ def indexAdd(request):
         return JsonResponse(context)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def indexGet(request):
     '''
     '''
     jsonData = request.data
-    if request.method == 'GET':
+    if request.method == 'POST':
         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
         if 'indexname' not in jsonData.keys():
             indexList = DashboardIndexByUser.objects.filter(username=username, tablename=jsonData['tablename'])

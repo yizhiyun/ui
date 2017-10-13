@@ -52,7 +52,7 @@ Save IndexInfo From Current User
 Get indexInfo Name Or Data From UserName And TableName
 -------------
 ### 1. Request URI: /dashboard/indexGet
-### 2. Request Method: GET
+### 2. Request Method: POST
 ### 3. Request Data Schema:
 * if you want the index name list.
 ```
