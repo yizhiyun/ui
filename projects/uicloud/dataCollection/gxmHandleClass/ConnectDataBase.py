@@ -323,7 +323,7 @@ class ConnectDataBase():
                     return results
 
                 if mode == 'all' or mode == 'data':
-                    sql = sql[:6] + sqlserverstr + sql[6:] + filtersql
+                    sql = sql[:6] + sqlserverstr + sql[6:] + filtersql + 'order by 1'
                     logger.debug('sqlserver sql :{0}'.format(sql))
                     cursor.execute(sql)
                     dataList = cursor.fetchall()
@@ -457,7 +457,9 @@ class ConnectDataBase():
                     sql = 'select {0} from {1} where 1=1 '.format(
                         addsql[:-2], jsonData['tableName']) + filtersql + oracleToDate
                     if self.dbPaltName == 'sqlserver':
-                        sql = sql[:6] + sqlserverstr + sql[6:]
+                        cursor.execute('sp_columns ' + jsonData['tableName'])
+                        firstCol = cursor.fetchone()[3]
+                        sql = sql[:6] + sqlserverstr + sql[6:] + 'order by %s' % firstCol
                     else:
                         sql += eval(self.dbPaltName + 'str')
 
@@ -578,7 +580,9 @@ class ConnectDataBase():
             sql = 'select {0} from {1} where 1=1 '.format(
                 ', '.join(conversionList), jsonData['tableName']) + filtersql + oracleToDate
             if self.dbPaltName == 'sqlserver':
-                sql = sql[:6] + sqlserverstr + sql[6:]
+                cursor.execute('sp_columns ' + jsonData['tableName'])
+                firstCol = cursor.fetchone()[3]
+                sql = sql[:6] + sqlserverstr + sql[6:] + 'order by %s' % firstCol
             else:
                 sql += eval(self.dbPaltName + 'str')
             logger.debug('handleColSql: {0}'.format(sql))
