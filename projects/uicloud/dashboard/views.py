@@ -446,21 +446,32 @@ def indexGet(request):
                     tablename=jsonData['tablename'],
                     indexname=jsonData['indexname']
                 )
-                context = {
-                    'status': 'success',
-                    'data': {
-                        'row': index.row,
-                        'column': index.column,
-                        'username': index.username,
-                        'tablename': index.tablename,
-                        'indextype': index.indextype,
-                        'indexname': index.indexname,
-                        'indexstyle': index.indexstyle,
-                        'calculation': index.calculation,
-                        'customcalculate': index.customcalculate
+                if 'newname' in jsonData.keys():
+                    index.indexname = jsonData['newname']
+                    index.save()
+                    context = {'status': 'success'}
+
+                elif 'remove' in jsonData.keys() and jsonData['remove'] == 'yes':
+                    index.delete()
+                    context = {'status': 'success'}
+
+                else:
+                    context = {
+                        'status': 'success',
+                        'data': {
+                            'row': index.row,
+                            'column': index.column,
+                            'username': index.username,
+                            'tablename': index.tablename,
+                            'indextype': index.indextype,
+                            'indexname': index.indexname,
+                            'indexstyle': index.indexstyle,
+                            'calculation': index.calculation,
+                            'customcalculate': index.customcalculate
+                        }
                     }
-                }
             except Exception:
+                logger.error("Exception: {0}".format(sys.exc_info()))
                 context = {
                     "status": "failed",
                     "reason": "there is no this index"

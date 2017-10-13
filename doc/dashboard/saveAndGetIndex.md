@@ -69,12 +69,31 @@ Get indexInfo Name Or Data From UserName And TableName
     "indexname": <indxname>
 }
 ```
+* if you want to change the index name.
+```
+{
+    "username": <username>,
+    "tablename": <tablename>,
+    "indexname": <indxname>,
+    "newname": <newname>
+}
+```
+* if you want to delete the index.
+```
+{
+    "username": <username>,
+    "tablename": <tablename>,
+    "indexname": <indxname>,
+    "remove": <yes>
+}
+```
 ### 4. Request Example:
 ```
 {
     "username": "test",
     "tablename": "MD5_tablename",
-    "indexname": "indexname"
+    "indexname": "indexname",
+    "remove": "yes"
 }
 ```
 ### 5. Support Format: JSON
@@ -103,5 +122,7 @@ Get indexInfo Name Or Data From UserName And TableName
     }
 }
 ```
+* as for change index name and delete index.
+> {'status': 'success'}
 * if failed. it should be:
 > {'status': 'failed', 'reason': 'there is no this index.'}
