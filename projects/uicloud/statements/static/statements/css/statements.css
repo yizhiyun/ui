@@ -69,12 +69,12 @@ input[type=checkbox] {visibility: hidden;}
 .ui-state-hover_z{background:#e2efff;}
 
 /*右侧视图展示区域*/
-#right_folder_show_are{float: left;height: 100%;box-sizing: border-box;margin-left: 200px;}
+#right_folder_show_are{float: left;height: 100%;box-sizing: border-box;margin-left: 200px;background: #f1f2f4;}
 
 .view_folder_show_area{width: 100%;box-sizing:border-box;padding: 0px 10px;overflow-y: auto;background:#f1f2f4}
-.view_folder_show_area ul{margin: 0;padding: 0;position: absolute !important;width: 100% !important;}
+.view_folder_show_area>ul{margin: 0;padding: 0;position: absolute !important;width: 100% !important;}
 /*#right_folder_show_are .view_folder_show_area ul li{transition: none;}*/
-.right_folder_name_show{float: left;margin:15px 0px 15px 20px;display: none}
+.right_folder_name_show{float: left;margin:20px 0px 10px 20px;display: none}
 .right_folder_name_show .right_folder_name_show_img{width: 14px;height: 14px;vertical-align: middle;float: left;margin: 5px 10px 0px 0px}
 .right_if_have_parentfolder{float: left;font-size: 16px;}
 .right_if_have_parentfolder img{margin: 0px 5px;}
@@ -111,27 +111,27 @@ input[type=checkbox] {visibility: hidden;}
 
 /*表格样式*/
 .new_view_table{min-width: 100%;font-size: 12px;position: relative;left: 0;top: 0;background: white}
-.new_view_table .top_column_container{overflow: visible;}
-.new_view_table .top_column_container .top_column_name{text-align: center;font-weight: bold}
-.new_view_table .top_column_container .column_data_list{border-bottom: 1px solid #dedede;border-left: 1px solid #dedede;}
-.new_view_table .top_column_container .column_data_list tr td{border-right: 1px solid #dedede;color: #808080;min-width: 50px;text-align: center;}
-.new_view_table .top_column_container .column_data_list tr:nth-of-type(1) td{color: black;}
+.new_view_table .top_column_container,.edit_table .top_column_container{overflow: visible;}
+.new_view_table .top_column_container .top_column_name,.edit_table .top_column_container .top_column_name{text-align: center;font-weight: bold}
+.new_view_table .top_column_container .column_data_list,.edit_table .top_column_container .column_data_list{border-bottom: 1px solid #dedede;border-left: 1px solid #dedede;}
+.new_view_table .top_column_container .column_data_list tr td,.edit_table .top_column_container .column_data_list tr td{border-right: 1px solid #dedede;color: #808080;min-width: 50px;text-align: center;}
+.new_view_table .top_column_container .column_data_list tr:nth-of-type(1) td,.edit_table .top_column_container .column_data_list tr:nth-of-type(1) td{color: black;}
 .view_table_clone{position: absolute;left: 0px !important;top: 0px !important;}
 
-.new_view_table .left_row_container{position: absolute;top: 10px;left: 10px;}
-.new_view_table .left_row_container table{border:0px;border-collapse: collapse;overflow: auto;}
-.new_view_table .left_row_container table tr{border-bottom: 1px solid #dedede;}
-.new_view_table .left_row_container table tbody tr {border-right: 1px solid #dedede;}
-.new_view_table .left_row_container table tr th{padding-right: 10px;vertical-align: bottom;}
-.new_view_table .left_row_container table tr td{color: #808080;}
-.new_view_table .left_row_container table tr td.firstRow{color: black;}
-.new_view_table table tr td{min-width: 50px;}
+.new_view_table .left_row_container,.edit_table .left_row_container{position: absolute;top: 10px;left: 10px;}
+.new_view_table .left_row_container table,.edit_table .left_row_container table{border:0px;border-collapse: collapse;overflow: auto;}
+.new_view_table .left_row_container table tr,.edit_table .left_row_container table tr{border-bottom: 1px solid #dedede;}
+.new_view_table .left_row_container table tbody tr,.edit_table .left_row_container table tbody tr {border-right: 1px solid #dedede;}
+.new_view_table .left_row_container table tr th,.edit_table .left_row_container table tr th{padding-right: 10px;vertical-align: bottom;}
+.new_view_table .left_row_container table tr td,.edit_table .left_row_container table tr td{color: #808080;}
+.new_view_table .left_row_container table tr td.firstRow,.edit_table .left_row_container table tr td.firstRow{color: black;}
+.new_view_table table tr td,.edit_table table tr td{min-width: 50px;}
 
-.new_view_table .right_module{min-width: 100px;}
-.new_view_table .content_body #data_list_for_body{position: relative;}
-.new_view_table .content_body #data_list_for_body .vertical_line{position: absolute;width: 1px;height: 100%;background: #dedede;top: 0;}
-.new_view_table .content_body #data_list_for_body li{width: 100px;border-bottom: 1px solid #dedede;}
-.new_view_table .content_body #data_list_for_body li:nth-of-type(odd){background: #f5f5f5;}
-.new_view_table .content_body #data_list_for_body li:nth-of-type(even){background: white;}
-.new_view_table .content_body #data_list_for_body  .measureDiv{position: absolute;}
+.new_view_table .right_module,.edit_table .right_module{min-width: 100px;}
+.new_view_table .content_body #data_list_for_body,.edit_table .content_body #data_list_for_body{position: relative;}
+.new_view_table .content_body #data_list_for_body .vertical_line,.edit_table .content_body #data_list_for_body .vertical_line{position: absolute;width: 1px;height: 100%;background: #dedede;top: 0;}
+.new_view_table .content_body #data_list_for_body li,.edit_table .content_body #data_list_for_body li{width: 100px;border-bottom: 1px solid #dedede;}
+.new_view_table .content_body #data_list_for_body li:nth-of-type(odd),.edit_table .content_body #data_list_for_body li:nth-of-type(odd){background: #f5f5f5;}
+.new_view_table .content_body #data_list_for_body li:nth-of-type(even),.edit_table .content_body #data_list_for_body li:nth-of-type(even){background: white;}
+.new_view_table .content_body #data_list_for_body  .measureDiv,.edit_table .content_body #data_list_for_body  .measureDiv{position: absolute;}
 

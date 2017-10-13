@@ -25,9 +25,18 @@ var isColumnFinished = false;
 //记录传递过来的className
 
 var storeClass = null;
-function showTable_by_dragData(storeNum_toview,storeNum_toclass){
-	
-	storeClass = "bbv"+storeNum_toclass+"view_show_class"+storeNum_toview;
+function showTable_by_dragData(save_allTable){
+	for(var i = 0; i < save_allTable.length;i++){
+		(function(index){
+			manyTable(save_allTable[index])
+		})(i);
+	}
+}
+
+function manyTable(storeClass){
+	storeClass = storeClass;
+
+	var storeNum_toview = storeClass.match(/\d+/g)[1];
 
 	var target =  $("."+storeClass+"").get(0);
 
@@ -327,7 +336,13 @@ function showTable_by_dragData(storeNum_toview,storeNum_toclass){
 		
 	}
 	init();
-}
+
+
+
+
+
+
+
 
 
 
@@ -342,6 +357,9 @@ function showTable_by_dragData(storeNum_toview,storeNum_toclass){
 		var top_height = $("."+storeClass+" .right_module .top_column_container").eq(0).height();
 		$("."+storeClass+" .left_row_container table th").css("height",top_height -1);
 		 spinner.stop();
+		 $("."+storeClass+" .content_body #data_list_for_body").css("width","auto");
+		  $("."+storeClass+" .content_body #data_list_for_body li").css("width","100%");
+		 $("."+storeClass+" .edit_table").width($(".right_module").width() + $(".left_row_container").width()).css("background","white");
 }
 
 
@@ -354,6 +372,15 @@ function emptyAllTable(){
 	$("."+storeClass+" #data_list_for_body div.vertical_line").remove();
 	$("."+storeClass+" #data_list_for_body li").remove();
 }
+
+
+
+
+
+
+}
+
+
 
 
 

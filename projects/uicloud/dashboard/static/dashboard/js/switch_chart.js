@@ -298,11 +298,16 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 
 		return;
 	}else{
-
+		console.log(save_now_show_view_text,save_now_show_view_text.attr("class"))
 		if(!save_now_show_view_text.hasClass("show_view_success")){
 			if($("#show_histogram").css("opacity") == "1"){
+				$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
 				save_now_show_view_text = $("#show_histogram");
+			}else if($("#show_bar").css("opacity") == "1"){
+				$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
+				save_now_show_view_text = $("#show_bar");
 			}else{
+				$("#view_show_area #view_show_area_content #view_show_wrap #main").css("display","none");
 				save_now_show_view_text = $("#show_table");
 			}
 		}

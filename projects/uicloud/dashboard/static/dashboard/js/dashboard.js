@@ -300,7 +300,7 @@ $(function() {
 		switch_chart_handle_fun(now_title_handle_view["viewtype"]);
 	}
 	//根据编辑过的视图重新展示
-	function edit_view_show(edit_view,result){
+	function edit_view_show(edit_view,result,second){
 
 		//当前操作的数据
 		var now_handle_view = edit_view.data("edit_view").split(",");
@@ -308,8 +308,11 @@ $(function() {
 		var now_title_handle_view =result[now_handle_view[0]][now_handle_view[1]][now_handle_view[2]];
 
 
-		//更改数据源展示
-		cubeSelectContent_fun(save_data_sum_handle,now_title_handle_view["tablename"]);
+		if(second == "noedit"){
+			if_or_load = true;
+			//更改数据源展示
+			cubeSelectContent_fun(save_data_sum_handle,now_title_handle_view["tablename"]);
+		}
 
 		//获取维度度量
 		drag_row_column_data["row"] = JSON.parse(now_title_handle_view["row"]);
@@ -392,12 +395,14 @@ $(function() {
 					$(".rightConent #dashboard_content #new_view ul .auto_show .folderview_li_del_btn").css("display","block");
 				}
 				if(!/-/gi.test($(this).find("span").text())){
+					sessionStorage.removeItem("edit_view_now");
 					empty_viem_init("click");
 					return;
 				}else{
 					$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
 					save_btn_fun();
-					edit_view_show($(this),ajax_data_post);
+					sessionStorage.setItem("edit_view_now",$(this).data("edit_view"));
+					edit_view_show($(this),ajax_data_post,"noedit");
 				}
 
 			}
@@ -431,8 +436,10 @@ $(function() {
 						//视图保存事件
 						$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
 						save_btn_fun();
-						edit_view_show($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]"),ajax_data_post);
+						sessionStorage.setItem("edit_view_now",$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view"));
+						edit_view_show($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]"),ajax_data_post,"noedit");
 					}else{
+						sessionStorage.removeItem("edit_view_now");
 						empty_viem_init("click");
 					}
 					
