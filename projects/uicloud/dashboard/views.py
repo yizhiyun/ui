@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 import sys
-from .models import DashboardFolderByUser, DashboardViewByUser
+from .models import DashboardFolderByUser, DashboardViewByUser, DashboardIndexByUser
 import logging
 
 # Get an instance of a logger
@@ -51,7 +51,7 @@ def getAllDataFunction(username, datatype=None):
                         'calculation': tablelist[i].calculation,
                         'status': tablelist[i].status,
                         'viewstyle': tablelist[i].viewstyle,
-                        'customcalculate':tablelist[i].customcalculate
+                        'customcalculate': tablelist[i].customcalculate
                     }
         return context
 
@@ -115,10 +115,11 @@ def dashboardTableAdd(request):
             else:
                 folder = folderlist[0]
 
+            username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
             table = DashboardViewByUser(
                 row=jsonData['row'],
                 column=jsonData['column'],
-                username=jsonData['username'],
+                username=username,
                 tablename=jsonData['tablename'],
                 viewtype=jsonData['viewtype'],
                 calculation=jsonData['calculation'],
@@ -151,9 +152,10 @@ def dashboardFolderAdd(request):
             }
             return JsonResponse(context)
 
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
         folder = DashboardFolderByUser(
             foldername=jsonData['foldername'],
-            username=jsonData['username']
+            username=username
         )
         folder.save()
 
@@ -382,3 +384,85 @@ def setSwitch(request):
         except Exception:
             logger.error("Exception: {0}".format(sys.exc_info()))
             return JsonResponse({'status': 'false', 'reason': 'Please see the detailed logs.'})
+
+
+@api_view(['POST'])
+def indexAdd(request):
+    '''
+    '''
+    jsonData = request.data
+    if request.method == 'POST':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        indexList = DashboardIndexByUser.objects.filter(
+            username=username,
+            tablename=jsonData['tablename'],
+            indexname=jsonData['indexname']
+        )
+        if len(indexList) > 0:
+            context = {
+                'status': 'failed',
+                "reason": "the name has been used"
+            }
+            return JsonResponse(context)
+
+        index = DashboardIndexByUser(
+            row=jsonData['row'],
+            column=jsonData['column'],
+            username=username,
+            tablename=jsonData['tablename'],
+            indextype=jsonData['indextype'],
+            indexname=jsonData['indexname'],
+            calculation=jsonData['calculation'],
+            indexstyle=jsonData['indexstyle'],
+            customcalculate=jsonData['customcalculate']
+        )
+        index.save()
+        context = {'status': 'success'}
+        return JsonResponse(context)
+
+
+@api_view(['GET'])
+def indexGet(request):
+    '''
+    '''
+    jsonData = request.data
+    if request.method == 'GET':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        if 'indexname' not in jsonData.keys():
+            indexList = DashboardIndexByUser.objects.filter(username=username, tablename=jsonData['tablename'])
+            indexNameList = []
+            for index in indexList:
+                indexNameList.append(index.indexname)
+            indexNameList.reverse()
+            context = {
+                "status": "success",
+                "indexNameList": indexNameList
+            }
+            return JsonResponse(context)
+        else:
+            try:
+                index = DashboardIndexByUser.objects.get(
+                    username=username,
+                    tablename=jsonData['tablename'],
+                    indexname=jsonData['indexname']
+                )
+                context = {
+                    'status': 'success',
+                    'data': {
+                        'row': index.row,
+                        'column': index.column,
+                        'username': index.username,
+                        'tablename': index.tablename,
+                        'indextype': index.indextype,
+                        'indexname': index.indexname,
+                        'indexstyle': index.indexstyle,
+                        'calculation': index.calculation,
+                        'customcalculate': index.customcalculate
+                    }
+                }
+            except Exception:
+                context = {
+                    "status": "failed",
+                    "reason": "there is no this index"
+                }
+            return JsonResponse(context)
