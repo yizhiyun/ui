@@ -201,7 +201,7 @@ LOGGING = {
         },
         'uicloud': {
             'handlers': ['rotatefile'],
-            'level': 'WARN',
+            'level': 'DEBUG',
             'propagate': True,
         }
     },

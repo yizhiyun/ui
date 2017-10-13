@@ -25,3 +25,14 @@ class DashboardViewByUser(models.Model):
     viewstyle = models.CharField(max_length=255)
     customcalculate = models.CharField(max_length=255)
 
+
+class DashboardIndexByUser(models.Model):
+    username = models.CharField(max_length=32)
+    row = models.CharField(max_length=255)
+    column = models.CharField(max_length=255)
+    tablename = models.CharField(max_length=64)
+    indextype = models.CharField(max_length=255)
+    indexname = models.CharField(max_length=32)
+    calculation = models.CharField(max_length=255)
+    indexstyle = models.CharField(max_length=255)
+    customcalculate = models.CharField(max_length=255)

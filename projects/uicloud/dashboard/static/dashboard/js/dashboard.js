@@ -786,6 +786,22 @@ $(function() {
 			drag();
 			
 		}
+		
+		//加载指标
+		$.ajax({
+			url:"/dashboard/indexGet",
+			type:"post",
+			dataType:"json",
+			contentType: "application/json; charset=utf-8",
+		    "data":JSON.stringify({"username":'yzy',"tablename":current_cube_name}),
+			success:function(data){
+				if (data.status == "success") {
+					for(var i =0;i < data.indexNameList.length;i++){
+						createAIndexElementToLeftList(data.indexNameList[i],false);
+					}
+				}
+			}
+		})
 			
 	}
 
@@ -1113,6 +1129,7 @@ $(function() {
 			}
 			imgMouse();
 	
+			// 维度和度量拖拽
 			$(".dimensionality_list_text,.measure_list_text").each(function(index, ele) {
 				//拖拽
 				$(ele).draggable({
@@ -2425,7 +2442,118 @@ $(function() {
 		})
 
 		
+	});
+
+// 保存为指标
+ $("#dashboard_content #action_box #action_box_ul #action_save #click_save_index").click(function(event){
+ 	event.stopPropagation();
+   	var postIndexDic = {
+   		"username":"yzy",
+   		"row":JSON.stringify(drag_row_column_data["row"]),
+   		"column":JSON.stringify(drag_row_column_data["column"]),
+   		"tablename":current_cube_name,
+   		"indextype":view_name,
+   		"indexname":"新指标",
+   		"calculation":JSON.stringify(drag_measureCalculateStyle),
+   		"indexstyle":currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue,
+   		"customcalculate":JSON.stringify(customCalculate)
+   	};
+   	// 请求保存指标
+   	$.ajax({
+   		url:"/dashboard/indexAdd",
+   		type:"post",
+		dataType:"json",
+		contentType: "application/json; charset=utf-8",
+		async: true,
+		data:JSON.stringify(postIndexDic),
+		success:function(data){
+			if(data.status == "success"){
+				// 指标框出现输入框
+ 			createAIndexElementToLeftList("新指标",true);
+			}
+		}
+   		
+   	})	
+ });
+ // 创建左侧列表一个指标元素
+ function createAIndexElementToLeftList(indexContent,isnewAdd){
+ 	var indexLi = $("<li class='index_li'><p class='index_list_text'><span class='index_list_text_left'>"+indexContent+"</span></p>"+"<input class='userinput' value="+indexContent+"></li>");
+ 	$("#dashboard_content #lateral_bar #indicator #index_show ul").prepend(indexLi);
+ 	indexLi.find(".userinput").data("originalValue",indexContent);
+ 	
+ 	indexLi.find(".index_list_text").on("mouseenter", function(event) {
+ 			event.stopPropagation();
+ 			$(this).css("background", "#a7eff4");
+ 			$(this).css({
+				height: "20px",
+				border: "1px solid #86a9d1",
+				lineHeight: "20px",
+				padding: "0px 4px"
+			});
 	})
+
+	indexLi.find(".index_list_text").on("mouseleave", function() {
+		$(this).css({
+			background: "white",
+			height: "20px",
+			lineHeight: "20px",
+			padding: "0px 5px",
+			border: "none",
+		});
+	});
+	
+ 	if(!isnewAdd){
+ 		indexLi.find(".index_list_text").show();
+ 		indexLi.find(".userinput").hide();
+ 	}else{
+ 		indexLi.find(".index_list_text").hide();
+ 		indexLi.find(".userinput").show();
+ 	}
+ 	indexLi.find(".userinput").change(function(event){
+ 		if(!$(this).val()){
+ 			$(this).css("border","1px solid red");
+ 			$(this).get(0).focus();
+ 			return;
+ 		}
+ 		var originalVal = $(this).data("originalValue");
+ 		var newValue = $(this).val();
+ 		$.ajax({
+ 			url:"/dashboard/indexGet",
+ 			type:"post",
+			dataType:"json",
+			contentType: "application/json; charset=utf-8",
+			async: true,
+			data:JSON.stringify({"username":"yzy","tablename":current_cube_name,"indexname":originalVal,"newname":newValue}),
+			success:function(data){
+				console.log("changeName:",data);
+			}
+ 		});
+ 	});
+ 	indexLi.find(".userinput").focusout(function(event){
+ 		if(!$(this).val()){
+ 			$(this).css("border","1px solid red");
+ 			$(this).get(0).focus();
+ 			return;
+ 		}
+ 		$(this).hide();
+ 		$(this).css("border","0px");
+ 		$(this).siblings(".index_list_text").children("span").text($(this).val());
+ 		$(this).siblings(".index_list_text").show();
+ 	});
+ 	indexLi.find(".userinput").focusin(function(event){
+ 		event.stopPropagation();
+ 		//记录之前的名字
+ 		$(this).data("originalValue",$(this).val());
+ 	});
+ 	indexLi.find(".index_list_text").dblclick(function(event){
+ 		event.stopPropagation();
+ 		$(this).hide();
+ 		$(this).siblings(".userinput").show();
+ 		$(this).siblings(".userinput").get(0).focus();
+ 	});
+ 	indexLi.find(".userinput").get(0).focus();
+ }
+
 
 	//显示服务器里操作保存过的数据
 	function show_view_save_dashbash(data_result){
@@ -2522,4 +2650,4 @@ $(function() {
 		}
 
 	})
-})
+});

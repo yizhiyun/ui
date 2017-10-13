@@ -48,6 +48,13 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .drop_list_main {width: 135px;height: 23px;float: left;}
 .dimensionality_list_text_left{width:90%;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;float: left;text-align: left;}
 
+/*指标样式*/
+#dashboard_content #lateral_bar #indicator #index_show ul li{width: 100%;height: 20px;}
+#dashboard_content #lateral_bar #indicator #index_show ul li .index_list_text{font-size: 12px;margin-left: 23px;height: 20px;line-height: 20px;display: none;cursor: pointer;}
+#dashboard_content #lateral_bar #indicator #index_show ul li .userinput{height: 20px;border: 0px;width: 185px;color: #808080;margin-left: 23px;}
+
+
+
 /*类型图标点击样式切换*/
 
 .type_wic_click_type{width: 100px;position: absolute;z-index: 9999;background: white;border: 1px solid #DEDEDE}
