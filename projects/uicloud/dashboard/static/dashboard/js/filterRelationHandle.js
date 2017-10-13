@@ -47,7 +47,7 @@ $(function(){
 	$('.custom-select').comboSelect();
 	
 	// 筛选器部分，顶部筛选按钮点击的时候
-	$("#dashboard_content #sizer_place #sizer_content .filter_header_div div.filter_content_btn").click(function(){
+	$("#dashboard_content #sizer_place #sizer_content .filter_header_div div.filter_content_btn").click(function(event){
 		event.stopPropagation();
 		editFilterViewShow_fun("dashBoard",filterSuccessFun);
 	});

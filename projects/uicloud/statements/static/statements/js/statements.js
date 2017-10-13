@@ -482,12 +482,13 @@ function delete_btn_handle(){
 
 	gridster = $(".gridster ul").gridster().data('gridster');
 	//动态创建每个视图
-	function fun_add_view(view_type,right_view_show,viewshow_class,viewshow_class_arr,view_note,count,view_location,view_num_or,hide_show_if){
+	function fun_add_view(view_type,right_view_show,viewshow_class,viewshow_class_arr,view_note,count,view_location,view_num_or,hide_show_if,saveTableName){
+		console.log(saveTableName)
+
 		if(view_note == null){
 			view_note = "";
 		}
 		
-		  	
 		 	  gridster.destroy();
 		 	  gridster = $(".gridster ul").gridster({        //通过jquery选择DOM实现gridster
                   // widget_margins: [10,0],
@@ -598,9 +599,15 @@ function delete_btn_handle(){
 
 		}
 
-		if(!hide_show_if){
-			// $(".new_view_content").eq(count).css("display","none");
+		if(saveTableName != undefined){
+			 $(".new_view_content").eq(count).append($("<div class='saveTable_class'><h4>"+saveTableName+"</h4></div>"));
 		}
+
+
+		// if(!hide_show_if){
+		// 	 $(".new_view_content").eq(count).css("display","none");
+		// }
+
 		$(".new_view_content").find("."+viewshow_class+"").css("height",$("."+viewshow_class+"").parent().height()-30 + "px").data("view_num_or",view_num_or);
 
 		$("."+viewshow_class+"").parent().find(".textarea").css("width",$("."+viewshow_class+"").parent().width()-18 + "px");
@@ -717,18 +724,18 @@ function delete_btn_handle(){
 		         onrendered: function (canvas) {
 
 		                    view_img_src = canvas.toDataURL('image/jpeg');
-		                    canvas.getContext("2d").drawImage(view_img_src,0,0,100,100);
-		                    view_aImg.src = view_img_src;
+		                    // canvas.getContext("2d").drawImage(view_img_src,0,0,100,100);
+		                    // view_aImg.src = view_img_src;
 							var view_thumbnail = $("<div class='thumbnail_wrap'></div>");
 							var view_aImg = $("<div class='thumbnail_img'></div>");
-							view_thumbnail.css({
-
+							view_aImg.css({
+								background:"url("+view_img_src+") no-repeat center",
 							});
 							view_thumbnail.append(view_aImg);
 							view_thumbnail.appendTo(ele);
 							//缩略图显示的宽高比
 							// var thumbnail_width_hei = 200/($("."+$(ele).data("save_view_class")+"").width()/$("."+$(ele).data("save_view_class")+"").height());
-							view_thumbnail.find("img").css("height","140px").css("margin","30px 10px 0px 10px").width(180);
+							// view_thumbnail.find("img").css("height","140px").css("margin","30px 10px 0px 10px").width(180);
 		                },
 		        background: "#fff",
 		    	});
@@ -823,11 +830,11 @@ function delete_btn_handle(){
 
 						view_show_id_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["id"]);
 
-						currentColorGroupName_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["viewstyle"].split("_YZY_")[0])
+						currentColorGroupName_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["viewstyle"].split("_YZY_")[0]);
 						
-						normalUnitValue_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["viewstyle"].split("_YZY_")[1])
+						normalUnitValue_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["viewstyle"].split("_YZY_")[1]);
 						
-						valueUnitValue_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["viewstyle"].split("_YZY_")[2])
+						valueUnitValue_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["viewstyle"].split("_YZY_")[2]);
 					
 						drag_measureCalculateStyle_arr.push(JSON.parse(data_result[now_view_folder][view_in_folder][right_view_show]["calculation"]));
 						
@@ -884,7 +891,7 @@ function delete_btn_handle(){
 						// valueUnitValue = change_view_show_click["viewstyle"].split("_YZY_")[2];
 
 						//创建容器
-						fun_add_view(change_view_show_click["viewtype"],now_click_ele.parent().parent().find(".small_view_text").eq(count).text(),viewshow_class,viewshow_class_arr,change_view_show_click["note"],count,JSON.parse(view_session),change_view_show_click["calculation"],change_view_show_click["show"]);
+						fun_add_view(change_view_show_click["viewtype"],now_click_ele.parent().parent().find(".small_view_text").eq(count).text(),viewshow_class,viewshow_class_arr,change_view_show_click["note"],count,JSON.parse(view_session),change_view_show_click["calculation"],change_view_show_click["show"],change_view_show_click["viewstyle"].split("_YZY_")[3]);
 						view_handle_switch_statements(viewshow_class,change_view_show_click["show"],change_view_show_click["viewtype"],view_contact.length-1,save_allTable);
 						})(i);
 
@@ -929,6 +936,23 @@ function delete_btn_handle(){
 
 			view_change_click_mou(get_view_save);
 		}
+
+
+				//视图header操作栏的显示和隐藏
+		$(".view_folder_show_area >ul li .new_view_title").css("visibility","hidden");
+
+		$(".view_folder_show_area >ul li").each(function(index,ele){
+			$(ele).on("mouseenter",function(){
+				$(ele).find(".new_view_title").css("visibility","visible");
+			})	
+
+			$(ele).on("mouseleave",function(){
+				$(ele).find(".new_view_title").css("visibility","hidden");
+			})
+
+		})
+
+
 	}
 
 	//视图展示部分功能事件
@@ -2001,6 +2025,7 @@ function view_dragable_folder(){
 						
 					//更新服务器数据
 					 $.post("/dashboard/changeName",{"objtype":"view","oldname":$(ele).find(".small_view_text").data("table_id"),"newname":input_small_view_val},function(result){
+						 console.log(result)
 						 if(result["status"] == "ok"){
 						 	$(".new_view_content .new_view_title .new_view_table_name").eq(index).html(input_small_view_val);
 						 }
@@ -2080,7 +2105,9 @@ function view_content_right_handle(){
             copyDom.height(targetDom.find("ul").height()+ 69 + "px");
 
             $('body').append(copyDom);//ps:这里一定要先把copyDom append到body下，然后再进行后续的glyphicons2canvas处理，不然会导致图标为空
-
+            copyDom.find(".new_view_title").remove();
+            copyDom.find(".new_view_main").css("margin-top","15px");
+            copyDom.find(".saveTable_class").css("top","20px");
             // var canvas = document.createElement("canvas");
             // canvas.width = copyDom.width()*2;
             // canvas.height = copyDom.height()*2;

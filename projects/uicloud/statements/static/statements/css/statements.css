@@ -105,10 +105,12 @@ input[type=checkbox] {visibility: hidden;}
 .view_folder_show_area .new_view_content .new_view_title .title_name_change_btn{width:20px;height: 20px;background: url("../img/right-icon_03.png") no-repeat center;float: left;margin-top: 1px;cursor: pointer;}
 .view_folder_show_area .new_view_content .textarea{position: absolute;min-height: 23px;top: 35px;z-index:9999;left: 9px;display: none}
 .view_folder_show_area .new_view_content .textarea textarea{width: 100%;font-size: 12px;height:46px;outline: none;line-height: 17px;box-sizing: border-box;padding: 2px;overflow-x: hidden;overflow-y: auto;resize: none}
-/*视图缩略图*/
-.view_show_handle .thumbnail_wrap{width: 200px;height: 200px;box-sizing:border-box;border:1px solid #DEDEDE;position:absolute;left: 190px;z-index:9999;border-radius: 3px;background: white;opacity: 1 !important;}
-.view_show_handle .thumbnail_wrap img{width:198px;float: left;}
+.view_folder_show_area .new_view_content .saveTable_class{position: absolute;top: 40px;right: 0px;bottom: 0px;left: 0px;text-align: center;z-index:9999;height: 25px;line-height: 25px;font-size: 18px;}
 
+/*视图缩略图*/
+.view_show_handle .thumbnail_wrap{width: 200px;height: 200px;box-sizing:border-box;border:1px solid #DEDEDE;position:absolute;left: 190px;z-index:9999;border-radius: 3px;background: white;opacity: 1 !important;overflow: hidden;}
+.view_show_handle .thumbnail_wrap img{width:198px;float: left;}
+.view_show_handle .thumbnail_wrap .thumbnail_img{width: 180px;height: 140px;margin: 30px 10px 0px 10px;}
 /*表格样式*/
 .new_view_table{min-width: 100%;font-size: 12px;position: relative;left: 0;top: 0;background: white}
 .new_view_table .top_column_container,.edit_table .top_column_container{overflow: visible;}

@@ -70,7 +70,9 @@ function beginDrawChart(edit_view){
 			view_init();
 			//隐藏其他视图
 			$("#main").css("display","none");
-			$("#view_show_empty").css("display","block");
+			$("#view_show_empty").show();
+			$("#view_show_area #view_show_area_content .tableView_name h4").html("添加表标题");
+			$("#view_show_area #view_show_area_content .tableView_name").css("color","#B4B4B4").hide();
 		}
 	
 
@@ -106,7 +108,7 @@ function beginDrawChart(edit_view){
 	//只拖入度量显示柱状图或者条形图
 	if((switch_row_me > 0 && switch_col_di ==0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me > 0 && switch_col_di ==0 && switch_row_me == 0 && switch_row_di == 0)){
 		view_init();
-		$("#show_table").css("opacity","1");
+		// $("#show_table").css("opacity","1");
 
 		
 		//判断是条形图还是柱状图为默认

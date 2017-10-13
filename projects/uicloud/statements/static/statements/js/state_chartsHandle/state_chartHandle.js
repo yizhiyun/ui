@@ -60,6 +60,7 @@ function one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -225,6 +226,7 @@ function one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					},
 					  {
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -332,6 +334,7 @@ function one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -490,6 +493,7 @@ function one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				    },
 				    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -745,6 +749,7 @@ function many_de_many_me_handle(chart_type_need,storeNum_toview){
 					},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -940,6 +945,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1292,6 +1298,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 						{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1688,6 +1695,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1920,6 +1928,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2149,6 +2158,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2278,6 +2288,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		    },
 		    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,

@@ -57,6 +57,7 @@ function one_de_one_me_handle (chart_type_need) {
 				{
 					  	text: "单位: "+valueUnitValue,
 					  	show:true,
+					  	bottom:70,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -211,6 +212,7 @@ function one_de_one_me_handle (chart_type_need) {
 					},
 					  {
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -307,6 +309,7 @@ function one_de_one_me_handle (chart_type_need) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -455,6 +458,7 @@ function one_de_one_me_handle (chart_type_need) {
 				    },
 				    	{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -704,6 +708,7 @@ function many_de_many_me_handle(chart_type_need){
 					},
 					{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -889,6 +894,7 @@ function comparisonStrip_generate_fun(){
 					},
 					{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1231,6 +1237,7 @@ function comparisonStrip_generate_fun(){
 					},
 						{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1617,6 +1624,7 @@ function comparisonStrip_generate_fun(){
 				},
 					{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1839,6 +1847,7 @@ function comparisonStrip_generate_fun(){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2059,6 +2068,7 @@ function comparisonStrip_generate_fun(){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2176,6 +2186,7 @@ function comparisonStrip_generate_fun(){
 		    },
 		    	{
 					  	text: "单位: "+valueUnitValue,
+					  	bottom:70,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2301,6 +2312,7 @@ function colorsPanelDidSelectedColor(){
 	var op = mycharts.getOption();
 	op.title[1] = {
 		text: "单位: "+valueUnitValue,
+		bottom:70,
 		show:true,
 		textStyle:{
 			fontSize:14,
@@ -2336,6 +2348,7 @@ function valueUnitDidChangedValue(){
 	var op = mycharts.getOption();
 	op.title[1] = {
 		text: "单位: "+valueUnitValue,
+		bottom:70,
 		show:true,
 		textStyle:{
 			fontSize:14,
