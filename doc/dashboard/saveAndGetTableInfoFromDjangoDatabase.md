@@ -91,6 +91,20 @@ Save TableInfo From Current User And Return TableInfo
 ### 1. Request URI: /dashboard/dashboardTableAdd
 ### 2. Request Method: POST
 ### 3. Request Data Schema:
+* if you want to cover this table:
+```
+{
+    "id": <tableID>,
+    "row": <row>,
+    "column": <column>,
+    "tablename": <tablename>,
+    "viewtype": <viewtype>,
+    "calculation": <calculation>,
+    "viewstyle": <viewstyle>,
+    "customcalculate": <customcalculate>
+}
+```
+* if you want save this table:
 ```
 {
     "username": <username>,
@@ -100,7 +114,9 @@ Save TableInfo From Current User And Return TableInfo
     "tablename": <tablename>,
     "viewtype": <viewtype>,,
     "calculation": <calculation>,
-    "defaultparent": <defaultparentfoldername>
+    "defaultparent": <defaultparentfoldername>,
+    "viewstyle": <viewstyle>,
+    "customcalculate": <customcalculate>
 }
 ```
 ### 4. Request Example:

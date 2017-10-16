@@ -91,43 +91,54 @@ def dashboardTableAdd(request):
     if request.method == 'POST':
         try:
             foldername = jsonData['foldername']
-            if jsonData['row'] == 'row':
-                countlist = DashboardFolderByUser.objects.filter(foldername=foldername)
-                if len(countlist) > 0:
-                    return JsonResponse({'status': 'false'})
-
-            defaultfolderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['defaultparent'])
-            if len(defaultfolderlist) == 0:
-                defaultfolder = DashboardFolderByUser(
-                    username=jsonData['username'],
-                    foldername=jsonData['defaultparent']
-                )
-                defaultfolder.save()
-
-            folderlist = DashboardFolderByUser.objects.filter(foldername=foldername)
-            if len(folderlist) == 0:
-                folder = DashboardFolderByUser(
-                    username=jsonData['username'],
-                    foldername=foldername,
-                    parentfoldername=jsonData['defaultparent']
-                )
-                folder.save()
+            if 'id' in jsonData.keys() and jsonData['id']:
+                table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
+                table.row = jsonData['row']
+                table.column = jsonData['column']
+                table.viewtype = jsonData['viewtype']
+                table.calculation = jsonData['calculation']
+                table.viewstyle = jsonData['viewstyle']
+                table.customcalculate = jsonData['customcalculate']
+                table.tablename = jsonData['tablename']
+                table.save()
             else:
-                folder = folderlist[0]
+                if jsonData['row'] == 'row':
+                    countlist = DashboardFolderByUser.objects.filter(foldername=foldername)
+                    if len(countlist) > 0:
+                        return JsonResponse({'status': 'false'})
 
-            username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
-            table = DashboardViewByUser(
-                row=jsonData['row'],
-                column=jsonData['column'],
-                username=username,
-                tablename=jsonData['tablename'],
-                viewtype=jsonData['viewtype'],
-                calculation=jsonData['calculation'],
-                folder=folder,
-                viewstyle=jsonData['viewstyle'],
-                customcalculate=jsonData['customcalculate']
-            )
-            table.save()
+                defaultfolderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['defaultparent'])
+                if len(defaultfolderlist) == 0:
+                    defaultfolder = DashboardFolderByUser(
+                        username=jsonData['username'],
+                        foldername=jsonData['defaultparent']
+                    )
+                    defaultfolder.save()
+
+                folderlist = DashboardFolderByUser.objects.filter(foldername=foldername)
+                if len(folderlist) == 0:
+                    folder = DashboardFolderByUser(
+                        username=jsonData['username'],
+                        foldername=foldername,
+                        parentfoldername=jsonData['defaultparent']
+                    )
+                    folder.save()
+                else:
+                    folder = folderlist[0]
+
+                username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+                table = DashboardViewByUser(
+                    row=jsonData['row'],
+                    column=jsonData['column'],
+                    username=username,
+                    tablename=jsonData['tablename'],
+                    viewtype=jsonData['viewtype'],
+                    calculation=jsonData['calculation'],
+                    folder=folder,
+                    viewstyle=jsonData['viewstyle'],
+                    customcalculate=jsonData['customcalculate']
+                )
+                table.save()
 
             context = {'status': 'ok'}
             return JsonResponse(context)
@@ -447,9 +458,20 @@ def indexGet(request):
                     indexname=jsonData['indexname']
                 )
                 if 'newname' in jsonData.keys():
-                    index.indexname = jsonData['newname']
-                    index.save()
-                    context = {'status': 'success'}
+                    indexList = DashboardIndexByUser.objects.filter(
+                        username=username,
+                        tablename=jsonData['tablename'],
+                        indexname=jsonData['newname']
+                    )
+                    if len(indexList) > 0:
+                        context = {
+                            'status': 'failed',
+                            "reason": "the name has been used"
+                        }
+                    else:
+                        index.indexname = jsonData['newname']
+                        index.save()
+                        context = {'status': 'success'}
 
                 elif 'remove' in jsonData.keys() and jsonData['remove'] == 'yes':
                     index.delete()
