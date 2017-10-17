@@ -291,12 +291,14 @@ function reporttingFunction_abale(){
 
 // 切换页面
 function changePageTo_DataBaseAndPanleFileConnectionView(){
+	hidenSomeElementsWhenChangePage();
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").addClass("active");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #dataSourceConnectSelectDiv").show();
 }
 function changePageTo_navBuildDataView(){
+	hidenSomeElementsWhenChangePage();
 	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navBuildDataViewBtn").children("div").addClass("active");
@@ -313,11 +315,12 @@ function changePageTo_navBuildDataView(){
 	}	
 }
 function changePageTo_navDashBoardView(){
+	hidenSomeElementsWhenChangePage();
 	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navDashBoardViewBtn").children("div").addClass("active");
 	$(".main .rightConent .pageModuleNav").hide();
-	$(".main .rightConent #pageDashboardModule").show();
+	$(".main .rightConent #pageDashboardModule").show();	
 	if($(".main .rightConent #pageDashboardModule").data("isFirstInto")){
 		dashboardReadySumFunction();
 		navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
@@ -330,6 +333,7 @@ function changePageTo_navDashBoardView(){
 }
 
 function changePageTo_navReporttingView(){
+	hidenSomeElementsWhenChangePage();
 	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navReporttingViewBtn").children("div").addClass("active");
@@ -344,6 +348,13 @@ function changePageTo_navReporttingView(){
 			satetementsReadySumFunction(true);
 		}
 	}
+}
+
+function hidenSomeElementsWhenChangePage(){
+	$("#buildDataPanelView").hide();
+	$(".maskLayer").hide();
+	$(".rightConent #dataSourceConnectSelectDiv #dataList").hide();
+	$(".rightConent #analysisContainer .leftSlide #analysis_dataList").hide();
 }
 
 function navBtnAbleAndDisablesaveHandle(info){
