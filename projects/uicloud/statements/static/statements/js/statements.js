@@ -2079,7 +2079,7 @@ function view_content_right_handle(){
              	margin:"20px 0px 10px 20px",
              })
 
-             folderTitle.prependTo(copyDom);
+            folderTitle.prependTo(copyDom);
 
             //新的div宽高跟原来一样，高度设置成自适应，这样才能完整显示节点中的所有内容（比如说表格滚动条中的内容）
             copyDom.width(targetDom.width() + 20 + "px");
@@ -2137,7 +2137,7 @@ function view_content_right_handle(){
                         doc.save('pdf_' +$("#pageStatementsModule .combo-input").val()+ '.pdf');
                     };
                     //删除复制出来的div
-                    // copyDom.remove();
+                    copyDom.remove();
                 },
         background: "#fff",
         allowTaint: true //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
