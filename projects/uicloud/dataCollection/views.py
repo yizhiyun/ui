@@ -49,7 +49,7 @@ def connectDataBaseHandle(request):
             username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
             notIn = Singleton().addPalt(dataBaseObj, username)
             if not notIn:
-                return JsonResponse({'status': 'failed', 'reason': 'the palt is already has'})
+                return JsonResponse({'status': 'failed', 'reason': 'the_palt_is_already_has'})
             return JsonResponse({'status': 'success'})
 
         else:
