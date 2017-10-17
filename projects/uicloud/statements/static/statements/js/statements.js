@@ -1273,6 +1273,9 @@ function user_handle_change_cookie(ele,click_view_btn){
 					 		$(ele).find(".view_show_name_save").text(input_value);
 					 		if(folder_or_view == "folder"){
 					 			loc_storage.setItem("now_add_view",input_value);
+					 			menu_folder_name_arr[$.inArray(old_name,menu_folder_name_arr)] = input_value;
+					 			console.log($(ele).find(".view_show_name_save").data())
+					 			$(ele).find(".view_show_name_save").data("record_name",input_value).data("save_text_over",input_value);
 					 			over_handle();
 					 			//判断是否重绘图形
 					 			if($(ele).parent().hasClass("cookie_handle_view")){
@@ -1295,6 +1298,9 @@ function user_handle_change_cookie(ele,click_view_btn){
 					 			
 					 			more_handle_click();
 					 		}else{
+					 			folder_name_arr[$.inArray(old_name,folder_name_arr)] = input_value;
+					 			console.log($(ele).find(".view_show_name_save").data())
+					 			$(ele).find(".view_show_name_save").data("record_name",input_value).data("save_text_over",input_value);
 					 			over_handle();
 					 			delete_btn_handle();
 
@@ -1575,8 +1581,6 @@ function user_handle_change_cookie(ele,click_view_btn){
 		//文件夹的移入移出事件
 		ele_each($(".state_folder_content"),$(".click_delete"));
 
-
-
 	//点击收起放下
 	//文件夹
 	$(".click_tra_floder").each(function(index,ele){
@@ -1617,12 +1621,12 @@ function user_handle_change_cookie(ele,click_view_btn){
 	if($(".cookie_handle_view").length != 0){
 		$(".right_folder_name_show").css("display","block");
 		$(".click_out_handle").css("display","block");
-		if($(".view_show_handle").length == 0 && (topInfo || topInfo == undefined)){
+		if($(".view_show_handle").length == 0 && (dropTo || dropTo == undefined)){
 			reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
 			return;
 		}
 		if(dropTo || dropTo == undefined){
-			reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));	
+			reason_view_drag(data_result,$(".cookie_handle_view").find(".view_show_name_save"));
 		}
 		
 		// table_name_post(data_result);
@@ -1695,12 +1699,12 @@ function user_handle_change_cookie(ele,click_view_btn){
 
 	//动态判断新建文件夹报表对应的num
 	function folder_name_sum(text,sumArr){
+		console.log(sumArr)
 		function count_sum(text,fv_count,sumArr1){
 			var cs_view = fv_count;
 			if($.inArray(text+cs_view,sumArr1) != -1){
 				cs_view++;
 				return count_sum(text,cs_view++,sumArr1);
-				
 			}else{
 				return text+cs_view;
 			}
@@ -1712,8 +1716,8 @@ function user_handle_change_cookie(ele,click_view_btn){
 
 	//新建文件夹新建视图方法
 	function new_folder_view(type,text,tra_type,tra_class,btn_type,type_content,type_wrap){
-			var post_dict ={}
 
+			var post_dict ={};
 			if($("#statements_left_bar_area").find(".click_new_folder_input").length == 0){
 				
 			var new_folder= $("<div class='clear "+type_content+"'><div class='empty_folder "+type_wrap+"'><img src='../static/statements/img/"+type+".png'  class='click_folder'/><div class='view_show_name_save new_element'><input type='text' class='click_new_folder_input' placeholder="+text+" maxlength='10'></div><div class='mouse_img "+btn_type+"'><img src=../static/statements/img/right-icon_03.png/></div></div></div>")
@@ -1724,16 +1728,18 @@ function user_handle_change_cookie(ele,click_view_btn){
 						var folder_name_cs = folder_name_sum(text,folder_name_arr);
 
 						$(".click_new_folder_input").val(folder_name_cs);
-						
+					
 						new_folder.find(".view_show_name_save").addClass("floder_content").data("record_name",folder_name_cs);
 
 				}else{
 
-					var menu_folder_name = folder_name_sum(text,menu_folder_name_arr);
-				
-					$(".click_new_folder_input").val(menu_folder_name);
+						var menu_folder_name = folder_name_sum(text,menu_folder_name_arr);
+						
+						console.log($(".click_new_folder_input"));
 
-					new_folder.find(".view_show_name_save").addClass("view_fun_content").data("record_name",menu_folder_name);
+						$(".click_new_folder_input").val(menu_folder_name);
+
+						new_folder.find(".view_show_name_save").addClass("view_fun_content").data("record_name",menu_folder_name);
 				}
 
 
@@ -1792,7 +1798,6 @@ function user_handle_change_cookie(ele,click_view_btn){
 						post_dict["viewstyle"] = "null";
 						post_dict["customcalculate"] = "null";
 						$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
-//							console.log(result)
 							if(result["status"] == "false"){
 								$(".click_new_folder_input").css("borderColor","red");
 								return;
@@ -1822,13 +1827,11 @@ function user_handle_change_cookie(ele,click_view_btn){
 					function new_view_show_and(result){
 						$(".mouse_img").find("img").unbind("click").attr("src","../static/statements/img/"+tra_type+".png").removeClass().addClass(tra_class);
 						$("."+btn_type+"").removeClass("mouse_img");
-
 						$("."+type_content+"").find(".new_element").html(input_val_name).removeClass("new_element");
 						$("."+type_content+"").find(".click_folder").removeClass().addClass("click_or");
-
 					 	$("."+btn_type+"").css("background","").unbind("mouseenter");
 
-					 //报表的移入移出事件
+						//报表的移入移出事件
 					 
 					    ele_each($("."+type_wrap+""),$("."+tra_class+""));
 
