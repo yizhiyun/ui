@@ -2764,6 +2764,9 @@ $("#save_handle_open").on("click",function(){
 				 loc_storage.setItem("now_add_view",post_dict["foldername"]);
 				 //移除编辑视图storage
 				 sessionStorage.removeItem("edit_view_now");
+				 $("#pageDashboardModule #view_save_up").hide();
+				 $("#pageDashboardModule #view_save_up #show_excel_name").html("");
+				 $("#pageDashboardModule #body_content_shadow").hide();
 
 			}else{
 				alert("保存失败");

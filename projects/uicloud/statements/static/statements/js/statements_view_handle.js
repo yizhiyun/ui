@@ -19,9 +19,9 @@ function view_handle_switch_statements(viewshow_class,show_if_or,state_view_show
 
 	isagainDrawTable = true;
 	if(state_view_show_type == "showTable_by_dragData()"){
-		showTable_by_dragData(save_allTable);
+		reporting_showTable_by_dragData(save_allTable);
 	}else{
-		eval(state_view_show_type.replace(/\)/,","+viewshow_class.match(/\d+/g)[1])+")");
+		eval("reporting_"+state_view_show_type.replace(/\)/,","+viewshow_class.match(/\d+/g)[1])+")");
 	}
 
 

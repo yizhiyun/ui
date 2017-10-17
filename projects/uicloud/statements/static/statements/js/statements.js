@@ -1,6 +1,6 @@
 //each遍历方法
 function ele_each(thele,theleSon){
-	 $(thele).unbind("mouseenter mouseleave");
+	$(thele).unbind("mouseenter mouseleave");
 	thele.each(function(index,ele){
 		$(ele).on("mouseenter",function(){
 			thele.find(theleSon).eq(index).css("display","block");
@@ -91,7 +91,9 @@ folder_name_arr = [],
 
 //存放所有的报表的名字
 
-menu_folder_name_arr =[];
+menu_folder_name_arr =[],
+
+gridster = null;
 
 
 
@@ -479,12 +481,11 @@ function delete_btn_handle(){
 }
 
 	//获取当前容器的图例
-var gridster = $(".gridster ul").gridster().data('gridster');
+	 gridster = $(".gridster ul").gridster().data('gridster');
 
 	//动态创建每个视图
 function fun_add_view(view_type,right_view_show,viewshow_class,viewshow_class_arr,view_note,count,view_location,view_num_or,hide_show_if,saveTableName){
 		console.log(saveTableName)
-
 		if(view_note == null){
 			view_note = "";
 		}
@@ -1090,7 +1091,7 @@ function view_drag_resize_handle(){
 					}
 
 					sessionStorage.setItem("edit_view_now",$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content"));
-					window.location.href="../dashboard/pallasdata2";
+					changePageTo_navDashBoardView();
 				})
 
 				// document点击关闭输入框
@@ -1366,6 +1367,10 @@ function double_click_change_name(ele,sonName,img_type,img_src,if_over){
 
 	//创建报表显示li的工厂函数
 function statements_li_add(data_result,dropTo){
+		//存放所有的文件夹名字
+		folder_name_arr = [];
+		//存放所有的报表的名字
+		menu_folder_name_arr =[];
 		//获取存在cookie中操作报表的名称
 		var cookie_view_name = loc_storage.getItem("now_add_view");
 		$(".rightConent #statements_left_bar_area").html("");
@@ -1869,7 +1874,7 @@ function view_dragable_folder(){
 						dropTo = true;
 					}
 					//根据数据库存储的数据展示
-					view_out_handle_init(result,dropTo)
+					view_out_handle_init(result,dropTo);
 				})
 			}
 
@@ -2038,13 +2043,14 @@ function view_dragable_folder(){
 //新建视图 下载 操作部分
 function view_content_right_handle(){
 	//新建视图
-	$(".rightConent #right_folder_show_are .click_out_handle .click_new_view").on("click",function(){
-		window.location.href= "../dashboard/pallasdata2";
+	$("#pageStatementsModule #right_folder_show_are .click_out_handle .click_new_view").on("click",function(){
+		changePageTo_navDashBoardView();
 	})
 
 	//下载视图区域为pdf格式
-	$(".rightConent #right_folder_show_are .click_out_handle .theme_down").on("click",function(){
-		$(".gridster>ul>li").css("border","1px solid #DEDEDE");
+	$("#pageStatementsModule #right_folder_show_are .click_out_handle .theme_down").unbind("click");
+	$("#pageStatementsModule #right_folder_show_are .click_out_handle .theme_down").on("click",function(){
+		$("#pageStatementsModule .gridster>ul>li").css("border","1px solid #DEDEDE");
 		// console.log($(".gridster ul li").width()/$(".gridster ul li").height())
 		// console.log($(".gridster").width()/(210/297))
 		// $(".gridster").height($(".gridster").width()/(210/297));
@@ -2052,11 +2058,11 @@ function view_content_right_handle(){
 		//$(".gridster ul li").width(210* 3.78/$(".gridster").width()*$(".gridster ul li").width()).height(210*3.78/$(".gridster").width() * $(".gridster ul li").height());
 		//$(".gridster ul li").find(".new_view_main").width(210* 3.78/$(".gridster").width()*$(".gridster ul li").width()).height(210* 3.78/$(".gridster").width()*$(".gridster ul li").height() - 30);
 	//	$(".gridster ul li").find(".new_view_main").find("div,canvas").css("width","100%").css("height","100%");
-			var targetDom = $(".gridster");
+			var targetDom = $("#pageStatementsModule .gridster");
             //把需要导出的pdf内容clone一份，这样对它进行转换、微调等操作时才不会影响原来界面
             var copyDom = targetDom.clone();
 
-             copyDom.find(".new_view_main").each(function(index,ele){
+            copyDom.find(".new_view_main").each(function(index,ele){
              			if(!$(ele).hasClass("new_view_table")){
              				var aImg = new Image();
                     		aImg.src = echarts.getInstanceByDom($("#right_folder_show_are .view_folder_show_area ul li .new_view_main").eq(index).get(0)).getDataURL({pixelRatio:2,backgroundColor:'#fff',type:'png'});
@@ -2065,7 +2071,7 @@ function view_content_right_handle(){
              			}
                     })
 
-             var folderTitle = $("<div>"+$(".combo-input").val()+"</div>");
+             var folderTitle = $("<div>"+$("#pageStatementsModule .combo-input").val()+"</div>");
 
              folderTitle.css({
              	fontSize:"18px",
@@ -2090,7 +2096,8 @@ function view_content_right_handle(){
             // canvas.style.height = copyDom.height() + "px";
             // var context = canvas.getContext("2d");
             // context.scale(2,2);
-		html2canvas(copyDom.get(0), {
+		html2canvas($(copyDom).get(0), {
+
 			// canvas:canvas,
         // onrendered: function(canvas) {
 
@@ -2111,29 +2118,29 @@ function view_content_right_handle(){
         // },
 
          onrendered: function (canvas) {
+         	console.log(canvas)
                     var imgData = canvas.toDataURL('image/png');
                     var img = new Image();
+                    console.log(imgData)
                     img.src = imgData;
                     //根据图片的尺寸设置pdf的规格，要在图片加载成功时执行，之所以要*0.225是因为比例问题
                     img.onload = function () {
                         //此处需要注意，pdf横置和竖置两个属性，需要根据宽高的比例来调整，不然会出现显示不完全的问题
 
                         if (this.width > this.height) {
-                            var doc = new jsPDF('l', 'mm', [$("body").width()/3.78, $("body").width()/($(".view_folder_show_area").width()/($(".view_folder_show_area ul").height()+69))/3.78]);
+                            var doc = new jsPDF('l', 'mm', [$("body").width()/3.78, $("body").width()/($("#pageStatementsModule .view_folder_show_area").width()/($("#pageStatementsModule .view_folder_show_area ul").height()+69))/3.78]);
                         } else {
-                            var doc = new jsPDF('p', 'mm', [$("body").width()/3.78, $("body").width()/($(".view_folder_show_area").width()/($(".view_folder_show_area ul").height()+69))/3.78]);
+                            var doc = new jsPDF('p', 'mm', [$("body").width()/3.78, $("body").width()/($("#pageStatementsModule .view_folder_show_area").width()/($("#pageStatementsModule .view_folder_show_area ul").height()+69))/3.78]);
                         }
-                        doc.addImage(imgData, 'png', 0, 0, $("body").width()/3.78, $("body").width()/($(".view_folder_show_area").width()/($(".view_folder_show_area ul").height()+69))/3.78);
+                        doc.addImage(imgData, 'png', 0, 0, $("body").width()/3.78, $("body").width()/($("#pageStatementsModule .view_folder_show_area").width()/($("#pageStatementsModule .view_folder_show_area ul").height()+69))/3.78);
                         //根据下载保存成不同的文件名
-                        doc.save('pdf_' +$(".combo-input").val()+ '.pdf');
+                        doc.save('pdf_' +$("#pageStatementsModule .combo-input").val()+ '.pdf');
                     };
                     //删除复制出来的div
-                    copyDom.remove();
-
-                   
+                    // copyDom.remove();
                 },
         background: "#fff",
-          allowTaint: true //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
+        allowTaint: true //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
      
     });
 
@@ -2173,7 +2180,7 @@ function view_content_right_handle(){
 	//新建视图 下载 操作部分
 	view_content_right_handle();
 
-	
+	cookie_view_each();
 
 	
 	}

@@ -18,7 +18,7 @@ html,body{-webkit-user-select:none;}
 .rightConent #statements_left_bar #statements_left_bar_area .state_folder{width:180px;margin: 0 auto;margin: 0 auto;font-size: 12px;}
 .rightConent #statements_left_bar #statements_left_bar_area .click_folder{margin:5px 5px 0px 0px;line-height: 23px;}
 .rightConent #statements_left_bar #statements_left_bar_area .click_delete{width: 13px;height: 13px;float: right;margin-top: 5px;cursor: pointer;display: none}
-#pageStatementsModule 	.statement_li{width:90%;font-size: 12px;margin: 0 auto;position: relative;}
+#pageStatementsModule .statement_li{width:90%;font-size: 12px;margin: 0 auto;position: relative;}
 .rightConent #statements_left_bar #statements_left_bar_area .statement_li_content{height: 23px;line-height: 26px;margin-bottom: 1px}
 .rightConent #statements_left_bar #statements_left_bar_area .click_tra{width: 9px;height:5px;margin:9.5px 8px 0px 0px ;float: left;cursor: pointer;}
 .rightConent #statements_left_bar #statements_left_bar_area .click_more{width: 8px;height:4px;float: right;margin: 4.5px 3px 0px 0px;cursor: pointer;display: none;padding: 5px 0px 5px 5px;}
@@ -26,7 +26,7 @@ html,body{-webkit-user-select:none;}
 /*.view_show_handle:hover{background: #f5f5f5}*/
 .hide_or_show{width: 14px;height: 14px;float: right;cursor: pointer;margin-top: 4.5px;display: none}
 .view_show_icon{margin: 5px 5px 0px 0px;float: left;}
-.floder_view_wrap{width:180px;margin-left:17px;box-sizing: border-box;padding-right: 17px;}
+#pageStatementsModule .floder_view_wrap{width:180px;margin-left:17px;box-sizing: border-box;padding-right: 17px;}
 /*视图库创建文件夹*/
 #statements_add_folder{width: 100px;border-bottom: 1px solid #E1E1E1;margin-top: -5px;font-size: 12px;margin-left: -50px;position: relative;z-index: 999;display: none}
 #statements_add_folder .statements_add_folder_son{width: 100%;height: 22px;border: 1px solid #E1E1E1;line-height: 22px;text-align: center;background: white;border-bottom: none;cursor:pointer;}
