@@ -1,14 +1,7 @@
-{% extends "common/nav_base.html" %}
 {% load static %}
-{% block css %}
 <link rel="stylesheet" href={% static "dataCollection/css/dataSourceSelect.css" %}>
-{% endblock %}
-{% block js %}
-    <script src={% static "dataCollection/js/dataSourceSelect.js"%} type="text/javascript" charset="utf-8"></script>
-{% endblock %}
-
-{% block content %}
-	<div class="dataSourceSelect-content">
+<script src={% static "dataCollection/js/dataSourceSelect.js"%} type="text/javascript" charset="utf-8"></script>
+	<div class="dataSourceSelect-content pageModuleNav" id="dataSourceConnectSelectDiv">
 		<div class="dataSourceSelect-welcomeInfo">
 			<p class="welcome">欢迎使用Pallasdata Desktop</p>
 			<p class="guide">需要更多指导?<a href="#">试看教程</a>或<a href="#">观看视频</a></p>
@@ -57,8 +50,3 @@
 		      	 </div>
 	   		 </div>
 	</div>
-
-{% endblock %}
-{% block other %}
-    {% include "dataCollection/panelFileOption.html" %}
-{% endblock %}

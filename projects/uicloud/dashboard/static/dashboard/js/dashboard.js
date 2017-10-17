@@ -60,31 +60,68 @@ var currentHandleMeasureCalculate = null;
 var editMeasureCalculateView_isFirstShow = true;
 
 //保存视图触发事件
-function save_btn_fun(){
-$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
-//保存按钮下拉框
-$("#dashboard_content #action_box #action_box_ul #action_save").on("click", function() {
-
-	$("#action_save_view").stop(true).toggle();
-
-});
-
-$("#dashboard_content #action_box #action_box_ul #action_save").on("mouseleave", function() {
-	$("#action_save_view").css("display", "none")
-})
+	function save_btn_fun(){
+	$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
+	//保存按钮下拉框
+	$("#dashboard_content #action_box #action_box_ul #action_save").on("click", function() {
 	
-$("#action_save_view p").each(function(index, ele) {
+	$("#action_save_view").stop(true).toggle();
+	
+	});
+	
+	$("#dashboard_content #action_box #action_box_ul #action_save").on("mouseleave", function() {
+	$("#action_save_view").css("display", "none")
+	})
+		
+	$("#action_save_view p").each(function(index, ele) {
 	$(ele).on("mouseenter", function() {
 		$(ele).css("background", "#DEDEDE")
 	})
-
+	
 	$(ele).on("mouseleave", function() {
 		$(ele).css("background", "white")
+		})
 	})
-})
-}
-$(function() {
+	}
 
+function dashboardReadySumFunction(isOnlyLoad){
+	$.ajax({
+		url:"/cloudapi/v1/tables",
+		type:"get",
+		dataType:"json",
+		contentType: "application/json; charset=utf-8",
+		success:function(data){
+			
+			if (data["status"] == "success") {
+				if(sessionStorage.getItem("edit_view_now")){
+					//获取编辑的视图
+					var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
+					var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
+					// 创建数据块
+
+				cubeSelectContent_fun(data["results"],have_view_edit[3]);
+				}else{
+					// 创建数据块
+
+				cubeSelectContent_fun(data["results"]);
+				}
+
+				
+
+				save_data_sum_handle = data["results"];
+
+
+			}	
+		}
+		
+	});
+	
+	if(isOnlyLoad){
+		return;
+	}
+	dahboardSetting_function();
+	
+	
 	//编辑跳回后对颜色 小数点等对应的修改
 	function editView_change_color(colorArr,filterArr){
 		//修改对应颜色
@@ -513,9 +550,6 @@ $(function() {
 	})
 /*end---视图大小调整  select 下拉框*/
 
-
-
-
 	//单元格---下拉框
 	$("#cell_click").on("click", function() {
 		$("#cell_wrap").stop(true).toggle();
@@ -579,7 +613,7 @@ $(function() {
 
 	//点击区域外保存表标题
 	$(document).click(function(ev){
-		console.log($(ev.target))
+
 		if($(".viewName_input").length > 0 && !$(ev.target).is($("#view_show_area #view_show_area_content .tableView_name")) && !$(ev.target).is($("#view_show_area #view_show_area_content .tableView_name input")) && !$(ev.target).is($("#view_show_area #view_show_area_content .tableView_name p"))){
 			if($("#view_show_area #view_show_area_content .tableView_name input").val() != ""){
 				//记录输入框的值
@@ -601,38 +635,6 @@ $(function() {
 /*gxm-----start*/	
 	
 	$("#view_show_wrap").data("table", "false");
-	
-	$.ajax({
-		url:"/cloudapi/v1/tables",
-		type:"get",
-		dataType:"json",
-		contentType: "application/json; charset=utf-8",
-		success:function(data){
-			
-			if (data["status"] == "success") {
-				if(sessionStorage.getItem("edit_view_now")){
-					//获取编辑的视图
-					var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
-					var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
-					// 创建数据块
-
-				cubeSelectContent_fun(data["results"],have_view_edit[3]);
-				}else{
-					// 创建数据块
-
-				cubeSelectContent_fun(data["results"]);
-				}
-
-				
-
-				save_data_sum_handle = data["results"];
-
-
-			}	
-		}
-		
-	});
-
 
 	// 数据块选择 创建
 	function	 cubeSelectContent_fun(build_tables,click_val){
@@ -2269,32 +2271,32 @@ $(function() {
 	})
 
 	//侧边栏
-
-	var leftBarW = $("body").height() - $(".container .topInfo").height() - $(".rightConent #dashboard_content #new_view").height() - $(".rightConent #dashboard_content #action_box").height() - Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2;
-	//	var leftbarW_second = $(".leftNav").height()
-	$("#lateral_bar").height(leftBarW + Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2);
-	$("#dimensionality,#measurement,#indicator,#parameter").height(leftBarW / 4);
-
-	$("#view_show_area").height(leftBarW + 10 - $("#operational_view").height());
-	$("#view_show_area_content").height(leftBarW + 40 - $("#operational_view").height() - 30);
-	$("#dimensionality_show,#measure_show,#index_show,#parameter_show").height($("#dimensionality").height() - 32);
-	$("#action_box").width($("body").width() - 50 - $(".rightConent #dashboard_content #sizer").width());
-	$("#dashboard_content").width($("body").width() - 50);
-	//..
-	var barHeight = $("body").height() - $(".topInfo").height() - $("#new_view").height() - $("#action_box").height();
-	var view_show_height = barHeight - $("#operational_view").height();
-	var nowContentW = $("#action_box").width();
-
-	$(".handleAll_wrap").width(nowContentW - 201);
-	$("#view_show_area_content").width($("#drag_wrap_content").width());
-
-	//筛选器高度
-	$("#sizer").height($("#lateral_bar").height() + 50);
-	$("#sizer_place").height($("#sizer").height());
-	$("#sizer_place #sizer_mpt").css("marginTop",$("#sizer").height()/2 - $("#sizer_place #sizer_mpt").height()/2 + "px");
-
-
-
+	function leftBar_sizeW_function(){
+		var leftBarW = $("body").height() - $(".container .topInfo").height() - $(".rightConent #dashboard_content #new_view").height() - $(".rightConent #dashboard_content #action_box").height() - Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2;
+		//	var leftbarW_second = $(".leftNav").height()
+		$("#lateral_bar").height(leftBarW + Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2);
+		$("#dimensionality,#measurement,#indicator,#parameter").height(leftBarW / 4);
+	
+		$("#view_show_area").height(leftBarW + 10 - $("#operational_view").height());
+		$("#view_show_area_content").height(leftBarW + 40 - $("#operational_view").height() - 30);
+		$("#dimensionality_show,#measure_show,#index_show,#parameter_show").height($("#dimensionality").height() - 32);
+		$("#action_box").width($("body").width() - 50 - $(".rightConent #dashboard_content #sizer").width());
+		$("#dashboard_content").width($("body").width() - 50);
+		//..
+		var barHeight = $("body").height() - $(".topInfo").height() - $("#new_view").height() - $("#action_box").height();
+		var view_show_height = barHeight - $("#operational_view").height();
+		var nowContentW = $("#action_box").width();
+	
+		$(".handleAll_wrap").width(nowContentW - 201);
+		$("#view_show_area_content").width($("#drag_wrap_content").width());
+	
+		//筛选器高度
+		$("#sizer").height($("#lateral_bar").height() + 50);
+		$("#sizer_place").height($("#sizer").height());
+		$("#sizer_place #sizer_mpt").css("marginTop",$("#sizer").height()/2 - $("#sizer_place #sizer_mpt").height()/2 + "px");
+	}
+	
+	leftBar_sizeW_function();
 	//创建报表弹窗
 	function add_state_name(){
 	$(".save_delect").remove();
@@ -2411,7 +2413,7 @@ $(function() {
 	//username
 
 	//保存视图按钮点击事件
-	$("#click_save_view").on("click",function(){
+$("#click_save_view").on("click",function(){
 		add_state_name();
 		//获取之前是否有保存的文件夹和报表
 		
@@ -2556,7 +2558,7 @@ $(function() {
 
 
 	//显示服务器里操作保存过的数据
-	function show_view_save_dashbash(data_result){
+function show_view_save_dashbash(data_result){
 		$("#show_excel_name").html("");
 		for(erv_data in data_result){
 			if(erv_data != "default"){
@@ -2606,7 +2608,7 @@ $(function() {
 	}
 
 	//新建报表点击显示隐藏
-	$(".show_view_if_hide").on("click",function(){
+$(".show_view_if_hide").on("click",function(){
 		if($(".show_view_if_hide").css("color") == "rgb(13, 83, 164)"){
 			$("#view_add_state").find("input").val("");
 			$("#view_add_state").toggle();
@@ -2614,7 +2616,7 @@ $(function() {
 	})
 
 	//弹窗点击保存按钮向服务器传递保存数据
-	$("#save_handle_open").on("click",function(){
+$("#save_handle_open").on("click",function(){
 		if($("#show_excel_name").find(".active_folder_view").length != 0){
 			//判断表标题是否为空
 			if($("#view_show_area #view_show_area_content .tableView_name h4").text() == "添加表标题"){
@@ -2635,11 +2637,11 @@ $(function() {
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 			
 			if(result["foldername"] != ""){
-				 window.location.href="../statements/pallasdata3";
+				reporttingFunction_abale();
+				changePageTo_navReporttingView();
 				 loc_storage.setItem("now_add_view",post_dict["foldername"]);
 				 //移除编辑视图storage
 				 sessionStorage.removeItem("edit_view_now");
-				 navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
 
 			}else{
 				alert("保存失败");
@@ -2650,4 +2652,4 @@ $(function() {
 		}
 
 	})
-});
+}

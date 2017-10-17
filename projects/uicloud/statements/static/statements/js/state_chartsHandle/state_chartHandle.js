@@ -3,7 +3,7 @@ var currentChatType = "none";
 var radarDiemension = "none";
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
-function one_de_one_me_handle (chart_type_need,storeNum_toview) {
+function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 	var mycharts = echarts.getInstanceByDom($("."+viewshow_class+"").get(0));
 	if(!mycharts){
 	mycharts = 	echarts.init($("."+viewshow_class+"").get(0));
@@ -682,7 +682,7 @@ currentChatType = chart_type_need;
 
 // end------------------
 // 多个维度多个度量
-function many_de_many_me_handle(chart_type_need,storeNum_toview){
+function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 
 	//释放图表实例
 	

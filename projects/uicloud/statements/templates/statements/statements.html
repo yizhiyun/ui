@@ -1,23 +1,15 @@
-{% extends "common/nav_base.html" %}
 {% load static %}
-{% block css %}
-
-	<!--<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/jqueryui/dataTables.jqueryui.css" />-->
-	<link rel="stylesheet" href={% static "dashboard/css/dashboard_table.css"%} />
-	<link rel="stylesheet" href={% static "statements/css/statements.css" %}>
-	<link rel="stylesheet" href={% static "statements/css/jquery.gridster.css" %}>
-	
-{% endblock %}
-{% block js %}
-
+<link rel="stylesheet" href={% static "dashboard/css/dashboard_table.css"%} />
+<link rel="stylesheet" href={% static "statements/css/statements.css" %}>
+<link rel="stylesheet" href={% static "statements/css/jquery.gridster.css" %}>
 <script src={% static "statements/js/jquery.gridster.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "dashboard/js/echarts.min.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "dashboard/js/filterRelationHandle.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "dashboard/js/chartSetting.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "dashboard/js/md5.min.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "js/filter-common-hanlde.js"%} type="text/javascript" charset="utf-8"></script>
- <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
- <script src={% static "statements/js/state_chartsHandle/state_pre_dataHandle.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "statements/js/state_chartsHandle/state_pre_dataHandle.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "statements/js/statements_view_handle.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "statements/js/state_chartsHandle/state_chartHandle.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "statements/js/state_table.js"%} type="text/javascript" charset="utf-8"></script>
@@ -26,10 +18,7 @@
 <script src={% static "statements/js/jspdf.min.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "statements/js/statements.js"%} type="text/javascript" charset="utf-8"></script>
 	
-	
-{% endblock %}
-	
-{% block content %}
+<div id="pageStatementsModule" class="pageModuleNav" style="display: none;">	
 	<!--侧边栏 -->
 	<div id="statements_left_bar">
 		<!-- title -->
@@ -148,13 +137,4 @@
 			<input type="area">
 		</div>
 	</div>
-
-
-
-
-
-
-
-
-
-{% endblock %}
+</div>

@@ -1,30 +1,19 @@
-{% extends "common/nav_base.html" %}
 {% load static %}
-{% block css %}
-
-	<!--<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/plug-ins/28e7751dbec/integration/jqueryui/dataTables.jqueryui.css" />-->
-	<link rel="stylesheet" href={% static "dashboard/css/dashboard.css" %}>
-	
-	
-{% endblock %}
-{% block js %}
+<link rel="stylesheet" href={% static "dashboard/css/dashboard.css" %}>
 <script src={% static "js/dataWork.js"%} type="text/javascript" charset="utf-8"></script>
 <script src={% static "dashboard/js/echarts.min.js"%} type="text/javascript" charset="utf-8"></script>
- <script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
- <script src={% static "dashboard/js/chartsHandle/pre_dataHandle.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "dashboard/js/switch_chart.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "dashboard/js/chartsHandle/chartHandle.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "dashboard/js/table.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "dashboard/js/dashboard.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "dashboard/js/filterRelationHandle.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "js/filter-common-hanlde.js"%} type="text/javascript" charset="utf-8"></script>
-    <script src={% static "js/jQRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "js/jQDateRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
-	<script src={% static "dashboard/js/tempMoMProduct.js"%} type="text/javascript" charset="utf-8"></script>
-	
-{% endblock %}
-
-{% block content %}
+<script src={% static "dataCollection/js/judgeType.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/chartsHandle/pre_dataHandle.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/switch_chart.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/chartsHandle/chartHandle.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/table.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/dashboard.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/filterRelationHandle.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "js/filter-common-hanlde.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "js/jQRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "js/jQDateRangeSlider-min.js"%} type="text/javascript" charset="utf-8"></script>
+<script src={% static "dashboard/js/tempMoMProduct.js"%} type="text/javascript" charset="utf-8"></script>
+<div id="pageDashboardModule"  class="pageModuleNav" style="display: none;">
 	<div id="dashboard_content">
 		<!--新建图表-->
 		<div id="new_view" class="clear">
@@ -458,9 +447,6 @@
 			</div>
 		</div>
 	</div>
-
-
-
 	<!-- 视图保存弹窗 -->
 	<div id="view_save_up" class="clear">
 		<div id="view_save_up_line"></div>
@@ -500,8 +486,7 @@
 				<div id="save_handle_close">取消</div>
 			</div>
 	</div>
-
 	<!-- body遮罩 -->
 	<div id="body_content_shadow"></div>
     {% include "dashboard/editMeasure.html" %}
-{% endblock %}
+</div>

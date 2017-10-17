@@ -25,7 +25,7 @@ var isColumnFinished = false;
 //记录传递过来的className
 
 var storeClass = null;
-function showTable_by_dragData(save_allTable){
+function reporting_showTable_by_dragData(save_allTable){
 	for(var i = 0; i < save_allTable.length;i++){
 		(function(index){
 			manyTable(save_allTable[index])

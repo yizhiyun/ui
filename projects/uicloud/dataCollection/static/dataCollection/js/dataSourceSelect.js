@@ -28,7 +28,9 @@ $(function () {
   		$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
   		
     		$("#loginBtn").click(function(event){
-    			
+    			if(!$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
+    				return;
+    			}
 			var formData = new FormData($("#dataBaseConnectForm").get(0));
 			$.ajax({
 				url:"/dataCollection/connectDataBaseHandle",
@@ -38,8 +40,9 @@ $(function () {
 	            data:formData,
 	            success:function(data){
 					if(data.status == "success"){
-						window.location.href = "/dataCollection/dataBuildView";
-						navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
+						$(".maskLayer").hide();
+						buildDataFunction_able();
+						changePageTo_navBuildDataView();
 					}else{
 						alert("请检查数据库是否开启");
 					}
@@ -59,17 +62,19 @@ $(function () {
    });
    
    $("#panelFileSettingOption a.confirmBtn").click(function(event){
-   		var delimiter = $("#panelFileSettingOption .fileSettingBody .topOption .delimiterOption input").val();
-   		var quote = $("#panelFileSettingOption .fileSettingBody .topOption .quoteOption input").val();
-   		var header = $("#panelFileSettingOption .fileSettingBody .bottomOption  input").get(0).checked;
-		var formData = new FormData();
-		var fileInfo = $("#selectedPanelFile").get(0).files[0];
-		formData.append("file",fileInfo);
-		formData.append("delimiter",delimiter);
-		formData.append("quote",	 quote);
-		formData.append("header",header);
-		uploadCSVFIleFunction(formData);
-   		
+   		event.stopPropagation();
+   		if($(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
+			var delimiter = $("#panelFileSettingOption .fileSettingBody .topOption .delimiterOption input").val();
+			var quote = $("#panelFileSettingOption .fileSettingBody .topOption .quoteOption input").val();
+	   		var header = $("#panelFileSettingOption .fileSettingBody .bottomOption  input").get(0).checked;
+			var formData = new FormData();
+			var fileInfo = $("#selectedPanelFile").get(0).files[0];
+			formData.append("file",fileInfo);
+			formData.append("delimiter",delimiter);
+			formData.append("quote",	 quote);
+			formData.append("header",header);
+			uploadCSVFIleFunction(formData);
+		}	
    });
    
   // 点击选择平面文件，选中一个或者多个文件后
@@ -100,9 +105,10 @@ $(function () {
 	            },
 	            success:function(data){
 	            		if(data.status == "success"){
-	            			spinner.stop();
-						window.location.href = "/dataCollection/dataBuildView";
-						navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
+	            			spinner.stop();						
+						$(".maskLayer").hide();					
+						buildDataFunction_able();
+						changePageTo_navBuildDataView();
 	            		}else{
 	            			alert("上传文件失败:"+data.reason);
 	            		}
