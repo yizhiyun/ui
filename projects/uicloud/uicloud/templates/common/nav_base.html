@@ -13,10 +13,6 @@
     <link rel="stylesheet" type="text/css" href={%static "css/jquery-ui.min.css" %}/>
     <link rel="stylesheet" type="text/css" href={%static "css/combo.select.css" %}/>
     <link rel="stylesheet" href={% static "css/nav_base.css" %} />
-    {% block css %}
-    {% endblock %}
-    {% block js %}
-    {% endblock %}
 </head>
 
 <body scroll="no" style="overflow: hidden;" >
@@ -41,9 +37,10 @@
 				<div class="disableFlag functionBtn" id="navReporttingViewBtn"><div></div><img src={% static "images/icon_disable_10.png" %} alt="" /></div>
 			</div>
 			<div class="rightConent">
-                {% block  content%}
-
-                {% endblock %}    
+               {% include "dataCollection/dataSourceSelect.html" %}
+                {% include "dataCollection/dataAnalysis.html" %}
+                {% include "dashboard/dashboard.html" %}
+                {% include "statements/statements.html" %}
           </div>
 		</div>
 		<div class="clear"></div>
@@ -99,8 +96,10 @@
    
    <!--筛选器模块结束-->
  </div>
-    {% block other %}
-    {% endblock %}
+{#    {% block other %}#}
+{#    {% endblock %}#}
+    {% include "dataCollection/panelFileOption.html" %}
+    {% include "dataCollection/analysisOther.html" %}
 </body>
 <span id="calculateTextWidth"></span>
 </html>

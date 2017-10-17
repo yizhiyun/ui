@@ -1,41 +1,15 @@
 // 维度和数据处理
-// 数组排序
-Array.prototype.max = function(){ 
-return Math.max.apply({},this); 
-} 
-Array.prototype.min = function(){ 
-return Math.min.apply({},this); 
-}
-Array.prototype.XMsort = function(propertyNameArray){
-		
-	function createComparisonFunction(obj1,obj2){
-
-		for (var i = 0; i < propertyNameArray.length;i++) {
-			var value1 = obj1[propertyNameArray[i].split(":")[0]];
-			var value2 = obj2[propertyNameArray[i].split(":")[0]];
-			if (value1.localeCompare(value2) == 1) {
-				return -1;
-			}else if (value1.localeCompare(value2) == -1) {
-				return 1;
-			}else{
-				continue;
-			}
-		}
-		return 0;
-	}
-	this.sort(createComparisonFunction);
-}
 var customCalculate = {}
 var preAllData = null;
 var recordConditon = null;
 // needColumns暂时未用到
-function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
-	var filterNotWorkArr = getColumnFilterNotWorkedColumns(current_cube_name);
-	getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
+function reporting_measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
+	var filterNotWorkArr = getColumnFilterNotWorkedColumns(statements_current_cube_name);
+	getCurrentTableFilterData(statements_current_cube_name,filterNotWorkArr);
 
-	var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"],conditionFilter_record[current_cube_name]["dateCondition"]);
+	var conditions = conditionFilter_record[statements_current_cube_name]["common"].concat(conditionFilter_record[statements_current_cube_name]["condition"],conditionFilter_record[statements_current_cube_name]["dateCondition"]);
 
-	var checkSelectConditionDict = getSelectionCondtion(current_cube_name);
+	var checkSelectConditionDict = getSelectionCondtion(statements_current_cube_name);
 	for(var key in checkSelectConditionDict){
 		var valuesArr = checkSelectConditionDict[key];
 		if(valuesArr && valuesArr.length >0 && filterNotWorkArr.indexOf(key) == -1){
@@ -118,7 +92,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	}
 
 	$.ajax({
-		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
+		url:"/cloudapi/v1/tables/" +statements_current_cube_name+"/data",
 		type:"post",
 		dataType:"json",
 		contentType: "application/json; charset=utf-8",
@@ -133,7 +107,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
 				
-				// _cube_all_data[current_cube_name]["data"] = data.results.data;
+				// _cube_all_data[statements_current_cube_name]["data"] = data.results.data;
 				// filterNeedAllData = data.results.data;
 				// rightFilterListDraw();
 			}

@@ -1,0 +1,207 @@
+{% load static %}
+<!-- 构建数据弹框-->
+ 	<div class="buildDataPanelView" id="buildDataPanelView" style="display: none;">
+ 		<div class="topline"></div>
+		<div class="common-head">
+			<span class="logo">筛选器</span>
+			<div class="close">
+				<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+			</div>
+		</div>
+ 		<div class="build-body">
+ 			<div class="cube-name-radio">
+ 				<p class="cover-original-cube radio">覆盖</p>
+ 				<p class="new-cube radio">新建cube</p>
+ 			</div>
+ 			<div class="cube-name-input-div">
+ 				<span>数据cube名称:</span><input type="text" placeholder="请输入数据Cube名称"/>
+ 			</div>
+ 			<div class="build-options">
+ 				<p class="title">构建选项</p>
+ 				<div class="save-type">
+ 					<p class="radio active lcoal-save">全部保存</p>
+ 					<p class="radio global-save">局部保存</p>
+ 				</div>
+ 				<div class="more-content-div" style="display: none;">
+ 					<p>更多设置(单个表数据量)</p>
+ 					<label class="check-label"><input type="checkbox"/>行数</label><label class="text-label"><input type="text" /></label>
+ 				</div>
+ 			</div>
+
+ 		</div>
+ 		<div class="build-footer">
+ 			<a href="javascript:void(0)" class="moreSetting">更多设置</a><a href="javascript:void(0)" class="cancleBtn">取消</a><a href="javascript:void(0)" class="confirmBtn">确定</a>
+ 		</div>
+ 	</div>
+ 	<!-- 构建数据加载进度条 -->
+ 	<div id="build_upload" style="display: none">
+  		<!-- 关闭按钮 -->
+  		<div id="loding_close"></div>
+ 		<!-- 构建数据成功失败提示 -->
+ 		<div id="prompt_message" class="clear">
+ 			<span class="data_success_img" id="data_success_content"></span>
+ 			<span class="prompt_message_text">构建数据中</span>
+ 			<!--加载动态效果 -->
+ 			<div class="prompt_message_upload">
+ 				<span></span>
+ 				<span></span>
+ 				<span></span>
+ 			</div>
+ 		</div>
+
+ 		<!--加载进度条-->
+ 		<div id="loading_progress_bar">
+ 			<!--show -->
+ 			<div id="loading_progress_bar_active">
+ 				<!-- 进度 -->
+ 			<div id="loading_percentage" class="loading_percentage_ac"><span>0</span>%</div>
+ 			<!-- circle -->
+ 			<div id="loading_circle"></div>
+ 			</div>
+
+ 		</div>
+
+ 		<!-- 构建失败显示点击按钮 -->
+ 		<div id="build_false_btn" class="confirmBtn" style="display: none">
+ 			重新构建
+ 		</div>
+ 	</div>
+
+	<!-- 构建的集合表的拆分功能 -->
+	<div class="split_fileds">
+		<!-- titile_line -->
+		<div class="topline"></div>
+		<!-- title_name -->
+		<div class="common-head">
+			<span class="logo">拆分字段</span>
+			<div class="close">
+				<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+			</div>
+		</div>
+		<!-- 拆分功能区域 -->
+		<div class="splitFileds_handle_area">
+			<!--预览-->
+			<div class="split_preview">
+				<h4>预览</h4>
+				<div class="splitPreview_area">
+					<ul>
+
+					</ul>
+				</div>
+			</div>
+
+
+			<!-- 拆分方式的选择 -->
+			<div class="split_manner">
+				<form>
+					<input type="radio" id="list_separator" name="splitWay" class="radio_parent">
+					<label for="list_separator" name='splitWay_separ' class="checked" id="label_separ">分隔符号</label>
+
+					<input type="radio" name='splitSe_checked' id="slash"  class="radio_son">
+					<label for="slash" name="label_check" class="checked" id="splitSe_label" splitSymbol="symbol_YZY_/">斜杠</label>
+
+					<input type="radio" name='splitSe_checked' id="semicolon" class="radio_son">
+					<label for="semicolon" name="label_check" splitSymbol="symbol_YZY_">分号</label>
+
+					<input type="radio" name='splitSe_checked' id="comma" class="radio_son">
+					<label for="comma" name="label_check" splitSymbol="symbol_YZY_,">逗号</label>
+
+					<input type="radio" name='splitSe_checked' id="space" class="radio_son">
+					<label for="space" name="label_check" splitSymbol="symbol_YZY_ ">空格</label>
+
+<!-- 					<input type="radio" name='splitSe_checked' id="tab_btn" class="radio_son">
+					<label for="tab_btn" name="label_check">Tab键</label> -->
+
+					<input type="radio" name='splitSe_checked' id="other" class="radio_son">
+					<label for="other" name="label_check" id="label_other" id="free_handle">其他</label>
+					<input type="text" id="label_input_textarea" placeholder="- , ; : ....">
+
+					<!-- 固定宽度 -->
+					<input type="radio" id="fixed_width" name="splitWay" class="radio_parent">
+					<label for="fixed_width" name='splitWay_separ' id="label_fixed">固定宽度</label>
+
+				</form>
+
+				<!-- 固定宽度标尺区域展示 -->
+				<div class="fixedWidth_content">
+					<div class="fixedWidth_scaleplate">
+						<ul class="clear">
+
+						</ul>
+					</div>
+					<div class="splitPreview_area">
+
+					</div>
+
+					<!-- fixedWidth_content footer -->
+					<p>(单击鼠标建立分列线;双击分列线清除;拖拽移动分列线)</p>
+				</div>
+			</div>
+
+
+			<!-- wraing -->
+				<div class="splitWidth_waring">
+					<img src={% static "dataCollection/images/gt_03.png" %} alt="waring">
+					<span>日期/时间类型的数据拆分后均默认为字符串类型</span>
+				</div>
+		</div>
+
+
+
+
+		<!-- 拆分取消确定区域 -->
+		<div class="splitFileds_footer">
+			<a href="javascript:void(0)" class="cancleBtn">取消</a>
+			<a href="javascript:void(0)" class="confirmBtn">确定</a>
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 	<!--跳转到仪表盘或者分析 -->
+ 	<!-- <div id="choose_menu"> -->
+ 		<!-- title -->
+ 		<!-- <div id="choose_menu_title">选择进入模块</div> -->
+
+ 		<!--模块点击展示-->
+ <!-- 		<div id="choose_menu_content">
+ 			<ul>
+ 				<li>
+ 					<a href="../dashboard/pallasdata2"><img src={%static "dataCollection/images/dashboard.png" %} alt="dashboard" id="choose_dashboard"></a>
+ 					<p>仪表板</p>
+ 				</li>
+ 				<li>
+ 					<a href="javascript:void(0)"><img src={%static "dataCollection/images/analysis.png" %} alt="analysis" id="choose_analysis"></a>
+ 					<p>统计分析</p>
+ 				</li>
+ 				<li>
+ 					<a href="javascript:void(0)"><img src={%static "dataCollection/images/Data-integration.png" %} alt="Data-integration" id="choose_integration"></a>
+ 					<p>数据集成</p>
+ 				</li>
+ 			</ul>
+ 		</div>
+ 	</div> -->
+ 	{% include "dataCollection/panelFileOption.html" %}

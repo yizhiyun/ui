@@ -30,7 +30,7 @@ var normalUnitValue = -1;
 var valueUnitValue = "个";
 
 
-$(function(){	
+function dahboardSetting_function(){	
 	// 设置默认的颜色
 	$("#project_style .module_style .color_control .selectedColors span").each(function(index,ele){
 		$(ele).css("background",allColorsDict[currentColorGroupName][index]);
@@ -111,4 +111,4 @@ $(function(){
 		}
 	});
 	
-});
+}

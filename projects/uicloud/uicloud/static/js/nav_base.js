@@ -195,7 +195,9 @@ function equalCompare(objA, objB)
 
 // 切换页面
 $(function(){
-	
+	$(".main .rightConent .pageModuleNav").each(function(index,ele){
+		$(ele).data("isFirstInto",true);
+	});
 	pallasdaraFunctionNavBtnHandle();
 	
 	// 连接数据库关闭按钮
@@ -234,54 +236,23 @@ $(function(){
 	}
 
 function pallasdaraFunctionNavBtnHandle(){
-	
-	var currentPath = window.location.pathname;
-
-	if(/dataCollection\/dataBuildView/.test(currentPath)){
-		$(".container .main .leftNav #navBuildDataViewBtn").siblings(".functionBtn").children("div.active").removeClass("active");
-		$(".container .main .leftNav #navBuildDataViewBtn").children("div").addClass("active");
-	}
-	
-	if(/dashboard\/pallasdata2/.test(currentPath)){
-		$(".container .main .leftNav #navDashBoardViewBtn").siblings(".functionBtn").children("div.active").removeClass("active");
-		$(".container .main .leftNav #navDashBoardViewBtn").children("div").addClass("active");
-	}
-	
-	if(/statements\/pallasdata3/.test(currentPath)){
-		$(".container .main .leftNav #navReporttingViewBtn").siblings(".functionBtn").children("div.active").removeClass("active");
-		$(".container .main .leftNav #navReporttingViewBtn").children("div").addClass("active");
-	}
-	
-	
-	var navArr = navBtnAbleAndDisablegetHandle();
-	if(navArr.indexOf("navBuildDataViewBtn") != -1){
-		buildDataFunction_able();
-	}
-	if(navArr.indexOf("navDashBoardViewBtn") != -1){
-		dashBoradFunction_able();
-	}
-	if(navArr.indexOf("navReporttingViewBtn") != -1){
-		reporttingFunction_abale();
-	}
-	
-	$(".container .main .leftNav .ableFlag").unbind("click");
-	$(".container .main .leftNav .ableFlag").click(function(event){
-		if ($(this).children("div").hasClass("active")) {
+	$(".container .main .leftNav .functionBtn").click(function(event){
+		if ($(this).children("div").hasClass("active") || $(this).hasClass("disableFlag") ) {
 			event.preventDefault();
 			return;
 		}
 		switch ($(this).attr("id")){
 			case"navDataBaseAndPanleFileConnectionViewBtn":
-				window.location.href = "/dataCollection/pallasdata";
+				changePageTo_DataBaseAndPanleFileConnectionView();
 				break;
 			case "navBuildDataViewBtn":
-				window.location.href = "/dataCollection/dataBuildView";
+				changePageTo_navBuildDataView();
 				break;
 			case "navDashBoardViewBtn":
-				window.location.href = "/dashboard/pallasdata2";
+				changePageTo_navDashBoardView();
 				break;
 			case "navReporttingViewBtn":
-				window.location.href = "/statements/pallasdata3";
+				changePageTo_navReporttingView();
 				break;
 			default:
 				break;
@@ -293,7 +264,6 @@ function buildDataFunction_able(){
 	$(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/icon_nor_06.png");
 	$(".container .main .leftNav #navBuildDataViewBtn").removeClass("disableFlag");
 	$(".container .main .leftNav #navBuildDataViewBtn").addClass("ableFlag");
-
 }
 function dashBoradFunction_able(){
 	$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/icon_nor_08.png");
@@ -306,6 +276,61 @@ function reporttingFunction_abale(){
 	$(".container .main .leftNav #navReporttingViewBtn").removeClass("disableFlag");
 	$(".container .main .leftNav #navReporttingViewBtn").addClass("ableFlag");
 }
+
+// 切换页面
+function changePageTo_DataBaseAndPanleFileConnectionView(){
+	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
+	$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").addClass("active");
+	$(".main .rightConent .pageModuleNav").hide();
+	$(".main .rightConent #dataSourceConnectSelectDiv").show();
+}
+function changePageTo_navBuildDataView(){
+	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
+	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
+	$(".container .main .leftNav #navBuildDataViewBtn").children("div").addClass("active");
+	$(".main .rightConent .pageModuleNav").hide();
+	$(".main .rightConent #analysisContainer").show();
+	if($(".main .rightConent #analysisContainer").data("isFirstInto")){
+		dataAnalysisFunction();
+		$(".main .rightConent #analysisContainer").data("isFirstInto",false);
+	}else{	
+		if(currentPageId == "navDataBaseAndPanleFileConnectionViewBtn"){
+			dataAnalysisFunction(true);
+		}
+	}	
+}
+function changePageTo_navDashBoardView(){
+	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
+	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
+	$(".container .main .leftNav #navDashBoardViewBtn").children("div").addClass("active");
+	$(".main .rightConent .pageModuleNav").hide();
+	$(".main .rightConent #pageDashboardModule").show();
+	if($(".main .rightConent #pageDashboardModule").data("isFirstInto")){
+		dashboardReadySumFunction();
+		$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
+	}else{		
+		if(currentPageId == "navBuildDataViewBtn"){
+			dashboardReadySumFunction(true);
+		}
+	}
+}
+
+function changePageTo_navReporttingView(){
+	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
+	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
+	$(".container .main .leftNav #navReporttingViewBtn").children("div").addClass("active");
+	$(".main .rightConent .pageModuleNav").hide();
+	$(".main .rightConent #pageStatementsModule").show();
+	if($(".main .rightConent #pageStatementsModule").data("isFirstInto")){
+		satetementsReadySumFunction();
+		$(".main .rightConent #pageStatementsModule").data("isFirstInto",false);
+	}else{		
+		if(currentPageId == "navDashBoardViewBtn"){
+			satetementsReadySumFunction(true);
+		}
+	}
+}
+
 
 function dbAndPanelInfoSaveHandle(info){
 	
@@ -322,21 +347,6 @@ function dbAndPanelInfoDeleteHandle(){
 	window.localStorage.removeItem("dbandPanelInfo");
 }
 
-function navBtnAbleAndDisablesaveHandle(info){
-	var arr = navBtnAbleAndDisablegetHandle();
-	if(arr.indexOf(info) == -1){
-		arr.push(info)
-	}
-	window.localStorage.setItem("navAbleAndDisable",JSON.stringify(arr));
-}
-function navBtnAbleAndDisablegetHandle(){
-	var res =  JSON.parse(window.localStorage.getItem("navAbleAndDisable"));
-	if(!res){res= []};
-	return res; 
-}
-function navBtnAbleAndDisabledeleteHandle(){
-	window.localStorage.removeItem("navAbleAndDisable");
-}
 
 window.getAbsCoordinates=function(e){
 	e = e[0];

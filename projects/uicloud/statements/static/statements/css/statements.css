@@ -56,7 +56,7 @@ html,body{-webkit-user-select:none;}
 #delete_area .delete_area_img{width: 67px;height: 62px;margin: 30px auto;}
 #delete_area .delete_area_text{text-align: center;font-size: 14px;font-weight: bold;}
 #delete_area .delete_checked{text-align: center;font-size:12px;margin-top:10px;margin-bottom:62px;}
-input[type=checkbox] {visibility: hidden;}
+#pageStatementsModule input[type=checkbox] {visibility: hidden;}
 #delete_area .delete_checked .delete_area_input{width: 12px;height:12px;position: absolute;border-radius: 2px;left:78px;}
 #delete_area .delete_checked .delete_area_input label{cursor: pointer;position: absolute;width: 10px;height: 10px;top:3px;left:0px;border:1px solid #ddd;border-radius:2px;background:#0d53a4;}
 .delete_area_input label:after{opacity:1;content:"";position: absolute;width:7px;height: 3px;background: transparent;top:2px;left:1px;border:1px solid white;border-top: none;border-right: none;transform: rotate(-45deg);}
@@ -79,9 +79,9 @@ input[type=checkbox] {visibility: hidden;}
 .right_if_have_parentfolder{float: left;font-size: 16px;}
 .right_if_have_parentfolder img{margin: 0px 5px;}
 .right_folder_view_name{float: left;}
-.combo-select{float: left;width: 150px;height: 22px;background: white;margin-left: 5px}
-.combo-input{text-align: left;text-indent: 5px;height: 22px;line-height: 22px;padding: 0px;}
-.combo-dropdown li{padding: 3px;font-size: 12px;}
+.rightConent #pageStatementsModule .combo-select{float: left;width: 150px;height: 22px;background: white;margin-left: 5px}
+.rightConent #pageStatementsModule .combo-input{text-align: left;text-indent: 5px;height: 22px;line-height: 22px;padding: 0px;}
+.rightConent #pageStatementsModule .combo-dropdown li{padding: 3px;font-size: 12px;}
 /*右侧发布部分*/
 .click_out_handle{float: right;margin: 20px 20px 0px 0px;}
 .click_out_handle .click_new_view{width: 100px;height:30px;line-height:30px;box-sizing:border-box;border: 1px solid #DEDEDE;background: white;float: left;cursor:pointer;}
