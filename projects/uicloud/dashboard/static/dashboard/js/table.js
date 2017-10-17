@@ -332,7 +332,7 @@ function showTable_by_dragData(){
 
 
 //	布局 autoSize
-	function layout_table_size(){
+function layout_table_size(){
 		// 为了让浮动不换行，动态计算左侧模块的宽度
 		// 1、计算左侧行的宽度
 		

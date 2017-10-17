@@ -236,6 +236,18 @@ $(function(){
 	}
 
 function pallasdaraFunctionNavBtnHandle(){
+	// 获取当前可用的导航选项
+	var arr = navBtnAbleAndDisablegetHandle();
+	if(arr.indexOf("navBuildDataViewBtn") != -1){
+		buildDataFunction_able();
+	}
+	if(arr.indexOf("navDashBoardViewBtn") != -1){
+		dashBoradFunction_able();
+	}
+	if(arr.indexOf("navReporttingViewBtn") != -1){
+		reporttingFunction_abale();
+	}
+	
 	$(".container .main .leftNav .functionBtn").click(function(event){
 		if ($(this).children("div").hasClass("active") || $(this).hasClass("disableFlag") ) {
 			event.preventDefault();
@@ -292,6 +304,7 @@ function changePageTo_navBuildDataView(){
 	$(".main .rightConent #analysisContainer").show();
 	if($(".main .rightConent #analysisContainer").data("isFirstInto")){
 		dataAnalysisFunction();
+		navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
 		$(".main .rightConent #analysisContainer").data("isFirstInto",false);
 	}else{	
 		if(currentPageId == "navDataBaseAndPanleFileConnectionViewBtn"){
@@ -307,6 +320,7 @@ function changePageTo_navDashBoardView(){
 	$(".main .rightConent #pageDashboardModule").show();
 	if($(".main .rightConent #pageDashboardModule").data("isFirstInto")){
 		dashboardReadySumFunction();
+		navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
 		$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
 	}else{		
 		if(currentPageId == "navBuildDataViewBtn"){
@@ -323,6 +337,7 @@ function changePageTo_navReporttingView(){
 	$(".main .rightConent #pageStatementsModule").show();
 	if($(".main .rightConent #pageStatementsModule").data("isFirstInto")){
 		satetementsReadySumFunction();
+		navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
 		$(".main .rightConent #pageStatementsModule").data("isFirstInto",false);
 	}else{		
 		if(currentPageId == "navDashBoardViewBtn"){
@@ -331,6 +346,18 @@ function changePageTo_navReporttingView(){
 	}
 }
 
+function navBtnAbleAndDisablesaveHandle(info){
+	var arr = navBtnAbleAndDisablegetHandle();
+	if(arr.indexOf(info) == -1){
+		arr.push(info)
+	}
+	window.localStorage.setItem("navAbleAndDisable",JSON.stringify(arr));
+}
+function navBtnAbleAndDisablegetHandle(){
+	var res =  JSON.parse(window.localStorage.getItem("navAbleAndDisable"));
+	if(!res){res= []};
+	return res; 
+}
 
 function dbAndPanelInfoSaveHandle(info){
 	
