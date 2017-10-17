@@ -26,7 +26,7 @@ $(function () {
 		$("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
 		
   		$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
-  		
+  		$("#loginBtn").unbind("click");
     		$("#loginBtn").click(function(event){
     			if(!$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
     				return;
@@ -44,7 +44,14 @@ $(function () {
 						buildDataFunction_able();
 						changePageTo_navBuildDataView();
 					}else{
-						alert("请检查数据库是否开启");
+						if(data.reason == "the_palt_is_already_has"){
+							$(".maskLayer").hide();
+							buildDataFunction_able();
+							changePageTo_navBuildDataView();
+						}else{
+							alert("请检查数据库是否开启");
+						}
+						
 					}
 	            }
 			});
