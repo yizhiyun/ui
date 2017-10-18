@@ -2050,6 +2050,7 @@ function view_content_right_handle(){
 	//下载视图区域为pdf格式
 	$("#pageStatementsModule #right_folder_show_are .click_out_handle .theme_down").unbind("click");
 	$("#pageStatementsModule #right_folder_show_are .click_out_handle .theme_down").on("click",function(){
+		
 		$("#pageStatementsModule .gridster>ul>li").css("border","1px solid #DEDEDE");
 		// console.log($(".gridster ul li").width()/$(".gridster ul li").height())
 		// console.log($(".gridster").width()/(210/297))
@@ -2079,7 +2080,7 @@ function view_content_right_handle(){
              	margin:"20px 0px 10px 20px",
              })
 
-            folderTitle.prependTo(copyDom);
+             folderTitle.prependTo(copyDom);
 
             //新的div宽高跟原来一样，高度设置成自适应，这样才能完整显示节点中的所有内容（比如说表格滚动条中的内容）
             copyDom.width(targetDom.width() + 20 + "px");
@@ -2096,7 +2097,7 @@ function view_content_right_handle(){
             // canvas.style.height = copyDom.height() + "px";
             // var context = canvas.getContext("2d");
             // context.scale(2,2);
-		html2canvas($(copyDom).get(0), {
+		html2canvas(copyDom, {
 
 			// canvas:canvas,
         // onrendered: function(canvas) {
@@ -2118,10 +2119,9 @@ function view_content_right_handle(){
         // },
 
          onrendered: function (canvas) {
-         	console.log(canvas)
                     var imgData = canvas.toDataURL('image/png');
                     var img = new Image();
-                    console.log(imgData)
+                    // console.log(imgData)
                     img.src = imgData;
                     //根据图片的尺寸设置pdf的规格，要在图片加载成功时执行，之所以要*0.225是因为比例问题
                     img.onload = function () {
@@ -2137,10 +2137,11 @@ function view_content_right_handle(){
                         doc.save('pdf_' +$("#pageStatementsModule .combo-input").val()+ '.pdf');
                     };
                     //删除复制出来的div
-                    copyDom.remove();
+                    // copyDom.remove();
+                    // $("#pageStatementsModule .gridster>ul>li").css("border","none");
                 },
         background: "#fff",
-        allowTaint: true //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
+        allowTaint: false //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
      
     });
 
