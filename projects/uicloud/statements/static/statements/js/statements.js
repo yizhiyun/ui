@@ -97,7 +97,6 @@ gridster = null;
 
 
 
-
 function satetementsReadySumFunction(isOnlyLaod){
 	
 
@@ -2087,9 +2086,15 @@ function view_content_right_handle(){
             copyDom.height(targetDom.find("ul").height()+ 69 + "px");
 
             $('body').append(copyDom);//ps:这里一定要先把copyDom append到body下，然后再进行后续的glyphicons2canvas处理，不然会导致图标为空
+            copyDom.attr("id","testetst");
             copyDom.find(".new_view_title").remove();
             copyDom.find(".new_view_main").css("margin-top","15px");
             copyDom.find(".saveTable_class").css("top","20px");
+            copyDom.css({
+            	position:"absolute",
+            	left:0,
+            	// top:2000,
+            })
             // var canvas = document.createElement("canvas");
             // canvas.width = copyDom.width()*2;
             // canvas.height = copyDom.height()*2;
@@ -2097,7 +2102,8 @@ function view_content_right_handle(){
             // canvas.style.height = copyDom.height() + "px";
             // var context = canvas.getContext("2d");
             // context.scale(2,2);
-		html2canvas(copyDom, {
+
+		html2canvas($(copyDom), {
 
 			// canvas:canvas,
         // onrendered: function(canvas) {
@@ -2121,7 +2127,7 @@ function view_content_right_handle(){
          onrendered: function (canvas) {
                     var imgData = canvas.toDataURL('image/png');
                     var img = new Image();
-                    // console.log(imgData)
+                    console.log(imgData)
                     img.src = imgData;
                     //根据图片的尺寸设置pdf的规格，要在图片加载成功时执行，之所以要*0.225是因为比例问题
                     img.onload = function () {
@@ -2137,10 +2143,11 @@ function view_content_right_handle(){
                         doc.save('pdf_' +$("#pageStatementsModule .combo-input").val()+ '.pdf');
                     };
                     //删除复制出来的div
-                    // copyDom.remove();
+                    copyDom.remove();
                     // $("#pageStatementsModule .gridster>ul>li").css("border","none");
                 },
         background: "#fff",
+        logging:true,
         allowTaint: false //避免一些不识别的图片干扰，默认为false，遇到不识别的图片干扰则会停止处理html2canvas
      
     });

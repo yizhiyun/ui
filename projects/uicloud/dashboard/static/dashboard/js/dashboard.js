@@ -67,7 +67,7 @@ var getIndexName = [];
 var noDrop = false;
 
 //保存视图触发事件
-	function save_btn_fun(){
+function save_btn_fun(){
 	$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
 	//保存按钮下拉框
 	$("#dashboard_content #action_box #action_box_ul #action_save").on("click", function() {
@@ -113,8 +113,6 @@ function dashboardReadySumFunction(isOnlyLoad){
 				cubeSelectContent_fun(data["results"]);
 				}
 
-				
-
 				save_data_sum_handle = data["results"];
 
 
@@ -127,7 +125,6 @@ function dashboardReadySumFunction(isOnlyLoad){
 		return;
 	}
 	dahboardSetting_function();
-	
 	
 	//编辑跳回后对颜色 小数点等对应的修改
 	function editView_change_color(colorArr,filterArr){
