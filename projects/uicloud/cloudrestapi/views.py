@@ -488,15 +488,12 @@ def getRespData(output, isParseJsonStr=False):
 @api_view(['GET'])
 def downLoadExcel(request, tableName):
     """
-    POST:
-    Get all table from the current user.
     """
 
     jsonData = request.data
     logger.info("tableName: {0}".format(tableName))
     if request.method == "GET":
 
-        # response all valid columns
         curUserName = "myfolder"
         sparkCode = getTableInfoSparkCode(
             curUserName, tableName, mode='all', maxRowCount='')
