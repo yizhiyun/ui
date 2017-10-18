@@ -1091,6 +1091,7 @@ function view_drag_resize_handle(){
 					}
 
 					sessionStorage.setItem("edit_view_now",$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content"));
+					$(".main .rightConent #pageDashboardModule").data("isFirstInto",true);
 					changePageTo_navDashBoardView();
 				})
 

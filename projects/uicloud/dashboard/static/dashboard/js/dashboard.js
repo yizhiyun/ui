@@ -66,6 +66,10 @@ var getIndexName = [];
 
 var noDrop = false;
 
+//记录上一次生成的视图是否需要和编辑视图相同 避免重复编辑
+
+ var savePreDict  = {};
+
 //保存视图触发事件
 	function save_btn_fun(){
 	$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -364,6 +368,7 @@ function dashboardReadySumFunction(isOnlyLoad){
 		$.post("../dashboard/getAllData",{"username":username},function(result){
 
 		if(Object.getOwnPropertyNames(result).length != 0){
+			
 			ajax_data_post = result;
 			if(sessionStorage.getItem("edit_view_now")){
 					//获取编辑的视图
@@ -385,6 +390,8 @@ function dashboardReadySumFunction(isOnlyLoad){
 							var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
 							var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
 							folder_view_add_show(have_view_edit[1]+"-"+have_view_edit[2],"edit",hava_view_edit_old);
+							console.log(result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]],savePreDict)
+							console.log(result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]] == savePreDict)
 							continue;
 						   }
 						}
@@ -747,6 +754,12 @@ function dashboardReadySumFunction(isOnlyLoad){
 		if (_cube_all_data[current_cube_name]) {
 			var schema = _cube_all_data[current_cube_name]["schema"];
 			factory_create_li_to_measurement_module(schema);
+			if(!if_or_load){
+				$("#dashboard_content #new_view ul").html("");
+				empty_viem_init("change");
+				//视图编辑修改
+				dashboard_edit_view_handle();
+				}
 			return;
 		}
 
@@ -2761,6 +2774,7 @@ $("#save_handle_open").on("click",function(){
 			if(result["foldername"] != ""){
 				reporttingFunction_abale();
 				changePageTo_navReporttingView();
+				savePreDict = post_dict;
 				 loc_storage.setItem("now_add_view",post_dict["foldername"]);
 				 //移除编辑视图storage
 				 sessionStorage.removeItem("edit_view_now");
