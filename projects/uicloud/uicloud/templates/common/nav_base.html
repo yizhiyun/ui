@@ -61,15 +61,15 @@
     			{% csrf_token %}
 			   <input name="dataBaseName" type="hidden" id="formPostDataBaseName"/>
     			<div class="locationDiv">
-    				<label class="server">服务器: <input type="text" name="location"/></label>
-    				<label class="port">端口:    <input type="text" name="port"/></label>
+    				<label class="server">服务器: <input type="text" name="location" class="addressinput" placeholder="请输入服务器地址"/></label>
+    				<label class="port">端口:    <input type="text" name="port" class="portinput" placeholder="端口"/></label>
     			</div>
     			<div class="clear"></div>
     			<div class="userDiv">
     				<p>输入服务器登录信息:</p>
-    				<label class="userName">用户名: <input type="text" name="dbuserName" /></label>
-    				<label class="userPwd">密码: <input type="password" name="dbuserPwd" /></label>
-    				<label class="dbSid">SID:<input type="text" name="dbSid" /></label>
+    				<label class="userName">用户名: <input type="text" name="dbuserName" class="usernameinput" placeholder="输入数据库用户名"/></label>
+    				<label class="userPwd">密码: <input type="password" name="dbuserPwd" class="userpwdinput" placeholder="请输入数据库密码"/></label>
+    				<label class="dbSid">SID:<input type="text" name="dbSid" class="dbsidinput" placeholder="请输入ORACLE数据库SID"/></label>
     			</div>
     			
     			<div class="otherSetting">
