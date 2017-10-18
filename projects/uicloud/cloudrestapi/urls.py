@@ -58,4 +58,9 @@ urlpatterns = [
         views.getSpecUploadedTableViaSpark,
         name='getSpecUploadedTableViaSpark'
     ),
+    url(
+        r'^cloudapi/v1/downLoadExcel/(?P<tableName>\w+)$',
+        views.downLoadExcel,
+        name='downLoadExcel'
+    ),
 ]

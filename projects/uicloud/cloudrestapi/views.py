@@ -3,9 +3,10 @@ from rest_framework.decorators import api_view
 from .data_handler import *
 from .mllib_handler import *
 from .upload import *
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 import json
+import xlwt
 import logging
 
 # Get an instance of a logger
@@ -482,3 +483,57 @@ def getRespData(output, isParseJsonStr=False):
 
         sucessObj = {"status": "success", "results": data}
         return JsonResponse(sucessObj)
+
+
+@api_view(['GET'])
+def downLoadExcel(request, tableName):
+    """
+    """
+
+    jsonData = request.data
+    logger.info("tableName: {0}".format(tableName))
+    if request.method == "GET":
+
+        curUserName = "myfolder"
+        sparkCode = getTableInfoSparkCode(
+            curUserName, tableName, mode='all', maxRowCount='')
+        maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
+        duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
+        output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
+        if not output:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        elif output["status"] != "ok":
+            failObj = {"status": "failed",
+                       "reason": output}
+            return JsonResponse(failObj, status=400)
+        else:
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+            if data.startswith("False") or data.endswith("False"):
+                failObj = {"status": "failed",
+                           "reason": data.replace("False", "", 1)}
+                return JsonResponse(failObj, status=400)
+            elif data.startswith("{"):
+                data = json.loads(data)
+
+        try:
+            schema = data['schema']
+            data = data['data']
+            workbook = xlwt.Workbook(encoding='utf-8')
+            worksheet = workbook.add_sheet(tableName)
+            for i in range(len(schema)):
+                worksheet.write(0, i, label=schema[i]['field'])
+            for i in range(len(data)):
+                for j in range(len(schema)):
+                    worksheet.write(i + 1, j, label=data[i][schema[j]['field']])
+
+            response = HttpResponse(content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename={0}.xls'.format(tableName)
+            workbook.save(response)
+
+            return response
+        except Exception:
+            logger.error("Exception: {0}".format(sys.exc_info()))
+            return JsonResponse({'status': 'failed', 'reason': 'please see the detail log'})

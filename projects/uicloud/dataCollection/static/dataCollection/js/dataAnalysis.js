@@ -362,7 +362,18 @@ function expression_click_handle(){
       delete free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
       bindEventToPerTable();
 
-    })
+    });
+    // 添加集合表的导出excel 功能
+    $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #table_export_excel").click(function(event){
+    		event.stopPropagation();
+    		$.ajax({
+    			url:"/cloudrestapi/v1/downLoadExcel/"+preBuildDataName,
+    			type:'get',
+    			success:function(data){
+    				console.log(data);
+    			}
+    		})
+    });
   }
 
   //构建完成对布局的调整
