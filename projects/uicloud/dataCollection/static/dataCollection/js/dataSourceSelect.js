@@ -6,6 +6,14 @@ $(function () {
 				$("#dataList").hide();
 				$(".maskLayer").hide();
 			});
+   });
+   $("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput,#dataBaseConnectForm .dbSid").change(function(event){
+   		event.stopPropagation();
+   		if(/^\s*$/.test($(this).val())){
+   			$(this).css("border","1px solid red");
+   		}else{
+   			$(this).css("border","1px solid #dedede");
+   		}
    })
     var dataBaseName = null;
     // 给具体的数据库平台按钮绑定事件函数
@@ -31,7 +39,24 @@ $(function () {
     			if(!$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
     				return;
     			}
+    			 $("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput,#dataBaseConnectForm .dbSid").css("border","1px solid #dedede");
 			var formData = new FormData($("#dataBaseConnectForm").get(0));
+			var allCheckCorrect = false;
+			$("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput").each(function(index,ele){
+				if(/^\s*$/.test($(ele).val())){
+					$(ele).css("border","1px solid red");
+					allCheckCorrect = true;
+					return;
+				}
+			});
+			if(allCheckCorrect){
+				return;
+			}
+			if(/^\s*$/.test(dataBaseName == "ORACLE" && $("#dataBaseConnectForm .dbSid").val())){
+				$(this).css("border","1px solid red");
+				return;
+			}
+			
 			$.ajax({
 				url:"/dataCollection/connectDataBaseHandle",
 				type:"POST",

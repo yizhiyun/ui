@@ -366,13 +366,10 @@ function expression_click_handle(){
     // 添加集合表的导出excel 功能
     $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #table_export_excel").click(function(event){
     		event.stopPropagation();
-    		$.ajax({
-    			url:"/cloudrestapi/v1/downLoadExcel/"+preBuildDataName,
-    			type:'get',
-    			success:function(data){
-    				console.log(data);
-    			}
-    		})
+    		var formData = $("<form method='get' style='display:none'></form>");
+    		formData.attr("action","/cloudapi/v1/downLoadExcel/"+preBuildDataName);
+    		$("body").append(formData);
+    		formData.submit();
     });
   }
 
