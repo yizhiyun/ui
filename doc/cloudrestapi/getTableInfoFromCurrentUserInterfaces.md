@@ -295,10 +295,10 @@ Get Table From Current User Via Spark
             }
         ],
         "schema": [
-            {"field":"db1_table1_col2", "type":"StringType", "coltype":"dimension"},
-            {"field":"mycol1", "type":"IntegerType", "coltype":"measurement"},
-            {"field":"mycol2", "type":"StringType", "coltype":"dimension"},
-            {"field":"db2_table2_col1", "type":"IntegerType", "coltype":"measurement"}
+            {"field":"db1_table1_col2", "type":"StringType", "coltype":"dimensionality"},
+            {"field":"mycol1", "type":"IntegerType", "coltype":"measure"},
+            {"field":"mycol2", "type":"StringType", "coltype":"dimensionality"},
+            {"field":"db2_table2_col1", "type":"IntegerType", "coltype":"measure"}
         ]
     }
 }

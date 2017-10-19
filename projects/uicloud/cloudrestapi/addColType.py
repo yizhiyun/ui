@@ -36,10 +36,10 @@ def addColType(username, tablename, data):
                 i['coltype'] = Singleton().colTypeForm[username][tablename][i['field']]
             else:
                 if re.search('|'.join(strList + dateList + spaceList), i['type'], re.IGNORECASE):
-                    i['coltype'] = 'dimension'
+                    i['coltype'] = 'dimensionality'
                 elif re.search('|'.join(intList + noneList), i['type'], re.IGNORECASE):
-                    i['coltype'] = 'measurement'
+                    i['coltype'] = 'measure'
                 else:
-                    i['coltype'] = 'dimension'
+                    i['coltype'] = 'dimensionality'
                     logger.error('unknownType: {0}'.format(i['type']))
     return data
