@@ -63,4 +63,9 @@ urlpatterns = [
         views.downLoadExcel,
         name='downLoadExcel'
     ),
+    url(
+        r'^cloudapi/v1/recordCol/(?P<tableName>\w+)$',
+        views.recordCol,
+        name='recordCol'
+    ),
 ]

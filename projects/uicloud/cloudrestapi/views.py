@@ -3,6 +3,8 @@ from rest_framework.decorators import api_view
 from .data_handler import *
 from .mllib_handler import *
 from .upload import *
+from .addColType import *
+from dataCollection.gxmHandleClass.Singleton import Singleton
 from django.http import JsonResponse, HttpResponse
 
 import json
@@ -240,7 +242,27 @@ def getTableViaSpark(request, tableName, modeName):
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
 
-        return getRespData(output, True)
+        if not output:
+            failObj = {"status": "failed",
+                       "reason": "Please see the logs for details."}
+            return JsonResponse(failObj, status=400)
+        elif output["status"] != "ok":
+            failObj = {"status": "failed",
+                       "reason": output}
+            return JsonResponse(failObj, status=400)
+        else:
+            logger.debug("output: {}".format(output))
+            data = output["data"]["text/plain"]
+            if data.startswith("False") or data.endswith("False"):
+                failObj = {"status": "failed",
+                           "reason": data.replace("False", "", 1)}
+                return JsonResponse(failObj, status=400)
+            elif data.startswith("{"):
+                data = json.loads(data)
+                data = addColType(curUserName, tableName, data)
+
+            sucessObj = {"status": "success", "results": data}
+            return JsonResponse(sucessObj)
 
 
 @api_view(['POST'])
@@ -537,3 +559,16 @@ def downLoadExcel(request, tableName):
         except Exception:
             logger.error("Exception: {0}".format(sys.exc_info()))
             return JsonResponse({'status': 'failed', 'reason': 'please see the detail log'})
+
+
+@api_view(['POST'])
+def recordCol(request, tableName):
+    '''
+    '''
+    jsonData = request.data
+    logger.debug('jsondata: {0}'.format(jsonData))
+    if request.method == 'POST':
+
+        curUserName = "myfolder"
+        Singleton().recordColType(curUserName, tableName, jsonData['column'], jsonData['coltype'])
+        return JsonResponse({'status': 'success'})
