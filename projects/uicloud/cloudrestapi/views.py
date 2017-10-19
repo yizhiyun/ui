@@ -194,6 +194,8 @@ def generateNewTable(request):
             return JsonResponse(failObj, status=400)
         else:
             sucessObj = {"status": "success"}
+            curUserName = "myfolder"
+            handleColTypeForm(curUserName, jsonData['outputs']['outputTableName'], jsonData['relationships']['columnMap'])
             return JsonResponse(sucessObj)
 
 
