@@ -258,7 +258,7 @@ function pallasdaraFunctionNavBtnHandle(){
 				changePageTo_DataBaseAndPanleFileConnectionView();
 				break;
 			case "navBuildDataViewBtn":
-			$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
+			$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);	
 				changePageTo_navBuildDataView();
 				break;
 			case "navDashBoardViewBtn":
