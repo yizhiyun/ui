@@ -897,7 +897,8 @@ function dashboardReadySumFunction(isOnlyLoad){
 				var _show_type = _data_type.w_d_typeCat(); // 维度还是度量，返回值是一个字符串		
 				var type_indictot_img_path = _data_type.image_Name_Find();	 // 数据类型指示图片的路径
 				
-	var aLi = $("<li class=" + _show_type+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><p class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + ">"+_name+"</span><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></p></div></li>");
+	var aLi = $("<li class=" + _show_type+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><p class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + ">"+_name+"</span></p></div></li>");
+	aLi.find(".set_style").append("<div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div>");
 				
 				// 用来记录数据类型
 				aLi.find(".drop_main").eq(0).data("type",_data_type);
@@ -907,7 +908,8 @@ function dashboardReadySumFunction(isOnlyLoad){
 							
 			}
 			
-			var specialLi= $("<li class=" + "measure"+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+"/static/dataCollection/images/tableDataDetail/Integer.png"+"/></div><div class='drop_list_main " + "measure" + "_list_main'"+"><p class='drop_main clear set_style " + "measure" + "_list_text'><span class=" + "measure" + "_list_text_left" + ">"+"记录数"+"</span><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></p></div></li>");
+			var specialLi= $("<li class=" + "measure"+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+"/static/dataCollection/images/tableDataDetail/Integer.png"+"/></div><div class='drop_list_main " + "measure" + "_list_main'"+"><p class='drop_main clear set_style " + "measure" + "_list_text'><span class=" + "measure" + "_list_text_left" + ">"+"记录数"+"</span></p></div></li>");
+			specialLi.find(".set_style").append("<div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div>");
 			specialLi.find(".drop_main").eq(0).data("type","number");
 			$("#measure_show ul").append(specialLi);
 			
@@ -1411,8 +1413,20 @@ function drag(){
 						lineHeight: "21px",
 						padding: "0px 4px"
 					});
-					$(ele).find("img").css("display", "block");
-				})
+					$(ele).find(".moreSelectBtn").css("display", "block");
+					$(ele).find(".moreSelectBtn").unbind("click");
+					$(ele).find(".moreSelectBtn").click(function(event){
+						var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li>转化为度量</li><li class='typeLi'>转化类型<ul class='changeTypeList'><li><span class='default'></span>默认值</li><li><span class='num_system'></span>数字(二进制)</li><li><span class='num_ten'></span>数字(十进制)</li><li><span class='show_num_integer'></span>数字(整数)</li><li><span class='show_date_time'></span>日期和时间</li><li><span class='show_date'></span>日期</li><li><span class='show_string'></span>字符串</li></ul></li></ul>");
+						$(this).parents("li").append(moreActionModule);
+						$(moreActionModule).css({
+							"top":$(this).parents("li").eq(0).offset().top-45+'px',
+						});
+						$(moreActionModule).find(".typeLi").mouseover(function(event){
+							event.stopPropagation();
+							$(this).children(".changeTypeList").show();
+						});
+					});
+				});
 
 				//移出事件
 				$(ele).parent().on("mouseleave", function() {
@@ -1423,9 +1437,9 @@ function drag(){
 						padding: "0px 5px",
 						border: "none",
 					});
-					$(ele).find("img").css("display", "none");
-				})
-		})
+					$(ele).find(".moreSelectBtn").css("display", "none");
+				});
+		});
 		
 				//图标类型移入移出事件
 			function imgMouse() {
