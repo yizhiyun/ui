@@ -26,7 +26,7 @@ Get All Tables From Current User
 }
 ```
 ### 6. Response Example:
-If successful, it will response as follows
+* if successful, it will response as follows
 ```
 {
     "status": "success",
@@ -347,7 +347,7 @@ Change Column Type From Current User
 }
 ```
 ### 6. Response Example:
-If successful, it will response as follows
+* if successful, it will response as follows
 ```
 {
     "status": "success"
