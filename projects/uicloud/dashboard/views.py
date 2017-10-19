@@ -140,7 +140,7 @@ def dashboardTableAdd(request):
                 )
                 table.save()
 
-            context = {'status': 'ok'}
+            context = {'status': 'ok', 'tableid': table.id}
             return JsonResponse(context)
         except Exception:
             logger.error("Exception: {0}".format(sys.exc_info()))

@@ -136,7 +136,8 @@ Save TableInfo From Current User And Return TableInfo
 ### 6. Response Data:
 ```
 {
-    "status": "ok"
+    "status": "ok",
+    "tableid": <table's id>
 }
 ```
 * if failed. it should be:
