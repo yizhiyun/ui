@@ -68,10 +68,15 @@ var noDrop = false;
 
 //记录上一次生成的视图是否需要和编辑视图相同 避免重复编辑
 
- var savePreDict  = {};
+ var savePreDictId  = {};
 
 
  var isDisaed = true;
+
+
+ //记录多窗口报表名称
+
+var changeManyWall = {};
 
 //保存视图触发事件
 function save_btn_fun(){
@@ -99,9 +104,7 @@ function save_btn_fun(){
 	}
 
 function dashboardReadySumFunction(isOnlyLoad){
-	if(isOnlyLoad){
-		return;
-	}
+
 
 	$.ajax({
 		url:"/cloudapi/v1/tables",
@@ -381,6 +384,9 @@ function dashboardReadySumFunction(isOnlyLoad){
 
 
 	function dashboard_edit_view_handle(){
+		if(isOnlyLoad){
+			$("#dashboard_content #new_view ul .edit_list").remove();
+		}
 		$.post("../dashboard/getAllData",{"username":username},function(result){
 
 		if(Object.getOwnPropertyNames(result).length != 0){
@@ -391,25 +397,33 @@ function dashboardReadySumFunction(isOnlyLoad){
 					var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
 					var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
 				}
-	
+		
 			for(folder in result){
 			for(folder_view in result[folder]){
 				for(folder_view_name in result[folder][folder_view]){
 					//显示名称
 					var add_view_post_name = folder_view+"-"+folder_view_name;
-					view_homo_data[add_view_post_name] = result[folder][folder_view][folder_view_name]
-					
+					view_homo_data[add_view_post_name] = result[folder][folder_view][folder_view_name];
+					if(result[folder][folder_view][folder_view_name]["viewname"] != null){
+						var changeViewName = result[folder][folder_view][folder_view_name]['viewname'];
+					}else{
+						var changeViewName = folder_view_name;
+					}
 					if(view_homo_data[add_view_post_name]["isopen"]){
 						if(sessionStorage.getItem("edit_view_now")){
 							if(view_homo_data[add_view_post_name]["id"] == result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"]){
-							//获取编辑的视图
-							var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
-							var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
-							folder_view_add_show(have_view_edit[1]+"-"+have_view_edit[2],"edit",hava_view_edit_old);
-							continue;
+								//获取编辑的视图
+								var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
+								var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
+								folder_view_add_show(have_view_edit[1]+"-"+changeViewName,"edit",hava_view_edit_old);
+								continue;
 						   }
 						}
-						folder_view_add_show(add_view_post_name,"new",folder+","+folder_view+","+folder_view_name+","+result[folder][folder_view][folder_view_name]["tablename"]);
+						folder_view_add_show(add_view_post_name,"new",folder+","+folder_view+","+changeViewName+","+result[folder][folder_view][folder_view_name]["tablename"]);
+					
+						if(!changeManyWall["table"+view_homo_data[add_view_post_name]["id"]]){
+							changeManyWall["table"+view_homo_data[add_view_post_name]["id"]] = folder_view+"-"+changeViewName;
+						}
 					}
 
 				}
@@ -643,7 +657,7 @@ function dashboardReadySumFunction(isOnlyLoad){
 		view_title_change_count++;
 		var folderview_li = $("<li class='folderview_li_show' title="+add_view_name+"><span class='folderview_li_span'>"+add_view_name+"</span><div class='folderview_li_del_btn'></div></li>");
 		if(new_or_old == "new"){
-			folderview_li.prependTo($(".rightConent #dashboard_content #new_view ul"));
+			folderview_li.addClass("edit_list").prependTo($(".rightConent #dashboard_content #new_view ul"));
 			folderview_li.data("edit_view",edit_view_save_data);
 		}
 		if(new_or_old == "old"){
@@ -652,7 +666,7 @@ function dashboardReadySumFunction(isOnlyLoad){
 			folderview_li.addClass("auto_show");
 		}
 		if(new_or_old != "new" && new_or_old != "old"){
-			folderview_li.prependTo($(".rightConent #dashboard_content #new_view ul"));
+			folderview_li.addClass("edit_list").prependTo($(".rightConent #dashboard_content #new_view ul"));
 			$(".rightConent #dashboard_content #new_view ul li").removeClass("auto_show");
 			folderview_li.data("edit_view",edit_view_save_data).addClass("auto_show");
 			$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
@@ -793,10 +807,8 @@ function dashboardReadySumFunction(isOnlyLoad){
 			if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
 				if_or_load = true;
 				empty_viem_init("change");
-
+				isDisaed = false;
 				load_measurement_module(cube_select.val());
-
-
 			}
 		});	
 	}
@@ -1178,9 +1190,8 @@ function initTable_name(){
  		drag();
  		return;
  	}
-
  	//.........................仪表板工具栏操作
-
+ 	isDisaed = false;
 	//小部件操作栏事件
 	function small_handle_btn(){
 		var add_view_count = 0;
@@ -2811,11 +2822,11 @@ $("#save_handle_open").on("click",function(){
 			post_dict["customcalculate"] = JSON.stringify(customCalculate);
 			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
-			
-			if(result["foldername"] != ""){
+			console.log(result)
+			if(result["status"] == "ok"){
 				reporttingFunction_abale();
 				changePageTo_navReporttingView();
-				savePreDict = post_dict;
+				savePreDictId = result["tableid"];
 				 loc_storage.setItem("now_add_view",post_dict["foldername"]);
 				 //移除编辑视图storage
 				 sessionStorage.removeItem("edit_view_now");
