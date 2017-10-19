@@ -195,7 +195,10 @@ def generateNewTable(request):
         else:
             sucessObj = {"status": "success"}
             curUserName = "myfolder"
-            handleColTypeForm(curUserName, jsonData['outputs']['outputTableName'], jsonData['relationships']['columnMap'])
+            colMapList = []
+            for relationship in jsonData['relationships']:
+                colMapList += relationship['columnMap']
+            handleColTypeForm(curUserName, jsonData['outputs']['outputTableName'], colMapList)
             return JsonResponse(sucessObj)
 
 
