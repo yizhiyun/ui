@@ -52,7 +52,7 @@ $(function () {
 			if(allCheckCorrect){
 				return;
 			}
-			if(/^\s*$/.test(dataBaseName == "ORACLE" && $("#dataBaseConnectForm .dbSid").val())){
+			if(dataBaseName == "ORACLE" && /^\s*$/.test($("#dataBaseConnectForm .dbSid").val())){
 				$(this).css("border","1px solid red");
 				return;
 			}
