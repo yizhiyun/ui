@@ -906,8 +906,8 @@ function dashboardReadySumFunction(isOnlyLoad){
 				var column_name_info = schema[i];
 				var  _name = column_name_info["field"]; // 字段名
 				var _data_type = column_name_info["type"];  // 字段的数据类型
-				var _show_type = _data_type.w_d_typeCat(); // 维度还是度量，返回值是一个字符串		
-				var type_indictot_img_path = _data_type.image_Name_Find();	 // 数据类型指示图片的路径
+				var _show_type = column_name_info["coltype"]; // 维度还是度量，返回值是一个字符串		
+				var type_indictot_img_path = _data_type.image_Name_Find(_show_type);	 // 数据类型指示图片的路径
 				
 	var aLi = $("<li class=" + _show_type+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><p class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + ">"+_name+"</span></p></div></li>");
 	aLi.find(".set_style").append("<div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div>");
@@ -1427,15 +1427,61 @@ function drag(){
 					$(ele).find(".moreSelectBtn").css("display", "block");
 					$(ele).find(".moreSelectBtn").unbind("click");
 					$(ele).find(".moreSelectBtn").click(function(event){
-						var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li>转化为度量</li><li class='typeLi'>转化类型<ul class='changeTypeList'><li><span class='default'></span>默认值</li><li><span class='num_system'></span>数字(二进制)</li><li><span class='num_ten'></span>数字(十进制)</li><li><span class='show_num_integer'></span>数字(整数)</li><li><span class='show_date_time'></span>日期和时间</li><li><span class='show_date'></span>日期</li><li><span class='show_string'></span>字符串</li></ul></li></ul>");
+						var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li class='change'>转化为度量</li><li class='typeLi'>转化类型<ul class='changeTypeList'><li><span class='default'></span>默认值</li><li><span class='num_system'></span>数字(二进制)</li><li><span class='num_ten'></span>数字(十进制)</li><li><span class='show_num_integer'></span>数字(整数)</li><li><span class='show_date_time'></span>日期和时间</li><li><span class='show_date'></span>日期</li><li><span class='show_string'></span>字符串</li></ul></li></ul>");
 						$(this).parents("li").append(moreActionModule);
 						$(moreActionModule).css({
 							"top":$(this).parents("li").eq(0).offset().top-45+'px',
 						});
+						$(moreActionModule).children("li.change").unbind("click");
+						$(moreActionModule).children("li.change").click(function(event){
+							event.stopPropagation();
+							// 挪动相应的位置
+							var needChangeEle = $(this).parents("#dimeOrMeasureMoreActionList").parent("li");
+							var needChangeType ="";
+							if(needChangeEle.hasClass("dimensionality_li")){
+								needChangeEle.removeClass("dimensionality_li");
+								needChangeEle.addClass("measure_li");
+								needChangeEle.find(".drop_list_main").removeClass("dimensionality_list_main");
+								needChangeEle.find(".drop_list_main").addClass("measure_list_main");
+								needChangeEle.find(".drop_list_main .drop_main").removeClass("dimensionality_list_text");
+								needChangeEle.find(".drop_list_main .drop_main").addClass("measure_list_text");
+								needChangeEle.find(".drop_list_main .drop_main>span").removeClass("dimensionality_list_text_left");
+								needChangeEle.find(".drop_list_main .drop_main>span").addClass("measure_list_text_left");
+								needChangeEle.find(".dimensionality_datatype img").attr("src",needChangeEle.find(".drop_main").eq(0).data("type").image_Name_Find("measure"));
+								
+								$("#measure_show ul").append(needChangeEle);
+								needChangeType = "measure";
+							}else if(needChangeEle.hasClass("measure_li")){
+								needChangeEle.removeClass("measure_li");
+								needChangeEle.addClass("dimensionality_li");
+								needChangeEle.find(".drop_list_main").removeClass("measure_list_main");
+								needChangeEle.find(".drop_list_main").addClass("dimensionality_list_main");
+								needChangeEle.find(".drop_list_main .drop_main").removeClass("measure_list_text");
+								needChangeEle.find(".drop_list_main .drop_main").addClass("dimensionality_list_text");
+								needChangeEle.find(".drop_list_main .drop_main>span").removeClass("measure_list_text_left");
+								needChangeEle.find(".drop_list_main .drop_main>span").addClass("dimensionality_list_text_left");
+								needChangeEle.find(".dimensionality_datatype img").attr("src",needChangeEle.find(".drop_main").eq(0).data("type").image_Name_Find("dimensionality"));
+								$("#dimensionality_show ul").append(needChangeEle);
+								needChangeType = "dimensionality";
+							}
+							$("#dimeOrMeasureMoreActionList").remove();
+							$.ajax({
+								url:" /cloudapi/v1/recordCol/"+current_cube_name,
+								type:"post",
+								dataType:"json",
+								contentType: "application/json; charset=utf-8",
+								async: true,
+								data:JSON.stringify({"column":needChangeEle.find(".drop_list_main .drop_main>span").text(),"coltype":needChangeType}),
+								success:function(data){}
+							});
+							
+						});
+						$(moreActionModule).find(".typeLi").unbind("mouseover");
 						$(moreActionModule).find(".typeLi").mouseover(function(event){
 							event.stopPropagation();
 							$(this).children(".changeTypeList").show();
 						});
+						$(moreActionModule).find()
 					});
 				});
 
