@@ -1091,6 +1091,10 @@ function view_drag_resize_handle(){
 
 					sessionStorage.setItem("edit_view_now",$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content"));
 					$(".main .rightConent #pageDashboardModule").data("isFirstInto",true);
+					isDisaed = false;
+					if_or_load = false;
+					$("#project_style .module_style .color_control .otherColorsModule").data("openOrColse","close");
+					$("#dashboard_content #new_view ul").html("");
 					changePageTo_navDashBoardView();
 				})
 
@@ -2094,7 +2098,6 @@ function view_content_right_handle(){
             copyDom.css({
             	position:"absolute",
             	left:0,
-            	// top:2000,
             })
             // var canvas = document.createElement("canvas");
             // canvas.width = copyDom.width()*2;
