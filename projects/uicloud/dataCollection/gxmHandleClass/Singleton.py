@@ -26,6 +26,7 @@ class Singleton(object):
                 if not cls.__instance:
                     cls.__instance = super(Singleton, cls).__new__(cls, *args, **kwargs)
                     cls.__instance.dataPaltForm = {}
+                    cls.__instance.colTypeForm = {}
                     cls.__instance.currentDBObjIndex = None
             finally:
                 Lock.release()
@@ -58,3 +59,13 @@ class Singleton(object):
         except Exception as f:
             logger.error(f)
             return False
+
+    def recordColType(self, username, tablename, column, coltype):
+        '''
+        '''
+        if username not in self.colTypeForm.keys():
+            self.colTypeForm[username] = {}
+        if tablename not in self.colTypeForm[username].keys():
+            self.colTypeForm[username][tablename] = {}
+        self.colTypeForm[username][tablename][column] = coltype
+        return True

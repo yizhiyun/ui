@@ -26,7 +26,7 @@ Get All Tables From Current User
 }
 ```
 ### 6. Response Example:
-If successful, it will response as follows
+* if successful, it will response as follows
 ```
 {
     "status": "success",
@@ -214,8 +214,8 @@ Get Table From Current User Via Spark
             ...
         ],
         "schema": [
-            {"field":<columnName1>, "type":<columnType1>},
-            {"field":<columnName2>, "type":<columnType2>},
+            {"field":<columnName1>, "type":<columnType1>, "coltype":<coltype>},
+            {"field":<columnName2>, "type":<columnType2>, "coltype":<coltype>},
             ...
         ]
     }
@@ -227,8 +227,8 @@ Get Table From Current User Via Spark
     "status": "success",
     "results": {
         "schema": [
-            {"field":<columnName1>, "type":<columnType1>},
-            {"field":<columnName2>, "type":<columnType2>},
+            {"field":<columnName1>, "type":<columnType1>, "coltype":<coltype>},
+            {"field":<columnName2>, "type":<columnType2>, "coltype":<coltype>},
             ...
         ]
     }
@@ -295,10 +295,10 @@ Get Table From Current User Via Spark
             }
         ],
         "schema": [
-            {"field":"db1_table1_col2", "type":"StringType"},
-            {"field":"mycol1", "type":"IntegerType"},
-            {"field":"mycol2", "type":"StringType"},
-            {"field":"db2_table2_col1", "type":"IntegerType"}
+            {"field":"db1_table1_col2", "type":"StringType", "coltype":"dimension"},
+            {"field":"mycol1", "type":"IntegerType", "coltype":"measurement"},
+            {"field":"mycol2", "type":"StringType", "coltype":"dimension"},
+            {"field":"db2_table2_col1", "type":"IntegerType", "coltype":"measurement"}
         ]
     }
 }
@@ -323,6 +323,39 @@ Get Table From Current User Via Spark
     }
 }
 ```
+
+
+
+
+Change Column Type From Current User
+-------------
+### 1. Request URI: /cloudapi/v1/recordCol/{tablename}
+### 2. Request Method: POST
+### 3. Request Data Schema:
+```
+{
+    "column": <column>,
+    "coltype": <coltype>
+}
+```
+### 4. Support Format: JSON
+### 5. Response Data:
+* if successful, it will response as follows
+```
+{
+    "status": "success"
+}
+```
+### 6. Response Example:
+* if successful, it will response as follows
+```
+{
+    "status": "success"
+}
+```
+
+
+
 
 Notes
 -------------

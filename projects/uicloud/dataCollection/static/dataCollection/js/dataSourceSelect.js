@@ -7,7 +7,7 @@ $(function () {
 				$(".maskLayer").hide();
 			});
    });
-   $("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput,#dataBaseConnectForm .dbSid").change(function(event){
+   $("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput,#dataBaseConnectForm .dbsidinput").change(function(event){
    		event.stopPropagation();
    		if(/^\s*$/.test($(this).val())){
    			$(this).css("border","1px solid red");
@@ -39,7 +39,7 @@ $(function () {
     			if(!$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
     				return;
     			}
-    			 $("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput,#dataBaseConnectForm .dbSid").css("border","1px solid #dedede");
+    			 $("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput,#dataBaseConnectForm .dbsidinput").css("border","1px solid #dedede");
 			var formData = new FormData($("#dataBaseConnectForm").get(0));
 			var allCheckCorrect = false;
 			$("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput").each(function(index,ele){
@@ -52,8 +52,8 @@ $(function () {
 			if(allCheckCorrect){
 				return;
 			}
-			if(/^\s*$/.test(dataBaseName == "ORACLE" && $("#dataBaseConnectForm .dbSid").val())){
-				$(this).css("border","1px solid red");
+			if(dataBaseName == "ORACLE" && /^(\s)*$/.test($("#dataBaseConnectForm .dbsidinput").val())){
+				$("#dataBaseConnectForm .dbsidinput").css("border","1px solid red");
 				return;
 			}
 			
