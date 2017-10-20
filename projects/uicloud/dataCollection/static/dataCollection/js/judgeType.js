@@ -4,7 +4,6 @@ String.prototype.isTypeString = function(){
 	var value = this.toString();
 	var reg = /text|varchar|char|tinytext|mediumtext|longtext|binary|varbinary|tinyblob|blob|mediumblob|longblob|enum|set|StringType|BinaryType/i;
 	return reg.test(value);
-
 }
 
 // 2.判断是否是数字类型
@@ -45,18 +44,25 @@ String.prototype.w_d_typeCat = function(){
 
 
 // 7.数据类型图片配对
-String.prototype.image_Name_Find = function(){
+String.prototype.image_Name_Find = function(measureOrDime){
 	var value = this.toString();
 	if (value.isTypeDate()) {
 		return "/static/dataCollection/images/tableDataDetail/date.png";
 	}else if (value.isTypeNumber()) {
-		return "/static/dataCollection/images/tableDataDetail/Integer.png";
+		if(measureOrDime == "dimensionality"){
+			return "/static/dataCollection/images/tableDataDetail/integer_weidu.png";
+		}
+		return "/static/dataCollection/images/tableDataDetail/integer_duliang.png";
+		
 	}else if (value.isTypeString()) {
-		return "/static/dataCollection/images/tableDataDetail/String.png";
+		if(measureOrDime == "measure"){
+			return "/static/dataCollection/images/tableDataDetail/string_duliang.png";
+		}
+		return "/static/dataCollection/images/tableDataDetail/string_weidu.png";
 	}else if (value.isTypeSpace()) {
 		return "/static/dataCollection/images/tableDataDetail/geography.png";
 	}else{
-		return "/static/dataCollection/images/tableDataDetail/String.png";
+		return "/static/dataCollection/images/tableDataDetail/string_weidu.png";
 	}
 }
 // 检测输入的算法是否正确，有待完善，目前只是简单的检测

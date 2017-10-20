@@ -35,11 +35,33 @@ def addColType(username, tablename, data):
                i['field'] in Singleton().colTypeForm[username][tablename].keys():
                 i['coltype'] = Singleton().colTypeForm[username][tablename][i['field']]
             else:
-                if re.search('|'.join(strList + dateList + spaceList), i['type'], re.IGNORECASE):
-                    i['coltype'] = 'dimension'
-                elif re.search('|'.join(intList + noneList), i['type'], re.IGNORECASE):
-                    i['coltype'] = 'measurement'
+                if re.search('id|name', i['field'], re.IGNORECASE):
+                    i['coltype'] = 'dimensionality'
                 else:
-                    i['coltype'] = 'dimension'
-                    logger.error('unknownType: {0}'.format(i['type']))
+                    if re.search('|'.join(strList + dateList + spaceList), i['type'], re.IGNORECASE):
+                        i['coltype'] = 'dimensionality'
+                    elif re.search('|'.join(intList + noneList), i['type'], re.IGNORECASE):
+                        i['coltype'] = 'measure'
+                    else:
+                        i['coltype'] = 'dimensionality'
+                        logger.error('unknownType: {0}'.format(i['type']))
     return data
+
+
+def handleColTypeForm(username, tablename, colMapList):
+    '''
+    '''
+    # if username in Singleton().colTypeForm.keys() and \
+    #    tablename in Singleton().colTypeForm[username].keys():
+    #     Singleton().colTypeForm[username][tablename].clear()
+    colList = []
+    for colMap in colMapList:
+        colList += list(colMap.values())
+    colList = list(set(colList))
+
+    if username not in Singleton().colTypeForm.keys():
+        Singleton().colTypeForm[username] = {}
+    Singleton().colTypeForm[username][tablename] = {}
+
+    for col in colList:
+        Singleton().colTypeForm[username][tablename][col] = 'dimensionality'

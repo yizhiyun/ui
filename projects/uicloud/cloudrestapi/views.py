@@ -194,6 +194,11 @@ def generateNewTable(request):
             return JsonResponse(failObj, status=400)
         else:
             sucessObj = {"status": "success"}
+            curUserName = "myfolder"
+            colMapList = []
+            for relationship in jsonData['relationships']:
+                colMapList += relationship['columnMap']
+            handleColTypeForm(curUserName, jsonData['outputs']['outputTableName'], colMapList)
             return JsonResponse(sucessObj)
 
 
@@ -222,7 +227,8 @@ def getAllTablesFromUser(request):
 def getTableViaSpark(request, tableName, modeName):
     """
     POST:
-    Get all table from the current user.
+    Get all table from the current user. add a new argument 'coltype' in results/schema.
+    'coltype' means dimension/measurement
     """
 
     jsonData = request.data
@@ -510,6 +516,7 @@ def getRespData(output, isParseJsonStr=False):
 @api_view(['GET'])
 def downLoadExcel(request, tableName):
     """
+    把构建好的数据表以excel类型下载
     """
 
     jsonData = request.data
@@ -564,6 +571,7 @@ def downLoadExcel(request, tableName):
 @api_view(['POST'])
 def recordCol(request, tableName):
     '''
+    更改字段的维度/度量类型
     '''
     jsonData = request.data
     logger.debug('jsondata: {0}'.format(jsonData))

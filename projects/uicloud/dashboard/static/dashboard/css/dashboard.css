@@ -43,17 +43,23 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .dimensionality_li img,.index_li img,.parameter_li img,.measure_li img{vertical-align: middle;}
 .set_style{float: left;width: 135px;height: 23px;line-height: 23px;padding:  0px 5px;cursor: pointer;border-radius: 2px;font-size: 12px}
-.set_style img{float: right;margin-top: 9.5px;display: none;}
+.set_style .moreSelectBtn img{margin-left: 5px;}
+.set_style .moreSelectBtn{float: right;display: none;width: 13px;}
 #drag_row .annotation_text li p img,#drag_col .annotation_text li p img{margin-top:0px;padding:9.5px;padding-right: 0px}
 .drop_list_main {width: 135px;height: 23px;float: left;}
+ #dimeOrMeasureMoreActionList{position: absolute;left: 135px;border: 1px solid #dedede;background: white;border-bottom: 0px;}
+ #dimeOrMeasureMoreActionList>li{height: 21px;line-height: 21px;border-bottom: 1px solid #dedede;width: 70px;text-align: center;cursor: pointer;}
+  #dimeOrMeasureMoreActionList>li:hover{background: #dedede;}
+ #dimeOrMeasureMoreActionList .typeLi{position: relative;}
+ #dimeOrMeasureMoreActionList .changeTypeList{display: none;position: absolute;left: 70px;top: 22px;border: 1px solid #dedede;background: white;z-index: 9;border-bottom: 0;}
+ #dimeOrMeasureMoreActionList .changeTypeList>li{height: 21px;line-height: 21px;border-bottom: 1px solid #dedede;width: 100px;}
+ #dimeOrMeasureMoreActionList .changeTypeList>li:hover{background: #dedede;}
 .dimensionality_list_text_left{width:90%;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;float: left;text-align: left;}
 
 /*指标样式*/
 #dashboard_content #lateral_bar #indicator #index_show ul li{width: 100%;height: 23px;}
 #dashboard_content #lateral_bar #indicator #index_show ul li .index_list_text,.index_list_text{font-size: 12px;margin-left: 23px;height: 23px;line-height: 23px;display: none;cursor: pointer;width: 145px;padding: 0px 5px;}
 #dashboard_content #lateral_bar #indicator #index_show ul li .userinput{height: 23px;border: 0px;width: 185px;color: #808080;margin-left: 23px;width: 145px;text-indent: 3px;}
-
-
 
 /*类型图标点击样式切换*/
 
