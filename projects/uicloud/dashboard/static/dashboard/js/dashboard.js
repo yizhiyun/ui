@@ -78,6 +78,11 @@ var noDrop = false;
 
 var changeManyWall = {};
 
+
+var add_view_count = 0;
+
+var ceshiha = null;
+
 //保存视图触发事件
 function save_btn_fun(){
 	$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -105,7 +110,7 @@ function save_btn_fun(){
 
 function dashboardReadySumFunction(isOnlyLoad){
 
-
+	console.log($("#clickWallDelete").parent())
 	$.ajax({
 		url:"/cloudapi/v1/tables",
 		type:"get",
@@ -399,31 +404,28 @@ function dashboardReadySumFunction(isOnlyLoad){
 				}
 		
 			for(folder in result){
-			for(folder_view in result[folder]){
-				for(folder_view_name in result[folder][folder_view]){
+				for(folder_view in result[folder]){
+					for(folder_view_name in result[folder][folder_view]){
 					//显示名称
-					var add_view_post_name = folder_view+"-"+folder_view_name;
-					view_homo_data[add_view_post_name] = result[folder][folder_view][folder_view_name];
-					if(result[folder][folder_view][folder_view_name]["viewname"] != null){
-						var changeViewName = result[folder][folder_view][folder_view_name]['viewname'];
-					}else{
-						var changeViewName = folder_view_name;
-					}
-					if(view_homo_data[add_view_post_name]["isopen"]){
-						if(sessionStorage.getItem("edit_view_now")){
-							if(view_homo_data[add_view_post_name]["id"] == result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"]){
-								//获取编辑的视图
-								var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
-								var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
-								folder_view_add_show(have_view_edit[1]+"-"+changeViewName,"edit",hava_view_edit_old);
-								continue;
-						   }
+						var add_view_post_name = folder_view+"-"+folder_view_name;
+						view_homo_data[add_view_post_name] = result[folder][folder_view][folder_view_name];
+						if(result[folder][folder_view][folder_view_name]["viewname"] != null){
+							var changeViewName = result[folder][folder_view][folder_view_name]['viewname'];
+						}else{
+							var changeViewName = folder_view_name;
 						}
-						folder_view_add_show(add_view_post_name,"new",folder+","+folder_view+","+changeViewName+","+result[folder][folder_view][folder_view_name]["tablename"]);
+						if(view_homo_data[add_view_post_name]["isopen"]){
+							if(sessionStorage.getItem("edit_view_now")){
+								if(view_homo_data[add_view_post_name]["id"] == result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"]){
+									//获取编辑的视图
+									var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
+									var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
+									folder_view_add_show(have_view_edit[1]+"-"+changeViewName,"edit",hava_view_edit_old);
+									continue;
+							   }
+							}
+							folder_view_add_show(folder_view+"-"+changeViewName,"new",folder+","+folder_view+","+folder_view_name+","+result[folder][folder_view][folder_view_name]["tablename"]);
 					
-						if(!changeManyWall["table"+view_homo_data[add_view_post_name]["id"]]){
-							changeManyWall["table"+view_homo_data[add_view_post_name]["id"]] = folder_view+"-"+changeViewName;
-						}
 					}
 
 				}
@@ -743,9 +745,17 @@ function dashboardReadySumFunction(isOnlyLoad){
 					}
 				
 				for(var i = 0; i < $(".rightConent #dashboard_content #new_view ul li").length;i++){
+					add_view_count = $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g);
+					if(add_view_count < $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g)){
+						add_view_count = $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g);
+					}
 					$(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title_change",i);
+
 				}
+
+
 				if($(this).parent().hasClass("auto_show")){
+					view_title_change_count--;
 					$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").addClass("auto_show");
 					$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_del_btn").css("display","block");
 					if($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view") != undefined){
@@ -1192,7 +1202,6 @@ function initTable_name(){
  	isDisaed = false;
 	//小部件操作栏事件
 	function small_handle_btn(){
-		var add_view_count = 0;
 		folder_view_add_show("新建视图","old");
 
 		// if($(".rightConent #dashboard_content #new_view ul li").find("span").text() == "新建视图"){
@@ -2808,7 +2817,6 @@ $("#save_handle_open").on("click",function(){
 			post_dict["customcalculate"] = JSON.stringify(customCalculate);
 			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
-			console.log(result)
 			if(result["status"] == "ok"){
 				reporttingFunction_abale();
 				changePageTo_navReporttingView();

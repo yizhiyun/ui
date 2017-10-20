@@ -484,7 +484,6 @@ function delete_btn_handle(){
 
 	//动态创建每个视图
 function fun_add_view(view_type,right_view_show,viewshow_class,viewshow_class_arr,view_note,count,view_location,view_num_or,hide_show_if,saveTableName){
-		console.log(saveTableName)
 		if(view_note == null){
 			view_note = "";
 		}
@@ -1002,6 +1001,12 @@ function view_drag_resize_handle(){
 						 		var changeNameViewS = $(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content").split(",");
 						 		changeNameViewS.push($(".title_name_input").val())
 						 		$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content",changeNameViewS.join(","));
+						 		$(".edit_list span").each(function(index,eleList){
+							 		if($(eleList).text() == $(".statement_li").eq(show_table_arr[0]-1).find(".statement_li_content .view_show_name_save").eq(show_table_arr[1]).text() + "-"+ new_view_table_name_save){
+							 			$(eleList).text($(".statement_li").eq(show_table_arr[0]-1).find(".statement_li_content .view_show_name_save").eq(show_table_arr[1]).text() + "-" + $(".title_name_input").val());
+							 			$(eleList).parent().attr("title",$(".statement_li").eq(show_table_arr[0]-1).find(".statement_li_content .view_show_name_save").text() + "-" + $(".title_name_input").val());
+							 		}
+						 		})
 						 		$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").html($(".title_name_input").val());
 						 		$(ele).parent().find(".new_view_table_name").html($(".title_name_input").val()).css("textIndent","3px").css("borderColor","#DEDEDE");
 								
@@ -1098,15 +1103,12 @@ function view_drag_resize_handle(){
 						$.post("/dashboard/setSwitch",{"switch":"isopen","id":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id")});
 					}
 
-
-					console.log($(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content"))
 					sessionStorage.setItem("edit_view_now",$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content"));
 					$(".main .rightConent #pageDashboardModule").data("isFirstInto",true);
 					isDisaed = false;
 					if_or_load = false;
 					$("#project_style .module_style .color_control .otherColorsModule").data("openOrColse","close");
 					$("#dashboard_content #new_view ul .edit_list").remove();
-					console.log(changeManyWall);
 					changePageTo_navDashBoardView();
 				})
 
@@ -2029,7 +2031,8 @@ function view_dragable_folder(){
 						 	$(ele).data("data_result_content",changeNameView.join(","));
 						 	$(".edit_list span").each(function(index,eleList){
 						 		if($(eleList).text() == $(ele).parent().parent().find(".statement_li_content .view_show_name_save").text() + "-"+ now_name){
-						 			$(eleList).text($(ele).parent().parent().find(".statement_li_content .view_show_name_save").text() + "-" + input_small_view_val).attr("title",$(ele).parent().parent().find(".statement_li_content .view_show_name_save").text() + "-" + input_small_view_val);
+						 			$(eleList).text($(ele).parent().parent().find(".statement_li_content .view_show_name_save").text() + "-" + input_small_view_val);
+						 			$(eleList).parent().attr("title",$(ele).parent().parent().find(".statement_li_content .view_show_name_save").text() + "-" + input_small_view_val);
 						 		}
 						 	})
 						 

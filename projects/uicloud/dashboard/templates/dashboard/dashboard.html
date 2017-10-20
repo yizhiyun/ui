@@ -488,5 +488,34 @@
 	</div>
 	<!-- body遮罩 -->
 	<div id="body_content_shadow"></div>
+
+<!-- .............................................. -->
+
+	<!-- 视图窗口关闭提示框 -->
+	<div id="clickWallDelete">
+		<!-- 关闭按钮 -->
+		<div id="clickWallDelete_close">
+			<img src={% static "images/contentFilter/exit_33.png" %} alt="delect_close">
+		</div>
+		<!-- 展示图标 -->
+		<div class='clickWallDelete_img'>
+			<img src={% static "images/contentFilter/delete_37.png"%} alt="delect_show">
+		</div>
+		<!-- text -->
+		<div class="clickWallDelete_text">
+			<p>要在关闭之前保存</p>
+			<p>对"XX视图"的更改吗</p>
+		</div>
+		<!--确定按钮 -->
+		<div class='clickWallDelete_ok'>
+			<div class='clickWallDelete_no'>否</div>
+			<div class='clickWallDelete_yes'>是</div>
+		</div>
+	</div>
+
+
+
+
+
     {% include "dashboard/editMeasure.html" %}
 </div>
