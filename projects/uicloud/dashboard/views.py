@@ -90,7 +90,6 @@ def dashboardTableAdd(request):
 
     if request.method == 'POST':
         try:
-            foldername = jsonData['foldername']
             if 'id' in jsonData.keys() and jsonData['id']:
                 table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
                 table.row = jsonData['row']
@@ -102,6 +101,7 @@ def dashboardTableAdd(request):
                 table.tablename = jsonData['tablename']
                 table.save()
             else:
+                foldername = jsonData['foldername']
                 if jsonData['row'] == 'row':
                     countlist = DashboardFolderByUser.objects.filter(foldername=foldername)
                     if len(countlist) > 0:
