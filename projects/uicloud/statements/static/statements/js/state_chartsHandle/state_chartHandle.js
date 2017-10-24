@@ -30,7 +30,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 	 // 一个维度一个度量
 	function waterWall_generate_fun(storeNum_toview){
 		
-		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			mycharts.showLoading({
 				  text: '数据获取中',
   				  color: '#c23531',
@@ -204,7 +204,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 	function  cake_generate_fun (storeNum_toview) {
 			
 		
-		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			mycharts.showLoading({
 				  text: '数据获取中',
   				  color: '#c23531',
@@ -312,7 +312,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 	// 4、面积图
 	function area_generate_fun (storeNum_toview) {
 
-		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -463,7 +463,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 
  function gantt_generate_fun(storeNum_toview){
  	
-		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -734,7 +734,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 	
 	// 1、折线图
 	function polyLine_generate_fun(storeNum_toview){
-			measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -916,7 +916,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 //2、对比条形图
 function comparisonStrip_generate_fun(storeNum_toview){
 
-			measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -1232,7 +1232,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 
  		var  chartTile = {"number_bar":"堆积柱状图","number_liner":"堆积条形图","percentage_bar":"百分比堆积柱","percentage_liner":"百分比堆积条形"}
  					
-			measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -1619,7 +1619,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		for(var i =0;i < all_dimensionality.length;i++){
 			(function(index){
 				var need_dimensionality = all_dimensionality.slice(0,index+1);
-				measure_Hanlde(need_dimensionality,all_measure,null,function(data){
+				reporting_measure_Hanlde(need_dimensionality,all_measure,null,function(data){
 					mycharts.showLoading({
 						 text: '数据获取中',
 							 color: '#c23531',
@@ -1780,7 +1780,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 // 柱状图
 	function histogram_generate_fun(storeNum_toview){
 		
-		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -2013,7 +2013,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 	
 	// 条形图 
 	function barChart_generate_fun(storeNum_toview){
-		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -2248,7 +2248,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 	}
 	//  雷达图
 	function radarChart_generate_fun(storeNum_toview){
-		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',

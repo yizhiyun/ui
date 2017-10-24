@@ -87,6 +87,9 @@ var preClickView = {};
 
 var nowDeleteElement = null;
 
+//维度度量转换记录类型
+var saveTypeElement = null;
+
 //保存视图触发事件
 function save_btn_fun(){
 	$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -113,8 +116,6 @@ function save_btn_fun(){
 	}
 
 function dashboardReadySumFunction(isOnlyLoad){
-
-	console.log($("#clickWallDelete").parent())
 	$.ajax({
 		url:"/cloudapi/v1/tables",
 		type:"get",
@@ -731,6 +732,14 @@ function dashboardReadySumFunction(isOnlyLoad){
 
 		delete preClickView[$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")];
 
+		//判断是否标签页是否全部删除
+		if($(".rightConent #dashboard_content #new_view ul li").length == 0){
+			preClickView = {};
+			add_view_count = 0;
+			folder_view_add_show("新建视图","old");
+			preClickView["新建视图"] = null;
+		}
+
 	}
 
 
@@ -860,7 +869,8 @@ function show_view_save_dashbash(data_result){
 					oDiv.find(".view_show_name_save").parent().parent().addClass("floder_view_wrap");
 					oDiv.appendTo(folder);
 					folder.find(".statement_li").find(".view_show_name_save").css("width","324px");
-					$("<img src=../static/dashboard/img/left_35.png  class='click_tra click_tra_floder'/>").prependTo($(".state_folder_content"));
+
+					$("<img src=../static/dashboard/img/left_35.png  class='click_tra click_tra_floder'/>").prependTo($(folder).find(".state_folder_content"));
 				}else{
 					oDiv.addClass("only_folder");
 
@@ -1093,6 +1103,7 @@ function show_view_save_dashbash(data_result){
 
 					empty_viem_init("click");
 					if(preClickView[$(this).find(".folderview_li_span").text()] !=null && preClickView[$(this).find(".folderview_li_span").text()]["viewtype"] != null){
+						save_btn_fun();
 						$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
 						edit_view_show(null,preClickView[$(this).find(".folderview_li_span").text()],"noedit","noLocation");	
 					}else{
@@ -1155,18 +1166,6 @@ function show_view_save_dashbash(data_result){
 			}else{
 				clickViewTo($(this).parent().attr("title"));
 			}
-
-
-
-			//判断是否标签页是否全部删除
-			if($(".rightConent #dashboard_content #new_view ul li").length == 0){
-				preClickView = {};
-				add_view_count = 0;
-				folder_view_add_show("新建视图","old");
-				preClickView["新建视图"] = null;
-			}
-
-
 
 		})
 	}
@@ -1845,7 +1844,13 @@ function drag(){
 					$(ele).find(".moreSelectBtn").css("display", "block");
 					$(ele).find(".moreSelectBtn").unbind("click");
 					$(ele).find(".moreSelectBtn").click(function(event){
-						var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li class='change'>转化为度量</li><li class='typeLi'>转化类型<ul class='changeTypeList'><li><span class='default'></span>默认值</li><li><span class='num_system'></span>数字(二进制)</li><li><span class='num_ten'></span>数字(十进制)</li><li><span class='show_num_integer'></span>数字(整数)</li><li><span class='show_date_time'></span>日期和时间</li><li><span class='show_date'></span>日期</li><li><span class='show_string'></span>字符串</li></ul></li></ul>");
+						//判断点击的是维度还是度量
+						if($(this).parent().hasClass("measure_list_text")){
+							saveTypeElement = "转换为维度";
+						}else{
+							saveTypeElement = "转换为度量";
+						}
+						var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li class='change'>"+saveTypeElement+"</li><li class='typeLi'>转化类型<ul class='changeTypeList'><li><span class='default'></span>默认值</li><li><span class='num_system'></span>数字(二进制)</li><li><span class='num_ten'></span>数字(十进制)</li><li><span class='show_num_integer'></span>数字(整数)</li><li><span class='show_date_time'></span>日期和时间</li><li><span class='show_date'></span>日期</li><li><span class='show_string'></span>字符串</li></ul></li></ul>");
 						$(this).parents("li").append(moreActionModule);
 						$(moreActionModule).css({
 							"top":$(this).parents("li").eq(0).offset().top-45+'px',
@@ -2084,7 +2089,6 @@ function drag(){
 								$("#sizer_content").css("display", "block");
 							}
 							$(this).find(".drag_text").css("display", "none");
-							console.log($(ui.draggable))
 							var current_li = $("<li class='drog_row_list'></li>").html($(ui.draggable).parent().html());
 							current_li.appendTo($(this));
 							current_li.find(".set_style").on("mouseenter",function(){$(this).find(".moreSelectBtn").show()});
@@ -2098,10 +2102,12 @@ function drag(){
 							});
 
 							//判断拖拽元素颜色
-							if($(this).find("span").hasClass("dimensionality_list_text_left")) {
+							if($(this).find("span").hasClass("dimensionality_list_text_left")){
+								var elementToType = "dimensionality";
 								$(this).find(".dimensionality_list_text_left").parent().parent().css("background", "#c5e0ff");
 							}
 							if($(this).find("span").hasClass("measure_list_text_left")) {
+								var elementToType = "measure";
 								$(this).find(".measure_list_text_left").parent().parent().css("background", "#ffcc9a");
 							}
 							$(this).find("li").css({
@@ -2237,7 +2243,7 @@ function drag(){
 
 							var dragObj = ui["draggable"];// 拖动的元素
 							var _dataType = dragObj.data("type");// 元素数据类型
-							var _wd_type = _dataType.w_d_typeCat();// 维度还是度量。。。
+							var _wd_type = elementToType;// 维度还是度量。。。
 							var _field_name =dragObj.children("span").eq(0).html(); // 字段名
 							_drag_message["type"] = _wd_type;
 							if(_wd_type == "measure"){
@@ -2246,7 +2252,7 @@ function drag(){
 									$(current_li).find("span.measure_list_text_left").html("计数("+_field_name+")");
 								}
 							}
-								//给予li id名 记录元素对应的内容
+							//给予li id名 记录元素对应的内容
 							$(this).find("li").eq($(this).find("li").length-1).attr("id",_wd_type+":"+_field_name + ":" + _dataType);
 							//判断拖入的区域
 							switch($(this).attr("id")) {
@@ -3070,13 +3076,17 @@ function folder_name_sum(text,sumArr){
  });
 
 function saveViewToWall(post_dict){
-				//将数据存储数据库
+			//将数据存储数据库
 			$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 			if(result["status"] == "ok"){
-				console.log(post_dict)
 				reporttingFunction_abale();
-				changePageTo_navReporttingView();
-				 loc_storage.setItem("now_add_view",post_dict["foldername"]);
+				$(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
+				changePageTo_navReporttingView(false);
+				loc_storage.setItem("now_add_view",post_dict["foldername"]);
+				saveViewShowArr = {};
+				saveViewShowArr[post_dict["foldername"]] = [];
+				$(".gridster").html("");
+				$(".gridster").append($("<ul></ul>"));
 				 //移除编辑视图storage
 				 sessionStorage.removeItem("edit_view_now");
 				 $("#pageDashboardModule #view_save_up").hide();
@@ -3089,7 +3099,7 @@ function saveViewToWall(post_dict){
 		});
 }
 
-	//新建报表点击显示隐藏
+//新建报表点击显示隐藏
 $(".show_view_if_hide").on("click",function(){
 		if($(".show_view_if_hide").css("color") == "rgb(13, 83, 164)"){
 			$("#view_add_state").find("input").val("");
@@ -3097,7 +3107,7 @@ $(".show_view_if_hide").on("click",function(){
 		}
 	})
 
-	//弹窗点击保存按钮向服务器传递保存数据
+//弹窗点击保存按钮向服务器传递保存数据
 $("#save_handle_open").on("click",function(){
 		if($("#show_excel_name").find(".active_folder_view").length != 0){
 			post_dict = realSaveData();
@@ -3107,7 +3117,8 @@ $("#save_handle_open").on("click",function(){
 				var viewWallChangeSave = SecondDict(post_dict,ajax_data_post[$(".auto_show").data("edit_view").split(",")[0]][$(".auto_show").data("edit_view").split(",")[1]][$(".auto_show").data("edit_view").split(",")[2]]);
 				if(viewWallChangeSave && $(".active_folder_view").text() == $(".auto_show").data("edit_view").split(",")[1]){
 					reporttingFunction_abale();
-					changePageTo_navReporttingView();
+					$(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
+					changePageTo_navReporttingView(false);
 					 //移除编辑视图storage
 					 sessionStorage.removeItem("edit_view_now");
 				 	$("#pageDashboardModule #view_save_up").hide();

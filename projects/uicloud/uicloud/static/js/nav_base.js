@@ -265,7 +265,7 @@ function pallasdaraFunctionNavBtnHandle(){
 				changePageTo_navDashBoardView();
 				break;
 			case "navReporttingViewBtn":
-				changePageTo_navReporttingView();
+				changePageTo_navReporttingView(true);
 				break;
 			default:
 				break;
@@ -333,7 +333,7 @@ function changePageTo_navDashBoardView(){
 	}
 }
 
-function changePageTo_navReporttingView(){
+function changePageTo_navReporttingView(unloadPage){
 	hidenSomeElementsWhenChangePage();
 	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
@@ -341,7 +341,7 @@ function changePageTo_navReporttingView(){
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #pageStatementsModule").show();
 	if($(".main .rightConent #pageStatementsModule").data("isFirstInto")){
-		satetementsReadySumFunction();
+		satetementsReadySumFunction(unloadPage);
 		navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
 		$(".main .rightConent #pageStatementsModule").data("isFirstInto",false);
 	}else{		

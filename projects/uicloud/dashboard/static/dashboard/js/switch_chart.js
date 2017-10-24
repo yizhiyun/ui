@@ -61,7 +61,7 @@ function beginDrawChart(edit_view){
 	//初始化图例
 	function view_init(){
 		show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
-		$("#text_table_need_show").css("display","none");
+		$("#text_table_need_show").hide();
 	}
 
 	show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
@@ -105,24 +105,15 @@ function beginDrawChart(edit_view){
 	// 文本表end----------------------------------------------
 
 
-	//只拖入度量显示柱状图或者条形图
+	//只拖入度量显示柱状图或者条形图表格
 	if((switch_row_me > 0 && switch_col_di ==0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me > 0 && switch_col_di ==0 && switch_row_me == 0 && switch_row_di == 0)){
 		view_init();
-		// $("#show_table").css("opacity","1");
-
-		
-		//判断是条形图还是柱状图为默认
-		if(switch_col_me > 0){
-			change_view_css("#show_bar");
+		$("#text_table_need_show").show();
+		$("#show_bar,#show_histogram").css("opacity","1");
+			change_view_css("#show_table");
 			if(!click_view_icon){
-				save_now_show_view_text = $("#show_bar");
+				save_now_show_view_text = $("#show_table");
 			}
-		}else{
-			change_view_css("#show_histogram");
-			if(!click_view_icon){
-				save_now_show_view_text = $("#show_histogram");
-			}
-		}
 	}
 
 	//1维度1度量展示

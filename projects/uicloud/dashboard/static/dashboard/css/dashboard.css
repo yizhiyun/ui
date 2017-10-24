@@ -47,11 +47,11 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .set_style .moreSelectBtn{float: right;display: none;width: 13px;}
 #drag_row .annotation_text li p img,#drag_col .annotation_text li p img{margin-top:0px;padding:9.5px;padding-right: 0px}
 .drop_list_main {width: 135px;height: 23px;float: left;}
- #dimeOrMeasureMoreActionList{position: absolute;left: 135px;border: 1px solid #dedede;background: white;border-bottom: 0px;}
+ #dimeOrMeasureMoreActionList{position: absolute;left: 135px;border: 1px solid #dedede;background: white;border-bottom: 0px;z-index: 2}
  #dimeOrMeasureMoreActionList>li{height: 21px;line-height: 21px;border-bottom: 1px solid #dedede;width: 70px;text-align: center;cursor: pointer;}
   #dimeOrMeasureMoreActionList>li:hover{background: #dedede;}
  #dimeOrMeasureMoreActionList .typeLi{position: relative;}
- #dimeOrMeasureMoreActionList .changeTypeList{display: none;position: absolute;left: 70px;top: 22px;border: 1px solid #dedede;background: white;z-index: 9;border-bottom: 0;}
+ #dimeOrMeasureMoreActionList .changeTypeList{display: none;position: absolute;left: 70px;top:-1px;border: 1px solid #dedede;background: white;z-index: 9;border-bottom: 0;}
  #dimeOrMeasureMoreActionList .changeTypeList>li{height: 21px;line-height: 21px;border-bottom: 1px solid #dedede;width: 100px;}
  #dimeOrMeasureMoreActionList .changeTypeList>li:hover{background: #dedede;}
 .dimensionality_list_text_left{width:90%;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;float: left;text-align: left;}

@@ -36,7 +36,7 @@ var viewshow_class = null,
 
 
 //记录每个表的名称
-statements_statements_current_cube_name = null,
+statements_current_cube_name = null,
 
 statements_current_cube_name_arr = [],
 
@@ -91,11 +91,23 @@ folder_name_arr = [],
 
 menu_folder_name_arr =[],
 
-gridster = null;
+gridster = null,
 
+//记录视图库已经绘制的图形
+
+saveViewShowArr = {},
+
+right_width_content,
+
+state_left_bar_close = false,
+
+toIfChangeSecond = true,
+
+onlyRunOne = true;
 
 
 function satetementsReadySumFunction(isOnlyLaod){
+
 drag_row_column_data_arr = [];
 
 statements_current_cube_name_arr = [];
@@ -116,67 +128,34 @@ view_show_id_arr = [];
 
 function statementsinit(){
 
+//侧边栏收起按钮top
+$("#statements_left_bar #statements_left_bar_btn_close").css("top",($("body").height()-$(".topInfo").height())/2 - $("#statements_left_bar_btn_close").height()/2 + "px");
+right_width_content = $("body").width()-$("#statements_left_bar").position().left - $("#statements_left_bar").width() - $(".leftNav").width();
+//右侧视图展示区域宽度
+$("#right_folder_show_are").css("width",right_width_content +"px").css("height",$("body").height() - $(".topInfo").height() + "px");
 
-	//侧边栏收起按钮top
-	$("#statements_left_bar #statements_left_bar_btn_close").css("top",($("body").height()-$(".topInfo").height())/2 - $("#statements_left_bar_btn_close").height()/2 + "px");
-	var right_width_content = $("body").width()-$("#statements_left_bar").position().left - $("#statements_left_bar").width() - $(".leftNav").width();
-	//右侧视图展示区域宽度
-	$("#right_folder_show_are").css("width",right_width_content +"px").css("height",$("body").height() - $(".topInfo").height() + "px");
-
-	//右侧视图展示区域高度
-	$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 54+ "px");
+//右侧视图展示区域高度
+$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 54+ "px");
+if(isOnlyLaod == false || onlyRunOne){
 	//拿到构建报表的数据
 	$.post("/dashboard/getAllData",{"username":username},function(result){
 	ajax_data_post = result;
+	toIfChangeSecond = true;
 	view_out_handle_init(result);
-	//侧边栏关闭按钮点击收起
-	var state_left_bar_close = false;
-	$("#statements_left_bar #statements_left_bar_btn_close img").on("click",function(){
-		if(!state_left_bar_close){
-			$("#statements_left_bar").animate({
-				"left":-$("#statements_left_bar").width() + "px",
-			},300);
-			$("#right_folder_show_are").animate({
-				"marginLeft":"0px",
-				"width":$("body").width() - $(".leftNav").width() + "px",
-			},300,function(){
-				$("#right_folder_show_are .view_folder_show_area ul li .new_view_main canvas").css("width","100%").css("height","100%");
-				$("#right_folder_show_are .view_folder_show_area ul li .new_view_main canvas").parent().css("width","100%").css("height","100%");
-				gridster_handle();
-			});
-			
-			state_left_bar_close = true;
-		}else{
-			
-			$("#statements_left_bar").animate({
-				"left":"0",
-			},300);
-			$("#right_folder_show_are").animate({
-				"marginLeft":$("#statements_left_bar").width() + "px",
-				"width":right_width_content + "px",
-			},300,function(){
-				$("#right_folder_show_are .view_folder_show_area ul li .new_view_main canvas").css("width","100%").css("height","100%");
-				$("#right_folder_show_are .view_folder_show_area ul li .new_view_main canvas").parent().css("width","100%").css("height","100%");
-				gridster_handle();
-			});
-			
-			state_left_bar_close = false;
-		}
-		$("#statements_left_bar #statements_left_bar_btn_close").css("display","block");
 	})
-		
+}
 
-		})
-
-	$(".rightConent #statements_left_bar #statements_left_bar_area").height($("body").height()-$(".topInfo").height()-$(".rightConent #statements_left_bar #state_left_bar_title").height());
+$(".rightConent #statements_left_bar #statements_left_bar_area").height($("body").height()-$(".topInfo").height()-$(".rightConent #statements_left_bar #state_left_bar_title").height());
 }
 statementsinit();
-if(isOnlyLaod){
-	return;
-}
 
+// if(isOnlyLaod){
+// 	return;
+// }
 function gridster_handle(){
-	 		  gridster.destroy();
+	 		 if(gridster != null){
+	 		  	gridster.destroy();
+	 		  }
 		 	  gridster = $(".gridster ul").gridster({        //通过jquery选择DOM实现gridster
                   // widget_margins: [10,0],
                  widget_selector:".new_view_content",
@@ -266,7 +245,106 @@ function gridster_handle(){
 						}
 					})
 }
-	//点击报表更多按钮创建弹窗
+
+
+
+
+
+//侧边栏点击事件
+function leftNavClick(){
+	//侧边栏关闭按钮点击收起
+	$("#statements_left_bar #statements_left_bar_btn_close img").unbind("click");
+	$("#statements_left_bar #statements_left_bar_btn_close img").on("click",function(){
+		if(!state_left_bar_close){
+			$("#statements_left_bar").animate({
+				"left":-$("#statements_left_bar").width() + "px",
+			},300);
+			$("#right_folder_show_are").animate({
+				"marginLeft":"0px",
+				"width":$("body").width() - $(".leftNav").width() + "px",
+			},300,function(){
+				$("#right_folder_show_are .view_folder_show_area ul li .new_view_main canvas").css("width","100%").css("height","100%");
+				$("#right_folder_show_are .view_folder_show_area ul li .new_view_main canvas").parent().css("width","100%").css("height","100%");
+				gridster_handle();
+			});
+			
+			state_left_bar_close = true;
+		}else{
+			
+			$("#statements_left_bar").animate({
+				"left":"0",
+			},300);
+			$("#right_folder_show_are").animate({
+				"marginLeft":$("#statements_left_bar").width() + "px",
+				"width":right_width_content + "px",
+			},300,function(){
+				$("#right_folder_show_are .view_folder_show_area ul li .new_view_main canvas").css("width","100%").css("height","100%");
+				$("#right_folder_show_are .view_folder_show_area ul li .new_view_main canvas").parent().css("width","100%").css("height","100%");
+				gridster_handle();
+			});
+			
+			state_left_bar_close = false;
+		}
+		$("#statements_left_bar #statements_left_bar_btn_close").css("display","block");
+	})
+
+
+	if(onlyRunOne){
+		//创建文件夹点击显示
+		$("#statements_left_tra img").on("click",function(){
+			$("#statements_add_folder").toggle();
+		})
+
+		$("#statements_add_folder").on("mouseleave",function(){
+			$("#statements_add_folder").hide();
+		})
+
+		$(".statements_add_folder_son").on("click",function(){
+			$("#statements_add_folder").hide();
+		})
+
+
+		//点击创建文件夹
+		$("#statements_add_folder #add_folder_btn").on("click",function(){
+			new_folder_view("folder","新建文件夹","delete1","click_delete","view_show_img_content","state_folder","state_folder_content");
+		})
+
+		//点击新建视图
+		$("#statements_add_folder #add_view_btn").on("click",function(){
+			new_folder_view("form_icon","新建报表","more","click_more","view_show_img_content","statement_li","statement_li_content");
+		})
+
+		//点击删除全部文件夹
+
+		$("#statements_add_folder #remove_all_folder").on("click",function(){
+				if($(".state_folder").length != 0){
+					var ajax_dict_yes_s = {"username":username,"datatype":"parentfolder","recursive":"yes","defaultparent":"default"};
+					var ajax_dict_no_s = {"username":username,"datatype":"parentfolder","recursive":"no","defaultparent":"default"};
+					delete_parentfolder_common(ajax_dict_yes_s,ajax_dict_no_s,false);
+				}
+			})
+
+
+		//显示全部隐藏视图
+		$("#statements_add_folder #show_all_hide").on("click",function(){
+			$.post("/dashboard/setSwitch",{"switch":"show","username":username,"showall":"yes"},function(result){
+				if(result != ""){
+					$(".cookie_handle_view .view_show_content .view_show_handle").find("img").attr("src","../static/statements/img/hide.png");
+					$(".cookie_handle_view .view_show_content .view_show_handle").css("opacity","1").data("table_show","true").removeClass("table_hide_false");
+					$(".cookie_handle_view .view_show_content .view_show_handle").on("mouseenter",function(){$(".cookie_handle_view .view_show_content .view_show_handle").css("background","#F5F5F5");$(".cookie_handle_view .view_show_content .view_show_handle").find("img").css("display","block")});
+					$(".cookie_handle_view .view_show_content .view_show_handle").on("mouseleave",function(){$(".cookie_handle_view .view_show_content .view_show_handle").css("background","");$(".cookie_handle_view .view_show_content .view_show_handle").find("img").css("display","none")});
+					reason_view_drag(result,$(".cookie_handle_view .statement_li_content .view_fun_content"));
+				}
+			})
+		})
+		onlyRunOne = false;
+	}
+
+
+}
+
+
+//点击报表更多按钮创建弹窗
 function click_state_show(thele){
 	console.log($(thele),$(thele).parent().find("#new_state_wrap"))
 	if($(thele).parent().find("#new_state_wrap").length == 0){
@@ -308,6 +386,7 @@ function click_state_show(thele){
 						$("#delete_area").css("display","none");
 						$(".maskLayer").css("display","none");
 						$(".gridster").html("");
+						toIfChangeSecond = true;
 						view_out_handle_init(result);
 						
 					}
@@ -457,6 +536,7 @@ function delete_parentfolder_common(ajax_dict_yes,ajax_dict_no,ele){
 							$("#delete_area").css("display","none");
 							$(".maskLayer").css("display","none");
 							$(".gridster").html("");
+							toIfChangeSecond = true;
 							view_out_handle_init(result);
 					
 
@@ -469,6 +549,7 @@ function delete_parentfolder_common(ajax_dict_yes,ajax_dict_no,ele){
 					
 						if(result != ""){
 							$("#statements_left_bar_area").html("");
+							toIfChangeSecond = true;
 							view_out_handle_init(result);
 							$("#delete_area").css("display","none");
 							$(".maskLayer").css("display","none");
@@ -505,7 +586,9 @@ function fun_add_view(view_type,right_view_show,viewshow_class,viewshow_class_ar
 			view_note = "";
 		}
 		
-		 	  gridster.destroy();
+		 	 if(gridster != null){
+		 	 	 gridster.destroy();
+		 	 }
 		 	  gridster = $(".gridster ul").gridster({        //通过jquery选择DOM实现gridster
                   // widget_margins: [10,0],
                  widget_selector:".new_view_content",
@@ -782,6 +865,7 @@ function creat_thumbnail(ele){
 	
 	//根据报表显示其中的视图
 function reason_view_drag(data_result,now_click_ele,click_view_btn){
+		saveViewShowArr[$(now_click_ele).text()] = saveViewShowArr[$(now_click_ele).text()] || [];
 		var view_true_show = [];
 		var view_true_false = [];
 		tablelist_location = {};
@@ -795,8 +879,8 @@ function reason_view_drag(data_result,now_click_ele,click_view_btn){
 		view_count_save = 0;
 		//清空选择框
 		$(".view_folder_select").html("");
-		$(".gridster").html("");
-		$(".gridster").append($("<ul></ul>"));
+		// $(".gridster").html("");
+		// $(".gridster").append($("<ul></ul>"));
 
 		var count = -1;
 
@@ -875,6 +959,7 @@ function reason_view_drag(data_result,now_click_ele,click_view_btn){
 					var view_contact = view_true_show.concat(view_true_false);
 
 					for(var i = 0; i < view_contact.length;i++){
+
 						(function(i){
 
 						var change_view_show_click = view_contact[i];
@@ -910,10 +995,16 @@ function reason_view_drag(data_result,now_click_ele,click_view_btn){
 
 						// //值单位
 						// valueUnitValue = change_view_show_click["viewstyle"].split("_YZY_")[2];
+						
+						if($.inArray(change_view_show_click["id"],saveViewShowArr[$(now_click_ele).text()]) != -1){
+							return;
+						}
+
 
 						//创建容器
 						fun_add_view(change_view_show_click["viewtype"],now_click_ele.parent().parent().find(".small_view_text").eq(count).text(),viewshow_class,viewshow_class_arr,change_view_show_click["note"],count,JSON.parse(view_session),change_view_show_click["calculation"],change_view_show_click["show"],change_view_show_click["viewstyle"].split("_YZY_")[3]);
 						view_handle_switch_statements(viewshow_class,change_view_show_click["show"],change_view_show_click["viewtype"],view_contact.length-1,save_allTable);
+						saveViewShowArr[$(now_click_ele).text()].push(change_view_show_click['id']);
 						})(i);
 
 					}
@@ -926,6 +1017,11 @@ function reason_view_drag(data_result,now_click_ele,click_view_btn){
 					if(!$(ele).hasClass("option-selected")){
 
 						loc_storage.setItem("now_add_view",$(ele).text());
+						saveViewShowArr = {};
+						saveViewShowArr[$(ele).text()] = [];
+						$(".gridster").html("");
+						$(".gridster").append($("<ul></ul>"));
+						toIfChangeSecond = true;
 						view_out_handle_init(data_result);
 					}
 				})
@@ -1167,6 +1263,10 @@ function user_handle_change_cookie(ele,click_view_btn){
 				// $(".statement_li .statement_li_content .click_tra_statement").not($(ele).parent().parent().find(".statement_li_content .click_tra_statement")).attr("src","../static/statements/img/left_40.png");
 
 				loc_storage.setItem("now_add_view",$(ele).text());
+				saveViewShowArr = {};
+				saveViewShowArr[$(ele).text()] = [];
+				$(".gridster").html("");
+				$(".gridster").append($("<ul></ul>"));
 				reason_view_drag(data_result,$(ele),click_view_btn);
 				small_view_click_hide();
 			}
@@ -1213,6 +1313,7 @@ function click_view_change_view(){
 function handle_change_result(content_ele,img_type,img_src){
 
 		$("."+content_ele+"").each(function(index,ele){
+		$(ele).find(".view_show_name_save").unbind("dblclick");
 		$(ele).find(".view_show_name_save").dblclick(function(){
 			//记录之前的名字
 			pre_changeName = $(ele).find(".view_show_name_save").text();
@@ -1231,6 +1332,7 @@ function handle_change_result(content_ele,img_type,img_src){
 			if(!$(e.target).hasClass("click_new_folder_input") && !$(e.target).hasClass("click_more") && !$(e.target).is($(ele).find(".open_btn img")) && !$(e.target).hasClass("new_state_content")){
 				double_click_change_name($(ele),"view_show_name_save",img_type,img_src,"false");
 				more_handle_click();
+				delete_btn_handle();
 				// $("#new_state_wrap").remove();
 			}
 		})
@@ -1275,7 +1377,7 @@ function change_name_btn(pre_changeName,ele,sonName,index){
 			})
 	}
 
-		//重命名双击btn
+//重命名双击btn
 function double_click_change_name(ele,sonName,img_type,img_src,if_over){
 				if(if_over == "true"){
 					//保存重命名
@@ -1324,6 +1426,7 @@ function double_click_change_name(ele,sonName,img_type,img_src,if_over){
 											$(ele).on("click",function(){
 											if(!$(ele).hasClass("option-selected")){
 											loc_storage.setItem("now_add_view",$(ele).text());
+											toIfChangeSecond = true;
 											view_out_handle_init(result);
 											}
 										})
@@ -1337,7 +1440,6 @@ function double_click_change_name(ele,sonName,img_type,img_src,if_over){
 					 			more_handle_click();
 					 		}else{
 					 			folder_name_arr[$.inArray(old_name,folder_name_arr)] = input_value;
-					 			console.log($(ele).find(".view_show_name_save").data())
 					 			$(ele).find(".view_show_name_save").data("record_name",input_value).data("save_text_over",input_value);
 					 			over_handle();
 					 			delete_btn_handle();
@@ -1699,18 +1801,7 @@ function statements_li_add(data_result,dropTo){
 	}
 	//statements_li_add-end---------
 
-	//创建文件夹点击显示
-	$("#statements_left_tra img").on("click",function(){
-		$("#statements_add_folder").toggle();
-	})
 
-	$("#statements_add_folder").on("mouseleave",function(){
-		$("#statements_add_folder").hide();
-	})
-
-	$(".statements_add_folder_son").on("click",function(){
-		$("#statements_add_folder").hide();
-	})
 
 	//动态判断新建文件夹报表对应的num
 	function folder_name_sum(text,sumArr){
@@ -1794,7 +1885,7 @@ function statements_li_add(data_result,dropTo){
 
 								click_view_change_view();
 								//报表更多按钮点击事件
-								more_handle_click();
+								delete_btn_handle();
 								//文件夹重命名
 								handle_change_result("state_folder_content","click_delete","delete1");
 								
@@ -1880,7 +1971,7 @@ function statements_li_add(data_result,dropTo){
 //判断拖拽时是否重绘图形
 var dropTo  = null;
 
-	//报表拖拽到文件夹中
+//报表拖拽到文件夹中
 function view_dragable_folder(){
 	$(".statement_li_content").find(".view_show_name_save").each(function(index,ele){
 		// $(ele).draggable("destroy");
@@ -1910,7 +2001,12 @@ function view_dragable_folder(){
 						dropTo = false;
 					}else{
 						dropTo = true;
+						saveViewShowArr = {};
+						saveViewShowArr[$(".cookie_handle_view .statement_li_content .view_fun_content").text()] = [];
+						$(".gridster").html("");
+						$(".gridster").append($("<ul></ul>"));
 					}
+					toIfChangeSecond = true;
 					//根据数据库存储的数据展示
 					view_out_handle_init(result,dropTo);
 				})
@@ -1918,41 +2014,9 @@ function view_dragable_folder(){
 
 		});
 	})
+
 }
 
-	//点击创建文件夹
-	$("#statements_add_folder #add_folder_btn").on("click",function(){
-		new_folder_view("folder","新建文件夹","delete1","click_delete","view_show_img_content","state_folder","state_folder_content");
-	})
-
-	//点击新建视图
-	$("#statements_add_folder #add_view_btn").on("click",function(){
-		new_folder_view("form_icon","新建报表","more","click_more","view_show_img_content","statement_li","statement_li_content");
-	})
-
-	//点击删除全部文件夹
-	
-		$("#statements_add_folder #remove_all_folder").on("click",function(){
-			if($(".state_folder").length != 0){
-				var ajax_dict_yes_s = {"username":username,"datatype":"parentfolder","recursive":"yes","defaultparent":"default"};
-				var ajax_dict_no_s = {"username":username,"datatype":"parentfolder","recursive":"no","defaultparent":"default"};
-				delete_parentfolder_common(ajax_dict_yes_s,ajax_dict_no_s,false);
-			}
-		})
-	
-
-	//显示全部隐藏视图
-	$("#statements_add_folder #show_all_hide").on("click",function(){
-		$.post("/dashboard/setSwitch",{"switch":"show","username":username,"showall":"yes"},function(result){
-			if(result != ""){
-				$(".cookie_handle_view .view_show_content .view_show_handle").find("img").attr("src","../static/statements/img/hide.png");
-				$(".cookie_handle_view .view_show_content .view_show_handle").css("opacity","1").data("table_show","true").removeClass("table_hide_false");
-				$(".cookie_handle_view .view_show_content .view_show_handle").on("mouseenter",function(){$(".cookie_handle_view .view_show_content .view_show_handle").css("background","#F5F5F5");$(".cookie_handle_view .view_show_content .view_show_handle").find("img").css("display","block")});
-				$(".cookie_handle_view .view_show_content .view_show_handle").on("mouseleave",function(){$(".cookie_handle_view .view_show_content .view_show_handle").css("background","");$(".cookie_handle_view .view_show_content .view_show_handle").find("img").css("display","none")});
-				reason_view_drag(result,$(".cookie_handle_view .statement_li_content .view_fun_content"));
-			}
-		})
-	})
 
 	//隐藏显示点击切换
 	function click_or_show(ele){
@@ -2176,7 +2240,6 @@ function view_content_right_handle(){
          onrendered: function (canvas) {
                     var imgData = canvas.toDataURL('image/png');
                     var img = new Image();
-                    console.log(imgData)
                     img.src = imgData;
                     //根据图片的尺寸设置pdf的规格，要在图片加载成功时执行，之所以要*0.225是因为比例问题
                     img.onload = function () {
@@ -2210,36 +2273,44 @@ function view_content_right_handle(){
 //初始化
 	function view_out_handle_init(data_result,dropTo){
 	
-	//根据数据库存储的数据展示
-	statements_li_add(data_result,dropTo);
+		if(toIfChangeSecond){
+			//根据数据库存储的数据展示
+			statements_li_add(data_result,dropTo);
 
-	 //单击视图点击切换
-	click_view_change_view();
+			//单击视图点击切换
+			click_view_change_view();
 
-	///报表拖入到文件夹中
-	view_dragable_folder();
+			//小视图点击 更换名称
+			small_view_click_hide();
 
-	//小视图点击 更换名称
-	small_view_click_hide();
+			//报表更多按钮点击事件
+			more_handle_click();
 
-	 //报表更多按钮点击事件
-	more_handle_click();
+			//新建视图 下载 操作部分
+			view_content_right_handle();
 
-	//删除文件夹按钮点击事件
-	delete_btn_handle();
+			cookie_view_each();
 
-	//报表重命名
-	 handle_change_result("statement_li_content","click_more","more");
+			//报表拖入到文件夹中
+			view_dragable_folder();
 
-	//文件夹重命名
-	 handle_change_result("state_folder_content","click_delete","delete1");
+			//报表重命名
+			handle_change_result("statement_li_content","click_more","more");
 
-	//新建视图 下载 操作部分
-	view_content_right_handle();
+			//文件夹重命名
+			handle_change_result("state_folder_content","click_delete","delete1");
 
-	cookie_view_each();
+			//删除文件夹按钮点击事件
+			delete_btn_handle();
 
-	
+
+			//侧边栏点击事件
+			leftNavClick();
+
+			toIfChangeSecond = false;
+		}
+
+
 	}
 
 	// end-----
