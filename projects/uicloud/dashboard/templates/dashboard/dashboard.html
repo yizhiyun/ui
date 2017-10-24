@@ -459,7 +459,7 @@
 			<!-- 新建报表 -->
 			<div id="view_add_state" class="clear">
 				<span>新建报表 : </span>
-				<label for="action_new_view"><input type="text"  id="action_new_view" placeholder="请输入报表名称">
+				<label for="action_new_view"><input type="text"  id="action_new_view" placeholder="请输入报表名称" onfocus>
 											 <img src={% static "images/right-icon_03.png" %} alt="视图确定" id="btn_save_name">
 				</label>
 			</div>
@@ -504,7 +504,7 @@
 		<!-- text -->
 		<div class="clickWallDelete_text">
 			<p>要在关闭之前保存</p>
-			<p>对"XX视图"的更改吗</p>
+			<p>对"<span class='clickWallDelete_viewName'></span>"的更改吗?</p>
 		</div>
 		<!--确定按钮 -->
 		<div class='clickWallDelete_ok'>

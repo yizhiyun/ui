@@ -30,11 +30,9 @@ var _drag_message = {
 	"index":null // 拖拽的下标。。可能暂时不用
 };
 
-//展示图表的类型
-var state_view_show_type = null,
 
 //图表显示的区域
-viewshow_class = null,
+var viewshow_class = null,
 
 
 //记录每个表的名称
@@ -98,9 +96,27 @@ gridster = null;
 
 
 function satetementsReadySumFunction(isOnlyLaod){
-	
+drag_row_column_data_arr = [];
+
+statements_current_cube_name_arr = [];
+
+//每个视图对应的颜色
+currentColorGroupName_arr = [];
+
+//每个视图对应的小数点
+normalUnitValue_arr = [];
+
+//每个视图对应的值单位
+valueUnitValue_arr = [];
+
+drag_measureCalculateStyle_arr = [];
+
+//存取视图展示区域视图对应的id
+view_show_id_arr = [];
 
 function statementsinit(){
+
+
 	//侧边栏收起按钮top
 	$("#statements_left_bar #statements_left_bar_btn_close").css("top",($("body").height()-$(".topInfo").height())/2 - $("#statements_left_bar_btn_close").height()/2 + "px");
 	var right_width_content = $("body").width()-$("#statements_left_bar").position().left - $("#statements_left_bar").width() - $(".leftNav").width();
@@ -111,6 +127,7 @@ function statementsinit(){
 	$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 54+ "px");
 	//拿到构建报表的数据
 	$.post("/dashboard/getAllData",{"username":username},function(result){
+	ajax_data_post = result;
 	view_out_handle_init(result);
 	//侧边栏关闭按钮点击收起
 	var state_left_bar_close = false;
@@ -841,10 +858,11 @@ function reason_view_drag(data_result,now_click_ele,click_view_btn){
 					
 						drag_measureCalculateStyle_arr.push(JSON.parse(data_result[now_view_folder][view_in_folder][right_view_show]["calculation"]));
 						
+
 						free_drag_row_column_data["row"] = JSON.parse(data_result[now_view_folder][view_in_folder][right_view_show]["row"]);
 
 						free_drag_row_column_data["column"] = JSON.parse(data_result[now_view_folder][view_in_folder][right_view_show]["column"]);
-
+						
 						drag_row_column_data_arr.push(free_drag_row_column_data);
 					
 						statements_current_cube_name_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["tablename"]);
@@ -1103,12 +1121,14 @@ function view_drag_resize_handle(){
 						$.post("/dashboard/setSwitch",{"switch":"isopen","id":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id")});
 					}
 
+					console.log($(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content"))
 					sessionStorage.setItem("edit_view_now",$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content"));
 					$(".main .rightConent #pageDashboardModule").data("isFirstInto",true);
 					isDisaed = false;
 					if_or_load = false;
 					$("#project_style .module_style .color_control .otherColorsModule").data("openOrColse","close");
 					$("#dashboard_content #new_view ul .edit_list").remove();
+					console.log(preClickView)
 					changePageTo_navDashBoardView();
 				})
 
@@ -1384,6 +1404,7 @@ function double_click_change_name(ele,sonName,img_type,img_src,if_over){
 
 	//创建报表显示li的工厂函数
 function statements_li_add(data_result,dropTo){
+		console.log(data_result);
 		//存放所有的文件夹名字
 		folder_name_arr = [];
 		//存放所有的报表的名字
