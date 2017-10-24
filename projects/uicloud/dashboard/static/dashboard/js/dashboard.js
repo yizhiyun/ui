@@ -1853,7 +1853,7 @@ function drag(){
 						var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li class='change'>"+saveTypeElement+"</li><li class='typeLi'>转化类型<ul class='changeTypeList'><li><span class='default'></span>默认值</li><li><span class='num_system'></span>数字(二进制)</li><li><span class='num_ten'></span>数字(十进制)</li><li><span class='show_num_integer'></span>数字(整数)</li><li><span class='show_date_time'></span>日期和时间</li><li><span class='show_date'></span>日期</li><li><span class='show_string'></span>字符串</li></ul></li></ul>");
 						$(this).parents("li").append(moreActionModule);
 						$(moreActionModule).css({
-							"top":$(this).parents("li").eq(0).offset().top-45+'px',
+							"top":$(this).parents("li").eq(0).offset().top-47+'px',
 						});
 						$(moreActionModule).children("li.change").unbind("click");
 						$(moreActionModule).children("li.change").click(function(event){
@@ -1899,17 +1899,19 @@ function drag(){
 							});
 							
 						});
+
 						$(moreActionModule).find(".typeLi").unbind("mouseover");
 						$(moreActionModule).find(".typeLi").mouseover(function(event){
 							event.stopPropagation();
 							$(this).children(".changeTypeList").show();
 						});
-						// $(moreActionModule).find()
+						
 					});
 				});
+				
 
 				//移出事件
-				$(ele).parent().on("mouseleave", function() {
+				$(ele).parent().parent().on("mouseleave", function() {
 					$(ele).css({
 						background: "white",
 						height: "23px",
@@ -1918,6 +1920,7 @@ function drag(){
 						border: "none",
 					});
 					$(ele).find(".moreSelectBtn").css("display", "none");
+					$("#dimeOrMeasureMoreActionList").remove();
 				});
 		});
 		
@@ -2102,11 +2105,11 @@ function drag(){
 							});
 
 							//判断拖拽元素颜色
-							if($(this).find("span").hasClass("dimensionality_list_text_left")){
+							if(current_li.find(".set_style span").hasClass("dimensionality_list_text_left")){
 								var elementToType = "dimensionality";
 								$(this).find(".dimensionality_list_text_left").parent().parent().css("background", "#c5e0ff");
 							}
-							if($(this).find("span").hasClass("measure_list_text_left")) {
+							if(current_li.find(".set_style span").hasClass("measure_list_text_left")) {
 								var elementToType = "measure";
 								$(this).find(".measure_list_text_left").parent().parent().css("background", "#ffcc9a");
 							}
@@ -2243,6 +2246,7 @@ function drag(){
 
 							var dragObj = ui["draggable"];// 拖动的元素
 							var _dataType = dragObj.data("type");// 元素数据类型
+							console.log(elementToType)
 							var _wd_type = elementToType;// 维度还是度量。。。
 							var _field_name =dragObj.children("span").eq(0).html(); // 字段名
 							_drag_message["type"] = _wd_type;
