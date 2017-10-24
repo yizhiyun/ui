@@ -43,7 +43,7 @@ String.prototype.getLength=function(){
 // 数据连接操作页面整体函数
 function dataAnalysisFunction(isOnlyLoad){
 
- 	getDBAndPannelList();
+   getDBAndPannelList();
 	// select选项卡问题
    $('.custom-select').comboSelect();
    ElementAutoSize();
@@ -52,9 +52,9 @@ function dataAnalysisFunction(isOnlyLoad){
 	$("#connectModalprompt").draggable({
 	 containment:"#analysisContainer  .mainDragArea"
 	});
-if(isOnlyLoad){
+ if(isOnlyLoad){
 	return;
-}
+ }
 
 function isExitInCurrentConnection(key,dbinfo){
   var currentConnect =  $("#analysisContainer .leftSlide #connectDirector ul.paltFormList li");
@@ -1117,7 +1117,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
 //      // 记录当前是展示的哪个表格的数据
         $("#tableDataDetailListPanel").attr("nowShowTable",dbInfo);
         // 获取相应的表格数据数据
-        filterSuccessFun(true);
+        dataAnaLysisFilterSuccessFun(true);
       
     }else if($(this).attr("flag") == "deleteTable"){
       
@@ -1726,11 +1726,11 @@ function setshowHiddenEles_btn_didSelected(){
 
 // 底部菜单筛选器按钮点击的时候
 $("#tableDataDetailListPanel #screeningWasher").click(function(){
-    editFilterViewShow_fun("buildData",filterSuccessFun);
+    editFilterViewShow_fun("buildData",dataAnaLysisFilterSuccessFun);
 });
 
 // 筛选完毕之后的回调函数
-function filterSuccessFun(isNeedAllData){
+function dataAnaLysisFilterSuccessFun(isNeedAllData){
   var dbInfo = $("#tableDataDetailListPanel").attr("nowShowTable");
   var dbArr = dbInfo.split("_YZYPD_");
   var conditions = [];
