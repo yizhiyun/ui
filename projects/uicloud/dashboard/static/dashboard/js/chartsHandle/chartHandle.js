@@ -228,8 +228,9 @@ function one_de_one_me_handle (chart_type_need) {
 						  if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  }
-			       		  var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+params.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +params.seriesName+":  " + needValue +"</span></p>";
-			        		 return dimeNames + measureNames;
+			       		  var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2px;line-height:12px;background:"+params.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +params.seriesName+":  " + needValue +"</span></p>";
+			       		  var percentInfo = "<p style='font-size:10px;height:12px;padding:0 0 3px 13px;'>占比:   "+params.percent+"%</p>";
+			        		 return dimeNames + measureNames+percentInfo;
 						}
 					},
 					toolbox: {
