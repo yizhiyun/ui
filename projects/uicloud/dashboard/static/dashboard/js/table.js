@@ -107,9 +107,9 @@ function showTable_by_dragData(){
 	
 	function function_draw_row_line(){
 		$("#text_table_need_show #data_list_for_body li").remove();
-		// 创建 li
+//		 创建 li
 		var columnInfo = $("#text_table_need_show .top_column_container .column_data_list tbody tr").length;
-		 $("#text_table_need_show .left_row_container table tbody tr").each(function(index,ele){
+		$("#text_table_need_show .left_row_container table tbody tr").each(function(index,ele){
 			var aLi = $("<li></li>");
 			aLi.css("height",$(ele).innerHeight());
 			if(columnInfo < 1){
@@ -125,8 +125,7 @@ function showTable_by_dragData(){
 				}	
 			}
 			$("#text_table_need_show #data_list_for_body").append(aLi);
-		});
-		
+		});		
 		if($("#text_table_need_show .left_row_container table tbody tr").length < 1 && columnInfo > 0){
 			var ali = $("<li></li>");
 			ali.css("height","25px");
@@ -212,7 +211,7 @@ function showTable_by_dragData(){
 		}
 		
 		function measureNeedDraw(finish){
-			if(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])).length > 0 && specialRemoveDataTypeHandle(current_all_measure).length >0){
+			if(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])).length >= 0 && specialRemoveDataTypeHandle(current_all_measure).length >0){
 					recordData();
 					measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
 						function_draw_row_line();
