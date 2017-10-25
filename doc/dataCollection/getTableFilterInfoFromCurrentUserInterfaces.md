@@ -202,6 +202,11 @@ This document describe return The table below the specific database.
 ### 2. Request Method: POST
 ### 3. Request Data Schema: JSON
 ### 4. Request Data:
+* if send nothing. it will clear all tables split by user
+```
+{ }
+```
+* if send tables. it will clear the tables split which you send.
 ```
 {
     "tables": [
