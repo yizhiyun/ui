@@ -2252,8 +2252,8 @@ function drag(){
 							_drag_message["type"] = _wd_type;
 							if(_wd_type == "measure"){
 								if(allKeys(drag_measureCalculateStyle).indexOf(_field_name) == -1){
-									drag_measureCalculateStyle[_field_name] = "计数("+_field_name+")";
-									$(current_li).find("span.measure_list_text_left").html("计数("+_field_name+")");
+									drag_measureCalculateStyle[_field_name] = "求和("+_field_name+")";
+									$(current_li).find("span.measure_list_text_left").html("求和("+_field_name+")");
 								}
 							}
 							//给予li id名 记录元素对应的内容
