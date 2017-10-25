@@ -1357,14 +1357,14 @@ function table_if_type(){
 
     var textNum = null;
     if(if_chtext){
-      textNum = 10;
+      textNum = 11;
     }else{
-      textNum = 5;
+      textNum = 6;
     }
     $(".splitWidth_line_only").each(function(index,ele){
-
-      if(Math.floor($(ele).position().left/textNum) < storeArr_maxlength){
-        fixedWIdth_savearr.push(Math.floor($(ele).position().left/textNum));
+ 
+      if(Math.floor(($(ele).position().left+1)/textNum) < storeArr_maxlength){
+        fixedWIdth_savearr.push(Math.floor(($(ele).position().left+1)/textNum));
       }
     })
 
