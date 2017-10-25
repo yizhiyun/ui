@@ -5,6 +5,9 @@ import pymssql
 import logging
 
 
+from cloudrestapi.addColType import *
+
+
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.dataCollection.ConnectDataBase")
 logger.setLevel(logging.DEBUG)
@@ -293,6 +296,12 @@ class ConnectDataBase():
                 self.con = pymssql.connect(host=self.dbLocation, user=self.dbUserName,
                                            password=self.dbUserPwd, database=jsonData['database'])
                 cursor = self.con.cursor()
+
+                # 先获取所有的字段以及类型的列表
+                datesql = 'sp_columns {0}'.format(jsonData['tableName'])
+                cursor.execute(datesql)
+                tempList = cursor.fetchall()
+
                 if 'expressions' in jsonData.keys() and jsonData['expressions']:
                     expressions = jsonData['expressions']
                     exprStr = ''
@@ -329,12 +338,51 @@ class ConnectDataBase():
                     dataList = cursor.fetchall()
                     colList = cursor.description
 
+                    # 对日期类型处理
+                    dateColList = []
+                    for temp in tempList:
+                        if temp[5] != 'date' and handleType(temp[5]) == 'date':
+                            for col in colList:
+                                if temp[3] == col[0]:
+                                    dateColList.append(temp[3])
+
                     results['data'] = []
                     for data in dataList:
                         dic = {}
                         for i in range(len(colList)):
+                            if colList[i][0] in dateColList:
+                                continue
                             dic[colList[i][0]] = data[i]
                         results['data'].append(dic)
+
+                    dateStr = ''
+                    for i in dateColList:
+                        dateStr += '''convert(varchar,datepart(year,[{0}])) + \
+                                      '-' + convert(varchar,datepart(month,[{0}])) + \
+                                      '-' + convert(varchar,datepart(day,[{0}])) + \
+                                      ' ' + convert(varchar,datepart(hour,[{0}])) + \
+                                      ':' + convert(varchar,datepart(minute,[{0}])) + \
+                                      ':' + convert(varchar,datepart(second,[{0}])),'''.format(i)
+                    if dateStr:
+                        dateSql = 'select {0} from {1} where 1=1 '.format(dateStr[:-1], jsonData['tableName'])
+                        firstCol = tempList[0][3]
+                        dateSql = dateSql[:6] + sqlserverstr + dateSql[6:] + filtersql + 'order by {0}'.format(firstCol)
+                        logger.debug('sqlserver_dateSQL: {0}'.format(dateSql))
+                        cursor.execute(dateSql)
+                        dataList = cursor.fetchall()
+                        colList = cursor.description
+                        logger.debug('datalist: {0}, collist: {1}'.format(dataList, colList))
+
+                        if results['data']:
+                            for i in range(len(dataList)):
+                                for j in range(len(colList)):
+                                    results['data'][i][dateColList[j]] = dataList[i][j]
+                        else:
+                            for i in dataList:
+                                dic = {}
+                                for j in range(len(colList)):
+                                    dic[colList[j][0]] = i[j]
+                                results['data'].append(dic)
 
                 if mode == 'all' or mode == 'schema':
                     results['schema'] = []
@@ -342,10 +390,8 @@ class ConnectDataBase():
                         for column in jsonData['columns'].items():
                             results['schema'].append('{0}:{1}'.format(column[0], column[1]["columnType"]))
                     else:
-                        cursor.execute('sp_columns ' + jsonData['tableName'])
-                        rs = cursor.fetchall()
                         results['schema'] = []
-                        for obj in rs:
+                        for obj in tempList:
                             results['schema'].append({
                                 'field': obj[3],
                                 'type': obj[5]
@@ -394,12 +440,45 @@ class ConnectDataBase():
                     dataList = cursor.fetchall()
                     colList = cursor.description
 
+                    # 对日期类型处理
+                    dateColList = []
+                    for col in colList:
+                        coltype = str(col[1])[18:-2]
+                        if handleType(coltype) == 'date':
+                            dateColList.append(col[0])
+
                     results['data'] = []
                     for data in dataList:
                         dic = {}
                         for i in range(len(colList)):
+                            if colList[i][0] in dateColList:
+                                continue
                             dic[colList[i][0]] = data[i]
-                        results['data'].append(dic)
+                        if dic:
+                            results['data'].append(dic)
+
+                    dateStr = ''
+                    for i in dateColList:
+                        dateStr += "to_char({0}, 'yyyy-mm-dd hh:mm:ss'),".format(i)
+                    if dateStr:
+                        dateSql = 'select {0} from {1} where 1=1 '.format(dateStr[:-1], jsonData['tableName'])
+                        dateSql += filtersql + oracleToDate + oraclestr
+                        logger.debug('oracle_dateSQL: {0}'.format(dateSql))
+                        cursor.execute(dateSql)
+                        dataList = cursor.fetchall()
+                        colList = cursor.description
+                        logger.debug('datalist: {0}, collist: {1}'.format(dataList, colList))
+
+                        if results['data']:
+                            for i in range(len(dataList)):
+                                for j in range(len(colList)):
+                                    results['data'][i][dateColList[j]] = dataList[i][j]
+                        else:
+                            for i in dataList:
+                                dic = {}
+                                for j in range(len(colList)):
+                                    dic[colList[j][0]] = i[j]
+                                results['data'].append(dic)
 
                 if mode == 'all' or mode == 'schema':
                     results['schema'] = []
@@ -420,6 +499,7 @@ class ConnectDataBase():
                 logger.error("Exception: {0}".format(sys.exc_info()))
                 return 'failed'
 
+        # 把之前拆分的字段插入在结果上
         if mode == 'all' or mode == 'schema':
             if 'columns' not in jsonData.keys() or not jsonData['columns']:
                 if coldickey in self.list.keys() and self.list[coldickey]:
@@ -446,6 +526,7 @@ class ConnectDataBase():
                                     if results['schema'][i]['field'] == list1[0]:
                                         results['schema'].insert(i + num, dic)
 
+        # 把之前拆分的数据加在结果上
         if mode == 'all' or mode == 'data':
             if 'columns' not in jsonData.keys() or not jsonData['columns']:
                 if coldickey in self.list.keys() and self.list[coldickey]:
@@ -464,6 +545,7 @@ class ConnectDataBase():
                         sql += eval(self.dbPaltName + 'str')
 
                     try:
+                        logger.error('addsql: {0}'.format(sql))
                         cursor.execute(sql)
                     except Exception:
                         logger.error("Exception: {0}".format(sys.exc_info()))
@@ -486,23 +568,55 @@ class ConnectDataBase():
                         for i in range(len(results['data'])):
                             results['data'][i].update(updateList[i])
 
+        # 对新的拆分需要进行处理
         if mode == 'all' and 'handleCol' in jsonData.keys() and jsonData['handleCol']:
 
             handleCol = jsonData['handleCol']
+            if handleCol['method'] == 'split' or handleCol['method'] == 'limit':
+                # 如果拆分的话  对oracle的日期字段进行格式化处理
+                if self.dbPaltName == 'oracle':
+                    sql = "select DATA_TYPE from User_Tab_Columns t "
+                    sql += "where t.column_name=upper('{0}') and t.table_name=upper(trim('{1}'))".format(
+                        handleCol['colname'],
+                        jsonData['tableName']
+                    )
+                    cursor.execute(sql)
+                    colType = cursor.fetchone()
+                    if colType:
+                        if handleType(colType[0]) == 'date':
+                            handleCol['colname1'] = "to_char({0}, 'yyyy-mm-dd hh:mm:ss')".format(handleCol['colname'])
+
+                # 对sqlserver日期类型除了date之外的作处理
+                if self.dbPaltName == 'sqlserver':
+                    for temp in tempList:
+                        if handleCol['colname'] == temp[3]:
+                            if temp[5] != 'date' and handleType(temp[5]) == 'date':
+                                handleCol['colname1'] = '''convert(varchar,datepart(year,[{0}])) + \
+                                                           '-' + convert(varchar,datepart(month,[{0}])) + \
+                                                           '-' + convert(varchar,datepart(day,[{0}])) + \
+                                                           ' ' + convert(varchar,datepart(hour,[{0}])) + \
+                                                           ':' + convert(varchar,datepart(minute,[{0}])) + \
+                                                           ':' + convert(varchar,datepart(second,[{0}]))
+                                                        '''.format(handleCol['colname'])
+
             if handleCol['method'] == 'split':
+
+                # 查询一下该字段数据包含多少拆分关键字
                 cutsymbolNum = len(handleCol['cutsymbol'])
                 replaceCol = '-'
                 for i in range(cutsymbolNum):
                     replaceCol += '-'
                 countsql = "select length(replace({0},'{1}','{2}'))-length({0}) from {3}".format(
-                    self.turnCols([handleCol['colname']], coldickey)[0].split('  as  ')[0],
+                    self.turnCols([handleCol['colname1'] if 'colname1' in handleCol.keys() else handleCol['colname']],
+                                  coldickey)[0].split('  as  ')[0],
                     handleCol['cutsymbol'],
                     replaceCol,
                     jsonData['tableName']
                 )
                 if self.dbPaltName == 'sqlserver':
                     countsql = "select len(replace({0},'{1}','{2}'))-len({0}) from {3}".format(
-                        self.turnCols([handleCol['colname']], coldickey)[0].split('  as  ')[0],
+                        self.turnCols([handleCol['colname1'] if 'colname1' in handleCol.keys() else handleCol['colname']],
+                                      coldickey)[0].split('  as  ')[0],
                         handleCol['cutsymbol'],
                         replaceCol,
                         jsonData['tableName']
@@ -517,6 +631,8 @@ class ConnectDataBase():
 
                 countNumList = cursor.fetchall()
                 newCountNumList = []
+
+                # 因为mysql的返回机制是字典类型，所以单独处理
                 if self.dbPaltName == 'mysql':
                     for i in countNumList:
                         if list(i.values())[0]:
@@ -529,19 +645,23 @@ class ConnectDataBase():
                             newCountNumList.append(i[0])
                     newCountNumList.sort()
 
+                # 按照包含拆分关键字最多的进行拆分
                 if newCountNumList:
                     handleCol['count'] = newCountNumList[-1]
                 else:
                     handleCol['count'] = 0
 
+                # 寻找拆分关键字的下标 如果都是在字段的第一个， 那么不要第一次拆分结果（全部为空）
                 indexSql = "select instr({0}, '{1}') from {2}".format(
-                    self.turnCols([handleCol['colname']], coldickey)[0].split('  as  ')[0],
+                    self.turnCols([handleCol['colname1'] if 'colname1' in handleCol.keys() else handleCol['colname']],
+                                  coldickey)[0].split('  as  ')[0],
                     handleCol['cutsymbol'],
                     jsonData['tableName']
                 )
                 if self.dbPaltName == 'sqlserver':
                     indexSql = "select CHARINDEX('{1}', {0}) from {2}".format(
-                        self.turnCols([handleCol['colname']], coldickey)[0].split('  as  ')[0],
+                        self.turnCols([handleCol['colname1'] if 'colname1' in handleCol.keys() else handleCol['colname']],
+                                      coldickey)[0].split('  as  ')[0],
                         handleCol['cutsymbol'],
                         jsonData['tableName']
                     )
@@ -580,8 +700,7 @@ class ConnectDataBase():
             sql = 'select {0} from {1} where 1=1 '.format(
                 ', '.join(conversionList), jsonData['tableName']) + filtersql + oracleToDate
             if self.dbPaltName == 'sqlserver':
-                cursor.execute('sp_columns ' + jsonData['tableName'])
-                firstCol = cursor.fetchone()[3]
+                firstCol = tempList[0][3]
                 sql = sql[:6] + sqlserverstr + sql[6:] + 'order by %s' % firstCol
             else:
                 sql += eval(self.dbPaltName + 'str')
@@ -593,6 +712,7 @@ class ConnectDataBase():
                 logger.error("Exception: {0}".format(sys.exc_info()))
                 return 'failed'
 
+            # 把新拆分的数据加入到results里面
             if self.dbPaltName == 'mysql':
                 newDataList = cursor.fetchall()
                 for i in range(len(results['data'])):
@@ -609,7 +729,10 @@ class ConnectDataBase():
                 for i in range(len(results['data'])):
                         results['data'][i].update(updateList[i])
 
+            # 把新增加的拆分字段插入到被拆分的字段后面
             if handleCol['method'] == 'split' or handleCol['method'] == 'limit':
+
+                # 如果之前该字段有拆分过的，算着往后排
                 countname = 0
                 for j in self.list[coldickey]:
                     if list(j.keys())[0].startswith(handleCol['colname'] + '_PART'):
@@ -676,133 +799,188 @@ class ConnectDataBase():
 
             conversionList = []
 
+            # 根据关键字进行拆分
             if handleCol['method'] == 'split':
 
                 if handleCol['count'] == 0:
                     prev = "{0} as {1}".format(
-                        colname, handleCol['colname'] + '_PART%s' % (1 + countname)
+                        handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                        handleCol['colname'] + '_PART%s' % (1 + countname)
                     )
                     conversionList.append(prev)
 
                 else:
+                    # 算上第一次拆分的结果（不全为空）
                     if not handleCol['index']:
                         for i in range(handleCol['count']):
-                            prev = "substr({0}, 1, instr({0}, '{1}')-1)  as  {2}".format(
-                                colname,
-                                handleCol['cutsymbol'],
-                                handleCol['colname'] + '_PART%s' % (1 + countname + i)
-                            )
 
                             if self.dbPaltName == 'sqlserver':
                                 prev = "case CHARINDEX('{0}', {1}) WHEN 0 then '' ELSE "
                                 prev += "substring(cast({1} as varchar), 1, CHARINDEX('{0}', {1})-1) END  as  {2}"
                                 prev = prev.format(
                                     handleCol['cutsymbol'],
-                                    colname,
+                                    handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
                                     handleCol['colname'] + '_PART%s' % (1 + countname + i)
                                 )
 
-                            if self.dbPaltName == 'sqlserver':
-                                colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+{2}, 10000)".format(
-                                    colname,
-                                    handleCol['cutsymbol'],
-                                    len(handleCol['cutsymbol'])
-                                )
+                                if 'colname1' in handleCol.keys():
+                                    handleCol['colname1'] = """
+                                                            substring(cast({0} as varchar), CHARINDEX('{1}', {0})+{2}, 10000)
+                                                            """.format(
+                                        handleCol['colname1'],
+                                        handleCol['cutsymbol'],
+                                        len(handleCol['cutsymbol'])
+                                    )
+                                else:
+                                    colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+{2}, 10000)".format(
+                                        colname,
+                                        handleCol['cutsymbol'],
+                                        len(handleCol['cutsymbol']))
                             else:
-                                colname = "substr({0}, instr({0}, '{1}')+{2})".format(
-                                    colname,
+                                prev = "substr({0}, 1, instr({0}, '{1}')-1)  as  {2}".format(
+                                    handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
                                     handleCol['cutsymbol'],
-                                    len(handleCol['cutsymbol'])
+                                    handleCol['colname'] + '_PART%s' % (1 + countname + i)
                                 )
+
+                                if 'colname1' in handleCol.keys():
+                                    handleCol['colname1'] = "substr({0}, instr({0}, '{1}')+{2})".format(
+                                        handleCol['colname1'],
+                                        handleCol['cutsymbol'],
+                                        len(handleCol['cutsymbol']))
+                                else:
+                                    colname = "substr({0}, instr({0}, '{1}')+{2})".format(
+                                        colname,
+                                        handleCol['cutsymbol'],
+                                        len(handleCol['cutsymbol'])
+                                    )
 
                             conversionList.append(prev)
                             if i == handleCol['count'] - 1:
                                 conversionList.append(
-                                    colname + '  as  %s' % (handleCol['colname'] + '_PART%s' % (2 + countname + i)))
+                                    handleCol['colname1'] + '  as  %s' % (handleCol['colname'] + '_PART%s' % (2 + countname + i))
+                                    if 'colname1' in handleCol.keys()
+                                    else
+                                    colname + '  as  %s' % (handleCol['colname'] + '_PART%s' % (2 + countname + i))
+                                )
+
+                    # 不要第一次拆分的结果（全部为空）
                     else:
                         for i in range(handleCol['count']):
-                            prev = "substr({0}, 1, instr({0}, '{1}')-1)  as  {2}".format(
-                                colname,
-                                handleCol['cutsymbol'],
-                                handleCol['colname'] + '_PART%s' % (countname + i)
-                            )
                             if self.dbPaltName == 'sqlserver':
                                 prev = "case CHARINDEX('{0}', {1}) WHEN 0 then '' ELSE "
                                 prev += "substring(cast({1} as varchar), 1, CHARINDEX('{0}', {1})-1) END  as  {2}"
                                 prev = prev.format(
                                     handleCol['cutsymbol'],
-                                    colname,
+                                    handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
                                     handleCol['colname'] + '_PART%s' % (countname + i)
                                 )
 
-                            if self.dbPaltName == 'sqlserver':
-                                colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+{2}, 10000)".format(
-                                    colname,
-                                    handleCol['cutsymbol'],
-                                    len(handleCol['cutsymbol'])
-                                )
+                                if 'colname1' in handleCol.keys():
+                                    handleCol['colname1'] = """
+                                                            substring(cast({0} as varchar), CHARINDEX('{1}', {0})+{2}, 10000)
+                                                            """.format(
+                                        handleCol['colname1'],
+                                        handleCol['cutsymbol'],
+                                        len(handleCol['cutsymbol'])
+                                    )
+                                else:
+                                    colname = "substring(cast({0} as varchar), CHARINDEX('{1}', {0})+{2}, 10000)".format(
+                                        colname,
+                                        handleCol['cutsymbol'],
+                                        len(handleCol['cutsymbol']))
                             else:
-                                colname = "substr({0}, instr({0}, '{1}')+{2})".format(
-                                    colname,
+                                prev = "substr({0}, 1, instr({0}, '{1}')-1)  as  {2}".format(
+                                    handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
                                     handleCol['cutsymbol'],
-                                    len(handleCol['cutsymbol'])
+                                    handleCol['colname'] + '_PART%s' % (countname + i)
                                 )
+
+                                if 'colname1' in handleCol.keys():
+                                    handleCol['colname1'] = "substr({0}, instr({0}, '{1}')+{2})".format(
+                                        handleCol['colname1'],
+                                        handleCol['cutsymbol'],
+                                        len(handleCol['cutsymbol']))
+                                else:
+                                    colname = "substr({0}, instr({0}, '{1}')+{2})".format(
+                                        colname,
+                                        handleCol['cutsymbol'],
+                                        len(handleCol['cutsymbol'])
+                                    )
 
                             if i != 0:
                                 conversionList.append(prev)
                             if i == handleCol['count'] - 1:
                                 conversionList.append(
-                                    colname + '  as  %s' % (handleCol['colname'] + '_PART%s' % (1 + countname + i)))
+                                    handleCol['colname1'] + '  as  %s' % (handleCol['colname'] + '_PART%s' % (2 + countname + i))
+                                    if 'colname1' in handleCol.keys()
+                                    else
+                                    colname + '  as  %s' % (handleCol['colname'] + '_PART%s' % (2 + countname + i)))
 
+            # 根据下标进行拆分
             elif handleCol['method'] == 'limit':
 
                 limit = handleCol['cutsymbol']
 
                 if len(limit) == 1:
                     prev = "substr({0}, 1, {1})  as  {2}".format(
-                        colname, limit[0], handleCol['colname'] + '_PART{0}'.format(1 + countname))
+                        handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                        limit[0],
+                        handleCol['colname'] + '_PART{0}'.format(1 + countname))
                     if self.dbPaltName == 'sqlserver':
                         prev = "substring(cast({0} as varchar), 1, {1})  as  {2}".format(
-                            colname, limit[0], handleCol['colname'] + '_PART{0}'.format(1 + countname))
+                            handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                            limit[0],
+                            handleCol['colname'] + '_PART{0}'.format(1 + countname))
                     conversionList.append(prev)
 
                     aft = "substr({0}, {1})  as  {2}".format(
-                        colname, limit[0] + 1, handleCol['colname'] + '_PART{0}'.format(2 + countname))
+                        handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                        limit[0] + 1,
+                        handleCol['colname'] + '_PART{0}'.format(2 + countname))
                     if self.dbPaltName == 'sqlserver':
                         aft = "substring(cast({0} as varchar), {1}, 10000)  as  {2}".format(
-                            colname, limit[0] + 1, handleCol['colname'] + '_PART{0}'.format(2 + countname))
+                            handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                            limit[0] + 1,
+                            handleCol['colname'] + '_PART{0}'.format(2 + countname))
                     conversionList.append(aft)
 
                 else:
                     for i in range(len(limit)):
                         if i == 0:
                             sql = "substr({0}, 1, {1})  as  {2}".format(
-                                colname, limit[i], handleCol['colname'] + '_PART%s' % (i + 1 + countname))
+                                handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                                limit[i],
+                                handleCol['colname'] + '_PART%s' % (i + 1 + countname))
                             if self.dbPaltName == 'sqlserver':
                                 sql = "substring(cast({0} as varchar), 1, {1})  as  {2}".format(
-                                    colname, limit[i], handleCol['colname'] + '_PART%s' % (i + 1 + countname))
+                                    handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                                    limit[i],
+                                    handleCol['colname'] + '_PART%s' % (i + 1 + countname))
                             conversionList.append(sql)
 
                         else:
                             sql = "substr({0}, {1}, {2})  as  {3}".format(
-                                colname, limit[i - 1] + 1,
+                                handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                                limit[i - 1] + 1,
                                 limit[i] - limit[i - 1],
                                 handleCol['colname'] + '_PART%s' % (i + 1 + countname))
                             if self.dbPaltName == 'sqlserver':
                                 sql = "substring(cast({0} as varchar), {1}, {2})  as  {3}".format(
-                                    colname, limit[i - 1] + 1,
+                                    handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
+                                    limit[i - 1] + 1,
                                     limit[i] - limit[i - 1],
                                     handleCol['colname'] + '_PART%s' % (i + 1 + countname))
                             conversionList.append(sql)
 
                             if i == len(limit) - 1:
                                 sql = "substr({0}, {1})  as  {2}".format(
-                                    colname,
+                                    handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
                                     limit[i] + 1,
                                     handleCol['colname'] + '_PART%s' % (i + 2 + countname))
                                 if self.dbPaltName == 'sqlserver':
                                     sql = "substring(cast({0} as varchar), {1}, 10000)  as  {2}".format(
-                                        colname,
+                                        handleCol['colname1'] if 'colname1' in handleCol.keys() else colname,
                                         limit[i] + 1,
                                         handleCol['colname'] + '_PART%s' % (i + 2 + countname))
                                 conversionList.append(sql)
