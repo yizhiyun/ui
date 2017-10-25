@@ -1332,7 +1332,7 @@ function show_view_save_dashbash(data_result){
 			}else{
 				navDashboardEventInit(true);
 			}
-		if(getIndexName.length  == $("#pageDashboardModule #dashboard_content #lateral_bar #indicator #index_show .index_li").length){
+		if(getIndexName.length  == $("#pageDashboardModule #dashboard_content #lateral_bar #indicator #index_show .index_li").length && getIndexName.length != 0){
 			return;
 		}
 		//加载指标
