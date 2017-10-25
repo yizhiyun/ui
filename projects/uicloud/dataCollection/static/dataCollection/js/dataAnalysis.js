@@ -1179,7 +1179,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
         "tables":now_click_delete,
       };
 
-       $.ajax({
+      $.ajax({
       url:"/dataCollection/deleteTempCol",
       type:"post",
       dataType:"json",
@@ -1188,7 +1188,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       data:JSON.stringify(post_splitData_arr),
       success:function(result){
         if(result["status"] == "success"){
-//        console.log("删除成功");
+       console.log("删除成功");
         }
       }
   });
@@ -1832,7 +1832,7 @@ function getFilterNeedAllData_fun(dbInfo){
         
       }else{
         
-        var tablesSelect = {"source":dbArr[0],"database":dbArr[1],"tableName":dbArr[2],"columns":{},"conditions":[]};
+       var tablesSelect = {"source":dbArr[0],"database":dbArr[1],"tableName":dbArr[2],"columns":{},"conditions":[]};
 //      console.log(tablesSelect);
         $.ajax({
           url:"/dataCollection/filterTable/data",
@@ -1859,7 +1859,21 @@ function getFilterNeedAllData_fun(dbInfo){
 
   //页面刷新时清除拆分保存的数据
   window.onbeforeunload = function(){
-    remove_splitData(store_split_tableArr);
+   if(store_split_tableArr.length != 0){
+        $.ajax({
+          url:"/dataCollection/deleteTempCol",
+          type:"post",
+          dataType:"json",
+          contentType: "application/json; charset=utf-8",
+          async: true,
+          success:function(result){
+            if(result["status"] == "success"){
+                console.log("清除成功");
+            }
+          }
+      });
+   }
+
   }
 
 }

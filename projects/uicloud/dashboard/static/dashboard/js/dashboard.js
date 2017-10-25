@@ -1310,7 +1310,7 @@ function show_view_save_dashbash(data_result){
 				var _show_type = column_name_info["coltype"]; // 维度还是度量，返回值是一个字符串		
 				var type_indictot_img_path = _data_type.image_Name_Find(_show_type);	 // 数据类型指示图片的路径
 				
-	var aLi = $("<li class=" + _show_type+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><div class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + ">"+_name+"</span></div></div></li>");
+	var aLi = $("<li class='" + _show_type+"_li leftNav_list'>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><div class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + ">"+_name+"</span></div></div></li>");
 	aLi.find(".set_style").append("<div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div>");
 				
 				// 用来记录数据类型
@@ -1321,7 +1321,7 @@ function show_view_save_dashbash(data_result){
 							
 			}
 			
-			var specialLi= $("<li class=" + "measure"+"_li>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+"/static/dataCollection/images/tableDataDetail/Integer.png"+"/></div><div class='drop_list_main " + "measure" + "_list_main'"+"><div class='drop_main clear set_style " + "measure" + "_list_text'><span class=" + "measure" + "_list_text_left" + ">"+"记录数"+"</span></div></div></li>");
+			var specialLi= $("<li class='" + "measure"+"_li leftNav_list'>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+"/static/dataCollection/images/tableDataDetail/Integer.png"+"/></div><div class='drop_list_main " + "measure" + "_list_main'"+"><div class='recordCount drop_main clear set_style " + "measure" + "_list_text'><span class=" + "measure" + "_list_text_left" + ">"+"记录数"+"</span></div></div></li>");
 			specialLi.find(".set_style").append("<div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div>");
 			specialLi.find(".drop_main").eq(0).data("type","number");
 			$("#measure_show ul").append(specialLi);
@@ -1360,13 +1360,53 @@ function show_view_save_dashbash(data_result){
 			
 	}
 
+	 	//移除函数
+	function remove_viewHandle(){
+			drag_row_column_data["column"]["measure"]= [];
+			drag_row_column_data["column"]["dimensionality"] =[];
+			//遍历所有行里的li 排序后更新数据
+			for(var i = 0; i < $("#drop_col_view").find("li").length;i++){
+				//获取数据字段
+				var data_id = $("#drop_col_view").find("li").eq(i).attr("id").split(":");
+				//判断元素的类型
+				var data_wd_type = data_id[0];
+				//对应的数据
+				var sortable_data = data_id[1]+":"+data_id[2];
+
+				drag_row_column_data["column"][data_wd_type].push(sortable_data)
+			}
+
+			drag_row_column_data["row"]["measure"]= [];
+			drag_row_column_data["row"]["dimensionality"] =[];
+
+			//遍历所有行里的li 排序后更新数据
+			for(var i = 0; i < $("#drop_row_view").find("li").length;i++){
+				//获取数据字段
+				var data_id = $("#drop_row_view").find("li").eq(i).attr("id").split(":");
+				//判断元素的类型
+				var data_wd_type = data_id[0];
+				//对应的数据
+				var sortable_data = data_id[1]+":"+data_id[2];
+
+				drag_row_column_data["row"][data_wd_type].push(sortable_data)
+			}
+
+			
+			// 移除筛选列
+			rightFilterListDraw();
+			switch_chart_handle_fun();
+	}
+
 	//创建弹窗
-	function md_click_show(element,data_dict){
+	function md_click_show(ele,data_dict){
 				
 					var open_or_close = true;
-					element.each(function(index,ele){
-						
+					
 						$(ele).on("click",function(){
+						//判断拖入的是否是计数
+						if($(this).parent().hasClass("recordCount")){
+							delete data_dict["度量_YZY_measure"];
+						}
 						if(open_or_close){
 							open_or_close = false;
 							currentHandleMeasureCalculate = $(ele).parent().parent(".drog_row_list");
@@ -1382,7 +1422,7 @@ function show_view_save_dashbash(data_result){
 							})
 							for(out_wrap_count in data_dict){
 								if(data_dict[out_wrap_count] != null){
-									//创建单个元素
+								//创建单个元素
 								var add_ele_evr = $("<li class='me_out_content_li "+out_wrap_count.split("_YZY_")[1]+"'><p>"+out_wrap_count.split("_YZY_")[0]+"</p><ul class='second_menu'><ul></li>");
 								add_ele_evr.addClass("have_second_menu").appendTo(out_wrap_click);
 									for(var i =0; i < data_dict[out_wrap_count].length;i++){
@@ -1396,7 +1436,7 @@ function show_view_save_dashbash(data_result){
 										}
 									})
 								}else{
-									//创建单个元素
+								//创建单个元素
 								var add_ele_evr = $("<li class='me_out_content_li "+out_wrap_count.split("_YZY_")[1]+"'><p>"+out_wrap_count.split("_YZY_")[0]+"</p></li>");
 								add_ele_evr.appendTo(out_wrap_click);
 								}
@@ -1502,7 +1542,10 @@ function show_view_save_dashbash(data_result){
 									remove_viewHandle();
 						});
 
-
+						//判断拖入的是否是计数
+						if($(this).parent().hasClass("recordCount")){
+							return;
+						}
 						//度量里点击事件
 						out_wrap_click.find(".pop_count_all").click(function(event){
 							event.stopPropagation();
@@ -1580,7 +1623,6 @@ function show_view_save_dashbash(data_result){
 							open_or_close = true;
 						})
 
-					})
 				}
 
 
@@ -1743,46 +1785,6 @@ function initTable_name(){
 
 
 
-
- 	//.........................度量里编辑计算操作
- 		//移除函数
-	function remove_viewHandle(){
-			drag_row_column_data["column"]["measure"]= [];
-			drag_row_column_data["column"]["dimensionality"] =[];
-			//遍历所有行里的li 排序后更新数据
-			for(var i = 0; i < $("#drop_col_view").find("li").length;i++){
-				//获取数据字段
-				var data_id = $("#drop_col_view").find("li").eq(i).attr("id").split(":");
-				//判断元素的类型
-				var data_wd_type = data_id[0];
-				//对应的数据
-				var sortable_data = data_id[1]+":"+data_id[2];
-
-				drag_row_column_data["column"][data_wd_type].push(sortable_data)
-			}
-
-			drag_row_column_data["row"]["measure"]= [];
-			drag_row_column_data["row"]["dimensionality"] =[];
-
-			//遍历所有行里的li 排序后更新数据
-			for(var i = 0; i < $("#drop_row_view").find("li").length;i++){
-				//获取数据字段
-				var data_id = $("#drop_row_view").find("li").eq(i).attr("id").split(":");
-				//判断元素的类型
-				var data_wd_type = data_id[0];
-				//对应的数据
-				var sortable_data = data_id[1]+":"+data_id[2];
-
-				drag_row_column_data["row"][data_wd_type].push(sortable_data)
-			}
-
-			
-			// 移除筛选列
-			rightFilterListDraw();
-			switch_chart_handle_fun();
-	}
-
-
  	//............................默认给定的样式
  	function leftBar_sizeW_function(){
 		var leftBarW = $("body").height() - $(".container .topInfo").height() - $(".rightConent #dashboard_content #new_view").height() - $(".rightConent #dashboard_content #action_box").height() - Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2;
@@ -1844,13 +1846,14 @@ function drag(){
 					$(ele).find(".moreSelectBtn").css("display", "block");
 					$(ele).find(".moreSelectBtn").unbind("click");
 					$(ele).find(".moreSelectBtn").click(function(event){
+						
 						//判断点击的是维度还是度量
 						if($(this).parent().hasClass("measure_list_text")){
 							saveTypeElement = "转换为维度";
 						}else{
 							saveTypeElement = "转换为度量";
 						}
-						var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li class='change'>"+saveTypeElement+"</li><li class='typeLi'>转化类型<ul class='changeTypeList'><li><span class='default'></span>默认值</li><li><span class='num_system'></span>数字(二进制)</li><li><span class='num_ten'></span>数字(十进制)</li><li><span class='show_num_integer'></span>数字(整数)</li><li><span class='show_date_time'></span>日期和时间</li><li><span class='show_date'></span>日期</li><li><span class='show_string'></span>字符串</li></ul></li></ul>");
+						var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li class='change'>"+saveTypeElement+"</li><li class='typeLi'>转化类型</li></ul>");
 						$(this).parents("li").append(moreActionModule);
 						$(moreActionModule).css({
 							"top":$(this).parents("li").eq(0).offset().top-47+'px',
@@ -1867,7 +1870,8 @@ function drag(){
 								needChangeEle.find(".drop_list_main").removeClass("dimensionality_list_main");
 								needChangeEle.find(".drop_list_main").addClass("measure_list_main");
 								needChangeEle.find(".drop_list_main .drop_main").removeClass("dimensionality_list_text");
-								needChangeEle.find(".drop_list_main .drop_main").addClass("measure_list_text");
+								needChangeEle.find(".drop_list_main .drop_main .moreSelectBtn").hide();
+								needChangeEle.find(".drop_list_main .drop_main").addClass("measure_list_text").css({"background":"","border":"none","padding":"0px 5px","height":"23px","lineHeight":"23px"});
 								needChangeEle.find(".drop_list_main .drop_main>span").removeClass("dimensionality_list_text_left");
 								needChangeEle.find(".drop_list_main .drop_main>span").addClass("measure_list_text_left");
 								needChangeEle.find(".dimensionality_datatype img").attr("src",needChangeEle.find(".drop_main").eq(0).data("type").image_Name_Find("measure"));
@@ -1879,8 +1883,9 @@ function drag(){
 								needChangeEle.addClass("dimensionality_li");
 								needChangeEle.find(".drop_list_main").removeClass("measure_list_main");
 								needChangeEle.find(".drop_list_main").addClass("dimensionality_list_main");
+								needChangeEle.find(".drop_list_main .drop_main .moreSelectBtn").hide();
 								needChangeEle.find(".drop_list_main .drop_main").removeClass("measure_list_text");
-								needChangeEle.find(".drop_list_main .drop_main").addClass("dimensionality_list_text");
+								needChangeEle.find(".drop_list_main .drop_main").addClass("dimensionality_list_text").css({"background":"","border":"none","padding":"0px 5px","height":"23px","lineHeight":"23px"});
 								needChangeEle.find(".drop_list_main .drop_main>span").removeClass("measure_list_text_left");
 								needChangeEle.find(".drop_list_main .drop_main>span").addClass("dimensionality_list_text_left");
 								needChangeEle.find(".dimensionality_datatype img").attr("src",needChangeEle.find(".drop_main").eq(0).data("type").image_Name_Find("dimensionality"));
@@ -1898,12 +1903,16 @@ function drag(){
 								success:function(data){}
 							});
 							
+							
+							delete _cube_all_data[$('#lateral_title .custom-select').val()];
+
 						});
 
 						$(moreActionModule).find(".typeLi").unbind("mouseover");
 						$(moreActionModule).find(".typeLi").mouseover(function(event){
 							event.stopPropagation();
-							$(this).children(".changeTypeList").show();
+							typeToShow($(this),"clickTra");
+							// $(this).children(".changeTypeList").show();
 						});
 						
 					});
@@ -1920,7 +1929,7 @@ function drag(){
 						border: "none",
 					});
 					$(ele).find(".moreSelectBtn").css("display", "none");
-					$("#dimeOrMeasureMoreActionList").remove();
+					$("#dimeOrMeasureMoreActionList,.moreClickBtn").remove();
 				});
 		});
 		
@@ -2325,7 +2334,7 @@ function drag(){
 					rightFilterListDraw();		
 					switch_chart_handle_fun();
 					//度量更多操作过程
-					md_click_show($(".annotation_text .measure_list_text_left").parent().find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null})
+					md_click_show(current_li.find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null})
 
 						}
 
@@ -2345,7 +2354,7 @@ function drag(){
 
 							$(".list_wrap").find(".label_icon_wrap").parent().remove();
 							$(this).find("li").css({
-								//								background:"c5e0ff",
+								//background:"c5e0ff",
 								height: "23px",
 							});
 						},
@@ -2724,38 +2733,22 @@ function drag(){
 	
 
 		
-			$(document).on("click", function(event) {
-				event.stopPropagation();
-				$(".type_wic").remove();
-				$(".list_wrap").find(".label_icon_wrap").parent().remove();
-				//恢复滚动
-				enable_scroll();
+$(document).on("click", function(event) {
+		event.stopPropagation();
+		$(".type_wic").remove();
+		$(".list_wrap").find(".label_icon_wrap").parent().remove();
+		//恢复滚动
+		enable_scroll();
 
-				$(".dimensionality_datatype").css("background", "");
-				//恢复绑定事件
-				imgMouse();
-			})
-			
+		$(".dimensionality_datatype").css("background", "");
+		//恢复绑定事件
+		imgMouse();
+	})
 
-
-		//..........................创建类型转换弹窗
- 	//创建一个类型弹窗			
-			$(".dimensionality_datatype").each(function(index, ele) {
-				$(ele).on("click", function(event) {
-					//...
-					$(".dimensionality_datatype").css("background", "");
-					$(ele).css("background", "#ADADAD");
-
-					event.stopPropagation();
-					if($(ele).parent().find(".click_type").length == "0") {
-						//禁止滚动
-						disable_scroll();
-
-						//删除移入事件
-						$(".dimensionality_datatype").unbind("mouseenter").unbind("mouseleave");
-						$(".type_wic").not($(ele).parent().find(".type_wic")).remove();
+function typeToShow(ele,clickTra){
+	$(".type_wic").not($(ele).parents(".leftNav_list").find(".type_wic")).remove();
 						var type_wicket = $("<div class='type_wic'><ul class='click_type'><li><span class='default'></span>默认值</li><li><span class='num_system'></span>数字(二进制)</li><li><span class='num_ten'></span>数字(十进制)</li><li><span class='show_num_integer'></span>数字(整数)</li><li><span class='show_date_time'></span>日期和时间</li><li><span class='show_date'></span>日期</li><li><span class='show_string'></span>字符串</li></ul></div>");
-						type_wicket.appendTo($(ele).parent());
+						type_wicket.appendTo($(ele).parents(".leftNav_list"));
 
 						$(type_wicket).find("span").css({
 							width:"25px",	
@@ -2763,9 +2756,19 @@ function drag(){
 							float:"left",
 						});
 
+						if(clickTra == "clickTra"){
+							var elementLeft = $(ele).offset().left + 10 + "px";
+							var elementTop = $(ele).offset().top - 71 + "px";
+							type_wicket.addClass("moreClickBtn");
+						}else{
+							var elementLeft = "5px";
+							var elementTop = $(ele).offset().top - 45 + "px";
+						}
+
+
 						type_wicket.find(".click_type").css({
-							top: $(ele).offset().top - 45 + "px",
-							left: "5px",
+							top: elementTop,
+							left: elementLeft,
 						}).addClass("type_wic_click_type");
 						type_wicket.find("ul").addClass("type_wic_ul");
 
@@ -2775,44 +2778,69 @@ function drag(){
 							//点击更换类型
 							switch($(this).text()) {
 								case "默认值":
-									if($(this).parent().parent().parent().attr("class") == "measure_li") {
-										$(this).parent().parent().parent().find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/Integer.png").removeClass().addClass("default_img");
+									if($(this).parents(".leftNav_list").hasClass("measure_li")) {
+										$(this).parents(".measure_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/integer_duliang.png").removeClass().addClass("default_img");
 									} else {
-										$(this).parent().parent().parent().find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/String.png").removeClass().addClass("default_img");
+										$(this).parents(".dimensionality_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/string_weidu.png").removeClass().addClass("default_img");
 									}
 
 									break;
 								case "数字(二进制)":
-									$(this).parent().parent().parent().find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/Integer.png").removeClass().addClass("system_num_second");
+									if($(this).parents(".leftNav_list").hasClass("measure_li")){
+										$(this).parents(".measure_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/integer_duliang.png").removeClass().addClass("system_num_second");
+									}else{
+										$(this).parents(".dimensionality_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/integer_weidu.png").removeClass().addClass("system_num_second");
+									}
 									break;
 								case "数字(十进制)":
-									$(this).parent().parent().parent().find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/Integer.png").removeClass().addClass("system_num_ten");
+									if($(this).parents(".leftNav_list").hasClass("measure_li")){
+										$(this).parents(".measure_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/integer_duliang.png").removeClass().addClass("system_num_ten");
+									}else{
+										$(this).parents(".dimensionality_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/integer_weidu.png").removeClass().addClass("system_num_ten");
+									}
 									break;
 								case "数字(整数)":
-									$(this).parent().parent().parent().find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/Integer.png").removeClass().addClass("integer_num");
+									if($(this).parents(".leftNav_list").hasClass("measure_li")){
+										$(this).parents(".measure_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/integer_duliang.png").removeClass().addClass("integer_num");
+									}else{
+										$(this).parents(".dimensionality_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/integer_weidu.png").removeClass().addClass("integer_num");
+									}
 									break;
 								case "日期和时间":
-									$(this).parent().parent().parent().find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/date-time.png").removeClass().addClass("data_time");
+									$(this).parents(".leftNav_list").find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/date-time.png").removeClass().addClass("data_time");
 									break;
 								case "日期":
-									$(this).parent().parent().parent().find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/date.png").removeClass().addClass("date_img");
+									$(this).parents(".leftNav_list").find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/date.png").removeClass().addClass("date_img");
 									break;
 								case "字符串":
-									$(this).parent().parent().parent().find(".dimensionality_datatype img").attr("src", "/static/dashboard/img/String.png").removeClass().addClass("string_img");
+									if($(this).parents(".leftNav_list").hasClass("measure_li")){
+										$(this).parents(".measure_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/string_duliang.png").removeClass().addClass("string_img");
+									}else{
+										$(this).parents(".dimensionality_li").find(".dimensionality_datatype img").attr("src", "/static/dataCollection/images/tableDataDetail/string_weidu.png").removeClass().addClass("string_img");
+									}
 									break;
 								default:
 									break;
 							}
-							//恢复滚动
-							enable_scroll();
-							$(ele).parent().find(".type_wic").remove();
-							$(ele).css("background", "");
-							imgMouse()
+							if(clickTra != "clickTra"){
+								//恢复滚动
+								enable_scroll();
+								$(ele).parents(".leftNav_list").find(".set_style").css({"background":"","padding":"0px 5px","border":"none","height":"23px","lineHeight":"23px"});
+								$(ele).parents(".leftNav_list").find(".set_style .moreSelectBtn").hide();
+								$(ele).parents(".leftNav_list").find(".type_wic").remove();
+								$(ele).css("background", "");
+								imgMouse()
+							}else{
+								$(ele).parents(".leftNav_list").find(".set_style").css({"background":"","padding":"0px 5px","border":"none","height":"23px","lineHeight":"23px"});
+								$(ele).parents(".leftNav_list").find(".set_style .moreSelectBtn").hide();
+								$("#dimeOrMeasureMoreActionList,.moreClickBtn").remove();
+
+							}
 
 						})
 
 						//判断数据类型显示图标
-						switch($("#dimensionality_show").find($(ele)).find("img").attr("class")) {
+						switch($("#dimensionality_show").find($(ele).parents(".leftNav_list")).find(".dimensionality_datatype img").attr("class")) {
 							case "default_img":
 								$(type_wicket).find("li").find(".default").addClass("change_type");
 								$(type_wicket).find("li").find(".show_string").addClass("change_type_num");
@@ -2850,7 +2878,7 @@ function drag(){
 						}
 
 						//判断数据类型显示图标
-						switch($("#measure_show").find($(ele)).find("img").attr("class")) {
+						switch($("#measure_show").find($(ele).parents(".leftNav_list")).find(".dimensionality_datatype img").attr("class")) {
 							case "default_img":
 								$(type_wicket).find("li").find(".default").addClass("change_type");
 								$(type_wicket).find("li").find(".show_num_integer").addClass("change_type_num");
@@ -2900,14 +2928,42 @@ function drag(){
 						type_wicket.find("li").on("mouseleave", function() {
 							$(this).css("background", "");
 						});
+}
+
+//
+function typeChangeWall(ele){
+
+					$(".dimensionality_datatype").css("background", "");
+					$(ele).css("background", "#ADADAD");
+
+					event.stopPropagation();
+					if($(ele).parents(".leftNav_list").find(".click_type").length == "0") {
+						//禁止滚动
+						disable_scroll();
+
+						//删除移入事件
+						$(".dimensionality_datatype").unbind("mouseenter").unbind("mouseleave");
+						typeToShow(ele);
 
 					}else{
-						$(ele).parent().find(".type_wic").remove();
+						$(ele).parents(".leftNav_list").find(".type_wic").remove();
 						//恢复滚动
 						enable_scroll();
 						$(ele).css("background", "");
 						imgMouse()
 					}
+}
+
+
+
+
+
+
+		//..........................创建类型转换弹窗
+ 	//创建一个类型弹窗			
+			$(".dimensionality_datatype").each(function(index, ele) {
+				$(ele).on("click", function(event) {
+					typeChangeWall(ele);
 				})
 
 			})
