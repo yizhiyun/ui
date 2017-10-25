@@ -170,17 +170,10 @@ def deletePlat(request):
     jsonData = request.data
     if request.method == 'POST':
         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
-        dbObjIndex = jsonData['dbObjIndex']
-        if username not in Singleton().dataPaltForm.keys():
-            return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
-        if dbObjIndex not in Singleton().dataPaltForm[username].keys():
-            return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
-
-        result = Singleton().deletePalt(dbObjIndex, username)
-        if result:
-            return JsonResponse({'status': 'success'})
-        else:
-            return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
+        rs = Singleton().deletePalt(username, jsonData['dbObjIndex'])
+        if not rs:
+            return JsonResponse({'status': 'failed', 'reason': 'please see the detail logs'})
+        return JsonResponse({'status': 'success'})
 
 
 @api_view(['POST'])
@@ -190,21 +183,11 @@ def deleteTempCol(request):
     jsonData = request.data
     if request.method == 'POST':
         username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
-        if username not in Singleton().dataPaltForm.keys():
-            return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
-
         if 'tables' not in jsonData.keys():
-            for key, value in Singleton().dataPaltForm[username].items():
-                value.list.clear()
-
+            rs = Singleton().deleteTempSplit(username)
         else:
-            for table in jsonData['tables']:
-                dbObjIndex = table['source']
-                if dbObjIndex not in Singleton().dataPaltForm[username].keys():
-                    return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
+            rs = Singleton().deleteTempSplit(username, jsonData['tables'])
 
-                dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-                coldickey = table['coldickey'].replace('_YZYPD_', '_')
-                if coldickey in dataBaseObj.list.keys():
-                    dataBaseObj.list[coldickey].clear()
+        if not rs:
+            return JsonResponse({'status': 'failed', 'reason': 'please see the detail logs'})
         return JsonResponse({'status': 'success'})
