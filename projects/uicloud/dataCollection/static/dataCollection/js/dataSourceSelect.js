@@ -22,9 +22,11 @@ $(function () {
     			dataBaseName = $(this).html();
     			$("#dataList").hide();
     			if(dataBaseName == "ORACLE"){
-    				$("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").show();
+    				$("#connectDataBaseInfo").height(320);
+    				$("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").show();
     			}else{
-    				$("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").hide();
+    				$("#connectDataBaseInfo").height(300);
+    				$("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").hide();
     			}
     			$("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);
     		})

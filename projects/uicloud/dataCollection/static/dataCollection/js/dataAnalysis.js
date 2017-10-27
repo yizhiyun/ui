@@ -29,6 +29,13 @@ var store_split_tableArr = [];
 
 //记录按固定宽度拆分对应数据的最大长度
 var storeArr_maxlength = null;
+
+
+//记录是否构建了新的数据集
+var saveAddNewFile = true;
+
+//记录判断是否重绘scama
+var saveScameView = true;
   /**
  * description : 得到字符串的字节长度;
  * @version 0.2;
@@ -379,6 +386,9 @@ function expression_click_handle(){
       $("#analysisContainer .leftSlide").eq(0).css("display","none");
       $(".rightConent #analysisContainer #tableDataDetailListPanel #closeableDataDetailListPanel").css("display","none");
       handle_success_show_table();
+      saveAddNewFile = true;
+      saveScameView = false;
+      if_or_load = true;
       $("._jsPlumb_endpoint").css("visibility","hidden");
       $(".rightConent #analysisContainer #tableDataDetailListPanel").css({
         "width":$(".rightConent").width() + "px",
@@ -846,9 +856,7 @@ $("#buildDataPanelView .build-body .build-options .save-type .radio").click(func
 
 // 更多设置按钮
 $("#buildDataPanelView .build-footer .moreSetting").eq(0).click(function(){
-  if (!$("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).is(":visible")) {
-    $("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).show("blind",200);
-  }
+    $("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).toggle("blind",200);
 });
 
 // 取消按钮+x 按钮
@@ -1043,9 +1051,11 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
         $("#analysis_dataList .baseDetail li").click(function(){
           dataBaseName = $(this).html();
           if(dataBaseName == "ORACLE"){
-            $("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").show();
+            $("#connectDataBaseInfo").height(320);
+            $("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").show();
           }else{
-            $("#connectDataBaseInfo #dataBaseConnectForm .userDiv label.dbSid").hide();
+            $("#connectDataBaseInfo").height(300);
+            $("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").hide();
           }
           $("#analysis_dataList").hide();
           $("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);

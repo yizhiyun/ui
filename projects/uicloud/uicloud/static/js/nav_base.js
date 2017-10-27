@@ -19,6 +19,8 @@ function initWindowSize(doc,win,paHeight){
 		main.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";
 		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";		
 }
+
+
 //获取指定form中的所有的<input>对象  
 function getElements(formId) {
   var form = document.getElementById(formId);  
@@ -235,6 +237,28 @@ $(function(){
 		document.onmousedown = norightclick; // 
 	}
 
+	//实时保存修改标签页对应的数据
+	function realSaveData(){
+		//存储当前窗口对应的数据
+			var saveNowWallDict = {};
+			//判断表标题是否为空
+			if($("#view_show_area #view_show_area_content .tableView_name h4").text() == "添加表标题"){
+				saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue;
+			}else{
+				saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue+"_YZY_"+ $("#view_show_area #view_show_area_content .tableView_name h4").text();
+			}
+			saveNowWallDict["row"]= JSON.stringify(drag_row_column_data["row"]);
+			saveNowWallDict["column"]= JSON.stringify(drag_row_column_data["column"]);
+			saveNowWallDict["username"] = username;
+			saveNowWallDict["tablename"] = current_cube_name;
+			saveNowWallDict["viewtype"] = view_name;
+			saveNowWallDict["defaultparent"] = "default";
+			saveNowWallDict["calculation"] = JSON.stringify(drag_measureCalculateStyle);
+			saveNowWallDict["customcalculate"] = JSON.stringify(customCalculate);
+
+			return saveNowWallDict;
+	}
+
 function pallasdaraFunctionNavBtnHandle(){
 	// 获取当前可用的导航选项
 	var arr = navBtnAbleAndDisablegetHandle();
@@ -249,16 +273,23 @@ function pallasdaraFunctionNavBtnHandle(){
 	}
 	
 	$(".container .main .leftNav .functionBtn").click(function(event){
-		if ($(this).children("div").hasClass("active") || $(this).hasClass("disableFlag") ) {
+		if($(this).children("div").hasClass("active") || $(this).hasClass("disableFlag") ) {
 			event.preventDefault();
 			return;
 		}
+		if($(this).attr("id") != "navDashBoardViewBtn"){
+				var preClickViewNav = preClickView || {} ;
+				if(Object.getOwnPropertyNames(preClickViewNav).length != 0){
+					preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] = realSaveData();
+				}
+		}
+
 		switch ($(this).attr("id")){
 			case"navDataBaseAndPanleFileConnectionViewBtn":
 				changePageTo_DataBaseAndPanleFileConnectionView();
 				break;
 			case "navBuildDataViewBtn":
-			$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);	
+				$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
 				changePageTo_navBuildDataView();
 				break;
 			case "navDashBoardViewBtn":
@@ -327,10 +358,11 @@ function changePageTo_navDashBoardView(){
 		navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
 		$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
 	}else{		
-		if(currentPageId == "navBuildDataViewBtn"){
+		if(currentPageId == "navBuildDataViewBtn" || currentPageId == "navReporttingViewBtn"){
 			dashboardReadySumFunction(true);
 		}
 	}
+
 }
 
 function changePageTo_navReporttingView(unloadPage){
@@ -423,4 +455,14 @@ function specialRemoveDataTypeHandle(obj){
 		rs.push(ele);
 	}
 	return rs;
+}
+
+
+//input  onfoucs 事件
+function toInputStyle(ele){
+	$(ele).css("borderColor","#000");
+}
+
+function toInputStyleBlur(ele){
+	$(ele).css("borderColor","#DEDEDE");
 }

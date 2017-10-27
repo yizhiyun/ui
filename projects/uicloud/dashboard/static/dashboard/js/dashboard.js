@@ -8,7 +8,7 @@ var drag_row_column_data = {
 		"dimensionality":[],
 		"measure":[]
 	}
-}
+};
 
 var drag_measureCalculateStyle = {};
 
@@ -90,6 +90,16 @@ var nowDeleteElement = null;
 //维度度量转换记录类型
 var saveTypeElement = null;
 
+
+//临时记录数据源的数据
+
+var tempDataAll = {};
+
+
+//判断仪表板是否删除过视图
+
+var statementsToView =  null;
+
 //保存视图触发事件
 function save_btn_fun(){
 	$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -116,34 +126,52 @@ function save_btn_fun(){
 	}
 
 function dashboardReadySumFunction(isOnlyLoad){
-	$.ajax({
-		url:"/cloudapi/v1/tables",
-		type:"get",
-		dataType:"json",
-		contentType: "application/json; charset=utf-8",
-		success:function(data){
-			
-			if (data["status"] == "success") {
-				if(sessionStorage.getItem("edit_view_now")){
-					//获取编辑的视图
-					var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
-					var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
-					// 创建数据块
+	//判断在仪表板是否删除过视图 使仪表板同步
+	if(statementsToView){
+		$("#dashboard_content #new_view ul .edit_list").each(function(index,ele){
+			if(preClickView[$(ele).find("span").text()] == undefined){
+				$(ele).find(".folderview_li_del_btn").trigger("click");
 
-				cubeSelectContent_fun(data["results"],have_view_edit[3]);
-				}else{
-					// 创建数据块
+			}
+		})
+		// statementsToView = false;
+		return;
+	}
 
-				cubeSelectContent_fun(data["results"]);
+
+
+	if(saveAddNewFile){
+		$.ajax({
+			url:"/cloudapi/v1/tables",
+			type:"get",
+			dataType:"json",
+			contentType: "application/json; charset=utf-8",
+			success:function(data){
+				
+				if (data["status"] == "success") {
+					if(Object.getOwnPropertyNames(preClickView).length != 0 && preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["viewtype"] != null){
+						cubeSelectContent_fun(data["results"],preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["tablename"]);
+					}else if(sessionStorage.getItem("edit_view_now")){
+						//获取编辑的视图
+						var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
+						var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
+						// 创建数据块
+
+						cubeSelectContent_fun(data["results"],have_view_edit[3]);
+					}else{
+					// 创建数据块
+					cubeSelectContent_fun(data["results"]);
+					}
+
+					save_data_sum_handle = data["results"];
+
 				}
-
-				save_data_sum_handle = data["results"];
-
-			}	
-		}
-		
-	});
+				saveAddNewFile = false;
+			}
+			
+		});
 	
+	}
 	
 	//编辑跳回后对颜色 小数点等对应的修改
 	function editView_change_color(colorArr,filterArr){
@@ -172,7 +200,7 @@ function dashboardReadySumFunction(isOnlyLoad){
 
 	$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
 
-//视图清空 页面初始化
+	//视图清空 页面初始化
 	function empty_viem_init(change_or_click){
 		$("#operational_view .annotation_text .drag_text").show();
 		//清空维度度量里面的数据
@@ -184,6 +212,7 @@ function dashboardReadySumFunction(isOnlyLoad){
 		$('#lateral_title .custom-select').find("option").removeAttr("selected");
 		$('#lateral_title .custom-select').find("option").eq(0).attr("selected","selected");
 		$('#lateral_title .custom-select').comboSelect();
+		load_measurement_module($('#lateral_title .custom-select').val())
 		
 		}	
 		drag_row_column_data = {
@@ -196,6 +225,7 @@ function dashboardReadySumFunction(isOnlyLoad){
 				"measure":[]
 			}
 		}
+
 		//清空视图展示区域
 		$("#view_show_wrap #main").hide();
 		$("#view_show_wrap #text_table_need_show").hide();
@@ -471,7 +501,7 @@ function dashboardReadySumFunction(isOnlyLoad){
  			$(this).css("background", "#a7eff4");
  			$(this).css({
 				height: "21px",
-				border: "1px solid #86a9d1",
+				border: "1px solid #2ee1ed",
 				lineHeight: "21px",
 				padding: "0px 4px"
 			});
@@ -683,7 +713,11 @@ function dashboardReadySumFunction(isOnlyLoad){
 		
 		//删除视图对应的显示和关闭
 		if(/-/gi.test(title)){
-			$.post("../dashboard/setSwitch",{"switch":"isopen","id":$(".rightConent #dashboard_content #new_view ul li[title="+$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")+"]").data("tableViewId")});
+			$.post("../dashboard/setSwitch",{"switch":"isopen","id":$(".rightConent #dashboard_content #new_view ul li[title="+$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")+"]").data("tableViewId")},function(result){
+				if(result["status"] == "ok"){
+					$(".statement_li").eq(sessionStorage.getItem("edit_view_now").split(",")[4]).find(".view_show_handle").eq(sessionStorage.getItem("edit_view_now").split(",")[5]).find(".small_view_text").data("setopen",false);
+				}
+			});
 		}
 
 
@@ -996,29 +1030,6 @@ function show_view_save_dashbash(data_result){
 		})
 	}
 
-	//实时保存修改标签页对应的数据
-	function realSaveData(){
-		//存储当前窗口对应的数据
-			var saveNowWallDict = {};
-			//判断表标题是否为空
-			if($("#view_show_area #view_show_area_content .tableView_name h4").text() == "添加表标题"){
-				saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue;
-			}else{
-				saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue+"_YZY_"+ $("#view_show_area #view_show_area_content .tableView_name h4").text();
-			}
-			saveNowWallDict["row"]= JSON.stringify(drag_row_column_data["row"]);
-			saveNowWallDict["column"]= JSON.stringify(drag_row_column_data["column"]);
-			saveNowWallDict["username"] = username;
-			saveNowWallDict["tablename"] = current_cube_name;
-			saveNowWallDict["viewtype"] = view_name;
-			saveNowWallDict["defaultparent"] = "default";
-			saveNowWallDict["calculation"] = JSON.stringify(drag_measureCalculateStyle);
-			saveNowWallDict["customcalculate"] = JSON.stringify(customCalculate);
-
-			return saveNowWallDict;
-	}
-
-
 	//判断两个视图对象的内容是否相等
 	function SecondDict(obj1,obj2){
 
@@ -1100,7 +1111,6 @@ function show_view_save_dashbash(data_result){
 					$(".rightConent #dashboard_content #new_view ul .auto_show .folderview_li_del_btn").css("display","block");
 				}
 				if(!/-/gi.test($(this).find("span").text())){
-
 					empty_viem_init("click");
 					if(preClickView[$(this).find(".folderview_li_span").text()] !=null && preClickView[$(this).find(".folderview_li_span").text()]["viewtype"] != null){
 						save_btn_fun();
@@ -1182,7 +1192,6 @@ function show_view_save_dashbash(data_result){
 			var op = $("<option value="+val+">"+val+"</option>");
 			if(click_val){
 				if(click_val == val){
-
 				op.attr("selected","selected");
 				}
 			}
@@ -1193,7 +1202,7 @@ function show_view_save_dashbash(data_result){
 		// select选项卡
 		cube_select.comboSelect();
 		
-		if(click_val){
+		if(click_val ){
 			// 展示维度和度量等
 			load_measurement_module(click_val)
 		}else{
@@ -1209,6 +1218,7 @@ function show_view_save_dashbash(data_result){
 				if_or_load = true;
 				empty_viem_init("change");
 				isDisaed = false;
+				saveScameView =true;
 				load_measurement_module(cube_select.val());
 			}
 		});	
@@ -1237,6 +1247,7 @@ function show_view_save_dashbash(data_result){
 			success:function(data){
 				if(data.status == "success"){
 					filterNeedAllData = data.results.data[0];
+					tempDataAll = data.results.data[0];
 				}
 			}
 		})	
@@ -1252,6 +1263,9 @@ function show_view_save_dashbash(data_result){
 		
 		if (_cube_all_data[current_cube_name]) {
 			var schema = _cube_all_data[current_cube_name]["schema"];
+			if(!saveScameView){
+				filterNeedAllData = tempDataAll;
+			}
 			factory_create_li_to_measurement_module(schema);
 			if(!if_or_load){
 				// $("#dashboard_content #new_view ul").html("");
@@ -1260,42 +1274,45 @@ function show_view_save_dashbash(data_result){
 				dashboard_edit_view_handle();
 				}
 			return;
+		}else{
+			saveScameView = true;
 		}
 
-		//1、需要加载这个表格的 column schema
-		$.ajax({
-			url:"/cloudapi/v1/tables/" +current_cube+"/schema",
-			type:"post",
-			dataType:"json",
-			success:function(data){
-				if (data["status"] == "success") {
-					var cube_all_data = data["results"];
-					
-					var schema = cube_all_data["schema"];
+		if(saveScameView){
+				//1、需要加载这个表格的 column schema
+				$.ajax({
+					url:"/cloudapi/v1/tables/" +current_cube+"/schema",
+					type:"post",
+					dataType:"json",
+					success:function(data){
+						if (data["status"] == "success") {
+							var cube_all_data = data["results"];
+							
+							var schema = cube_all_data["schema"];
 
-					for(var i = 0;i < schema.length;i++){
-						schema[i]["isable"] = "yes";
+							for(var i = 0;i < schema.length;i++){
+								schema[i]["isable"] = "yes";
+							}
+							_cube_all_data[current_cube_name] = cube_all_data;
+							
+							filterNeedAllData = null;
+							getFilterAllData();
+								
+							factory_create_li_to_measurement_module(_cube_all_data[current_cube_name].schema);
+					
+							if(!if_or_load){
+							// $("#dashboard_content #new_view ul").html("");
+
+							empty_viem_init("change");
+							//视图编辑修改
+							dashboard_edit_view_handle();
+
+							}
+						}
+					
 					}
-					_cube_all_data[current_cube_name] = cube_all_data;
-					
-					filterNeedAllData = null;
-					getFilterAllData();
-					
-					factory_create_li_to_measurement_module(_cube_all_data[current_cube_name].schema);
-					
-					
-					if(!if_or_load){
-					// $("#dashboard_content #new_view ul").html("");
-
-					empty_viem_init("change");
-					//视图编辑修改
-					dashboard_edit_view_handle();
-
-					}
-				}
-			
-			}
-		});
+				});
+		}
 		
 		//2、工厂，根据数据去创建 维度和度量等的 Li
 		function factory_create_li_to_measurement_module(schema){
@@ -1795,7 +1812,7 @@ function initTable_name(){
 		$("#view_show_area").height(leftBarW + 10 - $("#operational_view").height());
 		$("#view_show_area_content").height(leftBarW + 40 - $("#operational_view").height() - 30);
 		$("#dimensionality_show,#measure_show,#index_show,#parameter_show").height($("#dimensionality").height() - 32);
-		$("#action_box").width($("body").width() - 50 - $(".rightConent #dashboard_content #sizer").width());
+		$("#action_box").width($("body").width() - 52 - $(".rightConent #dashboard_content #sizer").width());
 		$("#dashboard_content").width($("body").width() - 50);
 		//..
 		var barHeight = $("body").height() - $(".topInfo").height() - $("#new_view").height() - $("#action_box").height();
@@ -1822,10 +1839,10 @@ function drag(){
 				$(ele).parent().on("mouseenter", function() {
 					switch($(ele).find("span").attr("class")) {
 						case "dimensionality_list_text_left":
-							$(ele).css("background", "#c5e0ff");
+							$(ele).css("background", "#c5e0ff").css("border","1px solid #86a9d1");
 							break;
 						case "measure_list_text_left":
-							$(ele).css("background", "#ffcc9a");
+							$(ele).css("background", "#ffcc9a").css("border","1px solid #ffbe7f");
 							break;
 						case "index_list_text_left":
 							$(ele).css("background", "#a7eff4");
@@ -1839,7 +1856,6 @@ function drag(){
 
 					$(ele).css({
 						height: "21px",
-						border: "1px solid #86a9d1",
 						lineHeight: "21px",
 						padding: "0px 4px"
 					});
@@ -2255,7 +2271,6 @@ function drag(){
 
 							var dragObj = ui["draggable"];// 拖动的元素
 							var _dataType = dragObj.data("type");// 元素数据类型
-							console.log(elementToType)
 							var _wd_type = elementToType;// 维度还是度量。。。
 							var _field_name =dragObj.children("span").eq(0).html(); // 字段名
 							_drag_message["type"] = _wd_type;

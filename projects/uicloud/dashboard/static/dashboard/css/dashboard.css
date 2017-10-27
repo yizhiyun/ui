@@ -13,7 +13,7 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 #dashboard_content #new_view ul .auto_show{border-top: 2px solid #f07906;background: white}
 #dashboard_content #new_view ul .auto_show .folderview_li_del_btn{display: block}
 /*操作栏*/
-#action_box{width:auto;height:50px;background: white;box-shadow:0 4px 5px -3px #DEDEDE;position: relative;z-index: 11;}
+#action_box{width:auto;height:50px;background: white;box-shadow:0px 3px 5px 0px rgba(0,49,98,0.08);position: relative;z-index: 11;}
 #action_box #action_box_ul{height: 50px;float: left;}
 #action_box #action_box_ul li{float: left;width: 26px;height: 26px;cursor: pointer;margin-top: 13px;margin-left:0.6rem;}
 #action_box #action_box_ul li img{width: 26px;height: 26px;}
@@ -107,11 +107,11 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 /*视图区域*/
 #operational_view{min-height:152px;float: left;box-sizing: border-box;background:#f1f2f4;}
-.drag_main{width:23.3%;height:100%;background: white;min-width: 188px;min-height: 152px;box-shadow: 0px 3px 3px 3px #DEDEDE;float: left;}
+.drag_main{width:23.3%;height:100%;background: white;min-width: 188px;min-height: 152px;box-shadow:0px 3px 5px 0px rgba(0,49,98,0.08);float: left;}
 #drag_wrap_content{width:100%;min-height:152px;box-sizing: border-box;padding: 0.75rem;height: 152px;}
 .drag_main_title{width: 100%;height:30px;background: #fafafa;min-height: 30px;cursor: move;}
 .drap_row_title_content{width:91.6%;margin: 0 auto;height:30px;height:100%;}
-.drap_row_title_content span{height:30px;font-size: 12px;color: #808080;margin-left:-5px;vertical-align: middle;}
+.drap_row_title_content span{height:30px;font-size: 12px;color: #202020;margin-left:-5px;vertical-align: middle;}
 .drag_main_title_icon{float: left;min-height: 30px;height:30px;line-height: 30px}
 .drag_main_icon_second{float: right;min-height: 30px;height:30px;line-height: 30px}
 .drag_main_title_icon img{vertical-align: middle;margin-top:-1px;margin-right: 5px}
@@ -141,7 +141,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .annotation_text .drog_row_list .me_out_content li .second_menu{position: absolute;top: 22px;right: -102px;display: none;color: #000}
 /*视图展示区域*/
 #view_show_area{height:auto;background:#F1F2F4;float:left;margin-top: 0.75rem;position: relative;}
-#view_show_area_content{width:97.2%;box-sizing: border-box;background:white;margin-left: 0.75rem;box-shadow: 0px 3px 3px 3px #DEDEDE;position: relative;}
+#view_show_area_content{width:97.2%;box-sizing: border-box;background:white;margin-left: 0.75rem;box-shadow:0px 3px 5px 0px rgba(0,49,98,0.08);position: relative;}
 #view_show_empty{width:100px;height:20px;line-height:20px;font-size: 12px;color: #808080;position:absolute;top: 0;right: 0;bottom: 0;left: 0;margin:auto;}
 #view_show_wrap{width: 90%;height: 85%;position: absolute;top: 50px;right: 0;bottom: 0;left: 0;margin: auto;}
 #view_show_area #view_show_area_content .tableView_name{font-size: 18px;color: #b4b4b4;float: left;margin: 20px 0px 0px 20px;display: none}
@@ -258,7 +258,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 #sizer_content{display: none;}
 .project_icon_hover{width:40px;height: 40px;float: left;margin:5px 0px 0px 6px;cursor: pointer;opacity: 0.5;box-sizing: border-box;}
-.project_icon_hint_wrap{position: absolute;background: white;width: auto;box-shadow: 0px 3px 3px 2px #DEDEDE;z-index:999;border-radius: 2px}
+.project_icon_hint_wrap{position: absolute;background: white;width: auto;box-shadow:0px 3px 5px 0px rgba(0,49,98,0.08);z-index:999;border-radius: 2px}
 .project_icon_hint_wrap p{font-size: 12px;padding: 0px 25px 0px 11px;}
 .project_icon_hint_wrap p:nth-child(1){color: #000;padding-top: 10px;}
 .project_icon_hint_wrap p:nth-child(2){color: #808080;padding-top: 7px;}
@@ -272,7 +272,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #project_icon{margin-right: 21px;margin-left: 12px;}
 #project_chart{width: 100%;position: relative;} /*height:410*/
 #project_chart_title{width:100%;height: 34px;}
-#project_chart_title h5{font-size: 14px;color: #808080;line-height: 34px;margin-left:10px;}
+#project_chart_title h5{font-size: 14px;color: #808080;line-height: 34px;margin-left:10px;margin-top: 3px;}
 #project_show_line{width: 190px;height: 1px;background: #DEDEDE;position: absolute;bottom: 0;display: none}
 
 
@@ -291,11 +291,11 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #view_save_up #view_add_state>span{font-size: 12px;float: left;margin-left: 20px}
 #view_save_up #view_add_state label input{width: 278px;height: 21px;border: 1px solid #DEDEDE;float: left;text-indent:3px;}
 #view_save_show_search{width: 100%;height: auto;padding-bottom: 3px;}
-#view_save_show_search #key_search{margin:5px 0px 5px 20px;}
-#view_save_show_search #key_search input{width:337px;height: 23px;box-sizing:border-box;border: 1px solid #DEDEDE;float: left;text-indent:5px;border-top-left-radius: 11.5px;border-bottom-left-radius: 11.5px;border-right: none;line-height: 23px;}
+#view_save_show_search #key_search{margin:10px 0px 10px 20px;}
+#view_save_show_search #key_search input{width:337px;height: 23px;box-sizing:border-box;border: 1px solid #DEDEDE;float: left;text-indent:5px;border-top-left-radius: 11.5px;border-bottom-left-radius: 11.5px;border-right: none;line-height: 24px;}
 #view_save_show_search #key_search #key_search_img_wrap{width:23px;height: 23px;vertical-align: middle;box-sizing:border-box;line-height:23px;border:1px solid #DEDEDE;border-left:none;border-top-right-radius: 11.5px;border-bottom-right-radius: 11.5px;float: left;}
 #view_save_show_search #key_search #key_search_img_wrap img{width:12px;height: 11px;float: right;margin-top:5px;margin-right: 5px;cursor:pointer;}
-#save_view_handle{width: 100%;height:50px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;background: #DEDEDE;}
+#save_view_handle{width: 100%;height:50px;border-bottom-left-radius:5px;border-bottom-right-radius:5px;background: #f5f5f5;}
 #save_handle_close,#save_handle_open{width: 70px;height: 30px;float: right;border:1px solid #0d53a4;line-height: 30px;text-align: center;border-radius:5px;margin-top: 10px;margin-right:20px;font-size: 12px;cursor: pointer;}
 #save_handle_close{color: #0d53a4;}
 #save_handle_open{color: white;background: #0d53a4}
@@ -309,10 +309,10 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .view_show_icon{margin: 5px 5px 0px 0px;float: left;}
 .click_tra{width: 9px;height:5px;margin:9.5px 8px 0px 0px ;float: left;cursor: pointer;}
 .only_folder{width: 100%;margin-left: 0;}
-.only_folder .view_show_name_save{width: 341px;}
+.only_folder .view_show_name_save{width: 341px;text-indent: 3px;}
 
 .active_data_name{width:360px;height: 23px;background:white;text-indent:5px;font-size: 12px;line-height: 24px;border-radius: 3px;margin-bottom: 5px;cursor:pointer;}
-.active_folder_view{background:#c5e0ff;}
+.active_folder_view{background:#eeeeee;border-radius: 2px;}
 
 /*视图窗口删除提示框*/
 #pageDashboardModule #clickWallDelete{width: 350px;height: 260px;border-radius: 5px;background: white;position: absolute;top: 0;right: 0;bottom: 0;left: 0;margin: auto;z-index: 9999;display: none}

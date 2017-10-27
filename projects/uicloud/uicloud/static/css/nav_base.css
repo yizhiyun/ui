@@ -1,8 +1,11 @@
 @import url("reset.css");
 
 html,body{height:100%;min-width: 1000px;color: #202020;}
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
 .container{height: 100%;background: white;min-width: 1000px;}
-#baseTopInfo{height:70px;background-color: #ffffff;position: relative;z-index: 999;box-shadow: 0px 1px 10px 1px #DEDEDE;}
+#baseTopInfo{height:70px;background-color: #ffffff;position: relative;z-index: 999;box-shadow: 0px 3px 5px 0px rgba(0,49,98,0.08);}
 #logo{margin-left: 15px;margin-top: 22px;}
 .topInfo #loginInfo{position: absolute;right: 20px;top: 0;font-size: 0;height: 100%;}
 .topInfo #loginInfo .child{float: left;margin-top: 29px;margin-right: 20px;}
@@ -23,42 +26,50 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 .main .rightConent{margin-left: 60px;background: #f1f2f4;min-height:100%;position: relative;}
 .maskLayer{position: absolute;top: 0px;left:0px;width: 100%;height: 100%;background: #000000;opacity: 0.3;z-index: 400;}
 
-#connectDataBaseInfo{width: 400px;height:350px;position: absolute;margin: auto;left: 0;top: 0;right: 0;bottom: 0;font-size: 12px;z-index: 430;background: #ffffff;border-radius: 10px;}
+#connectDataBaseInfo{width: 400px;height:320px;position: absolute;margin: auto;left: 0;top: 0;right: 0;bottom: 0;font-size: 12px;z-index: 430;background: #ffffff;border-radius: 10px;box-shadow: 0px 3px 5px 0px rgba(0,49,98,0.08);}
+#dataBaseConnectForm input{text-indent: 3px;}
 #connectDataBaseInfo .common-head{border-bottom: 1px solid #dedede;}
+#connectDataBaseInfo .common-head .logo{display: none}
 #connectDataBaseInfo .locationDiv{/*padding: 20px,20px,0px,20px;*/padding-top: 20px;padding-left: 20px;padding-right: 20px;}
 #connectDataBaseInfo .locationDiv .server{float: left;}
 #connectDataBaseInfo .locationDiv .server input{width: 200px;height: 21px;border:1px solid #dedede;border-radius: 2px;}
-#connectDataBaseInfo .locationDiv .port{float: right;text-align:right;}
+#connectDataBaseInfo .locationDiv .port{float: right;}
 #connectDataBaseInfo .locationDiv .port input{width: 40px;border:1px solid #dedede;height: 21px;border-radius: 2px;}
 
-#connectDataBaseInfo .userDiv{padding-top: 20px;padding-left: 20px;padding-right: 20px;}
+#connectDataBaseInfo .userDiv{padding-top: 30px;padding-left: 20px;padding-right: 20px;}
 #connectDataBaseInfo .userDiv .userName{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
-#connectDataBaseInfo .userDiv .userName input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 309px;}
+#connectDataBaseInfo .userDiv .userName input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;}
 #connectDataBaseInfo .userDiv .userPwd{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
-#connectDataBaseInfo .userDiv .userPwd input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 309px;margin-left: 12px;}
-#connectDataBaseInfo .userDiv .dbSid{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
-#connectDataBaseInfo .userDiv .dbSid input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 309px;margin-left: 21px;}
+#connectDataBaseInfo .userDiv .userPwd input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;margin-left: 12px;}
+#connectDataBaseInfo .locationDiv .dbSid{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
+#connectDataBaseInfo .locationDiv .dbSid input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;margin-left: 20px;}
 
-#connectDataBaseInfo .otherSetting{padding-top: 20px;padding-left: 20px;padding-right: 20px;}
+#connectDataBaseInfo .dataBaseConnectForm_footer{width:100%;height: 50px;background: #F5F5F5;position: absolute;bottom: 0;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;}
+
+
+
+
+#connectDataBaseInfo .otherSetting{padding-top: 20px;padding-left: 20px;padding-right: 20px;display: none}
 #connectDataBaseInfo .otherSetting label{display: block;cursor: pointer;}
-#connectDataBaseInfo .otherSetting a{display: block;padding-top: 10px;cursor: pointer;}
-#connectDataBaseInfo .otherSetting a input{position: absolute;left: 0;}
-#connectDataBaseInfo  #loginBtn{margin-left: 20px;background: #0d53a4;display: inline-block;height: 30px;color: white;font-size: 14px;border: 1px solid #0d53a20px4;border-radius: 2px;cursor: pointer;line-height: 30px;width: 360px;margin-top: 20px;text-align: center;}
+#connectDataBaseInfo .otherSetting label>input{float: left;margin-top:3px;margin-right: 5px;}
+#connectDataBaseInfo .dataBaseConnectForm_footer a:nth-child(1){float:left;padding-top: 17px;cursor: pointer;padding-left: 20px;}
+#connectDataBaseInfo .dataBaseConnectForm_footer a input{position: absolute;left: 0;}
+#connectDataBaseInfo  #loginBtn{box-sizing:border-box;background: #0d53a4;display: inline-block;height: 30px;color: white;font-size: 12px;border: 1px solid #0d53a2;border-radius:5px;cursor: pointer;line-height: 31px;width:70px;text-align: center;float: right;margin: 10px 20px 0px 0px;}
 
 /*筛选器*/
 /*-------------------------公共部分-----------------------------*/
 /* 底部按钮*/
- .common-filer-footer{height: 50px;background: #f5f5f5;position: absolute;bottom: 0;width: 100%;}
-.common-filer-footer a{width: 70px;height: 30px;position: absolute;border-radius: 2px;line-height:30px;text-align: center;}
+ .common-filer-footer{height: 50px;background: #f5f5f5;position: absolute;bottom: 0;width: 100%;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;}
+.common-filer-footer a{width: 70px;height: 30px;position: absolute;border-radius: 2px;line-height:30px;text-align: center;box-sizing: border-box;}
 .common-filer-footer .resetBtn{left: 20px;top: 10px;border:1px solid #0d53a4; color: #0d53a4;}
 .common-filer-footer .confirmBtn{background: #0D53A4;color: white;right: 20px;top: 10px;}
 .common-filer-footer .cancleBtn{top: 10px;right: 110px;border:1px solid #0d53a4; color: #0d53a4;}
 
 /*头部*/
 .topline{background:linear-gradient(to right,#0d53a4,#00bdc9);height: 5px;border-top-left-radius: 5px;border-top-right-radius: 5px;}
-.common-head{height: 45px;line-height: 45px;position: relative;font-size: 14px;font-weight: 400;color: #000;}
-.common-head span{margin-left: 20px;}
-.common-head .logo{color: #808080;}
+.common-head{height: 45px;line-height: 45px;position: relative;font-size: 14px;}
+.common-head span{margin-left:20px;}
+.common-head .logo{color:#000;}
 .common-head .close{position: absolute;right: 10px;height: 100%;width: 45px;top: 0;text-align: right;cursor: pointer;}
 
 /*折叠框*/
@@ -75,7 +86,7 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 
 
 /*单选按钮*/
-.radio{display: inline-block;cursor: pointer;background: url("/static/images/contentFilter/selecte-not.png") no-repeat 0px -12px; padding-left: 12px;height: 12px;line-height: 12px;border-top: 5px solid white;border-bottom: 5px solid white;}
+.radio{display: inline-block;cursor: pointer;background: url("/static/images/contentFilter/selecte-not.png") no-repeat 0px -12px; padding-left: 17px;height: 12px;line-height: 12px;border-top: 5px solid white;border-bottom: 5px solid white;}
 .radio.active{background-position: 0 0;}
 
 #filter-model .combo-select{height: 21px;}
@@ -83,27 +94,32 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 
 /*-------------------------公共部分-----------------------------*/
 
-#contentChooser{font-size: 12px;width: 400px;height:440px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;}
+#contentChooser{font-size: 12px;width: 400px;height:475px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;}
+#contentChooser .contentChooser_head .flag{margin-left:10px}
 #contentChooser .ui-tabs-nav .ui-tabs-tab{width: 200px;}
 #contentChooser #common{padding-top: 10px;font-size: 10px;}
+#contentChooser #common input[type=checkbox]{float: left;margin-top: 3px;}
 #contentChooser #common .commonSearchDiv{width: 360px;margin-left: 20px;}
 #contentChooser #common .commonSearchDiv .outer{border-radius: 21px;height: 21px;border: 1px solid #dedede;position: relative;}
 #contentChooser #common .commonSearchDiv .outer img{position: absolute;right: 5px;top: 5px;cursor: pointer;}
 #contentChooser #common .commonSearchDiv .outer input{height: 100%;width: 340px;margin-left: 5px;}
-#contentChooser #common .detailSearchData{width: 340px;margin-left: 30px;}
+#contentChooser #common .detailSearchData{width: 350px;margin-left: 30px;}
 #contentChooser #common .detailSearchData .dataList{overflow-y: auto;max-height: 150px;}
 #contentChooser #common .detailSearchData .dataList li{padding-top: 5px;}
 #contentChooser #common .detailSearchData .dataList li span{margin-left: 5px;}
 #contentChooser #common .handleBtns{padding: 10px 0px 20px 0;height: 18px;}
 #contentChooser #common .handleBtns .all{float: left;}
+#contentChooser #common .handleBtns .all>input,#contentChooser #common .handleBtns .not>input{margin-right: 5px}
 #contentChooser #common .handleBtns .not{float: right;}
 
 /* 摘要*/
 #contentChooser #common .summaryPanel{width: 348px;margin-left: 20px;border: 1px solid #dedede;background: #f5f5f5;padding-left: 10px;font-size: 10px;}
-#contentChooser #common .summaryPanel  p{border-bottom: 1px solid #dedede;color: #808080;}
+#contentChooser #common .summaryPanel p{color: #808080;height: 25px;line-height: 25px}
 #contentChooser #common .summaryPanel ul li a{color: #0d53a4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width: 300px;height: 100%;}
+#filter-model #contentChooser #common .summaryPanel .summary-list li{margin-top: 5px;}
 #filter-model #contentChooser #common .summaryPanel .summary-list .filedLi span{color: #808080;}
 #filter-model #contentChooser #common .summaryPanel .summary-list .selectedContentLi span{color: #808080;}
+#filter-model #contentChooser #common .summaryPanel .summary-list .conditionLi{margin-bottom: 5px;}
 #filter-model #contentChooser #common .summaryPanel .summary-list .conditionLi span.flag{color: #808080;height: 100%;}
 #filter-model #contentChooser #common .summaryPanel .summary-list .conditionLi a{height: 100%;}
 
@@ -150,10 +166,10 @@ html,body{height:100%;min-width: 1000px;color: #202020;}
 #number-filter .number-filter-body .condition-select-box .verticalLine{position: absolute;height: 23px;width: 1px;background: #dedede;top: 10px;left: 115px;}
 #number-filter .number-filter-body .condition-select-box .radiosBtns{position: absolute;top: 10px;left: 130px;height: 23px;}
 #number-filter .number-filter-body .condition-select-box .radiosBtns .value-select-float{float: left;}
-#number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box{width: 105px;height: 100%;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box{width: 110px;height: 100%;}
 #number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box .radio{float: left;}
 #number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box input{width: 86px;float: left;border: 1px solid #dedede;border-radius: 2px;height: 21px;margin-left: 5px;text-indent: 5px;}
-#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div{margin-left: 20px;width: 105px;}
+#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div{margin-left: 10px;width: 110px;}
 #number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .radio{float: left;}
 #number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .combo-select{float: left;width: 86px;height: 21px;margin-left: 5px;}
 

@@ -14,7 +14,7 @@
  				<p class="new-cube radio">新建cube</p>
  			</div>
  			<div class="cube-name-input-div">
- 				<span>数据cube名称:</span><input type="text" placeholder="请输入数据Cube名称"/>
+ 				<span>数据cube名称 : </span><input type="text" placeholder="请输入数据Cube名称" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/>
  			</div>
  			<div class="build-options">
  				<p class="title">构建选项</p>
@@ -23,8 +23,8 @@
  					<p class="radio global-save">局部保存</p>
  				</div>
  				<div class="more-content-div" style="display: none;">
- 					<p>更多设置(单个表数据量)</p>
- 					<label class="check-label"><input type="checkbox"/>行数</label><label class="text-label"><input type="text" /></label>
+ 					<p>更多设置 ( 单个表数据量 ) </p>
+ 					<label class="check-label"><input type="checkbox"/>行数</label><label class="text-label"><input type="text" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
  				</div>
  			</div>
 
