@@ -6,9 +6,7 @@ $(function(){
 //		$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val($(this).val());
 //	});
 	
-//	searchTipHandle($("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea"),["SUM","AVERAGE","MAX","MIN"]);
-	 
-	 
+//	searchTipHandle($("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea"),["SUM","AVERAGE","MAX","MIN"]); 
 });
 
 function searchTipHandle(needTipElement,allData){

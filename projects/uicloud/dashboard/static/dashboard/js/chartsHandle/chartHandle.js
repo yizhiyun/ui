@@ -75,6 +75,8 @@ function one_de_one_me_handle (chart_type_need) {
 			     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
 			         type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
 			     },
+			     backgroundColor:'rgba(255,255,255,0.8)',
+			     extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			     formatter: function (params) {			     	
 			         var tar;
 			         if (params[1].value != '-') {
@@ -83,13 +85,15 @@ function one_de_one_me_handle (chart_type_need) {
 			         else {
 			             tar = params[0];
 			         }
-			         var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" + tar.name + "</p>";
+					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p></div>";
 			         var needValue = tar.value;
 			         if(normalUnitValue != -1){
 			         	needValue = needValue.toFixed(normalUnitValue);
 			         }
-			         var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+tar.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +tar.seriesName+":  " + needValue+"</span></p>";
-			         return dimeNames + measureNames;
+			         var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
+			         return leftDiv + rightDiv;
+					 
+					
 			     }
 			 	},
 			    grid: {
@@ -222,15 +226,18 @@ function one_de_one_me_handle (chart_type_need) {
 					],
 					tooltip: {
 						trigger: 'item',
+						backgroundColor:'rgba(255,255,255,0.8)',
+			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 						formatter:function (params){
-						  var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" + params.name + "</p>";
+						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>占比:</p></div>";
+						  
 						  var needValue = params.value;
 						  if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  }
-			       		  var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2px;line-height:12px;background:"+params.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +params.seriesName+":  " + needValue +"</span></p>";
-			       		  var percentInfo = "<p style='font-size:10px;height:12px;padding:0 0 3px 13px;'>占比:   "+params.percent+"%</p>";
-			        		 return dimeNames + measureNames+percentInfo;
+						 var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>"+"<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.percent+"%</p></div>";
+						 
+			        		 return leftDiv + rightDiv;
 						}
 					},
 					toolbox: {
@@ -320,14 +327,17 @@ function one_de_one_me_handle (chart_type_need) {
 				],
 				tooltip:{
 					trigger:"axis",
+					backgroundColor:'rgba(255,255,255,0.8)',
+			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					formatter:function(params){
-						 var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" + params[0].name + "</p>";
+					
 						  var needValue = params[0].value;
 						  if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  }
-			       		  var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+params[0].color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +params[0].seriesName+":  " + needValue +"</span></p>";
-			        		 return dimeNames + measureNames;
+						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[0].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params[0].seriesName+":</span></p></div>";
+						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params[0].name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
+			        		 return leftDiv + rightDiv;
 					}
 				},
 				color:allColorsDict[currentColorGroupName],
@@ -493,6 +503,8 @@ function one_de_one_me_handle (chart_type_need) {
 				     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
 				         type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
 				     },
+				     backgroundColor:'rgba(255,255,255,0.8)',
+			    		 extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					 formatter: function (params) {			     	
 			         var tar;
 			         if (params[1].value != '-') {
@@ -505,9 +517,11 @@ function one_de_one_me_handle (chart_type_need) {
 					 if(normalUnitValue != -1){
 						 needValue = needValue.toFixed(normalUnitValue);
 					}
-			         var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" + tar.name + "</p>";
-			         var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+tar.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +tar.seriesName+":  " +needValue +"</span></p>";
-			         return dimeNames + measureNames;
+			          var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p></div>";
+						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
+						
+			         
+			         return leftDiv + rightDiv;
 			    		 }
 				 	},
 				    xAxis: {
@@ -725,18 +739,32 @@ function many_de_many_me_handle(chart_type_need){
 	       			textStyle:{
 	       				fontSize:12
 	       			},
+	       			backgroundColor:'rgba(255,255,255,0.8)',
+			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 	       			formatter:function(params){
-	       				var sumMeasure = "";
-	       				var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" + params[0].name + "</p>";
-	       					for(var i = 0;i < params.length;i++){
-	       						var needValue = params[i].value;
-	       						if(normalUnitValue != -1){
-						  	 		needValue = needValue.toFixed(normalUnitValue);
-						 		 }
-	       						var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+params[i].color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +params[i].seriesName+":  " + needValue+"</span></p>";
-	       						sumMeasure += measureNames;
-	       					}
-			        			 return dimeNames + sumMeasure;
+						var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+						for(var i = 0;i < all_dimensionality.length;i++){
+							var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
+							leftDiv+=aP;
+						}
+//						
+       					for(var i = 0;i < params.length;i++){
+       						var needValue = params[i].value;
+       						if(normalUnitValue != -1){
+					  	 		needValue = needValue.toFixed(normalUnitValue);
+					 		 }
+       						leftDiv += "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[i].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params[i].seriesName+":</span></p>";
+							if(i == 0){
+								for(var k = 0;k < params[i].data.theDimeInfo.length;k++){
+									rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params[i].data.theDimeInfo[k]+"</p>";
+								}
+							}
+							rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+       					}
+       					leftDiv+= "</div>";
+       					rightDiv+= "</div>";
+			        			 return leftDiv + rightDiv;
 					}
 	    			 }, 	
 	    			legend: {
@@ -744,9 +772,7 @@ function many_de_many_me_handle(chart_type_need){
 	       		 	left:"center",
 	       		 	bottom:0
 	    			},
-	    			 grid: {
-			        containLabel: true
-			    },
+	    			grid: [],
 			    color:allColorsDict[currentColorGroupName],
 			    
 				toolbox: {
@@ -766,23 +792,31 @@ function many_de_many_me_handle(chart_type_need){
 				},
 	    			 xAxis:[],
 	    			 yAxis:[
-	    			 	{
-	    			 		type:"value"
-	    			 	},
+//	    			 	{
+//	    			 		type:"value"
+//	    			 	},
 	    			 ],
 	    			 series:[]
 				};
 				var measure_show_data_arr = [];
 				var dimensionality_show_data_arr = [];
-				
+				var  valueMax = data[0][drag_measureCalculateStyle[all_measure[0]]];
 				for(var i = 0; i < data.length;i++){
+					
 					var aData = data[i];
+					var theDimeInfo = [];
+					for(var k = 0;k < all_dimensionality.length;k++){
+						theDimeInfo.push(aData[all_dimensionality[k]]);
+					}
 					for(var measure_i = 0;measure_i < all_measure.length;measure_i++){
 						var aMeasure = all_measure[measure_i];
+						if(valueMax < aData[drag_measureCalculateStyle[aMeasure]]){
+							valueMax = aData[drag_measureCalculateStyle[aMeasure]];
+						}
 						if(!measure_show_data_arr[measure_i]){
-							measure_show_data_arr[measure_i] = [{"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}];
+							measure_show_data_arr[measure_i] = [{"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo}];
 						}else{
-							measure_show_data_arr[measure_i].push({"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
+							measure_show_data_arr[measure_i].push({"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo});
 						}
 					}
 					for(var dimensionality_i = 0;dimensionality_i < all_dimensionality.length;dimensionality_i++){
@@ -802,8 +836,6 @@ function many_de_many_me_handle(chart_type_need){
 						nameGap:25,
 						type: 'category',
 						boundaryGap:false,
-						position:"bottom",
-						offset:25*(dimensionality_show_data_arr.length - 1 - i),
 						data:dimensionality_show_data_arr[i]	,
 						axisLabel:{
 							rotate:-15,
@@ -811,9 +843,19 @@ function many_de_many_me_handle(chart_type_need){
 							interval:0,
 							color:"black"
 						},
+						gridIndex:dimensionality_show_data_arr.length - 1 - i
 					}
+					var aGrid = {
+						containLabel:true,
+					}
+					aGrid["left"] = "10%";
+					aGrid["bottom"] = 60 + 20* i;
+					if(i != dimensionality_show_data_arr.length - 1){
+						aGrid["tooltip"] = {show:false};
+					}
+					option["grid"].push(aGrid);
 					option["xAxis"].push(obj);
-					option["yAxis"].push({type:"value",show:false,min:10,max:80});
+					option["yAxis"].push({type:"value",show:i == dimensionality_show_data_arr.length - 1,min:0,max:valueMax,gridIndex:dimensionality_show_data_arr.length - 1 - i});
 					dataZoomXindexArray.push(i);
 				}
 				for(var i = 0; i < measure_show_data_arr.length;i++){
@@ -930,14 +972,17 @@ function comparisonStrip_generate_fun(){
 					tooltip: {
 						show: true,
 						trigger: 'item',
+						backgroundColor:'rgba(255,255,255,0.8)',
+			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 						formatter:function(params){
-							var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" + params.name + "</p>";
 							var needValue = params.value;
 							  if(normalUnitValue != -1){
 							  	 needValue = needValue.toFixed(normalUnitValue);
-							  }
-			       		  	var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+params.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +params.seriesName+":  " + needValue+"</span></p>";
-			        			 return dimeNames + measureNames;
+							  }			       		  	
+			       		  	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[0]+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p></div>";
+						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
+			       		  	
+			        			 return leftDiv + rightDiv;
 						}
 					},
 					grid: [{
@@ -1270,9 +1315,9 @@ function comparisonStrip_generate_fun(){
    					color:allColorsDict[currentColorGroupName],
 					tooltip : {
 	        				trigger: 'item',
+	        				backgroundColor:'rgba(255,255,255,0.8)',
+			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 	        				formatter:function(params){
-	        					
-	        					var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" +  params["data"]["name"] + "</p>";
 	        					var val = params.value;
 	        					if (bar_type == "percentage_liner" || bar_type == "percentage_bar") {
 	        						val = (Number(val) * 100).toFixed(2) + "%";
@@ -1282,8 +1327,20 @@ function comparisonStrip_generate_fun(){
 						  	 		val = val.toFixed(normalUnitValue);
 						 		 }
 	        					}
-			       		  	var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+params.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +params.seriesName+":  " + val+"</span></p>";
-			        			 return dimeNames + measureNames;
+	        					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+							var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+							for(var i = 0;i < all_dimensionality.length;i++){
+								var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
+								leftDiv+=aP;
+							}
+	        					leftDiv += "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+	        					for(var k = 0;k < params.data.theDimeInfo.length;k++){
+									rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
+							}
+							rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+val+"</p>";
+							leftDiv+= "</div>";
+       						rightDiv+= "</div>";
+			        			 return leftDiv + rightDiv;
 	        				}
 				  	},
 	    				 xAxis:[
@@ -1318,12 +1375,12 @@ function comparisonStrip_generate_fun(){
 			for (var i = 0;i < max;i++) {
 				var name;
 				var stack;
-				var data = [];
+				var seriesdata = [];
 				var helpSum = 0;
 				name = drag_measureCalculateStyle[measureName];
 				stack = "use";
 				for (var j =0;j < groupArr.length;j++) {
-						var val = measure_Data_arr[j][i]
+						var val = measure_Data_arr[j][i];
 						if (bar_type == "percentage_liner" || bar_type == "percentage_bar") {
 							val = (val / eval(measure_Data_arr[j].join("+"))).toFixed(4);
 						}else{
@@ -1331,7 +1388,19 @@ function comparisonStrip_generate_fun(){
 								valueMax = eval(measure_Data_arr[j].join("+"));
 							}
 						}
-						data.push({value:val / allValueUnitDict[valueUnitValue],"originValue":val,name:groupArr[j][i],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":groupArr[j][i]}});
+						var theDimeInfo = [];				
+						for(var k =0;k < all_dimensionality.length;k++){
+							var index = i;
+							if(j > 0){
+								for(var kk = 0;kk < j;kk ++){
+									index +=  groupArr[kk].length;
+								}
+							}
+							if(data[index]){
+								theDimeInfo.push(data[index][all_dimensionality[k]]);
+							}	
+						}
+						seriesdata.push({value:val / allValueUnitDict[valueUnitValue],"originValue":val,name:groupArr[j][i],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":groupArr[j][i]},"theDimeInfo":theDimeInfo});
 				}
 				
 				var obj = {
@@ -1358,7 +1427,7 @@ function comparisonStrip_generate_fun(){
 			                 },
 						}
 					},
-					data:data,
+					"data":seriesdata,
 					z:3
 				}
 				option["series"].push(obj);
@@ -1416,7 +1485,6 @@ function comparisonStrip_generate_fun(){
 							type:"bar",
 							xAxisIndex:k,
 							yAxisIndex:k,
-//							"barCategoryGap":5,
 							"data":[{"value":valueMax / allValueUnitDict[valueUnitValue],"originValue":valueMax}],
 							itemStyle:{
 								normal:{
@@ -1498,7 +1566,7 @@ function comparisonStrip_generate_fun(){
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
-			            endValue:15,
+			            endValue:10,
 			    			},
 			    			{
 			    			type: 'slider',
@@ -1522,7 +1590,7 @@ function comparisonStrip_generate_fun(){
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
-			            endValue:15,
+			            endValue:10,
 			            orient:"horizontal",
 				        bottom:25
 			            
@@ -1590,7 +1658,7 @@ function comparisonStrip_generate_fun(){
 							"fixed":false,
 							"draggable":true,
 							"category":categorys.hasObject("name",aData[need_dimensionality[0]]),
-							"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},
+							"dirllInfo":{"currentField":all_dimensionality[index],"currentValue":aData[all_dimensionality[index]]},
 							label:{
 								normal:
 								{
@@ -1656,20 +1724,25 @@ function comparisonStrip_generate_fun(){
 				},
 				color:allColorsDict[currentColorGroupName],
 				tooltip:{
+					backgroundColor:'rgba(255,255,255,0.8)',
+			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					formatter:function(params){
 						if(params["dataType"] == "edge"){
-							var name = params["name"];
-							var nameArr = name.split(" > ");
-							var ori = nameArr[0].split("_YZYPD_");
-							var target = nameArr[1].split("_YZYPD_");
-							return ori[ori.length - 2] + " > "+ target[target.length - 2];
+//							var name = params["name"];
+//							var nameArr = name.split(" > ");
+//							var ori = nameArr[0].split("_YZYPD_");
+//							var target = nameArr[1].split("_YZYPD_");
+//							return ori[ori.length - 2] + " > "+ target[target.length - 2];
 						}else{
-							var names = params["name"].split("_YZYPD_");
 							var needValue = params.value;
 							if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  	}
-							return names[names.length - 2]+ "<br/>" + params["marker"]+ params["seriesName"] + ": " + needValue;
+							var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+params.data.dirllInfo.currentField+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p></div>";
+							
+							var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.dirllInfo.currentValue+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
+							return leftDiv + rightDiv;
+								
 						}
 						
 					},
@@ -1725,6 +1798,10 @@ function comparisonStrip_generate_fun(){
 			 var valueMax = 0;
 			for(var i = 0;i < data.length;i++){
 				var aData = data[i];
+				var theDimeInfo = [];
+				for(var k = 0;k < all_dimensionality.length;k++){
+					theDimeInfo.push(aData[all_dimensionality[k]]);
+				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
 						valueMax = aData[drag_measureCalculateStyle[all_measure[j]]];
@@ -1735,7 +1812,7 @@ function comparisonStrip_generate_fun(){
 							"type":"bar",
 							"xAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
 							"yAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
+							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
 							label:{
 								normal:{
 									show:true,
@@ -1752,7 +1829,7 @@ function comparisonStrip_generate_fun(){
 							z:3
 						};
 					}else{
-						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
+						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
 					}
 				}
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
@@ -1861,12 +1938,27 @@ function comparisonStrip_generate_fun(){
 			        axisPointer: { // 坐标轴指示器，坐标轴触发有效
 			            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
 			        },
+			        backgroundColor:'rgba(255,255,255,0.8)',
+			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			        formatter:function(params){
 			        		var needValue = params.value;
 						  if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  }
-			       	 	return params.name+ "<br/>" + params["marker"]+ params["seriesName"] + ": " + needValue;
+						var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+						for(var i = 0;i < all_dimensionality.length;i++){
+							var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
+							leftDiv+=aP;
+						}
+						leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+						for(var k = 0;k < params.data.theDimeInfo.length;k++){
+                             rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
+                        }
+                         rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+                         leftDiv+="</div>";
+                         rightDiv+= "</div>";
+                         return leftDiv+rightDiv;
 			        },
 			        textStyle:{
 			        		fontSize:12
@@ -1949,6 +2041,10 @@ function comparisonStrip_generate_fun(){
 			
 			for(var i = 0;i < data.length;i++){
 				var aData = data[i];
+				var theDimeInfo = [];
+				for(var k = 0;k < all_dimensionality.length;k++){
+					theDimeInfo.push(aData[all_dimensionality[k]]);
+				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
 						valueMax = aData[drag_measureCalculateStyle[all_measure[j]]];
@@ -1959,7 +2055,7 @@ function comparisonStrip_generate_fun(){
 							"type":"bar",
 							"yAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
 							"xAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
+							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
 							z:3,
 							label:{
 								normal:{
@@ -1975,7 +2071,7 @@ function comparisonStrip_generate_fun(){
 								}
 							},};
 					}else{
-						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
+						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
 					}
 				}
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
@@ -2082,12 +2178,27 @@ function comparisonStrip_generate_fun(){
 			        axisPointer: { // 坐标轴指示器，坐标轴触发有效
 			            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
 			        },
+			       backgroundColor:'rgba(255,255,255,0.8)',
+			    	   extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			       formatter:function(params){
 			        		var needValue = params.value;
 						  if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  }
-			       	 	return params.name+ "<br/>" + params["marker"]+ params["seriesName"] + ": " + needValue;
+			       	 	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+						for(var i = 0;i < all_dimensionality.length;i++){
+							var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
+							leftDiv+=aP;
+						}
+						leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+						for(var k = 0;k < params.data.theDimeInfo.length;k++){
+                             rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
+                        }
+                         rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+                         leftDiv+="</div>";
+                         rightDiv+= "</div>";
+                         return leftDiv+rightDiv;
 			        },
 			        textStyle:{
 			        		fontSize:12
@@ -2200,18 +2311,29 @@ function comparisonStrip_generate_fun(){
 		    		textStyle:{
 		    			fontSize:12	
 		    		},
+		    		backgroundColor:'rgba(255,255,255,0.8)',
+			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 		    		formatter:function(params){
-					var sumMeasure = "";
-	       			var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" + params.name + "</p>";
+					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+					var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+					for(var i = 0;i < all_measure.length;i++){
+						var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_measure[i]+":</p>";
+						leftDiv+=aP;
+						var aStyle = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+drag_measureCalculateStyle[all_measure[i]]+"</p>";
+						rightDiv+=aStyle;
+					}
+					
    					for(var i = 0;i < params.value.length;i++){
    						var needValue = params.value[i];
    						if(normalUnitValue != -1){
 				  	 		needValue = needValue.toFixed(normalUnitValue);
 				 		 }
-   						var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+params.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +indicator[i].name+":  " + needValue+"</span></p>";
-   						sumMeasure += measureNames;
+						leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+indicator[i].name+":</span></p>";
+						rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
    					}
-	        			 return dimeNames + sumMeasure;
+   					leftDiv+="</div>";
+                     rightDiv+= "</div>";
+	        			 return leftDiv + rightDiv;
 					
 		    		}
 		    		
@@ -2238,7 +2360,7 @@ function comparisonStrip_generate_fun(){
 		        itemGap:30
 			},
 		    radar: [{
-		        shape: 'circle',
+//		        shape: 'circle',
 		        indicator:indicator,
 		        triggerEvent:true,
 		    }],
@@ -2426,7 +2548,7 @@ function chartAPartDidClickedFunction(params){
 		return;
 	}
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList").empty();
-	$("#dashboard_content #dimensionality #dimensionality_show ul li.dimensionality_li div.dimensionality_list_main p span.dimensionality_list_text_left").each(function(index,ele){
+	$("#dashboard_content #dimensionality #dimensionality_show ul li.dimensionality_li div.dimensionality_list_main div span.dimensionality_list_text_left").each(function(index,ele){
 		var li = $("<li>"+$(ele).text()+"</li>");
 		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList").append(li);
 	});
