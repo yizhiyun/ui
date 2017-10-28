@@ -120,10 +120,10 @@ def convertBool(v1):
     return True
 
 
-def deleteCsvFromHdfs(fileTable, userName='myfolder', hdfsHost="spark-master0", nnPort="50070", rootFolder="/tmp/users"):
+def deleteCsvFromHdfs(fileName, userName='myfolder', hdfsHost="spark-master0", nnPort="50070", rootFolder="/tmp/users"):
     client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
-    csvUrl = '{0}/{1}/csv/{2}'.format(rootFolder, userName, fileTable)
-    parquetUrl = '{0}/{1}/parquet/{2}'.format(rootFolder, userName, fileTable)
+    csvUrl = '{0}/{1}/csv/{2}'.format(rootFolder, userName, fileName)
+    parquetUrl = '{0}/{1}/parquet/{2}'.format(rootFolder, userName, fileName)
 
     if client.exists(csvUrl):
         client.delete(csvUrl, recursive=True)

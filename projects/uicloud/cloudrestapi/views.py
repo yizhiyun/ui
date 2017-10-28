@@ -583,15 +583,13 @@ def recordCol(request, tableName):
 
 
 @api_view(['POST'])
-def deleteCsv(request, fileName, tableName):
+def deleteCsv(request, fileName):
     '''
     '''
     jsonData = request.data
     if request.method == 'POST':
-        fileTable = "{0}/{1}".format(fileName, tableName)
-        logger.debug("fileTable: {0}".format(fileTable))
 
         userName = 'myfolder' if "username" not in jsonData.keys() else jsonData["username"]
-        deleteCsvFromHdfs(fileTable, userName)
+        deleteCsvFromHdfs(fileName, userName)
 
         return JsonResponse({'status': 'success'})
