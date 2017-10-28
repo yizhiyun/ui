@@ -211,7 +211,6 @@ $(function(){
 	});
 	
 	doProhibit();
-
 });
 	function doProhibit() {
 		if(window.Event)

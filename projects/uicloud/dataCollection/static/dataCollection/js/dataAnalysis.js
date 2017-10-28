@@ -163,6 +163,30 @@ function updateDBListFromNetwork(){
           }
           var detailInfo = dbPaltList[key];
           var li = $("<li class='dbtype'><img src= '/static/dataCollection/images/data.png' alt='' /><span>"+detailInfo.dbtype+"-"+detailInfo.dbuser+"-"+detailInfo.dbport+"</span></li>");
+          var moreHandleBtn = $("<div class='moreHanldeBtn'><img src='/static/dashboard/img/select_tra.png'></div>");
+          li.append(moreHandleBtn);
+          moreHandleBtn.unbind("click");
+          moreHandleBtn.click(function(event){
+          	event.stopPropagation();
+          	var moreConnectHandle = $("<ul id='connectMoreHanlde'><li class='rename'>重命名</li><li class='editConnect'>编辑连接</li><li class='removeConnect'>移除</li></ul>");
+          	$(this).parent("li").append(moreConnectHandle);
+          	moreConnectHandle.find("li").unbind("click");
+          	moreConnectHandle.find("li").click(function(event){
+	          	var connectInfo = $(this).parent("#connectMoreHanlde").parent("li");
+	          	if($(this).hasClass("removeConnect")){
+	          		$(".main .rightConent #analysisContainer .leftSlide #dataSet .dataSetDetail .dbDataShow[dbindex="+connectInfo.attr("dbindex")+"]").remove();
+	          		connectInfo.remove();
+	          		$(this).parent("#connectMoreHanlde").remove();
+	          	}
+         	 });
+          });
+          
+          $(document).click(function(event){
+          	event.stopPropagation();
+          	$(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").remove();
+          	$(".main .rightConent #analysisContainer .leftSlide #connectDirector .conn #addSourceSelects").hide();
+          });
+          
           $("#analysisContainer .leftSlide #connectDirector ul.paltFormList").append(li);
           li.data("dbIndex",key);
           li.attr("dbIndex",key);

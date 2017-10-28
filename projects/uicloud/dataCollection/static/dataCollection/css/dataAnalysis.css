@@ -2,13 +2,6 @@
  	font-family: SimSun; 
   	src: url("../../font/simsun.ttf"); 
 } 
-
-
-
-
-
-
-
 #analysisContainer{position: relative;}
 #analysisContainer .leftSlide{min-width: 200px;max-width: 300px;width: 200px;background: white;font-size: 12px;float: left;border-top:1px solid #f1f2f4;position: relative;}
 #foldSideBtn{position: absolute;left: 193px;top: 400px;cursor: pointer; width: 14px;height: 38px;z-index: 300;}
@@ -16,8 +9,14 @@
 #connectDirector .conn{color: #808080;position: relative;padding-left: 10px;}
 #connectDirector .conn .btn{position: absolute;right: 10px;width: 40px;top: 0;text-align: right;cursor: pointer;}
 #connectDirector .paltFormList{padding-left: 10px;}
-#connectDirector .paltFormList li{padding-top: 20px;}
-#connectDirector .paltFormList li span{display: inline-block;margin-left: 10px;}
+#connectDirector .paltFormList>li{padding-top: 10px;padding-bottom: 10px;height: 13px;position: relative;}
+#connectDirector .paltFormList li span{display: inline-block;margin-left: 10px;vertical-align: top;line-height: 13px;}
+#connectDirector .paltFormList li .moreHanldeBtn{width: 30px;height: 100%;float: right;cursor: pointer;text-align: center;line-height: 13px;}
+#connectDirector .paltFormList li .moreHanldeBtn img{vertical-align: middle;}
+#connectDirector .paltFormList li #connectMoreHanlde{position: absolute;width: 60px;border:1px solid #dedede;border-bottom: 0;background: white;left: 180px;top: 23px;z-index: 9999;}
+#connectDirector .paltFormList li #connectMoreHanlde li{text-align: center;font-size: 12px;line-height: 22px;height: 21px;border-bottom: 1px solid #dedede;cursor: pointer;}
+#connectDirector .paltFormList li #connectMoreHanlde li:hover{background: #dedede;}
+
 #connectDirector .line{height: 1px;background: #dedede;margin-top: 20px;}
 #dataSet .dataSetTitle{padding-left: 10px;color: #808080;padding-right: 10px;height: 36px;padding-top: 4px;line-height: 36px;}
 #dataSet .dataSetTitle div{float: right;height: 100%;cursor: pointer;}
@@ -26,9 +25,6 @@
 #dataSet .detailDataSetList  li .dataSetItemTitle img{padding-bottom: 3px;}
 #dataSet .detailDataSetList  li .dataSetItemTitle span{display: inline-block;margin-left: 10px;}
 #dataSet .detailDataSetList .dataSetDetail{padding-left: 30px;padding-right: 10px;}
-
-
-
 #dataSet .detailDataSetList .dataSetDetail .dbDataShow .combo-select{height: 21px;}
 #dataSet .detailDataSetList .dataSetDetail .dbDataShow .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables .buildTableTitle{color: #808080;}
