@@ -129,12 +129,31 @@ function dashboardReadySumFunction(isOnlyLoad){
 	//判断在仪表板是否删除过视图 使仪表板同步
 	if(statementsToView){
 		$("#dashboard_content #new_view ul .edit_list").each(function(index,ele){
-			if(preClickView[$(ele).find("span").text()] == undefined){
-				$(ele).find(".folderview_li_del_btn").trigger("click");
+			if(tempSaveDeleteViewDict["onlyFolder"] != undefined){
+				if($.inArray($(ele).find("span").text(),tempSaveDeleteViewDict["onlyFolder"]) != -1){
+					$(ele).find(".folderview_li_del_btn").trigger("click");
+					delete preClickView[$(ele).find("span").text()];
+				}
+			}else if(tempSaveDeleteViewDict["onlyParentFolder"] != undefined){
+				for(var i = 0; i < tempSaveDeleteViewDict["onlyParentFolder"].length; i++){
+					if($(ele).find("span").text().split("-")[0] == tempSaveDeleteViewDict["onlyParentFolder"][i]){
+						$(ele).find(".folderview_li_del_btn").trigger("click");
+						delete preClickView[$(ele).find("span").text()];
+					}
+				}
+			}else{
+					$(ele).find(".folderview_li_del_btn").trigger("click");
+					delete preClickView[$(ele).find("span").text()];
+			}
 
+			if(index == $("#dashboard_content #new_view ul .edit_list").length){
+				$.post("../dashboard/getAllData",{"username":username},function(result){
+					ajax_data_post = result;
+					statementsToView = false;
+				})
 			}
 		})
-		// statementsToView = false;
+		
 		return;
 	}
 
@@ -487,7 +506,7 @@ function dashboardReadySumFunction(isOnlyLoad){
 		}
 	})
 
-
+	if_or_load = true;
 	}
 
 	 // 创建左侧列表一个指标元素

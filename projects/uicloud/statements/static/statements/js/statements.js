@@ -98,7 +98,13 @@ state_left_bar_close = false,
 
 toIfChangeSecond = true,
 
-onlyRunOne = true;
+onlyRunOne = true,
+
+//记录已经删除的视图
+tempSaveDeleteView = [],
+
+
+tempSaveDeleteViewDict = {};
 
 
 function satetementsReadySumFunction(isOnlyLaod){
@@ -315,7 +321,7 @@ function leftNavClick(){
 				if($(".state_folder").length != 0){
 					var ajax_dict_yes_s = {"username":username,"datatype":"parentfolder","recursive":"yes","defaultparent":"default"};
 					var ajax_dict_no_s = {"username":username,"datatype":"parentfolder","recursive":"no","defaultparent":"default"};
-					delete_parentfolder_common(ajax_dict_yes_s,ajax_dict_no_s,false);
+					delete_parentfolder_common(ajax_dict_yes_s,ajax_dict_no_s,false,"all");
 				}
 			})
 
@@ -371,6 +377,19 @@ function click_state_show(thele){
 				//服务器更新数据
 				$.post("/dashboard/deleteFolder",{"datatype":"folder","foldername":now_folder_name,"username":username},function(result){{
 					if(result != ""){
+						if($("#dashboard_content #new_view ul .edit_list").length != 0){
+							tempSaveDeleteView = [];
+							tempSaveDeleteViewDict = {};
+							for(viewKey in preClickView){
+								if(viewKey.split("-")[0] == now_folder_name){
+									tempSaveDeleteView.push(viewKey);
+									statementsToView = true;
+
+								}
+							}
+							tempSaveDeleteViewDict["onlyFolder"] = tempSaveDeleteView;
+						}
+						
 						if(sessionStorage.getItem("edit_view_now")){
 								if(sessionStorage.getItem("edit_view_now").split(",")[1] == now_folder_name){
 									 sessionStorage.removeItem("edit_view_now");
@@ -477,7 +496,7 @@ function more_handle_click(){
 }
 
 //删除文件夹公共方法
-function delete_parentfolder_common(ajax_dict_yes,ajax_dict_no,ele){
+function delete_parentfolder_common(ajax_dict_yes,ajax_dict_no,ele,parentFolder){
 	//点击删除弹出框提示内容
 			if(ele){
 				$(".delete_area_text h4").text('确定删除文件夹 "'+$(ele).parent().parent().find(".view_show_name_save").text()+'"  ?');
@@ -501,7 +520,23 @@ function delete_parentfolder_common(ajax_dict_yes,ajax_dict_no,ele){
 			$(".delete_area_ok_btn").on("click",function(){
 				if($(".deltete_input_wrap").find("label").css("backgroundColor") == "rgb(13, 83, 164)"){
 					$.post("/dashboard/deleteFolder",ajax_dict_yes,function(result){
-						
+						if(parentFolder != "all" && parentFolder != undefined){
+							tempSaveDeleteView = [];
+							tempSaveDeleteViewDict = {};
+							statementsToView = true;
+							$(parentFolder).find(".statement_li").each(function(index,ele){
+								tempSaveDeleteView.push($(ele).find(".statement_li_content .view_show_name_save").text());
+							})
+							tempSaveDeleteViewDict["onlyParentFolder"] = tempSaveDeleteView;
+						}else{
+							tempSaveDeleteView = [];
+							tempSaveDeleteViewDict = {};
+							statementsToView = true;
+							tempSaveDeleteView.push("all");
+							tempSaveDeleteViewDict["all"] = tempSaveDeleteView;
+						}
+
+
 						if(result != ""){
 							if(sessionStorage.getItem("edit_view_now")){
 								if(ele){
@@ -548,6 +583,19 @@ function delete_parentfolder_common(ajax_dict_yes,ajax_dict_no,ele){
 							view_out_handle_init(result);
 							$("#delete_area").css("display","none");
 							$(".maskLayer").css("display","none");
+						// 	if($("#dashboard_content #new_view ul .edit_list").length != 0){
+						// 		for(var i = 0 ; i < )
+
+
+						// 		for(viewKey in preClickView){
+						// 			if(viewKey.split("-")[0] == now_folder_name){
+						// 				tempSaveDeleteView.push(viewKey);
+						// 				statementsToView = true;
+
+						// 			}
+						// 		}
+						// }
+
 						}
 					});
 					
@@ -567,7 +615,7 @@ function delete_btn_handle(){
 			var ajax_dict_yes = {"username":username,"datatype":"parentfolder","recursive":"yes","foldername":$(ele).parent().parent().find(".view_show_name_save").text(),"defaultparent":"default"};
 			var ajax_dict_no = {"username":username,"datatype":"parentfolder","recursive":"no","foldername":$(ele).parent().parent().find(".view_show_name_save").text(),"defaultparent":"default"};
 			
-			delete_parentfolder_common(ajax_dict_yes,ajax_dict_no,$(ele));
+			delete_parentfolder_common(ajax_dict_yes,ajax_dict_no,$(ele),$(ele).parents(".state_folder"));
 		})
 	})
 }
@@ -1167,8 +1215,14 @@ function view_drag_resize_handle(){
 							//服务器更新数据
 							$.post("/dashboard/deleteFolder",{"datatype":"view","tableid":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id"),"username":username},function(result){{
 								if(result != ""){
-									delete preClickView[$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_name_save").text()+"-"+$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").text()]
-									statementsToView = true;
+									if(preClickView[$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_name_save").text()+"-"+$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").text()] != undefined){
+										tempSaveDeleteView = [];
+										tempSaveDeleteViewDict = {};										
+										tempSaveDeleteView.push($(".statement_li").eq(show_table_arr[0]-1).find(".view_show_name_save").text()+"-"+$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").text());
+										statementsToView = true;
+									}
+									tempSaveDeleteViewDict["onlyFolder"] = tempSaveDeleteView;
+
 									if(sessionStorage.getItem("edit_view_now")){
 										if(sessionStorage.getItem("edit_view_now") == $(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content")){
 											 sessionStorage.removeItem("edit_view_now");
@@ -1179,7 +1233,6 @@ function view_drag_resize_handle(){
 									
 									for(var i = 0; i < $("#right_folder_show_are .view_folder_show_area ul li").length;i++){
 											$("#right_folder_show_are .view_folder_show_area ul li").eq(i).find(".new_view_main").removeClass().addClass("new_view_main clear bbv"+show_table_arr[0]+"view_show_class"+i+" view_handle_count"+i+"");
-							
 									}
 									var show_table_arr_one = $(ele).parent().parent().find(".new_view_main").attr("class").match(/\d+/g);
 									// console.log(gridster,view_show_id_arr)
@@ -1221,13 +1274,13 @@ function view_drag_resize_handle(){
 
 
 					var tempSaveViewEdit = $(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).data("data_result_content");
-
 					sessionStorage.setItem("edit_view_now",tempSaveViewEdit+","+String(show_table_arr[0]-1)+","+String(show_table_arr[1]));
 					$(".main .rightConent #pageDashboardModule").data("isFirstInto",true);
 					isDisaed = false;
 					if_or_load = false;
 					saveAddNewFile = true;
 					saveScameView = true;
+					statementsToView = false;
 					$("#project_style .module_style .color_control .otherColorsModule").data("openOrColse","close");
 					$("#dashboard_content #new_view ul .edit_list").remove();
 					changePageTo_navDashBoardView();

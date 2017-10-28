@@ -38,11 +38,11 @@ input:-webkit-autofill {
 
 #connectDataBaseInfo .userDiv{padding-top: 30px;padding-left: 20px;padding-right: 20px;}
 #connectDataBaseInfo .userDiv .userName{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
-#connectDataBaseInfo .userDiv .userName input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;}
+#connectDataBaseInfo .userDiv .userName input{box-sizing:border-box;height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;}
 #connectDataBaseInfo .userDiv .userPwd{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
-#connectDataBaseInfo .userDiv .userPwd input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;margin-left: 12px;}
+#connectDataBaseInfo .userDiv .userPwd input{box-sizing:border-box;height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;margin-left: 12px;}
 #connectDataBaseInfo .locationDiv .dbSid{width: 100%;display: inline-block;padding-top: 10px;height: 23px;}
-#connectDataBaseInfo .locationDiv .dbSid input{height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;margin-left: 20px;}
+#connectDataBaseInfo .locationDiv .dbSid input{box-sizing:border-box;height: 100%;border:1px solid #dedede;height: 21px;border-radius: 2px;width: 315px;margin-left: 20px;}
 
 #connectDataBaseInfo .dataBaseConnectForm_footer{width:100%;height: 50px;background: #F5F5F5;position: absolute;bottom: 0;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;}
 
