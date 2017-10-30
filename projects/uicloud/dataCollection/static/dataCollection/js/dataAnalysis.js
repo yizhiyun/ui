@@ -1207,7 +1207,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
         //移除拆分条件
         delete saveSplitTables[dbInfo.split("_YZYPD_")[2]];
 
-        var free_handle_table =store_split_tableArr[store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2])];
+        var free_handle_table = store_split_tableArr[store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2])];
 
         nowDelete_split_father.push(store_split_tableArr[store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2])]);
         //移除拆分的记录
@@ -1567,7 +1567,9 @@ function split_change_schame(split_table_name,data,now_click_table_name){
         //拆分后改变schame
         split_change_schame(dbArr_split[2],data,now_click_table_name);
 
-        if(everyTable_split_dict["coldickey"] != dbArr_split[1]+"_YZYPD_"+dbArr_split[2]){
+        // everyTable_split_dict = {};
+
+        // if(everyTable_split_dict["coldickey"] != dbArr_split[1]+"_YZYPD_"+dbArr_split[2]){
           everyTable_split_dict = {};
 
           everyTable_split_dict["source"] = dbArr_split[0];
@@ -1576,9 +1578,9 @@ function split_change_schame(split_table_name,data,now_click_table_name){
           store_split_tableArr.push(everyTable_split_dict);
 
           store_split_tableName_free.push(dbArr_split[2]);
-        }
+        // }
         
-        saveSplitTables[dbArr_split[2]] = [];
+        saveSplitTables[dbArr_split[2]] = saveSplitTables[dbArr_split[2]] || [];
         saveSplitTables[dbArr_split[2]].push(expressions_free_dict);
 
       },
