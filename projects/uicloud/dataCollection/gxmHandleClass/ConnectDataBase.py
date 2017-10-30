@@ -157,7 +157,7 @@ class ConnectDataBase():
 
     # 根据条件查询. 返回表格数据
 
-    def filterTableData(self, jsonData, mode, maxRowCount):
+    def filterTableData(self, jsonData, mode, maxRowCount=1000):
         '''
         '''
         sql = 'select * from {0} where 1=1 '.format(jsonData['tableName'])
