@@ -36,6 +36,10 @@ var saveAddNewFile = true;
 
 //记录判断是否重绘scama
 var saveScameView = true;
+
+//存储拆分过表格对应的拆分格式
+
+var saveSplitTables = {};
   /**
  * description : 得到字符串的字节长度;
  * @version 0.2;
@@ -735,6 +739,7 @@ function getTablesOfaDataBase(theSelect){
  // 构建数据点击事件
   $("#constructData").click(function(event){
     var tables = [];
+    console.log(free_didShowDragAreaTableInfo)
     for (var key in free_didShowDragAreaTableInfo) {
       var aTable = {};
       var dbArr = key.split("_YZYPD_");
@@ -749,6 +754,9 @@ function getTablesOfaDataBase(theSelect){
       }
         aTable["database"] = dbArr[1];
         aTable["tableName"] = dbArr[2];
+        if(saveSplitTables[dbArr[2]] != undefined && saveSplitTables[dbArr[2]].length > 0){
+            aTable["handleColList"] = saveSplitTables[dbArr[2]];
+        }
         aTable["columns"] = {};
         aTable["conditions"] = [];
         if(conditionFilter_record[key]){
@@ -756,7 +764,6 @@ function getTablesOfaDataBase(theSelect){
         }else{
           aTable["conditions"] = [];
         }
-        
         
         for (var i = 0;i < free_didShowDragAreaTableInfo[key].length;i++) {
         var originalFileds = free_didShowDragAreaTableInfo[key];
@@ -773,8 +780,9 @@ function getTablesOfaDataBase(theSelect){
           };
         }
       }
-        tables.push(aTable);    
-    }     
+        tables.push(aTable);
+
+    }
     var relationships = [];
     // 获取所有连接
     var cons = instance.getAllConnections();
@@ -902,6 +910,8 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
     postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check};
   }
   
+  console.log(postData)
+
   // 记录
   preBuildDataName = postData["outputs"]["outputTableName"];
 
@@ -1552,6 +1562,9 @@ function split_change_schame(split_table_name,data,now_click_table_name){
           store_split_tableName_free.push(dbArr_split[2]);
         }
         
+        saveSplitTables[dbArr_split[2]] = [];
+        saveSplitTables[dbArr_split[2]].push(expressions_free_dict);
+
       },
       error:function(){
         spinner.stop();
