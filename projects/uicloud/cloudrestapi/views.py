@@ -580,3 +580,16 @@ def recordCol(request, tableName):
         curUserName = "myfolder"
         Singleton().recordColType(curUserName, tableName, jsonData['column'], jsonData['coltype'])
         return JsonResponse({'status': 'success'})
+
+
+@api_view(['POST'])
+def deleteCsv(request, fileName):
+    '''
+    '''
+    jsonData = request.data
+    if request.method == 'POST':
+
+        userName = 'myfolder' if "username" not in jsonData.keys() else jsonData["username"]
+        deleteCsvFromHdfs(fileName, userName)
+
+        return JsonResponse({'status': 'success'})

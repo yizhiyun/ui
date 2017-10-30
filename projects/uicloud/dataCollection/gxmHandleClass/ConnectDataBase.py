@@ -94,6 +94,7 @@ class ConnectDataBase():
             cursor = self.con.cursor()
             cursor.execute("select Name from Master..SysDatabases")
             rs = cursor.fetchall()
+            cursor.close()
             self.dataBasesRs = []
 
             for obj in rs:
@@ -125,6 +126,7 @@ class ConnectDataBase():
             try:
                 cursor = self.con.cursor()
                 rs = cursor.execute('select Table_name from User_tables').fetchall()
+                cursor.close()
                 tables = []
                 for obj in rs:
                     tables.append(obj[0])
@@ -142,6 +144,7 @@ class ConnectDataBase():
                 cursor = self.con.cursor()
                 cursor.execute('select Name from {0}.sys.tables'.format(dataBaseName))
                 rs = cursor.fetchall()
+                cursor.close()
                 tables = []
                 for obj in rs:
                     tables.append(obj[0])
@@ -776,6 +779,10 @@ class ConnectDataBase():
                     "_".join(handleCol['colnamelist']) + '_MERGE%s' % (1 + countMergename): conversionList[0]
                 })
 
+        try:
+            cursor.close()
+        except Exception:
+            pass
         return results
 
     def conversionCols(self, handleCol, key):
