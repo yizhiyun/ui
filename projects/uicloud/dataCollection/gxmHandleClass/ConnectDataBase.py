@@ -518,11 +518,16 @@ class ConnectDataBase():
                             list1 = key.split('_')
                             lastName = list1.pop(-1)
                             if lastName.startswith('PART'):
-                                num = int(lastName[4:])
+                                addnum = 0
                                 insertcol = '_'.join(list1)
                                 for i in range(len(results['schema'])):
-                                    if results['schema'][i]['field'] == insertcol:
-                                        results['schema'].insert(i + num, dic)
+                                    if results['schema'][i]['field'].startswith(insertcol + '_PART'):
+                                        addnum = i
+                                    if addnum == 0:
+                                        for i in range(len(results['schema'])):
+                                            if results['schema'][i]['field'] == insertcol:
+                                                addnum = i
+                                results['schema'].insert(addnum + 1, dic)
                             elif lastName.startswith('MERGE'):
                                 num = int(lastName[5:])
                                 for i in range(len(results['schema'])):
@@ -695,10 +700,17 @@ class ConnectDataBase():
             if handleCol['method'] == 'split' or handleCol['method'] == 'limit':
 
                 # 如果之前该字段有拆分过的，算着往后排
+                # 一个是同名拆分字段计数， 一个是排列位置计数
                 countname = 0
+                arangecount = 0
                 for j in self.list[coldickey]:
                     if list(j.keys())[0].startswith(handleCol['colname'] + '_PART'):
-                        countname += 1
+                        arangecount += 1
+                        try:
+                            int(list(j.keys())[0].replace(handleCol['colname'] + '_PART', ''))
+                            countname += 1
+                        except Exception:
+                            pass
 
                 for i in range(len(conversionList)):
                     dic = {
@@ -709,7 +721,7 @@ class ConnectDataBase():
                     count = 0
                     for j in range(len(results['schema'])):
                         if results['schema'][j]['field'] == handleCol['colname']:
-                            results['schema'].insert(j + i + 1 + countname, dic)
+                            results['schema'].insert(j + i + 1 + arangecount, dic)
                             count += 1
                     if count == 0:
                         results['schema'].append(dic)
@@ -720,7 +732,11 @@ class ConnectDataBase():
                 countMergename = 0
                 for j in self.list[coldickey]:
                     if list(j.keys())[0].startswith("_".join(handleCol['colnamelist']) + '_MERGE'):
-                        countMergename += 1
+                        try:
+                            int(list(j.keys())[0].replace("_".join(handleCol['colnamelist']) + '_MERGE', ''))
+                            countMergename += 1
+                        except Exception:
+                            pass
 
                 dic = {
                     "field": "_".join(handleCol['colnamelist']) + '_MERGE%s' % (1 + countMergename),
@@ -761,7 +777,11 @@ class ConnectDataBase():
             countname = 0
             for j in self.list[key]:
                 if list(j.keys())[0].startswith(handleCol['colname'] + '_PART'):
-                    countname += 1
+                    try:
+                        int(list(j.keys())[0].replace(handleCol['colname'] + '_PART', ''))
+                        countname += 1
+                    except Exception:
+                        pass
 
             conversionList = []
 
@@ -914,10 +934,18 @@ class ConnectDataBase():
                         colname = i[colname].split('  as  ')[0]
                 aftlist.append(colname)
             logger.debug('trans_aftlist: {0}'.format(aftlist))
-            concatsql = 'concat('
-            for i in range(len(aftlist)):
-                concatsql += aftlist[i] + ','
-            concatsql = concatsql[:-1] + ")  as  " + "_".join(colnamelist) + '_MERGE%s' % (1 + countMergename)
+            concatsql = ''
+            if len(aftlist) > 1:
+                for i in range(len(aftlist)):
+                    if i == 0:
+                        concatsql = 'concat({0},{1})'.format(aftlist[i], aftlist[i + 1])
+                    if i == 1:
+                        continue
+                    else:
+                        concatsql = 'concat({0},{1})'.format(concatsql, aftlist[i])
+            else:
+                concatsql = aftlist[0]
+            concatsql = concatsql + "  as  " + "_".join(colnamelist) + '_MERGE%s' % (1 + countMergename)
             return [concatsql]
 
     def turnCols(self, colnamelist, key):
