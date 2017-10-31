@@ -31,19 +31,19 @@ def handleType(ctype):
     if not ctype:
         return 'nothing'
     else:
-        if re.search(ctype, '|'.join(strList), re.IGNORECASE):
+        if re.search('|'.join(strList), ctype, re.IGNORECASE):
             return 'str'
 
-        elif re.search(ctype, '|'.join(intList), re.IGNORECASE):
+        elif re.search('|'.join(intList), ctype, re.IGNORECASE):
             return 'int'
 
-        elif re.search(ctype, '|'.join(dateList), re.IGNORECASE):
+        elif re.search('|'.join(dateList), ctype, re.IGNORECASE):
             return 'date'
 
-        elif re.search(ctype, '|'.join(spaceList), re.IGNORECASE):
+        elif re.search('|'.join(spaceList), ctype, re.IGNORECASE):
             return 'space'
 
-        elif re.search(ctype, '|'.join(noneList), re.IGNORECASE):
+        elif re.search('|'.join(noneList), ctype, re.IGNORECASE):
             return 'none'
 
         else:
