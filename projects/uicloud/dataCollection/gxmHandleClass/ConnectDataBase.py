@@ -266,7 +266,7 @@ class ConnectDataBase():
                     logger.debug('exprSql: {0}'.format(exprSql))
                     cursor.execute(exprSql)
                     rs = cursor.fetchall()
-                    return rs
+                    return {"data": rs}
 
                 if mode == 'all' or mode == 'data':
                     sql += filtersql + mysqlstr
@@ -332,7 +332,7 @@ class ConnectDataBase():
                         for i in range(len(colList)):
                             dic[colList[i][0]] = data[i]
                         results.append(dic)
-                    return results
+                    return {"data": results}
 
                 if mode == 'all' or mode == 'data':
                     sql = sql[:6] + sqlserverstr + sql[6:] + filtersql + 'order by 1'
@@ -434,7 +434,7 @@ class ConnectDataBase():
                         for i in range(len(colList)):
                             dic[colList[i][0]] = data[i]
                         results.append(dic)
-                    return results
+                    return {"data": results}
 
                 if mode == 'all' or mode == 'data':
                     sql += filtersql + oracleToDate + oraclestr
@@ -925,7 +925,11 @@ class ConnectDataBase():
             countMergename = 0
             for j in self.list[key]:
                 if list(j.keys())[0].startswith("_".join(colnamelist) + '_MERGE'):
-                    countMergename += 1
+                    try:
+                        int(list(j.keys())[0].replace("_".join(colnamelist) + '_MERGE', ''))
+                        countMergename += 1
+                    except Exception:
+                        pass
 
             aftlist = []
             for colname in colnamelist:
