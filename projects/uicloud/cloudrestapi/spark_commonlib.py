@@ -142,6 +142,21 @@ def getDataFrameFromSourceSparkCode():
                 traceback.print_exc()
                 logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
                 return False
+        sign = 0
+        if "conditions" in jsonData.keys() and jsonData['conditions']:
+            fieldList = df1.schema.fields
+            columnList = []
+            filterColumnList = []
+            for field in fieldList:
+                columnList.append(field.name)
+            for condition in jsonData['conditions']:
+                if condition['columnName'] not in columnList:
+                    sign = 1
+                    break
+
+        if sign == 1:
+            df1 = splitDf(df1, jsonData)
+            df1 = rankSchema(df1, jsonData)
 
         # set the maxRow if it exists.
         maxRow = maxRowCount
@@ -154,8 +169,10 @@ def getDataFrameFromSourceSparkCode():
             df1 = filterDF(df1, jsonData)
         else:
             df1 = filterDF(df1.limit(maxRow), jsonData)
-        df1 = splitDf(df1, jsonData)
-        df1 = rankSchema(df1, jsonData)
+
+        if sign == 0:
+            df1 = splitDf(df1, jsonData)
+            df1 = rankSchema(df1, jsonData)
         return df1
     '''
 
@@ -171,10 +188,11 @@ def filterDataFrameSparkCode():
         """
         columnList = "*"
         logger.debug(u"tableDict:{0}".format(tableDict))
-        if 'columns' in tableDict.keys():
-            columnList = list(tableDict['columns'].keys())
-            logger.debug(u"columnList:{0}".format(columnList))
-            inDataFrame=inDataFrame.select(columnList)
+        logger.debug(u"schema:{0}".format(inDataFrame.schema.fields))
+        # if 'columns' in tableDict.keys():
+        #     columnList = list(tableDict['columns'].keys())
+        #     logger.debug(u"columnList:{0}".format(columnList))
+        #     inDataFrame=inDataFrame.select(columnList)
 
         if "conditions" in tableDict.keys():
             # add the specified conditions in the DataFrame
@@ -449,9 +467,9 @@ def splitDf():
                 if handleCol['method'] == 'split':
                     cutsymbol = handleCol['cutsymbol']
                     columnSql = "select {0} as temp from df".format(cutColName)
-                    list = spark.sql(columnSql).collect()
+                    listt = spark.sql(columnSql).collect()
                     countlist = []
-                    for i in list:
+                    for i in listt:
                         countlist.append(str(i['temp']).count(cutsymbol))
                     countlist.sort()
                     times = countlist[-1]
@@ -526,6 +544,11 @@ def splitDf():
                 inDataFrame = inDataFrame.join(df_part,
                                                eval('inDataFrame.{0}'.format(tempColId))==eval('df_part.{0}'.format(tempColId)))
                 inDataFrame = inDataFrame.drop(tempColId)
+
+        if 'columns' in tableDict.keys():
+            columnList = list(tableDict['columns'].keys())
+            logger.debug(u"columnList:{0}".format(columnList))
+            inDataFrame=inDataFrame.select(columnList)
         return inDataFrame
 
 
