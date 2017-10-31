@@ -38,16 +38,23 @@
 			<div id="dataSet">
 				<div class="dataSetTitle">
 					<span>数据集</span>
-					<div><img src= {% static "dataCollection/images/folder.png"%}  alt="" id="newFolder" title="新建文件夹"/></div>
-					<div><img src={% static "dataCollection/images/data_set.png"%} alt="" id="newSet" title="新建数据集"/></div>
+					<!--<div><img src= {% static "dataCollection/images/folder.png"%}  alt="" id="newFolder" title="新建文件夹"/></div>
+					<div><img src={% static "dataCollection/images/data_set.png"%} alt="" id="newSet" title="新建数据集"/></div>-->
 				</div>
 				<ul class="detailDataSetList">
 					<li id="baseSetTemplate">
-						<div class="dataSetItemTitle" openFlag="on">
+						<div class="didBuildTables" openFlag="on">
 							<img src= {% static "dataCollection/images/left_40.png"%} alt="" />
-							<span>默认数据集</span>
+							<span class="title">已构建数据表</span>
+							<ul class="tablesList"></ul>
 						</div>
-						<div class="theDataSetContent">
+						<div class="nowConnectedTables" openFlag="on">
+							<img src= {% static "dataCollection/images/left_40.png"%} alt="" />
+							<span class="title">数据表</span>
+							<div class="tablesList"></div>
+						</div>
+						
+						<!--<div class="theDataSetContent">
 								<div class="dataSetDetail">
 									<div class="didBuildTables">
 										<p class="buildTableTitle">已构建数据表</p>
@@ -55,7 +62,7 @@
 									</div>	
 								</div>
 								
-						</div>
+						</div>-->
 						
 					</li>
 				</ul>
