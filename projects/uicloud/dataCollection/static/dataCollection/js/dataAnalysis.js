@@ -36,6 +36,13 @@ var saveAddNewFile = true;
 
 //记录判断是否重绘scama
 var saveScameView = true;
+
+//存储拆分过表格对应的拆分格式
+
+var saveSplitTables = {};
+
+//记录拖拽行列显示的每个表的Scamne
+var saveTableScame = {};
   /**
  * description : 得到字符串的字节长度;
  * @version 0.2;
@@ -435,9 +442,6 @@ function handle_success_show_table(){
                 createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
 
                 spinner.stop();
-
-
-
       }
           }
         }); 
@@ -663,7 +667,7 @@ function getTablesOfaDataBase(theSelect){
           data:JSON.stringify(postData),
           success:function(data){
             if(data.status == "success"){
-              showDataTables(dataBaseName,tableName,data.results.schema,ui.offset.left,ui.offset.top,targetEle,dbPaltIndexForBack);
+                 showDataTables(dataBaseName,tableName,data.results.schema,ui.offset.left,ui.offset.top,targetEle,dbPaltIndexForBack);
             }
           }
       });
@@ -671,14 +675,14 @@ function getTablesOfaDataBase(theSelect){
   }
   
   var fixedSPlit_data =null;
-
+  var tempSaveDataField = [];
 
  // 创建可视化的表格
  function showDataTables(dataBaseName,tableName,data,uiLeft,uiTop,targetEle,dbPaltIndexForBack,if_or){
       
       if (data.length > 0) {
         var boxDiv = $("<div class='boxDiv'></div>");
-        
+        tempSaveDataField = [];
         boxDiv.css({
           left:(uiLeft - $(targetEle).offset().left) < 10 ? 10 : (uiLeft - $(targetEle).offset().left),
           top:(uiTop - $(targetEle).offset().top) < 10 ? 10 :(uiTop - $(targetEle).offset().top)
@@ -699,8 +703,12 @@ function getTablesOfaDataBase(theSelect){
             aLi[0].index = i; // 自定义属性，记录当前是第几个 li
             // 默认所有字段选中，都是可用的
             data[i]["isable"] = "yes";
+
+            tempSaveDataField.push(data[i]["field"]);
+
             tableList.append(aLi);
         }
+        saveTableScame[tableName]  = tempSaveDataField;
       }
       
         $(targetEle).append(boxDiv);
@@ -806,6 +814,7 @@ function getTablesOfaDataBase(theSelect){
  // 构建数据点击事件
   $("#constructData").click(function(event){
     var tables = [];
+    console.log(didShowDragAreaTableInfo,free_didShowDragAreaTableInfo)
     for (var key in free_didShowDragAreaTableInfo) {
       var aTable = {};
       var dbArr = key.split("_YZYPD_");
@@ -820,6 +829,11 @@ function getTablesOfaDataBase(theSelect){
       }
         aTable["database"] = dbArr[1];
         aTable["tableName"] = dbArr[2];
+        if(saveSplitTables[dbArr[2]] != undefined && saveSplitTables[dbArr[2]].length > 0){
+            aTable["handleColList"] = saveSplitTables[dbArr[2]];
+        }
+        aTable["SchemaList"] = saveTableScame[dbArr[2]];
+
         aTable["columns"] = {};
         aTable["conditions"] = [];
         if(conditionFilter_record[key]){
@@ -827,7 +841,6 @@ function getTablesOfaDataBase(theSelect){
         }else{
           aTable["conditions"] = [];
         }
-        
         
         for (var i = 0;i < free_didShowDragAreaTableInfo[key].length;i++) {
         var originalFileds = free_didShowDragAreaTableInfo[key];
@@ -844,8 +857,9 @@ function getTablesOfaDataBase(theSelect){
           };
         }
       }
-        tables.push(aTable);    
-    }     
+        tables.push(aTable);
+
+    }
     var relationships = [];
     // 获取所有连接
     var cons = instance.getAllConnections();
@@ -888,6 +902,7 @@ function getTablesOfaDataBase(theSelect){
       async: true,
       data:JSON.stringify(postData),
       success:function(data){
+        console.log(postData)
 //        var rs = data;
         if(data["status"] == "failed"){
           alert("请检查表格之间的联系");
@@ -973,6 +988,8 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
     postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check};
   }
   
+  console.log(postData)
+
   // 记录
   preBuildDataName = postData["outputs"]["outputTableName"];
 
@@ -1277,6 +1294,11 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       delete free_didShowDragAreaTableInfo[dbInfo];
       // 移除筛选条件
       deleteATableAllConditions(dbInfo);
+
+      //移除存储的Schema信息
+      delete saveTableScame[dbInfo.split("_YZYPD_")[2]];
+
+
       // 设置当前显示的 table 为空
 	 $("#tableDataDetailListPanel").attr("nowShowTable","none");
 	 // 清楚底部的表格
@@ -1286,7 +1308,10 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       if(store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2]) != -1){
         var nowDelete_split_father = [];
 
-        var free_handle_table =store_split_tableArr[store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2])];
+        //移除拆分条件
+        delete saveSplitTables[dbInfo.split("_YZYPD_")[2]];
+
+        var free_handle_table = store_split_tableArr[store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2])];
 
         nowDelete_split_father.push(store_split_tableArr[store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2])]);
         //移除拆分的记录
@@ -1355,7 +1380,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       data:JSON.stringify(post_splitData_arr),
       success:function(result){
         if(result["status"] == "success"){
-       console.log("删除成功");
+            console.log("删除成功");
         }
       }
   });
@@ -1670,11 +1695,12 @@ function split_change_schame(split_table_name,data,now_click_table_name){
 
         //拆分弹窗初始化
         splitWall_init();
-
         //拆分后改变schame
         split_change_schame(dbArr_split[2],data,now_click_table_name);
 
-        if(everyTable_split_dict["coldickey"] != dbArr_split[1]+"_YZYPD_"+dbArr_split[2]){
+        // everyTable_split_dict = {};
+
+        // if(everyTable_split_dict["coldickey"] != dbArr_split[1]+"_YZYPD_"+dbArr_split[2]){
           everyTable_split_dict = {};
 
           everyTable_split_dict["source"] = dbArr_split[0];
@@ -1683,8 +1709,11 @@ function split_change_schame(split_table_name,data,now_click_table_name){
           store_split_tableArr.push(everyTable_split_dict);
 
           store_split_tableName_free.push(dbArr_split[2]);
-        }
+        // }
         
+        saveSplitTables[dbArr_split[2]] = saveSplitTables[dbArr_split[2]] || [];
+        saveSplitTables[dbArr_split[2]].push(expressions_free_dict);
+
       },
       error:function(){
         spinner.stop();
@@ -2026,7 +2055,7 @@ function getFilterNeedAllData_fun(dbInfo){
 
   //页面刷新时清除拆分保存的数据
   window.onbeforeunload = function(){
-   if(store_split_tableArr.length != 0){
+   if(store_split_tableArr.length > 0){
         $.ajax({
           url:"/dataCollection/deleteTempCol",
           type:"post",

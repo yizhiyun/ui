@@ -191,6 +191,20 @@ The RESTful API Details of Generating New Table
                 },
                 ...
             ],
+            "handleColList": [
+                {
+                    "colname": <colname>,
+                    "method": <split/limit>,
+                    "cutsymbol": <cutsymbol>
+                },
+                ...
+            ],
+            # rank the schema
+            "SchemaList": [
+                <schema1>,
+                <schema2>,
+                ...
+            ],
             <otherProperty>:<otherValue>,
             ...
         },
@@ -253,7 +267,7 @@ The RESTful API Details of Generating New Table
                     "columnName": "col1",
                     "value": '1000'
                 }
-            ]
+            ],
         },
         {
             "source": "mysqlDB2",

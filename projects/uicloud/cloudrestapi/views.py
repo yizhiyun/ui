@@ -120,6 +120,15 @@ def generateNewTable(request):
                     },
                     ...
                 },
+                "handleColList": [
+                    {
+                        "colname": <colname>,
+                        "method": <split/limit>,
+                        "cutsymbol": <cutsymbol>
+                    },
+                    ...
+                ],
+                "SchemaList": ["schema1", "schema2", ...]
                 <otherProperty>:<otherValue>,
                 ...
             },
@@ -585,6 +594,7 @@ def recordCol(request, tableName):
 @api_view(['POST'])
 def deleteCsv(request, fileName):
     '''
+    删除hdfs上上传的文件
     '''
     jsonData = request.data
     if request.method == 'POST':

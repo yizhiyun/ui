@@ -59,7 +59,7 @@ def getDataFrameFromSourceSparkCode():
     return the spark code which provide the specialDataTypesEncoder class to be used.
     """
 
-    return filterDataFrameSparkCode() + '''
+    return filterDataFrameSparkCode() + splitDf() + '''
     def getDataFrameFromSource(jsonData, userTableUrl=None, removedColsDict={}, maxRowCount=10000):
         """
         get spark DataFrame once the input data source is valid.
@@ -142,6 +142,21 @@ def getDataFrameFromSourceSparkCode():
                 traceback.print_exc()
                 logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
                 return False
+        sign = 0
+        if "conditions" in jsonData.keys() and jsonData['conditions']:
+            fieldList = df1.schema.fields
+            columnList = []
+            filterColumnList = []
+            for field in fieldList:
+                columnList.append(field.name)
+            for condition in jsonData['conditions']:
+                if condition['columnName'] not in columnList:
+                    sign = 1
+                    break
+
+        if sign == 1:
+            df1 = splitDf(df1, jsonData)
+            df1 = rankSchema(df1, jsonData)
 
         # set the maxRow if it exists.
         maxRow = maxRowCount
@@ -154,6 +169,10 @@ def getDataFrameFromSourceSparkCode():
             df1 = filterDF(df1, jsonData)
         else:
             df1 = filterDF(df1.limit(maxRow), jsonData)
+
+        if sign == 0:
+            df1 = splitDf(df1, jsonData)
+            df1 = rankSchema(df1, jsonData)
         return df1
     '''
 
@@ -169,10 +188,11 @@ def filterDataFrameSparkCode():
         """
         columnList = "*"
         logger.debug(u"tableDict:{0}".format(tableDict))
-        if 'columns' in tableDict.keys():
-            columnList = list(tableDict['columns'].keys())
-            logger.debug(u"columnList:{0}".format(columnList))
-            inDataFrame=inDataFrame.select(columnList)
+        logger.debug(u"schema:{0}".format(inDataFrame.schema.fields))
+        # if 'columns' in tableDict.keys():
+        #     columnList = list(tableDict['columns'].keys())
+        #     logger.debug(u"columnList:{0}".format(columnList))
+        #     inDataFrame=inDataFrame.select(columnList)
 
         if "conditions" in tableDict.keys():
             # add the specified conditions in the DataFrame
@@ -409,4 +429,131 @@ def aggDataFrameSparkCode():
         if "alias" in operDict.keys():
             col = col.alias(operDict["alias"])
         return col
+    '''
+
+
+def splitDf():
+    '''
+    return dataframe which has split columns
+    '''
+    return '''
+    def splitDf(inDataFrame, tableDict):
+        from pyspark.sql.functions import monotonically_increasing_id
+
+        logger.debug(u"tableDict:{0}".format(tableDict))
+        if 'handleColList' in tableDict.keys():
+            tempColId = '{0}_{1}_id'.format(tableDict['database'], tableDict['tableName'])
+            tempColMap = {}
+            handleColList = tableDict['handleColList']
+            logger.debug(u"handleColList:{0}".format(handleColList))
+
+            for handleCol in handleColList:
+                inDataFrame.createOrReplaceTempView('df')
+                cutColName = handleCol['colname']
+                newNamePart = '{}_PART'.format(cutColName)
+
+                if cutColName in tempColMap.keys():
+                    cutColName = tempColMap[cutColName]
+
+                count = 0
+                for i in inDataFrame.schema.fields:
+                    if i.name.startswith(newNamePart):
+                        try:
+                            int(i.name.replace(newNamePart, ''))
+                            count += 1
+                        except Exception:
+                            pass
+
+                if handleCol['method'] == 'split':
+                    cutsymbol = handleCol['cutsymbol']
+                    columnSql = "select {0} as temp from df".format(cutColName)
+                    listt = spark.sql(columnSql).collect()
+                    countlist = []
+                    for i in listt:
+                        countlist.append(str(i['temp']).count(cutsymbol))
+                    countlist.sort()
+                    times = countlist[-1]
+                    sqlList = []
+                    if times == 0:
+                        sql = '{0} as {1}{2}'.format(cutColName, newNamePart, count + 1)
+                        sqlList.append(cutColName)
+                    else:
+                        for i in range(times):
+                            prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}{3}".format(
+                                    cutColName,
+                                    cutsymbol,
+                                    newNamePart,
+                                    i + 1 + count)
+                            aft = "substr({0}, instr({0}, '{1}')+1) as {2}{3}".format(
+                                    cutColName,
+                                    cutsymbol,
+                                    newNamePart,
+                                    i + 2 + count)
+                            sqlList.append(prev)
+                            if i == times - 1:
+                                sqlList.append(aft)
+                            cutColName = aft.split(' as ')[0]
+
+                elif handleCol['method'] == 'limit':
+                    indexList = handleCol['cutsymbol']
+                    sqlList = []
+                    if len(indexList) == 1:
+                        prev = "substr({0}, 1, {1}) as {2}{3}".format(
+                                cutColName,
+                                indexList[0],
+                                newNamePart,
+                                1 + count)
+                        aft = "substr({0}, {1}) as {2}{3}".format(
+                                cutColName,
+                                indexList[0] + 1,
+                                newNamePart,
+                                2 + count)
+                        sqlList.append(prev)
+                        sqlList.append(aft)
+                    else:
+                        for i in range(len(indexList)):
+                            if i == 0:
+                                sql = "substr({0}, 1, {1}) as {2}{3}".format(
+                                    cutColName,
+                                    indexList[i],
+                                    newNamePart,
+                                    i + 1 + count)
+                                sqlList.append(sql)
+                            else:
+                                sql = "substr({0}, {1}, {2}) as {3}{4}".format(
+                                    cutColName,
+                                    indexList[i - 1] + 1,
+                                    indexList[i] - indexList[i - 1],
+                                    newNamePart,
+                                    i + 1 + count)
+                                sqlList.append(sql)
+                                if i == len(indexList) - 1:
+                                    sql = "substr({0}, {1}) as {2}{3}".format(
+                                        cutColName,
+                                        indexList[i] + 1,
+                                        newNamePart,
+                                        i + 2 + count)
+                                    sqlList.append(sql)
+                sqlColStr = ''
+                for i in sqlList:
+                    sqlColStr += i + ','
+                    tempColMap[i.split(' as ')[1]] = i.split(' as ')[0]
+                df_part = spark.sql("select {0} from df".format(sqlColStr[:-1]))
+                inDataFrame = inDataFrame.withColumn(tempColId, monotonically_increasing_id())
+                df_part = df_part.withColumn(tempColId, monotonically_increasing_id())
+                inDataFrame = inDataFrame.join(df_part,
+                                               eval('inDataFrame.{0}'.format(tempColId))==eval('df_part.{0}'.format(tempColId)))
+                inDataFrame = inDataFrame.drop(tempColId)
+
+        if 'columns' in tableDict.keys():
+            columnList = list(tableDict['columns'].keys())
+            logger.debug(u"columnList:{0}".format(columnList))
+            inDataFrame=inDataFrame.select(columnList)
+        return inDataFrame
+
+
+    def rankSchema(inDataFrame, tableDict):
+        if 'SchemaList' in tableDict.keys():
+            inDataFrame = inDataFrame.select(tableDict['SchemaList'])
+        return inDataFrame
     '''
