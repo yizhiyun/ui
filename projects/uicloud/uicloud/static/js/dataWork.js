@@ -8,8 +8,7 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 		 finish(numberColumn_needValueInfo[tableInfo][field]);
 		return;
 	}
-	if(handleType == "dashBoard"){
-		var exprlist = [
+	var exprlist = [
 					{
 						"alias":"min","exprstr":"min("+field+")"
 					},
@@ -23,7 +22,7 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 						"alias":"len","exprstr":"count("+field+")"
 					}
 				];
-			if(fieldtype == "dateType"){
+	if(fieldtype == "dateType"){
 				 exprlist = [
 					{
 						"alias":"min","exprstr":"min("+field+")"
@@ -36,76 +35,32 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 					}
 				];
 			}
-		var handleDataPost = {
+	var handleDataPost = {
 			"expressions":{
 				"exprlist":exprlist
 			}
-		}
-		
-		$.ajax({
-			url:"/cloudapi/v1/tables/" +tableInfo+"/data",
-			type:"post",
-			dataType:"json",
-			contentType: "application/json; charset=utf-8",
-			async: true,
-			data:JSON.stringify(handleDataPost),
-			beforeSend:function(){
-	//			console.log("startSend");
-			},
-			success:function(data){
-				if(data.status == "success"){
-					var rs = data.results.data[0];
-					if(!numberColumn_needValueInfo[tableInfo]){
-						numberColumn_needValueInfo[tableInfo] = {};
-					}
-					numberColumn_needValueInfo[tableInfo][field] = rs;
-					finish(numberColumn_needValueInfo[tableInfo][field]);
-				}
-				
-			}
-		});
-		
-		
-		
-	}else if(handleType == "buildData"){
-			var exprlist = [
-					{
-						"alias":"min","exprstr":"min("+field+")"
-					},
-					{
-						"alias":"max","exprstr":"max("+field+")"
-					},
-					{
-						"alias":"averge","exprstr":"avg("+field+")"
-					},
-					{
-						"alias":"len","exprstr":"count("+field+")"
-					}
-				];
-			if(fieldtype == "dateType"){
-				 exprlist = [
-					{
-						"alias":"min","exprstr":"min("+field+")"
-					},
-					{
-						"alias":"max","exprstr":"max("+field+")"
-					},
-					{
-						"alias":"len","exprstr":"count("+field+")"
-					}
-				];
-			}
-			var dbArr = tableInfo.split("_YZYPD_");
-			var handleDataPost = {
+	}
+	var filterType = tableInfo.split("_YZYPD_")[0];
+	var postUrl = null;
+	 if( filterType == "hdfs"){
+	 	postUrl = "/cloudapi/v1/tables/" +tableInfo.split("_YZYPD_")[2]+"/data";
+	 }else if(filterType == "tmptables"){
+	 	
+	 }else{
+	 	postUrl = "/dataCollection/filterTable/data"
+	 	var dbArr = tableInfo.split("_YZYPD_");
+			handleDataPost = {
 			 "source":dbArr[0],
     			"database":dbArr[1],
     			"tableName":dbArr[2],
 			"expressions":{
 				"exprlist":exprlist
-			}
-		}
-		$.ajax({
-	      url:"/dataCollection/filterTable/data",
+				}
+		 	}
+	 }
+	 
+	 $.ajax({
+	      url:postUrl,
 	      type:"post",
 	      dataType:"json",
 	      contentType: "application/json; charset=utf-8",
@@ -113,7 +68,7 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 	      data:JSON.stringify(handleDataPost),
 	      success:function(data){
 	      	if(data.status == "success"){
-				var rs = data.results[0];
+				var rs = data.results.data[0];
 				if(!numberColumn_needValueInfo[tableInfo]){
 					numberColumn_needValueInfo[tableInfo] = {};
 				}
@@ -121,11 +76,7 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 				finish(numberColumn_needValueInfo[tableInfo][field]);
 			}
 	      }
-	   	});
-			
-	}
-	
-	
+	   });	
 }
 
 // date1>date2 返回bigger，date1 < date2 返回 smaller，date1=date2 返回 equal
