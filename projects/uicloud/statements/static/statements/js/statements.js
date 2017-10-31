@@ -1862,7 +1862,6 @@ function statements_li_add(data_result,dropTo){
 
 	//动态判断新建文件夹报表对应的num
 	function folder_name_sum(text,sumArr){
-		console.log(sumArr)
 		function count_sum(text,fv_count,sumArr1){
 			var cs_view = fv_count;
 			if($.inArray(text+cs_view,sumArr1) != -1){
@@ -1897,8 +1896,6 @@ function statements_li_add(data_result,dropTo){
 				}else{
 
 						var menu_folder_name = folder_name_sum(text,menu_folder_name_arr);
-						
-						console.log($(".click_new_folder_input"));
 
 						$(".click_new_folder_input").val(menu_folder_name);
 

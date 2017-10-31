@@ -997,13 +997,13 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 			defaultMinDate = new Date(filterConditions["rangeMinValue"]);
 			defaultMaxDate = new Date(filterConditions["rangeMaxValue"]);
 		}else{
-			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").val(backgroundMinDate.getFullYear()+"/"+backgroundMinDate.getMonth()+"/"+backgroundMinDate.getDate());
-			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").val(backgroundMaxDate.getFullYear()+"/"+backgroundMaxDate.getMonth()+"/"+backgroundMaxDate.getDate());
+			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").val(backgroundMinDate.getFullYear()+"/"+(backgroundMinDate.getMonth()+1)+"/"+backgroundMinDate.getDate());
+			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").val(backgroundMaxDate.getFullYear()+"/"+(backgroundMaxDate.getMonth()+1)+"/"+backgroundMaxDate.getDate());
 			defaultMinDate = new Date(data.min);
 			defaultMaxDate = new Date(data.max);
 		}
-		$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(backgroundMinDate.getFullYear()+"/"+backgroundMinDate.getMonth()+"/"+backgroundMinDate.getDate());
-		$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(backgroundMaxDate.getFullYear()+"/"+backgroundMaxDate.getMonth()+"/"+backgroundMaxDate.getDate());
+		$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(backgroundMinDate.getFullYear()+"/"+(backgroundMinDate.getMonth()+1)+"/"+backgroundMinDate.getDate());
+		$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(backgroundMaxDate.getFullYear()+"/"+(backgroundMaxDate.getMonth()+1)+"/"+backgroundMaxDate.getDate());
 		
 		// 日期范围--日期选择
 		$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").datepicker({

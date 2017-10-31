@@ -1,6 +1,6 @@
 var didShowDragAreaTableInfo= {}; // 用来记录拖拽到拖拽区域的所有表格信息
 //临时存储拖拽表的数据
-var free_didShowDragAreaTableInfo = {};
+// var free_didShowDragAreaTableInfo = {};
 
 var currentTableAllData = null;// 当前操作表格的所有数据
 //var current
@@ -110,6 +110,7 @@ function deleteFileConnection(fileName){
   $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .panelDataShow[panelName="+fileName+"]").remove();
   $("#analysisContainer .mainDragArea .boxDiv").each(function(index,ele){
     var idInfo = $(ele).attr("id");
+
     if(idInfo.split("_YZYPD_")[1] == fileName){
     		deleteTableHandleFunction(idInfo);
     }
@@ -438,7 +439,7 @@ function handle_success_show_table(){
                   gather_table_schema[i]["isable"] = "yes";
                 }
                 didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
-                free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
+                // free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
 
                 spinner.stop();
@@ -467,7 +468,7 @@ function expression_click_handle(){
       
       // 数据的移除
       delete didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
-      delete free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
+      // delete free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
       bindEventToPerTable();
 
     });
@@ -736,7 +737,7 @@ function getTablesOfaDataBase(theSelect){
            // 记录已经拖拽的表格数据
            didShowDragAreaTableInfo[boxDiv[0].id] = data;
          
-           free_didShowDragAreaTableInfo[boxDiv[0].id] = data;
+           // free_didShowDragAreaTableInfo[boxDiv[0].id] = data;
            tableDrag(allKeys(didShowDragAreaTableInfo));
          }else{
          	 instance.repaintEverything();
@@ -814,8 +815,7 @@ function getTablesOfaDataBase(theSelect){
  // 构建数据点击事件
   $("#constructData").click(function(event){
     var tables = [];
-    console.log(didShowDragAreaTableInfo,free_didShowDragAreaTableInfo)
-    for (var key in free_didShowDragAreaTableInfo) {
+    for (var key in didShowDragAreaTableInfo) {
       var aTable = {};
       var dbArr = key.split("_YZYPD_");
       var source = dbArr[0];
@@ -841,9 +841,9 @@ function getTablesOfaDataBase(theSelect){
         }else{
           aTable["conditions"] = [];
         }
-        
-        for (var i = 0;i < free_didShowDragAreaTableInfo[key].length;i++) {
-        var originalFileds = free_didShowDragAreaTableInfo[key];
+
+        for (var i = 0;i < didShowDragAreaTableInfo[key].length;i++) {
+        var originalFileds = didShowDragAreaTableInfo[key];
         if (originalFileds[i]["isable"] == "yes") {
           var columnName = originalFileds[i]["field"];
           if(originalFileds[i]["mappedfield"]){
@@ -893,7 +893,14 @@ function getTablesOfaDataBase(theSelect){
       "tables":tables,
       "relationships":relationships,
     };
-    
+
+  // var tempSavePostData = $.extend({},postData);
+
+  // for(var i = 0 ; i < tempSavePostData["tables"].length;i++){
+  //   delete tempSavePostData["tables"][i]["handleColList"];
+  //   delete tempSavePostData["tables"][i]["SchemaList"];
+  // }
+
     $.ajax({
       url:"/cloudapi/v1/mergetables/check",
       type:"post",
@@ -902,7 +909,6 @@ function getTablesOfaDataBase(theSelect){
       async: true,
       data:JSON.stringify(postData),
       success:function(data){
-        console.log(postData)
 //        var rs = data;
         if(data["status"] == "failed"){
           alert("请检查表格之间的联系");
@@ -988,11 +994,9 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
     postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check};
   }
   
-  console.log(postData)
 
   // 记录
   preBuildDataName = postData["outputs"]["outputTableName"];
-
   
   if ($("#buildDataPanelView .build-body .build-options .more-content-div .check-label input").eq(0).is(':checked') && $("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val() && $("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).is(":visible")) {
     var value = Number($("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val());
@@ -1012,8 +1016,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
   loading_init();
   //进度条
   loading_bar();
-  
-  
+
   var xhr = $.ajax({
       url:"/cloudapi/v1/mergetables/generate",
       type:"post",
@@ -1291,7 +1294,8 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       $("#analysisContainer .mainDragArea #dragTableDetailInfo").add("#tableDataDetailListPanel").hide(); // 表信息隐藏
       // 数据的移除
       delete didShowDragAreaTableInfo[dbInfo];
-      delete free_didShowDragAreaTableInfo[dbInfo];
+
+      // delete free_didShowDragAreaTableInfo[dbInfo];
       // 移除筛选条件
       deleteATableAllConditions(dbInfo);
 
@@ -1307,7 +1311,6 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
 
       if(store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2]) != -1){
         var nowDelete_split_father = [];
-
         //移除拆分条件
         delete saveSplitTables[dbInfo.split("_YZYPD_")[2]];
 

@@ -144,11 +144,7 @@ def getDataFrameFromSourceSparkCode():
                 return False
         sign = 0
         if "conditions" in jsonData.keys() and jsonData['conditions']:
-            fieldList = df1.schema.fields
-            columnList = []
-            filterColumnList = []
-            for field in fieldList:
-                columnList.append(field.name)
+            columnList = df1.columns
             for condition in jsonData['conditions']:
                 if condition['columnName'] not in columnList:
                     sign = 1
@@ -449,91 +445,120 @@ def splitDf():
 
             for handleCol in handleColList:
                 inDataFrame.createOrReplaceTempView('df')
-                cutColName = handleCol['colname']
-                newNamePart = '{}_PART'.format(cutColName)
 
-                if cutColName in tempColMap.keys():
-                    cutColName = tempColMap[cutColName]
+                sqlList = []
+                if handleCol['method'] == 'split' or handleCol['method'] == 'limit':
+                    cutColName = handleCol['colname']
+                    newNamePart = '{}_PART'.format(cutColName)
 
-                count = 0
-                for i in inDataFrame.schema.fields:
-                    if i.name.startswith(newNamePart):
-                        try:
-                            int(i.name.replace(newNamePart, ''))
-                            count += 1
-                        except Exception:
-                            pass
+                    if cutColName in tempColMap.keys():
+                        cutColName = tempColMap[cutColName]
 
-                if handleCol['method'] == 'split':
-                    cutsymbol = handleCol['cutsymbol']
-                    columnSql = "select {0} as temp from df".format(cutColName)
-                    listt = spark.sql(columnSql).collect()
-                    countlist = []
-                    for i in listt:
-                        countlist.append(str(i['temp']).count(cutsymbol))
-                    countlist.sort()
-                    times = countlist[-1]
-                    sqlList = []
-                    if times == 0:
-                        sql = '{0} as {1}{2}'.format(cutColName, newNamePart, count + 1)
-                        sqlList.append(cutColName)
-                    else:
-                        for i in range(times):
-                            prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}{3}".format(
-                                    cutColName,
-                                    cutsymbol,
-                                    newNamePart,
-                                    i + 1 + count)
-                            aft = "substr({0}, instr({0}, '{1}')+1) as {2}{3}".format(
-                                    cutColName,
-                                    cutsymbol,
-                                    newNamePart,
-                                    i + 2 + count)
-                            sqlList.append(prev)
-                            if i == times - 1:
-                                sqlList.append(aft)
-                            cutColName = aft.split(' as ')[0]
+                    count = 0
+                    for i in inDataFrame.schema.fields:
+                        if i.name.startswith(newNamePart):
+                            try:
+                                int(i.name.replace(newNamePart, ''))
+                                count += 1
+                            except Exception:
+                                pass
 
-                elif handleCol['method'] == 'limit':
-                    indexList = handleCol['cutsymbol']
-                    sqlList = []
-                    if len(indexList) == 1:
-                        prev = "substr({0}, 1, {1}) as {2}{3}".format(
-                                cutColName,
-                                indexList[0],
-                                newNamePart,
-                                1 + count)
-                        aft = "substr({0}, {1}) as {2}{3}".format(
-                                cutColName,
-                                indexList[0] + 1,
-                                newNamePart,
-                                2 + count)
-                        sqlList.append(prev)
-                        sqlList.append(aft)
-                    else:
-                        for i in range(len(indexList)):
-                            if i == 0:
-                                sql = "substr({0}, 1, {1}) as {2}{3}".format(
-                                    cutColName,
-                                    indexList[i],
-                                    newNamePart,
-                                    i + 1 + count)
-                                sqlList.append(sql)
-                            else:
-                                sql = "substr({0}, {1}, {2}) as {3}{4}".format(
-                                    cutColName,
-                                    indexList[i - 1] + 1,
-                                    indexList[i] - indexList[i - 1],
-                                    newNamePart,
-                                    i + 1 + count)
-                                sqlList.append(sql)
-                                if i == len(indexList) - 1:
-                                    sql = "substr({0}, {1}) as {2}{3}".format(
+                    if handleCol['method'] == 'split':
+                        cutsymbol = handleCol['cutsymbol']
+                        columnSql = "select {0} as temp from df".format(cutColName)
+                        listt = spark.sql(columnSql).collect()
+                        countlist = []
+                        for i in listt:
+                            countlist.append(str(i['temp']).count(cutsymbol))
+                        countlist.sort()
+                        times = countlist[-1]
+                        if times == 0:
+                            sql = '{0} as {1}{2}'.format(cutColName, newNamePart, count + 1)
+                            sqlList.append(cutColName)
+                        else:
+                            for i in range(times):
+                                prev = "substr({0}, 1, instr({0}, '{1}')-1) as {2}{3}".format(
                                         cutColName,
-                                        indexList[i] + 1,
+                                        cutsymbol,
+                                        newNamePart,
+                                        i + 1 + count)
+                                aft = "substr({0}, instr({0}, '{1}')+1) as {2}{3}".format(
+                                        cutColName,
+                                        cutsymbol,
                                         newNamePart,
                                         i + 2 + count)
+                                sqlList.append(prev)
+                                if i == times - 1:
+                                    sqlList.append(aft)
+                                cutColName = aft.split(' as ')[0]
+
+                    elif handleCol['method'] == 'limit':
+                        indexList = handleCol['cutsymbol']
+                        if len(indexList) == 1:
+                            prev = "substr({0}, 1, {1}) as {2}{3}".format(
+                                    cutColName,
+                                    indexList[0],
+                                    newNamePart,
+                                    1 + count)
+                            aft = "substr({0}, {1}) as {2}{3}".format(
+                                    cutColName,
+                                    indexList[0] + 1,
+                                    newNamePart,
+                                    2 + count)
+                            sqlList.append(prev)
+                            sqlList.append(aft)
+                        else:
+                            for i in range(len(indexList)):
+                                if i == 0:
+                                    sql = "substr({0}, 1, {1}) as {2}{3}".format(
+                                        cutColName,
+                                        indexList[i],
+                                        newNamePart,
+                                        i + 1 + count)
                                     sqlList.append(sql)
+                                else:
+                                    sql = "substr({0}, {1}, {2}) as {3}{4}".format(
+                                        cutColName,
+                                        indexList[i - 1] + 1,
+                                        indexList[i] - indexList[i - 1],
+                                        newNamePart,
+                                        i + 1 + count)
+                                    sqlList.append(sql)
+                                    if i == len(indexList) - 1:
+                                        sql = "substr({0}, {1}) as {2}{3}".format(
+                                            cutColName,
+                                            indexList[i] + 1,
+                                            newNamePart,
+                                            i + 2 + count)
+                                        sqlList.append(sql)
+
+                elif handleCol['method'] == 'merge':
+                    colnamelist = handleCol['colnamelist']
+                    newNamePart = '_'.join(colnamelist) + '_MERGE'
+                    for i in range(len(colnamelist)):
+                        if colnamelist[i] in tempColMap.keys():
+                            colnamelist[i] = tempColMap[colnamelist[i]]
+                    count = 0
+                    for i in inDataFrame.schema.fields:
+                        if i.name.startswith(newNamePart):
+                            try:
+                                int(i.name.replace(newNamePart, ''))
+                                count += 1
+                            except Exception:
+                                pass
+                    concatsql = ''
+                    if len(colnamelist) > 1:
+                        for i in range(len(colnamelist)):
+                            if i == 0:
+                                concatsql = 'concat({0},{1})'.format(colnamelist[i], colnamelist[i + 1])
+                            if i == 1:
+                                continue
+                            else:
+                                concatsql = 'concat({0},{1})'.format(concatsql, colnamelist[i])
+                    else:
+                        concatsql = colnamelist[0]
+                    concatsql = concatsql + ' as {0}{1}'.format(newNamePart, 1 + count)
+                    sqlList.append(concatsql)
                 sqlColStr = ''
                 for i in sqlList:
                     sqlColStr += i + ','
