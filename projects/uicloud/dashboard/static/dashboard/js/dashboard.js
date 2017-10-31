@@ -191,6 +191,37 @@ function dashboardReadySumFunction(isOnlyLoad){
 		});
 	
 	}
+
+
+
+
+//...................默认给定的样式
+function leftBar_sizeW_function(){
+		var leftBarW = $("body").height() - $(".container .topInfo").height() - $(".rightConent #dashboard_content #new_view").height() - $(".rightConent #dashboard_content #action_box").height() - Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2;
+		//	var leftbarW_second = $(".leftNav").height()
+		$("#lateral_bar").height(leftBarW + Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2);
+		$("#dimensionality,#measurement,#indicator,#parameter").height((leftBarW-20) / 4);
+
+		$("#view_show_area").height(leftBarW - $("#operational_view").height());
+		$("#view_show_area_content").height(leftBarW + 40 - $("#operational_view").height() - 40);
+		$("#dimensionality_show,#measure_show,#index_show,#parameter_show").height($("#dimensionality").height() - 32);
+		$("#action_box").width($("body").width() - 52 - $(".rightConent #dashboard_content #sizer").width());
+		$("#dashboard_content").width($("body").width() - 50);
+		//..
+		var barHeight = $("body").height() - $(".topInfo").height() - $("#new_view").height() - $("#action_box").height();
+		var view_show_height = barHeight - $("#operational_view").height();
+		var nowContentW = $("#action_box").width();
+
+		$(".handleAll_wrap").width(nowContentW - 201);
+		$("#view_show_area_content").width($("#drag_wrap_content").width());
+
+		//筛选器高度
+		$("#sizer").height($("#lateral_bar").height() + 50);
+		$("#sizer_place").height($("#sizer").height());
+		$("#sizer_place #sizer_mpt").css("marginTop",$("#sizer").height()/2 - $("#sizer_place #sizer_mpt").height()/2 + "px");
+}
+
+leftBar_sizeW_function();
 	
 	//编辑跳回后对颜色 小数点等对应的修改
 	function editView_change_color(colorArr,filterArr){
@@ -1767,20 +1798,22 @@ function initTable_name(){
 
 	// 筛选器和图形按钮切换
 	$("#project").on("click", function() {
+		$(this).find("img").attr("src","/static/dashboard/img/design_sel.png");
+		$("#sizer_wrap").find("img").attr("src","/static/dashboard/img/sxq.png")
 		$("#sizer_wrap .sizer_line").css("background", "#DEDEDE");
 		$("#project .sizer_line").css("background", "#0d53a4");
 		$("#sizer_content").hide();
-
 		$("#project_chart").show();
 		$("#sizer_mpt").hide();
 	});
 
 	$("#sizer_wrap").on("click", function() {
+		$(this).find("img").attr("src","/static/dashboard/img/sxq-sel.png");
+		$("#project").find("img").attr("src","/static/dashboard/img/design.png");
 		$("#project .sizer_line").css("background", "#DEDEDE");
 		$("#sizer_wrap .sizer_line").css("background", "#0d53a4");
 		$("#sizer_content").show();
 		$("#project_chart").hide();
-
 		if($(".drog_row_list").length == "0") {
 			$("#sizer_mpt").show();
 			$("#view_show_empty").show();
@@ -1818,36 +1851,6 @@ function initTable_name(){
 			$("#view_show_area #view_show_area_content .tableView_name").html("").append($("<h4>"+saveView_input+"</h4>"));
 		}
 	})
-
-
-
- 	//............................默认给定的样式
- 	function leftBar_sizeW_function(){
-		var leftBarW = $("body").height() - $(".container .topInfo").height() - $(".rightConent #dashboard_content #new_view").height() - $(".rightConent #dashboard_content #action_box").height() - Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2;
-		//	var leftbarW_second = $(".leftNav").height()
-		$("#lateral_bar").height(leftBarW + Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2);
-		$("#dimensionality,#measurement,#indicator,#parameter").height(leftBarW / 4);
-	
-		$("#view_show_area").height(leftBarW + 10 - $("#operational_view").height());
-		$("#view_show_area_content").height(leftBarW + 40 - $("#operational_view").height() - 30);
-		$("#dimensionality_show,#measure_show,#index_show,#parameter_show").height($("#dimensionality").height() - 32);
-		$("#action_box").width($("body").width() - 52 - $(".rightConent #dashboard_content #sizer").width());
-		$("#dashboard_content").width($("body").width() - 50);
-		//..
-		var barHeight = $("body").height() - $(".topInfo").height() - $("#new_view").height() - $("#action_box").height();
-		var view_show_height = barHeight - $("#operational_view").height();
-		var nowContentW = $("#action_box").width();
-	
-		$(".handleAll_wrap").width(nowContentW - 201);
-		$("#view_show_area_content").width($("#drag_wrap_content").width());
-	
-		//筛选器高度
-		$("#sizer").height($("#lateral_bar").height() + 50);
-		$("#sizer_place").height($("#sizer").height());
-		$("#sizer_place #sizer_mpt").css("marginTop",$("#sizer").height()/2 - $("#sizer_place #sizer_mpt").height()/2 + "px");
-	}
-	
-	leftBar_sizeW_function();
 
 
 function drag(){
@@ -3070,23 +3073,38 @@ function typeChangeWall(ele){
 
 
  	//..........................点击清除维度度量指标操作
- 		//点击清除维度度量
+
+ 	//行列title移入移出事件
+ 	$(".drap_row_title_content").each(function(index,ele){
+ 		$(ele).on("mouseenter",function(){
+ 			$(ele).find(".drag_main_icon_second").show();
+ 		})
+
+ 		$(ele).on("mouseleave",function(){
+ 			$(ele).find(".drag_main_icon_second").hide();
+ 		})
+ 	})
+
+
+ 	//点击清除维度度量
 	$(".drag_main_icon_second").not($("#drag_zb .drag_main_icon_second")).each(function(index, ele) {
 		$(ele).on("click", function() {
-			$(".annotation_text").eq(index).find(".list_wrap").remove();
-			$(".annotation_text").eq(index).find("li").remove();
-			remove_viewHandle();
-			$(".drag_text").eq(index).show();
-			//			if($("#project_chart").css("display") == "none"){
-			//				$("#sizer_mpt").css("display", "block");
-			//				console.log("123")
-			//			}
+			if($(ele).parents(".drag_main").find(".annotation_text .drog_row_list").length != 0){
+				$(".annotation_text").eq(index).find(".list_wrap").remove();
+				$(".annotation_text").eq(index).find("li").remove();
+				remove_viewHandle();
+				$(".drag_text").eq(index).show();
+				//			if($("#project_chart").css("display") == "none"){
+				//				$("#sizer_mpt").css("display", "block");
+				//				console.log("123")
+				//			}
 
-			if($(".drog_row_list").length == "0" && $("#project_chart").css("display") == "none") {
-				$("#sizer_mpt").show();
-				$("#view_show_empty").show();
-				initTable_name();
-				$("#sizer_content").hide();
+				if($(".drog_row_list").length == "0" && $("#project_chart").css("display") == "none") {
+					$("#sizer_mpt").show();
+					$("#view_show_empty").show();
+					initTable_name();
+					$("#sizer_content").hide();
+				}
 			}
 
 		})

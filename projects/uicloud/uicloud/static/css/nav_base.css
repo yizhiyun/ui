@@ -1,5 +1,4 @@
 @import url("reset.css");
-
 html,body{height:100%;min-width: 1000px;color: #202020;}
 input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px white inset;
@@ -7,14 +6,14 @@ input:-webkit-autofill {
 .container{height: 100%;background: white;min-width: 1000px;}
 #baseTopInfo{height:70px;background-color: #ffffff;position: relative;z-index: 999;box-shadow: 0px 3px 5px 0px rgba(0,49,98,0.08);}
 #logo{margin-left: 15px;margin-top: 22px;}
-.topInfo #loginInfo{position: absolute;right: 20px;top: 0;font-size: 0;height: 100%;}
+.topInfo #loginInfo{position: absolute;right: 0px;top: 0;font-size: 0;height: 100%;}
 .topInfo #loginInfo .child{float: left;margin-top: 29px;margin-right: 20px;}
-.topInfo #loginInfo .message,.question{margin-top: 25px}
-.topInfo #loginInfo .question{margin-top: 25px}
-.topInfo #loginInfo .changeUser{color: #0d53a4;font-size: 12px;margin-top: 26px; cursor: pointer;}
+.topInfo #loginInfo .message,.question{margin-top: 30px}
+.topInfo #loginInfo .question{margin-top: 30px}
+.topInfo #loginInfo .changeUser{color: #0d53a4;font-size: 12px;margin-top: 28px; cursor: pointer;}
 .topInfo #loginInfo .userName{font-size: 16px;float: left;margin-top: 25px;height:16px;}
 .topInfo #loginInfo .userHead{width:30px;height: 30px;border-radius: 50%;background: #f8eaa8;float: left;margin-right:10px; margin-top: 20px;}
-.topInfo #loginInfo .sepreate{width: 1px;height: 10px;margin-top: 30px;background: #b0b0b0;}
+.topInfo #loginInfo .sepreate{width: 1px;height: 10px;margin-top: 34px;background: #b0b0b0;}
 .main .leftNav{float: left;width: 60px;background: linear-gradient(#0d53a4,#00bdc9);min-height: 100%;height: 100%;position: relative;z-index: 9999}
 .leftNav .functionBtn{width: 100%;height: 60px; position: relative;margin-top: 20px;cursor: pointer}
 
@@ -196,6 +195,7 @@ input:-webkit-autofill {
 /* 日期选择器*/
 #date-filter{width: 400px;height:350px;border-radius: 5px;position: absolute;top: 100px;left: 100px;background: white;font-size: 12px;}
 #date-filter .ui-tabs-nav .ui-tabs-tab{width: 200px;}
+#date-filter .date-filter-body{font-size: 12px;}
 #date-filter .date-filter-body #relative-date-box{padding: 30px 20px 0 20px;position: relative;}
 #date-filter .date-filter-body #relative-date-box .date-unit-btns{height: 23px;}
 #date-filter .date-filter-body #relative-date-box .date-unit-btns a{width: 58px;height: 21px;float: left;margin-left: 15px;border-radius: 2px;border: 1px solid #dedede;text-align: center;line-height: 23px;}
@@ -206,12 +206,14 @@ input:-webkit-autofill {
 #date-filter .date-filter-body #relative-date-box .date-detail-range-radios .radio{width: 100px;}
 #date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio{position: relative;width: 150px;}
 #date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio input.spinner {width: 50px;height: 18px;}
-#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio span.helpText{float: left;}
-#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio span.ui-spinner{float: left;margin-top: -5px;}
-#date-filter .date-filter-body #relative-date-box .spinnerDownIcon{background-image: url("/static/images/contentFilter/x.png"); margin-left: 2px;width: 11px; height: 11px;margin-top: -5px;}
-#date-filter .date-filter-body #relative-date-box .spinnerUpIcon{ background-image: url("/static/images/contentFilter/s.png"); margin-left: 2px; width: 11px; height: 11px;margin-top: -5px;}
+#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio span.helpText{float: left;margin-top: 1px;}
+#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio span.ui-spinner{float: left;margin-top: -5px;margin-left: 5px;}
+#date-filter .date-filter-body #relative-date-box .spinnerDownIcon{background-image: url("/static/images/contentFilter/left_35.png");background-position:center center;background-repeat:no-repeat;margin-left: 5px;width:7px; height:5px;margin-top: -2px;}
+#date-filter .date-filter-body #relative-date-box .spinnerUpIcon{ background-image: url("/static/images/contentFilter/left_40.png");background-position:center center;background-repeat:no-repeat; margin-left: 5px; width:7px; height:5px;margin-top: -2px;}
 
 #date-filter .date-filter-body #relative-date-box a.ui-button-icon-only{background: #f5f5f5;}
+
+#date-filter .date-filter-body #relative-date-box .date-detail-range-radios .number-select-radio .unit{margin-left: 5px;}
 
 /*公共设置部分*/
 #date-filter .date-filter-body .common-date-settering {padding: 40px 20px 0 20px;position: relative;}
@@ -235,7 +237,7 @@ input:-webkit-autofill {
 #date-filter  .common-date-settering .date-slider-box  .range-flag .min-date-flag{float: left;}
 #date-filter  .common-date-settering .date-slider-box  .range-flag .max-date-flag{float: right;}
 
-#date-filter .bottomDateIndictor{position: absolute;width: 100%;height: 22px;line-height: 22px;text-indent: 20px;text-align:left; left:0;bottom: 60px;}
+#date-filter .bottomDateIndictor{position: absolute;width: 100%;height: 22px;line-height: 22px;text-indent: 20px;text-align:left; left:0;bottom:55px;}
 
 /*搜索框*/
 .searchModule .searchReasultsList{position: fixed;z-index: 1000;background: #f5f5f5;border-radius: 2px;}

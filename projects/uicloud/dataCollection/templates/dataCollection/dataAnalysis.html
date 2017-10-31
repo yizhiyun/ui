@@ -102,13 +102,19 @@
 			
 			
 			<div id="connectModalprompt" style="display: none;">
-				<p class="title">连接</p>
+				<div class="topline"></div>
+				<div class="common-head">
+					<span class="logo">联接</span>
+					<div class="close">
+						<img src={% static "images/contentFilter/X_33.png" %} alt="关闭">
+					</div>
+				</div>
 				<!--<div class="line"></div>-->
 				<div class="btnSelects">
-					<div class="active"><img src={%static "dataCollection/images/inline.png" %} alt="" /><p data="inner join">内连</p></div>
-					<div><img src={%static "dataCollection/images/left.png"  %} alt="" /><p data="left join">左连</p></div>
-					<div><img src={%static "dataCollection/images/right.png"  %} alt="" /><p data= "right join">右连</p></div>
-					<div><img src={%static "dataCollection/images/Outreach.png"  %} alt="" /><p data="full join">全连</p></div>
+					<div class="active"><img src={%static "dataCollection/images/inline.png" %} alt="" /><p data="inner join">内联</p></div>
+					<div><img src={%static "dataCollection/images/left.png"  %} alt="" /><p data="left join">左联</p></div>
+					<div><img src={%static "dataCollection/images/right.png"  %} alt="" /><p data= "right join">右联</p></div>
+					<div><img src={%static "dataCollection/images/Outreach.png"  %} alt="" /><p data="full join">全联</p></div>
 					<div><img src={%static "dataCollection/images/breakoff.png" %} alt="" /><p data="delete">断开</p></div>
 				</div>
 				<div class="selectInfoDiv">
@@ -139,7 +145,7 @@
 	
 	<div id="passway">
 		<span id="constructData" class="active">构建数据</span>
-		<span id="dashBoardWay">仪表盘</span>
+<!-- 		<span id="dashBoardWay">仪表盘</span> -->
 	</div>
 	
 	<!--新增数据集弹框-->

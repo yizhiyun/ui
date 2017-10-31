@@ -23,19 +23,42 @@ instance = jsPlumb.getInstance({
 			
 });
 
+
+//判断联接框是否显示
+var tempSaveLineInfo = false;
+
+//判断浏览器高度给定联接框位置
+var bodyHeightToModal = null;
+
 // 连接框显示
-function modalPromptShowToPage(conInfo){
+function modalPromptShowToPage(conInfo,lineInfo){
+	if(tempSaveLineInfo){
+		$("#connectModalprompt").hide();
+		tempSaveLineInfo = false;
+		return;
+	}
+
+
+
+	if($("body").height() - ($(lineInfo.canvas).position().top + 32 + 70) > 260){
+		bodyHeightToModal = $(lineInfo.canvas).position().top + 60;
+	}else{
+		bodyHeightToModal = $(lineInfo.canvas).position().top - 260 - 60;
+	}
+
+
+
  	$("#connectModalprompt").css({
-		"left":(conInfo.source[0].offsetLeft + conInfo.target[0].offsetLeft) / 2 + "px",
-		"top":(conInfo.source[0].offsetTop + conInfo.target[0].offsetTop) / 2 + "px",
+		"left":$(lineInfo.canvas).position().left - $("#connectModalprompt").width()/2 + 16 + "px",
+		"top":bodyHeightToModal + "px",
 	});
  	// 显示连接框
-	$("#connectModalprompt").show("pulsate",100,function(){
-		
+	$("#connectModalprompt").show(0,function(){
+		tempSaveLineInfo = true;
 		//确定按钮绑定事件
 		$("#confirmRelationBtn").unbind("click");
 		$("#confirmRelationBtn").on("click",function(event){
-			
+			tempSaveLineInfo = false;
 			event.stopPropagation();	
 			var lineInfo = conInfo.connection.getOverlay("connFlag");
 			var connectType = $("#connectModalprompt .btnSelects .active").children("p").attr("data");
@@ -71,9 +94,10 @@ function modalPromptShowToPage(conInfo){
 		});
 		// 取消按钮绑定事件
 		$("#cancleRelationBtn").unbind("click");
-		$("#cancleRelationBtn").on("click",function(event){
-			$("#connectModalprompt").hide()
-			event.stopPropagation();	
+		$("#cancleRelationBtn").add("#connectModalprompt .common-head .close").on("click",function(event){
+			$("#connectModalprompt").hide();
+			tempSaveLineInfo = false;
+			event.stopPropagation();
 		});
 		
 	});
@@ -89,16 +113,24 @@ function connectDetailSelect(conInfo,originalEvent){
 //	console.log(lineInfo);
 	lineInfo.unbind("click");
 	lineInfo.bind("click",function(){
-		 modalPromptShowToPage(conInfo);
+		 modalPromptShowToPage(conInfo,lineInfo);
 	});
 	
 
-	$("#connectModalprompt").css({
-		"left":(conInfo.source[0].offsetLeft + conInfo.target[0].offsetLeft) / 2 + "px",
-		"top":(conInfo.source[0].offsetTop + conInfo.target[0].offsetTop) / 2 + "px",
+	if($("body").height() - ($(lineInfo.canvas).position().top+ 32 + 70) > 260){
+		bodyHeightToModal = $(lineInfo.canvas).position().top + 60;
+	}else{
+		bodyHeightToModal = $(lineInfo.canvas).position().top - 260 - 60;
+	}
+
+
+
+ 	$("#connectModalprompt").css({
+		"left":$(lineInfo.canvas).position().left - $("#connectModalprompt").width()/2 + 16 + "px",
+		"top":bodyHeightToModal + "px",
 	});
 	// 调用连接框显示的函数
-	modalPromptShowToPage(conInfo);
+	modalPromptShowToPage(conInfo,lineInfo);
 	
 	var sourceDataInfo = conInfo.sourceId.split("_YZYPD_");
 	var  sourceDBName =  sourceDataInfo[1];
