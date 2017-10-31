@@ -69,6 +69,8 @@ $(function () {
 					if(data.status == "success"){
 						$(".maskLayer").hide();
 						buildDataFunction_able();
+						theRecordConnectionShouldShow = "database";
+						dbOrFileTablesRefreshRecord["dbNeedRefresh"] = true;
 						changePageTo_navBuildDataView();
 					}else{
 						if(data.reason == "the_palt_is_already_has"){
@@ -140,7 +142,9 @@ $(function () {
 	            success:function(data){
 	            		if(data.status == "success"){
 	            			spinner.stop();						
-						$(".maskLayer").hide();					
+						$(".maskLayer").hide();		
+						theRecordConnectionShouldShow = "panelFile";
+						dbOrFileTablesRefreshRecord["fileNeedRefresh"] = true;
 						buildDataFunction_able();
 						changePageTo_navBuildDataView();
 	            		}else{
