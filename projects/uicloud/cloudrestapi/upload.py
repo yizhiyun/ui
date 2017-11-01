@@ -83,15 +83,8 @@ def uploadToHdfs(fileDict, hdfsHost="spark-master0", nnPort="50070", rootFolder=
     if len(fileDict["tables"]) == 0:
         logger.warn("There is no tables in the fileDict.")
         return False
-    # remove if the csv file exists
     fileName = fileDict["path"].split("/")[-1]
-    csvFolderUri = "{0}/{1}/csv/{2}".format(rootFolder, userName, fileName)
-    if client.exists(csvFolderUri):
-        client.delete(csvFolderUri, recursive=True)
-    # remove if the parquet file exists
-    parquetFolderUri = "{0}/{1}/parquet/{2}".format(rootFolder, userName, fileName)
-    if client.exists(parquetFolderUri):
-        client.delete(parquetFolderUri, recursive=True)
+    deleteCsvFromHdfs(fileName, userName, hdfsHost, nnPort, rootFolder)
 
     uploadedCsvList = []
     for tableItem in fileDict["tables"]:
@@ -122,11 +115,15 @@ def convertBool(v1):
 
 def deleteCsvFromHdfs(fileName, userName='myfolder', hdfsHost="spark-master0", nnPort="50070", rootFolder="/tmp/users"):
     client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
-    csvUrl = '{0}/{1}/csv/{2}'.format(rootFolder, userName, fileName)
-    parquetUrl = '{0}/{1}/parquet/{2}'.format(rootFolder, userName, fileName)
 
-    if client.exists(csvUrl):
-        client.delete(csvUrl, recursive=True)
-    if client.exists(parquetUrl):
-        client.delete(parquetUrl, recursive=True)
+    # remove if the csv file exists
+    csvFolderUri = "{0}/{1}/csv/{2}".format(rootFolder, userName, fileName)
+    if client.exists(csvFolderUri):
+        client.delete(csvFolderUri, recursive=True)
+
+    # remove if the parquet file exists
+    parquetFolderUri = "{0}/{1}/parquet/{2}".format(rootFolder, userName, fileName)
+    if client.exists(parquetFolderUri):
+        client.delete(parquetFolderUri, recursive=True)
+
     return True
