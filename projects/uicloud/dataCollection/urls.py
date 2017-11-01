@@ -11,5 +11,6 @@ urlpatterns = [
     url(r"^filterTable/(?P<modeName>\w+)$", views.filterTable),
     url(r"^deletePlat$", views.deletePlat),
     url(r"^dataBuildView$", views.dataBuildView),
-    url(r"^deleteTempCol$", views.deleteTempCol)
+    url(r"^deleteTempCol$", views.deleteTempCol),
+    url(r"^judgeIcon$", views.judgeIcon),
 ]

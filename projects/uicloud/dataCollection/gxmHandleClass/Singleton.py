@@ -108,3 +108,15 @@ class Singleton(object):
                 pass
             Singleton().dataPaltForm[username].pop(index)
         return True
+
+
+def judgeConn(conn):
+    '''
+    判断conn是否还活着
+    '''
+    try:
+        conn.commit()
+        return True
+
+    except Exception:
+        return False
