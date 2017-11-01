@@ -74,7 +74,7 @@ def showAllDbOfPalt(request):
         if username not in Singleton().dataPaltForm.keys():
             return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
         for md5, dbObj in Singleton().dataPaltForm[username].items():
-            if not dbObj.con:
+            if not judgeConn(dbObj.con):
                 isConnect = dbObj.connectDB()
                 if not isConnect:
                     context = {'status': 'failed', 'reason': "can't connect db"}
@@ -104,7 +104,7 @@ def showAllTablesOfaDataBase(request):
         if dbObjIndex not in Singleton().dataPaltForm[username].keys():
             return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
         dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-        if not dataBaseObj.con:
+        if not judgeConn(dataBaseObj.con):
             isConnect = dataBaseObj.connectDB()
             if not isConnect:
                 context = {'status': 'failed', 'reason': "can't connect db"}
@@ -136,7 +136,7 @@ def filterTable(request, modeName):
         return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
 
     dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-    if not dataBaseObj.con:
+    if not judgeConn(dataBaseObj.con):
         isConnect = dataBaseObj.connectDB()
         if not isConnect:
             context = {'status': 'failed', 'reason': "can't connect db"}
