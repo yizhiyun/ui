@@ -113,17 +113,30 @@ def convertBool(v1):
     return True
 
 
-def deleteCsvFromHdfs(fileName, userName='myfolder', hdfsHost="spark-master0", nnPort="50070", rootFolder="/tmp/users"):
+def deleteCsvFromHdfs(fileName,
+                      path,
+                      userName='myfolder',
+                      hdfsHost="spark-master0",
+                      nnPort="50070",
+                      tmpRootFolder="/tmp/users",
+                      rootFolder="/users"):
     client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
 
-    # remove if the csv file exists
-    csvFolderUri = "{0}/{1}/csv/{2}".format(rootFolder, userName, fileName)
-    if client.exists(csvFolderUri):
-        client.delete(csvFolderUri, recursive=True)
+    if path == 'mergefile':
+        # remove if the csv file exists
+        csvFolderUri = "{0}/{1}/csv/{2}".format(tmpRootFolder, userName, fileName)
+        if client.exists(csvFolderUri):
+            client.delete(csvFolderUri, recursive=True)
 
-    # remove if the parquet file exists
-    parquetFolderUri = "{0}/{1}/parquet/{2}".format(rootFolder, userName, fileName)
-    if client.exists(parquetFolderUri):
-        client.delete(parquetFolderUri, recursive=True)
+        # remove if the parquet file exists
+        parquetFolderUri = "{0}/{1}/parquet/{2}".format(tmpRootFolder, userName, fileName)
+        if client.exists(parquetFolderUri):
+            client.delete(parquetFolderUri, recursive=True)
+
+    elif path == 'csvfile':
+        # remove if the merge file exists
+        mergeFolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
+        if client.exists(mergeFolderUri):
+            client.delete(mergeFolderUri, recursive=True)
 
     return True
