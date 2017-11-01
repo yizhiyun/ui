@@ -20,6 +20,41 @@ function initWindowSize(doc,win,paHeight){
 		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";		
 }
 
+function inputSearch(ele,activeClass,showContent){
+    //报表弹窗筛选功能
+  $(ele).on("input",function(){
+  
+    //搜索里输入的值
+    var search_input_data  = $(ele).val();
+
+    if(search_input_data == ""){
+      $(showContent).children().css("display","block");
+      return;
+    }
+
+    $(showContent).children().css("display","none");
+      var reg_str = "/"+search_input_data+"/gi";
+
+      var list_p=$(showContent).find("."+activeClass+"");
+
+      for(var i = 0 ; i < list_p.length;i++){
+
+      var reg = eval(reg_str);
+
+      (function(index){
+
+        var list_li_text = list_p.eq(index).text();
+        if(reg.test(list_li_text) == true){
+          list_p.eq(index).css("display","block");
+          console.log(list_p.eq(index).text())
+        }
+      })(i);
+
+    }
+
+  })
+}
+
 
 //获取指定form中的所有的<input>对象  
 function getElements(formId) {
