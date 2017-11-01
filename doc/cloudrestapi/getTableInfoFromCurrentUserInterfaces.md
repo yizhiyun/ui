@@ -96,7 +96,8 @@ Get Table From Current User Via Spark
                #   "date_add(start, days)","date_format(date, format)","date_sub(start, days)","datediff(end, start)",
                #   "format_string(format, *cols)","format_number(col, d)","instr(str, substr)","split(str, pattern)"
                # ternary types: (The below notes provide some types' decriptions.)
-               #   "regexp_replace(str, pattern, replacement)","substring(str, pos, len)","substring_index(str, delim, count)"
+               #   "regexp_replace(str, pattern, replacement)","substring(str, pos, len)","substring_index(str, delim, count)",
+               #   "if(condition, yes_val, no_val)"
                {"alias":<columnName>, "exprstr": <expressionString>},
                ...
            ],

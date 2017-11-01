@@ -539,8 +539,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
                 dframe1 = aggDF(dframe1, filterJson)
-            if maxRowCount:
-                dframe1 = dframe1.limit(maxRowCount)
+            dframe1 = dframe1.limit(maxRowCount)
             for rowItem in dframe1.collect():
                 # logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
                 outputDict['data'].append(rowItem.asDict())
