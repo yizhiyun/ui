@@ -43,6 +43,9 @@ var saveSplitTables = {};
 
 //记录拖拽行列显示的每个表的Scamne
 var saveTableScame = {};
+
+//判断侧边栏已经加载完毕
+var leftNavCount = 0;
   /**
  * description : 得到字符串的字节长度;
  * @version 0.2;
@@ -312,6 +315,17 @@ function updatePanelFileListFromNetwork(){
     }
   })
 }
+
+//给定侧边栏的高度
+function getLeftNavHeight(){
+    if(leftNavCount == 2){
+       $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
+      leftNavCount = 0 ;
+    }
+}
+
+
+
 // 获取当前已经构建的数据表
 function getCurrentDidBuildDataTable(){
   $.ajax({
@@ -327,11 +341,13 @@ function getCurrentDidBuildDataTable(){
             li.data("sourcetype","hdfs");
             $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList").append(li);
           }
-          if($("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").length != 0){
-             $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
+
              $("#dataSet .detailDataSetList  li .didBuildTables").find(".didBuildImg").css("visibility","visible");
-          }
+  
           bindEventToPerTable();
+          leftNavCount++;
+          getLeftNavHeight();
+
         } 
       } 
   });
@@ -629,6 +645,8 @@ function getTablesOfaDataBase(theSelect){
         $(theSelect).parents(".dbDataShow").children(".tablesOfaData").eq(0).append(p);
       }
       bindEventToPerTable();
+      leftNavCount++;
+      getLeftNavHeight();
     }
   })
 }
