@@ -285,7 +285,7 @@ leftBar_sizeW_function();
 
 
 		drag_measureCalculateStyle = {};
-
+		$("#pageDashboardModule #dashboard_content #lateral_bar .dimensionality_search").hide();
 		// 移除表格的数据
 		emptyAllTable();
 
@@ -1757,12 +1757,15 @@ function initTable_name(){
 		//搜索功能
 		$("#pageDashboardModule #dashboard_content #lateral_bar .search").click(function(event){
 			event.stopPropagation();
-			$(this).parent().parent().find(".dimensionality_search").toggle(300);
-			if($(this).parent().find(".dimensionality_search").css("display") == "block"){
-				$(this).parent().find(".viewTableShow").height($(this).parent().height() - $(this).parent().children(".dimensionality_search").height() - 32);
-			}else{
-				$(this).parent().find(".viewTableShow").height($(this).parent().height() - 32);
-			}
+			$(this).parent().parent().find(".dimensionality_search").toggle(300,function(){
+				if($(this).parent().find(".dimensionality_search").css("display") == "block"){
+					$(this).parent().find(".viewTableShow").height($(this).parent().height() - $(this).parent().children(".dimensionality_search").height() - 32);
+				}else{
+					$(this).parent().find(".viewTableShow").height($(this).parent().height() - 32);
+				}
+			});
+
+			inputSearch($(this).parent().parent().find(".dimensionality_search .dimensionality_search_input"),$(this).parent().parent().find(".viewTableShow ul li .drop_list_main .drop_main span").attr("class"),$(this).parent().parent().find(".viewTableShow ul"),"md");
 
 		})
 	}
@@ -2331,8 +2334,6 @@ function drag(){
 										drag_measureCalculateStyle[_field_name] = "计数("+_field_name+")";
 										$(current_li).find("span.measure_list_text_left").html("计数("+_field_name+")");
 									}
-								}else{
-									$(current_li).find("span.measure_list_text_left").html(drag_measureCalculateStyle[_field_name]);
 								}
 							}
 							//给予li id名 记录元素对应的内容
@@ -2742,40 +2743,8 @@ function drag(){
 									}
 									$(this).find(".list_wrap").remove();
 									$(this).find(".ui-draggable").parent().remove();
-									if(ui["sender"].attr("id") == "drop_col_view"){
-									drag_row_column_data["column"]["measure"]= [];
-									drag_row_column_data["column"]["dimensionality"] =[];
-									//遍历所有行里的li 排序后更新数据
-									for(var i = 0; i < $("#drop_col_view").find("li").length;i++){
-										//获取数据字段
-										var data_id = $("#drop_col_view").find("li").eq(i).attr("id").split(":");
-										//判断元素的类型
-										var data_wd_type = data_id[0];
-										//对应的数据
-										var sortable_data = data_id[1]+":"+data_id[2];
 
-										drag_row_column_data["column"][data_wd_type].push(sortable_data)
-									}
-									}
-
-									// ....
-
-									if(ui["sender"].attr("id") == "drop_row_view"){
-									drag_row_column_data["row"]["measure"]= [];
-									drag_row_column_data["row"]["dimensionality"] =[];
-	
-									//遍历所有行里的li 排序后更新数据
-									for(var i = 0; i < $("#drop_row_view").find("li").length;i++){
-										//获取数据字段
-										var data_id = $("#drop_row_view").find("li").eq(i).attr("id").split(":");
-										//判断元素的类型
-										var data_wd_type = data_id[0];
-										//对应的数据
-										var sortable_data = data_id[1]+":"+data_id[2];
-
-										drag_row_column_data["row"][data_wd_type].push(sortable_data)
-									}
-									}
+									remove_viewHandle();
 									
 									// 移除筛选列
 									var fieldInfoArr = ui.item.attr("id").split(":");

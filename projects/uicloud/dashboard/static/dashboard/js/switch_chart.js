@@ -109,6 +109,7 @@ function beginDrawChart(edit_view){
 	if((switch_row_me > 0 && switch_col_di ==0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me > 0 && switch_col_di ==0 && switch_row_me == 0 && switch_row_di == 0)){
 		view_init();
 		$("#text_table_need_show").show();
+		$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
 		$("#show_bar,#show_histogram").css("opacity","1");
 			change_view_css("#show_table");
 			if(!click_view_icon){

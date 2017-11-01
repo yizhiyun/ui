@@ -69,7 +69,7 @@ urlpatterns = [
         name='recordCol'
     ),
     url(
-        r'^cloudapi/v1/deletecsv/(?P<fileName>\w+)$',
+        r'^cloudapi/v1/deletecsv/(?P<path>\w+)/(?P<fileName>\w+)$',
         views.deleteCsv,
         name='deleteCsv'
     ),
