@@ -59,7 +59,7 @@ def getDataFrameFromSourceSparkCode():
     return the spark code which provide the specialDataTypesEncoder class to be used.
     """
 
-    return filterDataFrameSparkCode() + '''
+    return filterDataFrameSparkCode() + aggDataFrameSparkCode() + '''
     def getDataFrameFromSource(jsonData, userTableUrl=None, removedColsDict={}, maxRowCount=10000):
         """
         get spark DataFrame once the input data source is valid.
