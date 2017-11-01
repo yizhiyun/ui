@@ -3,7 +3,6 @@ var copyCurrentTableData = null; // 对当前 table 数据的一份拷贝
 // fieldtype 为数字 numberType 、日期、dateType 俩种类型
 // handleType:数据构建之前和之后  buildData,dashboard
 function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
-//	console.log(tableInfo);
 	if(numberColumn_needValueInfo[tableInfo] && numberColumn_needValueInfo[tableInfo][field]){
 		 finish(numberColumn_needValueInfo[tableInfo][field]);
 		return;
@@ -45,7 +44,7 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 	 if( filterType == "hdfs"){
 	 	postUrl = "/cloudapi/v1/tables/" +tableInfo.split("_YZYPD_")[2]+"/data";
 	 }else if(filterType == "tmptables"){
-	 	
+	 	postUrl = "/cloudapi/v1/uploadedcsv/"+tableInfo.split("_YZYPD_")[1]+"/"+tableInfo.split("_YZYPD_")[2]+"/data"
 	 }else{
 	 	postUrl = "/dataCollection/filterTable/data"
 	 	var dbArr = tableInfo.split("_YZYPD_");

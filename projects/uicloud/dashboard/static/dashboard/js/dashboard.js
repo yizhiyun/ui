@@ -317,13 +317,15 @@ leftBar_sizeW_function();
 		view_name = null;
 
 		//移除指标恢复拖拽滚动
-		var disabled = $(".drop_view").droppable("option", "disabled");
+		if($(".drop_view").hasClass("ui-droppable")){
+			var disabled = $(".drop_view").droppable("option", "disabled");
 
-		$(".drop_view").droppable("option", "disabled", false);
+			$(".drop_view").droppable("option", "disabled", false);
 
-		$(".drop_view").sortable({ disabled: false });
+			$(".drop_view").sortable({ disabled: false });
 
-		$(".drop_view,#drop_zb_view").css("background", "");
+			$(".drop_view,#drop_zb_view").css("background", "");
+		}
 
 		if($("#drag_zb .annotation_text").hasClass("ui-droppable")){
 			var disabled = $("#drag_zb .annotation_text").droppable("option", "disabled");
@@ -334,7 +336,9 @@ leftBar_sizeW_function();
 		}
 
 
-		$("#view_show_area_content").droppable({disabled:true});
+		if($("#view_show_area_content").hasClass("ui-droppable")){
+			$("#view_show_area_content").droppable({disabled:true});
+		}
 
 		$("#drag_zb .annotation_text").data("nowShowIndex","");
 
@@ -1252,7 +1256,7 @@ function show_view_save_dashbash(data_result){
 		// select选项卡
 		cube_select.comboSelect();
 		
-		if(click_val ){
+		if(click_val){
 			// 展示维度和度量等
 			load_measurement_module(click_val)
 		}else{
@@ -1743,6 +1747,25 @@ function initTable_name(){
 	}
 	small_handle_btn();
 	closeViewSave();
+
+	//维度度量操作功能部分
+	function mdHandleFun(){
+		//搜索功能
+		$("#pageDashboardModule #dashboard_content #lateral_bar .search").click(function(event){
+			event.stopPropagation();
+			$(this).parent().parent().find(".dimensionality_search").toggle(300);
+			if($(this).parent().find(".dimensionality_search").css("display") == "block"){
+				$(this).parent().find(".viewTableShow").height($(this).parent().height() - $(this).parent().children(".dimensionality_search").height() - 32);
+			}else{
+				$(this).parent().find(".viewTableShow").height($(this).parent().height() - 32);
+			}
+
+		})
+	}
+	mdHandleFun();
+
+
+
 	//存放数据源的数组
 	var save_data_sum_handle = [];
 	/*视图大小调整  select 下拉框*/
@@ -2304,6 +2327,8 @@ function drag(){
 										drag_measureCalculateStyle[_field_name] = "计数("+_field_name+")";
 										$(current_li).find("span.measure_list_text_left").html("计数("+_field_name+")");
 									}
+								}else{
+									$(current_li).find("span.measure_list_text_left").html(drag_measureCalculateStyle[_field_name]);
 								}
 							}
 							//给予li id名 记录元素对应的内容
@@ -2706,7 +2731,7 @@ function drag(){
 								//拖拽区域外消失
 									
 								case "view_show_area_content":
-									console.log($(this).find(".index_row_list").length)
+									
 									if($(this).find(".index_row_list").length > 0){
 										$(this).find(".index_row_list").remove();
 										return;
@@ -2728,8 +2753,6 @@ function drag(){
 										drag_row_column_data["column"][data_wd_type].push(sortable_data)
 									}
 									}
-
-
 
 									// ....
 
@@ -2996,10 +3019,6 @@ function typeChangeWall(ele){
 }
 
 
-
-
-
-
 		//..........................创建类型转换弹窗
  	//创建一个类型弹窗			
 			$(".dimensionality_datatype").each(function(index, ele) {
@@ -3014,7 +3033,7 @@ function typeChangeWall(ele){
 
  	
 	//..........................右侧设计样式点击事件
-		dahboardSetting_function();
+	dahboardSetting_function();
 
  	//..........................视图图标的操作事件
 	//设计视图icon
