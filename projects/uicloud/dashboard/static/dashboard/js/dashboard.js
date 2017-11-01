@@ -1753,13 +1753,12 @@ function initTable_name(){
 		//搜索功能
 		$("#pageDashboardModule #dashboard_content #lateral_bar .search").click(function(event){
 			event.stopPropagation();
-			$(this).parent().parent().find(".dimensionality_search").toggle(300,function(){
-				if($(this).parent().parent().find(".dimensionality_search").css("display") == "block"){
-					$(this).parent().find(".viewTableShow").height($(this).parent().height() - $(this).parent().children(".dimensionality_search").height() - 32);
-				}else{
-					$(this).parent().find(".viewTableShow").height($(this).parent().height() - 32);
-				}
-			});
+			$(this).parent().parent().find(".dimensionality_search").toggle(300);
+			if($(this).parent().find(".dimensionality_search").css("display") == "block"){
+				$(this).parent().find(".viewTableShow").height($(this).parent().height() - $(this).parent().children(".dimensionality_search").height() - 32);
+			}else{
+				$(this).parent().find(".viewTableShow").height($(this).parent().height() - 32);
+			}
 
 		})
 	}
