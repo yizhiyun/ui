@@ -452,7 +452,7 @@ function handle_success_show_table(){
                 didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 // free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
-
+				getCurrentDidBuildDataTable();
                 spinner.stop();
       }
           }
@@ -463,7 +463,7 @@ function handle_success_show_table(){
 function expression_click_handle(){
     //重构数据点击事件
     $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #data_reconstruction a").click(function(){
-      $("._jsPlumb_endpoint").css("visibility","visible")
+      $("._jsPlumb_endpoint").css("visibility","visible");
       $(".rightConent #analysisContainer #tableDataDetailListPanel").removeClass("expression_show").css("width",$(".rightConent").width()-$("#analysisContainer .leftSlide").width() + 'px').hide().removeAttr("nowshowtable");
       $("#analysisContainer .leftSlide").eq(0).css("display","block");
       $(".rightConent #analysisContainer").css("visibility","visible");

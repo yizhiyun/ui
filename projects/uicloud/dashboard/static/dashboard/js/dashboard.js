@@ -2327,6 +2327,8 @@ function drag(){
 										drag_measureCalculateStyle[_field_name] = "计数("+_field_name+")";
 										$(current_li).find("span.measure_list_text_left").html("计数("+_field_name+")");
 									}
+								}else{
+									$(current_li).find("span.measure_list_text_left").html(drag_measureCalculateStyle[_field_name]);
 								}
 							}
 							//给予li id名 记录元素对应的内容
