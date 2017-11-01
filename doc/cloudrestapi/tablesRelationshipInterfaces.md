@@ -50,6 +50,9 @@ The RESTful API Details of Verify those table relationships
                 },
                 ...
             ],
+            "expressions":{ ... },  # Please refer to getTableInfoFromCurrentUserInterfaces.md for the details.
+            # If the "expressions" item exists, "trans" is invalid.
+            "trans": { ... },       # Please refer to getTableInfoFromCurrentUserInterfaces.md for the details.
             <otherProperty>:<otherValue>,
             ...
         },
@@ -191,6 +194,9 @@ The RESTful API Details of Generating New Table
                 },
                 ...
             ],
+            "expressions":{ ... },  # Please refer to getTableInfoFromCurrentUserInterfaces.md for the details.
+            # If the "expressions" item exists, "trans" is invalid.
+            "trans": { ... },       # Please refer to getTableInfoFromCurrentUserInterfaces.md for the details.
             <otherProperty>:<otherValue>,
             ...
         },
