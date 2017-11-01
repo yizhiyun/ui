@@ -46,6 +46,14 @@
 						<div class="didBuildTables" openFlag="on">
 							<img src= {% static "dataCollection/images/left_40.png"%} alt="" style="visibility: hidden;" class="didBuildImg" />
 							<span class="title">已构建数据表</span>
+							<img src={% static "dashboard/img/search.png" %} alt="base_search" class="base_search_img">
+							<!-- 搜索框 -->
+							<div class="sqlSearch clear">
+								<div class="sqlSearch-img">
+									<img src={% static "dashboard/img/search.png" %} alt="searchIcon">
+								</div>
+								<input type="text" class="sqlSearch-input" placeholder="请输入表名称">
+							</div>
 							<ul class="tablesList"></ul>
 						</div>
 						<div class="nowConnectedTables" openFlag="on">

@@ -8,16 +8,17 @@
 #analysisContainer .leftSlide #connectDirector{padding-top: 16px;}
 #connectDirector .conn{color: #808080;position: relative;padding-left: 10px;}
 #connectDirector .conn .btn{position: absolute;right: 10px;width: 40px;top: 0;text-align: right;cursor: pointer;}
-#connectDirector .paltFormList{padding-left: 10px;}
+#connectDirector padding-left: 10px;
 #connectDirector .paltFormList>li{padding-right: 10px;height: 27px;position: relative;margin-top: 5px;}
 #connectDirector .paltFormList>li>.selectFlagDiv{height: 13px;padding: 7px 0 7px 0;cursor: pointer;border-radius: 2px;background:#ffffff}
-#connectDirector .paltFormList>li.active>.selectFlagDiv{background:#dedede}
+#connectDirector .paltFormList>li>.selectFlagDiv img{margin-left: 5px;}
+#connectDirector .paltFormList>li.active>.selectFlagDiv{background:#EEEEEE;}
 #connectDirector .paltFormList li span{display: inline-block;margin-left: 10px;vertical-align: top;line-height: 13px;}
 #connectDirector .paltFormList li .moreHanldeBtn{width: 30px;height: 100%;float: right;cursor: pointer;text-align: right;line-height: 13px;}
 #connectDirector .paltFormList li .moreHanldeBtn img{vertical-align: middle;margin-right: 5px;}
 #connectDirector .paltFormList li #connectMoreHanlde{position: absolute;width: 60px;border:1px solid #dedede;border-bottom: 0;background: white;left: 180px;top: 23px;z-index: 9999;}
 #connectDirector .paltFormList li #connectMoreHanlde li{text-align: center;font-size: 12px;line-height: 22px;height: 21px;border-bottom: 1px solid #dedede;cursor: pointer;}
-#connectDirector .paltFormList li #connectMoreHanlde li:hover{background: #dedede;}
+#connectDirector .paltFormList li #connectMoreHanlde li:hover{background: #EEEEEE;}
 #connectDirector .paltFormList li #connectMoreHanlde  li.editConnect{position: relative;}
 #connectDirector .paltFormList li #connectMoreHanlde  li.editConnect #editUploadFile{border: 0;outline: none;width: 100%;height: 100%;opacity: 0;position: absolute;top: 0;left: 0;cursor: pointer;}
 
@@ -26,25 +27,27 @@
 
 
 
-#connectDirector .line{height: 1px;background: #dedede;margin-top: 20px;}
+#connectDirector .line{height: 1px;background: #EEEEEE;margin-top: 20px;}
 #dataSet .dataSetTitle{padding-left: 10px;color: #808080;padding-right: 10px;height: 36px;padding-top: 4px;line-height: 36px;}
 #dataSet .dataSetTitle div{float: right;height: 100%;cursor: pointer;}
 #dataSet .dataSetTitle div:nth-child(2){margin-left: 10px;}
 #dataSet .detailDataSetList  li .didBuildTables,#dataSet .detailDataSetList  li .nowConnectedTables{padding-left: 10px;}
+#dataSet .detailDataSetList  li .didBuildTables .sqlSearch{margin-left: 15px;}
+#dataSet .detailDataSetList  li .didBuildTables .base_search_img{margin-left: 75px;}
 #dataSet .detailDataSetList  li .didBuildTables img,#dataSet .detailDataSetList  li .nowConnectedTables img{vertical-align: middle;cursor: pointer;line-height: 21px;margin-top: -5px;}
-#dataSet .detailDataSetList  li .didBuildTables span,#dataSet .detailDataSetList  li .nowConnectedTables span{display: inline-block;margin-left: 3px;cursor: pointer;height: 21px;line-height: 21px;}
+#dataSet .detailDataSetList  li .didBuildTables span,#dataSet .detailDataSetList  li .nowConnectedTables span{display: inline-block;margin-left:6px;cursor: pointer;height: 21px;line-height: 21px;}
 #dataSet .detailDataSetList  li .nowConnectedTables span{padding-bottom: 5px;}
 #dataSet .detailDataSetList  li .didBuildTables .tablesList{padding-left: 18px;max-height:230px;overflow-x: hidden;overflow-y: auto;}
 #dataSet .detailDataSetList .dataSetDetail{padding-left: 30px;padding-right: 10px;}
 #dataSet .detailDataSetList .nowConnectedTables .tablesList{padding-left: 18px;}
 #dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .combo-select{height: 21px;}
-#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch{width: 140px;height: 21px;border: 1px solid #DEDEDE;border-radius:11.5px;line-height: 21px;position: relative;display: none}
-#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch .sqlSearch-img{width: 23px;height: 23px;vertical-align: middle;box-sizing: border-box;line-height: 23px;border-right: none;border-top-left-radius: 11.5px;border-bottom-left-radius: 11.5px;}
-#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch .sqlSearch-img img{width: 12px;height: 11px;float: left;margin: 6px 0px 0px 6px;cursor: pointer;}
-#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch .sqlSearch-input{position:absolute;height: 22px;top: 0;left: 23px;width: 117px;border-top-right-radius: 11.5px;border-bottom-right-radius: 11.5px;}
-#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
+#dataSet .detailDataSetList .sqlSearch{width: 162px;height: 21px;border: 1px solid #DEDEDE;border-radius:11.5px;line-height: 21px;position: relative;display: none}
+#dataSet .detailDataSetList .sqlSearch .sqlSearch-img{width: 23px;height: 23px;vertical-align: middle;box-sizing: border-box;line-height: 23px;border-right: none;border-top-left-radius: 11.5px;border-bottom-left-radius: 11.5px;}
+#dataSet .detailDataSetList .sqlSearch .sqlSearch-img img{width: 12px;height: 11px;float: left;margin: 6px 0px 0px 6px;cursor: pointer;}
+#dataSet .detailDataSetList .sqlSearch .sqlSearch-input{position:absolute;height: 22px;top: 0;left: 23px;width: 117px;border-top-right-radius: 11.5px;border-bottom-right-radius: 11.5px;}
+#dataSet .detailDataSetList .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables .tablesList .buildTableTitle{color: #808080;}
-#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li{height:23px;line-height:23px;cursor: pointer;width:142px;border-radius: 2px;text-indent: 5px;}
+#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li{height:23px;line-height:23px;cursor: pointer;width:162px;border-radius: 2px;text-indent: 5px;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li:hover{background: #EEEEEE;}
 /*#analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow{margin-top: 5px;}*/
 #analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow .combo-select{width: 140px !important;margin-bottom: 5px;float: left;}

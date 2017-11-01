@@ -38,7 +38,7 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 #pageDashboardModule #dashboard_content #lateral_bar #lateral_title{width:201px;height: 40px;}
 #pageDashboardModule #dashboard_content #lateral_bar #lateral_title h4{font-size: 14px;font-weight: 550;line-height: 40px;padding-left: 12px;}
 /*搜索*/
-#pageDashboardModule #dashboard_content #lateral_bar .dimensionality_search{width: 173px;height: 21px;border: 1px solid #DEDEDE;border-radius: 11.5px;line-height: 21px;position: relative;left:12.5px;display: none}
+#pageDashboardModule #dashboard_content #lateral_bar .dimensionality_search{width: 173px;height: 21px;border: 1px solid #DEDEDE;border-radius: 11.5px;line-height: 21px;position: relative;left:12.5px;display: none;}
 #pageDashboardModule #dashboard_content #lateral_bar .dimensionality_search .dimensionality_search_img{width: 23px;height: 23px;vertical-align: middle;box-sizing: border-box;line-height: 23px;border-right: none;border-top-left-radius: 11.5px;border-bottom-left-radius: 11.5px;}
 #pageDashboardModule #dashboard_content #lateral_bar .dimensionality_search .dimensionality_search_img img{width: 12px;height: 11px;float: left;margin: 6px 0px 0px 6px;cursor: pointer;}
 #pageDashboardModule #dashboard_content #lateral_bar .dimensionality_search .dimensionality_search_input{position:absolute;height: 22px;top: 0;left: 23px;width:150px;border-top-right-radius: 11.5px;border-bottom-right-radius: 11.5px;}

@@ -334,14 +334,14 @@ function getCurrentDidBuildDataTable(){
       dataType:"json",
       contentType: "application/json; charset=utf-8",
       success:function(data){
+        console.log(data)
         if (data["status"] == "success") {
           $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList").empty();
           for (var i = 0;i < data.results.length;i++) {
-            var li = $("<li>"+data.results[i]+"</li>");
+            var li = $("<li class = 'datebaseLise'>"+data.results[i]+"</li>");
             li.data("sourcetype","hdfs");
             $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList").append(li);
           }
-
              $("#dataSet .detailDataSetList  li .didBuildTables").find(".didBuildImg").css("visibility","visible");
   
           bindEventToPerTable();
@@ -349,7 +349,11 @@ function getCurrentDidBuildDataTable(){
           getLeftNavHeight();
 
         } 
-      } 
+      },
+      error:function(){
+          leftNavCount++;
+          getLeftNavHeight();
+      }
   });
 }
 
@@ -805,14 +809,34 @@ function getTablesOfaDataBase(theSelect){
                 
                 }
         });
-       inputSearch($("#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch .sqlSearch-input"),"dbbaseList",$("#analysisContainer .leftSlide #dataSet .detailDataSetList li .dbDataShow .tablesOfaData"))
+        inputSearch($("#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch .sqlSearch-input"),"dbbaseList",$("#analysisContainer .leftSlide #dataSet .detailDataSetList li .dbDataShow .tablesOfaData"))
         return;
+    }else if($(event.target).hasClass("base_search_img")){
+        var viewShowList = this;
+        $("#dataSet .detailDataSetList  li .didBuildTables .sqlSearch").toggle(300,function(){
+          if($("#dataSet .detailDataSetList  li .didBuildTables .tablesList").css("display") != "block"){
+              showDataSetList(viewShowList);
+          }else{
+            if($("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").length != 0){
+             $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
+            }
+          }
+          
+        });
+        inputSearch( $("#dataSet .detailDataSetList  li .didBuildTables .sqlSearch .sqlSearch-input"),"datebaseLise",$("#dataSet .detailDataSetList  li .didBuildTables .tablesList"));
+        return;
+
     }else if($(event.target).hasClass("sqlSearch") || $(event.target).hasClass("sqlSearch-input") || $(event.target).hasClass("sqlSearch-img")){
       return;
     }
 
     if (this.getAttribute("openFlag") == "on") {
       hideDataSetList(this);
+      if($(this).hasClass("didBuildTables")){
+          $("#dataSet .detailDataSetList  li .didBuildTables .sqlSearch").hide(300);  
+      }
+      
+      
     }else{
       showDataSetList(this);
     }
@@ -830,7 +854,7 @@ function getTablesOfaDataBase(theSelect){
     }
 
     ele.setAttribute("openFlag","on");
-    $(ele).children("img").attr("src","/static/dataCollection/images/left_40.png");
+    $(ele).children(".didBuildImg").attr("src","/static/dataCollection/images/left_40.png");
     $(ele).children(".tablesList").show("blind",300,function(){
         if($("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").length != 0){
              $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
@@ -842,7 +866,7 @@ function getTablesOfaDataBase(theSelect){
   //隐藏数据集列表
   function hideDataSetList(ele){
     ele.setAttribute("openFlag","off");
-    $(ele).children("img").attr("src","/static/dataCollection/images/left_35.png");
+    $(ele).children(".didBuildImg").attr("src","/static/dataCollection/images/left_35.png");
     $(ele).children(".tablesList").hide("blind",300,function(){
         if($("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").length != 0){
              $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";

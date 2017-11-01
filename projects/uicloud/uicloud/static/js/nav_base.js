@@ -20,7 +20,7 @@ function initWindowSize(doc,win,paHeight){
 		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";		
 }
 
-function inputSearch(ele,activeClass,showContent){
+function inputSearch(ele,activeClass,showContent,md){
     //报表弹窗筛选功能
   $(ele).on("input",function(){
   
@@ -45,8 +45,12 @@ function inputSearch(ele,activeClass,showContent){
 
         var list_li_text = list_p.eq(index).text();
         if(reg.test(list_li_text) == true){
-          list_p.eq(index).css("display","block");
-          console.log(list_p.eq(index).text())
+          if(md == "md"){
+          	list_p.eq(index).parents(".leftNav_list").css("display","block");
+          }else{
+          	list_p.eq(index).css("display","block");
+          }
+          
         }
       })(i);
 
