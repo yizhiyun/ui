@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import permission_required
 from rest_framework.decorators import api_view
 # from django.views.generic import TemplateView
 from .gxmHandleClass.ConnectDataBase import ConnectDataBase
-from .gxmHandleClass.Singleton import Singleton
+from .gxmHandleClass.Singleton import *
+from dashboard.models import DashboardFolderByUser, DashboardViewByUser, DashboardIndexByUser
 import time
+import pyhdfs
 import logging
 
 # Get an instance of a logger
@@ -72,7 +74,7 @@ def showAllDbOfPalt(request):
         if username not in Singleton().dataPaltForm.keys():
             return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
         for md5, dbObj in Singleton().dataPaltForm[username].items():
-            if not dbObj.con:
+            if not judgeConn(dbObj.con):
                 isConnect = dbObj.connectDB()
                 if not isConnect:
                     context = {'status': 'failed', 'reason': "can't connect db"}
@@ -102,7 +104,7 @@ def showAllTablesOfaDataBase(request):
         if dbObjIndex not in Singleton().dataPaltForm[username].keys():
             return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
         dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-        if not dataBaseObj.con:
+        if not judgeConn(dataBaseObj.con):
             isConnect = dataBaseObj.connectDB()
             if not isConnect:
                 context = {'status': 'failed', 'reason': "can't connect db"}
@@ -134,7 +136,7 @@ def filterTable(request, modeName):
         return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
 
     dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
-    if not dataBaseObj.con:
+    if not judgeConn(dataBaseObj.con):
         isConnect = dataBaseObj.connectDB()
         if not isConnect:
             context = {'status': 'failed', 'reason': "can't connect db"}
@@ -165,6 +167,7 @@ def filterTable(request, modeName):
 @api_view(['POST'])
 def deletePlat(request):
     '''
+    删除平台文件
     '''
     jsonData = request.data
     if request.method == 'POST':
@@ -178,6 +181,7 @@ def deletePlat(request):
 @api_view(['POST'])
 def deleteTempCol(request):
     '''
+    删除拆分后的字段
     '''
     jsonData = request.data
     if request.method == 'POST':
@@ -190,3 +194,54 @@ def deleteTempCol(request):
         if not rs:
             return JsonResponse({'status': 'failed', 'reason': 'please see the detail logs'})
         return JsonResponse({'status': 'success'})
+
+
+@api_view(['POST'])
+def judgeIcon(request, hdfsHost="spark-master0", nnPort="50070", csvUrl="/tmp/users", url="/users", userName="myfolder"):
+    '''
+    返回图标状态（是否亮）
+    '''
+    jsonData = request.data
+    logger.debug('jsondata: {0}'.format(jsonData))
+    if request.method == 'POST':
+        dashusername = jsonData['dashusername'] if 'dashusername' in jsonData.keys() else 'yzy'
+        datausername = jsonData['datausername'] if 'datausername' in jsonData.keys() else 'yzy'
+        second = 0
+        third = 0
+        fourth = 1
+
+        if datausername in Singleton().dataPaltForm.keys():
+            for key, value in Singleton().dataPaltForm[datausername].items():
+                if judgeConn(value.con):
+                    second = 1
+                    break
+        csvUrl = '{0}/{1}'.format(csvUrl, userName)
+        url = '{0}/{1}'.format(url, userName)
+        client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
+        if client.exists(url):
+            fileList = client.listdir(url)
+            if fileList:
+                second = 1
+                third = 1
+        if second == 0:
+            if client.exists('{0}/{1}'.format(csvUrl, 'parquet')):
+                parquetList = client.listdir('{0}/{1}'.format(csvUrl, 'parquet'))
+                if parquetList:
+                    second = 1
+
+        folderList = DashboardFolderByUser.objects.filter(username=dashusername)
+        viewList = DashboardViewByUser.objects.filter(username=dashusername)
+        indexList = DashboardIndexByUser.objects.filter(username=dashusername)
+        logger.debug('folderList: {0}, viewList: {1}, indexList: {2}'.format(folderList, viewList, indexList))
+        if len(folderList) == 0 and len(viewList) == 0 and len(indexList) == 0:
+            fourth = 0
+
+        context = {
+            "status": "success",
+            "results": {
+                "constructview": second,
+                "dashboardview": third,
+                "statementview": fourth
+            }
+        }
+        return JsonResponse(context)
