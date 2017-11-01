@@ -295,47 +295,62 @@ $(function(){
 
 function pallasdaraFunctionNavBtnHandle(){
 	// 获取当前可用的导航选项
-	var arr = navBtnAbleAndDisablegetHandle();
-	if(arr.indexOf("navBuildDataViewBtn") != -1){
-		buildDataFunction_able();
-	}
-	if(arr.indexOf("navDashBoardViewBtn") != -1){
-		dashBoradFunction_able();
-	}
-	if(arr.indexOf("navReporttingViewBtn") != -1){
-		reporttingFunction_abale();
-	}
-	
-	$(".container .main .leftNav .functionBtn").click(function(event){
-		if($(this).children("div").hasClass("active") || $(this).hasClass("disableFlag") ) {
-			event.preventDefault();
-			return;
-		}
-		if($(this).attr("id") != "navDashBoardViewBtn"){
-				var preClickViewNav = preClickView || {} ;
-				if(Object.getOwnPropertyNames(preClickViewNav).length != 0){
-					preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] = realSaveData();
+//	var arr = navBtnAbleAndDisablegetHandle();
+	$.ajax({
+		 url:"/dataCollection/judgeIcon",
+          type:"POST",
+          dataType:"json",
+          contentType: "application/json; charset=utf-8",
+          async: true,
+          data:JSON.stringify({"dashusername":"liuyue"}),
+          success:function(data){
+       		if(data.status == 'success'){
+       			var res = data.results;
+			    if(res.constructview == 1) {
+					buildDataFunction_able();
 				}
-		}
-
-		switch ($(this).attr("id")){
-			case"navDataBaseAndPanleFileConnectionViewBtn":
-				changePageTo_DataBaseAndPanleFileConnectionView();
-				break;
-			case "navBuildDataViewBtn":
-				$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
-				changePageTo_navBuildDataView();
-				break;
-			case "navDashBoardViewBtn":
-				changePageTo_navDashBoardView();
-				break;
-			case "navReporttingViewBtn":
-				changePageTo_navReporttingView(true);
-				break;
-			default:
-				break;
-		}
+				if(res.dashboardview == 1) {
+					dashBoradFunction_able();
+				}
+				if(res.statementview == 1) {
+					reporttingFunction_abale();
+				}
+				$(".container .main .leftNav .functionBtn").click(function(event){
+					if($(this).children("div").hasClass("active") || $(this).hasClass("disableFlag") ) {
+						event.preventDefault();
+						return;
+					}
+					if($(this).attr("id") != "navDashBoardViewBtn"){
+							var preClickViewNav = preClickView || {} ;
+							if(Object.getOwnPropertyNames(preClickViewNav).length != 0){
+								preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] = realSaveData();
+							}
+					}
+			
+					switch ($(this).attr("id")){
+						case"navDataBaseAndPanleFileConnectionViewBtn":
+							changePageTo_DataBaseAndPanleFileConnectionView();
+							break;
+						case "navBuildDataViewBtn":
+							$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
+							changePageTo_navBuildDataView();
+							break;
+						case "navDashBoardViewBtn":
+							changePageTo_navDashBoardView();
+							break;
+						case "navReporttingViewBtn":
+							changePageTo_navReporttingView(true);
+							break;
+						default:
+							break;
+					}
+				});
+       		}
+          }
 	});
+	
+	
+	
 }
 
 function buildDataFunction_able(){
@@ -372,7 +387,7 @@ function changePageTo_navBuildDataView(){
 	$(".main .rightConent #analysisContainer").show();
 	if($(".main .rightConent #analysisContainer").data("isFirstInto")){
 		dataAnalysisFunction();
-		navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
+//		navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
 		$(".main .rightConent #analysisContainer").data("isFirstInto",false);
 	}else{	
 		if(currentPageId == "navDataBaseAndPanleFileConnectionViewBtn"){
@@ -389,7 +404,7 @@ function changePageTo_navDashBoardView(){
 	$(".main .rightConent #pageDashboardModule").show();	
 	if($(".main .rightConent #pageDashboardModule").data("isFirstInto")){
 		dashboardReadySumFunction();
-		navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
+//		navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
 		$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
 	}else{		
 		if(currentPageId == "navBuildDataViewBtn" || currentPageId == "navReporttingViewBtn"){
@@ -408,7 +423,7 @@ function changePageTo_navReporttingView(unloadPage){
 	$(".main .rightConent #pageStatementsModule").show();
 	if($(".main .rightConent #pageStatementsModule").data("isFirstInto")){
 		satetementsReadySumFunction(unloadPage);
-		navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
+//		navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
 		$(".main .rightConent #pageStatementsModule").data("isFirstInto",false);
 	}else{		
 		if(currentPageId == "navDashBoardViewBtn"){
@@ -424,18 +439,18 @@ function hidenSomeElementsWhenChangePage(){
 	$(".rightConent #analysisContainer .leftSlide #analysis_dataList").hide();
 }
 
-function navBtnAbleAndDisablesaveHandle(info){
-	var arr = navBtnAbleAndDisablegetHandle();
-	if(arr.indexOf(info) == -1){
-		arr.push(info)
-	}
-	window.localStorage.setItem("navAbleAndDisable",JSON.stringify(arr));
-}
-function navBtnAbleAndDisablegetHandle(){
-	var res =  JSON.parse(window.localStorage.getItem("navAbleAndDisable"));
-	if(!res){res= []};
-	return res; 
-}
+//function navBtnAbleAndDisablesaveHandle(info){
+//	var arr = navBtnAbleAndDisablegetHandle();
+//	if(arr.indexOf(info) == -1){
+//		arr.push(info)
+//	}
+//	window.localStorage.setItem("navAbleAndDisable",JSON.stringify(arr));
+//}
+//function navBtnAbleAndDisablegetHandle(){
+//	var res =  JSON.parse(window.localStorage.getItem("navAbleAndDisable"));
+//	if(!res){res= []};
+//	return res; 
+//}
 
 function dbAndPanelInfoSaveHandle(info){
 	

@@ -11,7 +11,7 @@
 #connectDirector .paltFormList{padding-left: 10px;}
 #connectDirector .paltFormList>li{padding-right: 10px;height: 27px;position: relative;margin-top: 5px;}
 #connectDirector .paltFormList>li>.selectFlagDiv{height: 13px;padding: 7px 0 7px 0;cursor: pointer;border-radius: 2px;background:#ffffff}
-#connectDirector .paltFormList>li.active>.selectFlagDiv{background:#dedede}
+#connectDirector .paltFormList>li.active>.selectFlagDiv{background:#eeeeee}
 #connectDirector .paltFormList li span{display: inline-block;margin-left: 10px;vertical-align: top;line-height: 13px;}
 #connectDirector .paltFormList li .moreHanldeBtn{width: 30px;height: 100%;float: right;cursor: pointer;text-align: right;line-height: 13px;}
 #connectDirector .paltFormList li .moreHanldeBtn img{vertical-align: middle;margin-right: 5px;}
