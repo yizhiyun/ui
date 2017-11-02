@@ -426,11 +426,7 @@ def changeColumnNameSparkCode():
         if "changename" in tableDict.keys():
             changeNameList = tableDict["changename"]
             logger.debug(u"changename: {0}".format(changeNameList))
-            columnList = inDF.columns
-            for i in range(len(changeNameList)):
-                for index in range(len(columnList)):
-                    if columnList[index] == changeNameList[i]["oldname"]:
-                        columnList[index] = "{0} as {1}".format(changeNameList[i]["oldname"], changeNameList[i]["newname"])
-            inDF = inDF.select(columnList)
+            for changename in changeNameList:
+                inDF = inDF.withColumnRenamed(changename['oldname'], changename['newname'])
         return inDF
     '''
