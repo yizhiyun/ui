@@ -59,7 +59,7 @@ def getDataFrameFromSourceSparkCode():
     return the spark code which provide the specialDataTypesEncoder class to be used.
     """
 
-    return filterDataFrameSparkCode() + aggDataFrameSparkCode() + '''
+    return filterDataFrameSparkCode() + aggDataFrameSparkCode() + changeColumnNameSparkCode() + '''
     def getDataFrameFromSource(jsonData, userTableUrl=None, removedColsDict={}, maxRowCount=10000):
         """
         get spark DataFrame once the input data source is valid.
@@ -411,4 +411,26 @@ def aggDataFrameSparkCode():
         if "alias" in operDict.keys():
             col = col.alias(operDict["alias"])
         return col
+    '''
+
+
+def changeColumnNameSparkCode():
+    """
+    change the column name from DataFrame.
+    """
+
+    return '''
+    def changeColName(inDF, tableDict):
+        """
+        """
+        if "changename" in tableDict.keys():
+            changeNameList = tableDict["changename"]
+            logger.debug(u"changename: {0}".format(changeNameList))
+            columnList = inDF.columns
+            for i in range(len(changeNameList)):
+                for index in range(len(columnList)):
+                    if columnList[index] == changeNameList[i]["oldname"]:
+                        columnList[index] = "{0} as {1}".format(changeNameList[i]["oldname"], changeNameList[i]["newname"])
+            inDF = inDF.select(columnList)
+        return inDF
     '''

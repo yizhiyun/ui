@@ -120,6 +120,9 @@ def deleteCsvFromHdfs(fileName,
                       nnPort="50070",
                       tmpRootFolder="/tmp/users",
                       rootFolder="/users"):
+    '''
+    remove the file from hdfs
+    '''
     client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
 
     if path == 'mergefile':
