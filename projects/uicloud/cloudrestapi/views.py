@@ -592,9 +592,9 @@ def recordCol(request, tableName):
 
 
 @api_view(['POST'])
-def deleteCsv(request, path, fileName):
+def handleHdfsFile(request, path, fileName):
     '''
-    删除hdfs上上传的文件
+    处理hdfs上的文件， 删除/重命名
     '''
     if request.method == 'POST':
         pathList = ['csvfile', 'mergefile']
@@ -602,6 +602,6 @@ def deleteCsv(request, path, fileName):
             return JsonResponse({"status": "failed", "reason": "there is no this path!"})
 
         userName = 'myfolder'
-        deleteCsvFromHdfs(fileName, path, userName)
+        handleFileFromHdfs(fileName, path, userName)
 
         return JsonResponse({'status': 'success'})

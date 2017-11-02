@@ -113,13 +113,13 @@ def convertBool(v1):
     return True
 
 
-def deleteCsvFromHdfs(fileName,
-                      path,
-                      userName='myfolder',
-                      hdfsHost="spark-master0",
-                      nnPort="50070",
-                      tmpRootFolder="/tmp/users",
-                      rootFolder="/users"):
+def handleFileFromHdfs(fileName,
+                       path,
+                       userName='myfolder',
+                       hdfsHost="spark-master0",
+                       nnPort="50070",
+                       tmpRootFolder="/tmp/users",
+                       rootFolder="/users"):
     '''
     remove the file from hdfs
     '''
