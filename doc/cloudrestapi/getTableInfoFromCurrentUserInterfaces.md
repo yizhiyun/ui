@@ -85,7 +85,7 @@ Get Table From Current User Via Spark
                "newname": <newColumnName>
            },
            ...
-       ]
+       ],
        "expressions":{
            "exprlist": [
                # valid keywords in the expression string
