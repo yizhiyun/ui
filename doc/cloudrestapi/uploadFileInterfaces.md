@@ -120,6 +120,13 @@ NULL if you don't need to filter the data. Or else, please specify the following
            },
            ...
        ],
+       "changename": [
+           {
+               "oldname": <oldColumnName>,
+               "newname": <newColumnName>
+           },
+           ...
+       ],
        <otherProperty>:<otherValue>,
        ...
    }

@@ -539,6 +539,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
                 dframe1 = aggDF(dframe1, filterJson)
+                dframe1 = changeColName(dframe1, filterJson)
             dframe1 = dframe1.limit(maxRowCount)
             for rowItem in dframe1.collect():
                 # logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
@@ -698,6 +699,7 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
             filterJson = json.loads(filterJson, encoding="utf-8")
             if len(filterJson) > 0:
                 dframe1 = filterDF(dframe1, filterJson)
+                dframe1 = changeColName(dframe1, filterJson)
             for rowItem in dframe1.collect():
                 outputDict["data"].append(rowItem.asDict())
         logger.debug(u"Getting {0} url successfully".format(csvUrl))

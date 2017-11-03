@@ -69,8 +69,8 @@ urlpatterns = [
         name='recordCol'
     ),
     url(
-        r'^cloudapi/v1/deletecsv/(?P<path>\w+)/(?P<fileName>\w+)$',
-        views.deleteCsv,
-        name='deleteCsv'
+        r'^cloudapi/v1/handleHdfsFile/(?P<path>\w+)/(?P<fileName>\w+)$',
+        views.handleHdfsFile,
+        name='handleHdfsFile'
     ),
 ]

@@ -360,8 +360,8 @@ function getCurrentDidBuildDataTable(){
       type:"get",
       dataType:"json",
       contentType: "application/json; charset=utf-8",
+
       success:function(data){
-        console.log(data)
         if (data["status"] == "success") {
           $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList").empty();
           for (var i = 0;i < data.results.length;i++) {
@@ -402,10 +402,10 @@ function getCurrentDidBuildDataTable(){
              $("#dataSet .detailDataSetList li .didBuildTables").find(".didBuildImg").css("visibility","visible");
   
           bindEventToPerTable();
-          leftNavCount++;
-          getLeftNavHeight();
-
+         
         } 
+        leftNavCount++;
+        getLeftNavHeight();
       },
       error:function(){
           leftNavCount++;
@@ -621,8 +621,6 @@ function expression_click_handle(){
     $("#prompt_message #data_success_content").removeClass().addClass("data_success_img");
     $("#loading_percentage").css("right","-10px");
     //构建数据成功隐藏构建数据弹窗--显示选择进入模块弹窗
-//  navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
-//  pallasdaraFunctionNavBtnHandle();
 	dashBoradFunction_able();
     $("#build_upload").hide("blind",1000,function(){
       $(".rightConent #analysisContainer").css("visibility","hidden");

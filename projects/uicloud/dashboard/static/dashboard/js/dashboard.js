@@ -1636,7 +1636,7 @@ function show_view_save_dashbash(data_result){
 							if(drag_measureCalculateStyle[measureName] == "计数("+measureName+")"){
 								return;
 							}
-							
+							delete customCalculate[measureName];
 							drag_measureCalculateStyle[measureName] = "计数("+measureName+")";
 							measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("计数("+measureName+")");
 							switch_chart_handle_fun();
@@ -1651,6 +1651,7 @@ function show_view_save_dashbash(data_result){
 							if(drag_measureCalculateStyle[measureName] == "求和("+measureName+")"){
 								return;
 							}
+							delete customCalculate[measureName];
 							drag_measureCalculateStyle[measureName] = "求和("+measureName+")";
 							measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("求和("+measureName+")");
 							switch_chart_handle_fun();
@@ -1663,6 +1664,7 @@ function show_view_save_dashbash(data_result){
 							if(drag_measureCalculateStyle[measureName] == "平均值("+measureName+")"){
 								return;
 							}
+							delete customCalculate[measureName];
 							drag_measureCalculateStyle[measureName] = "平均值("+measureName+")";
 							measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("平均值("+measureName+")");
 							switch_chart_handle_fun();
@@ -1676,6 +1678,7 @@ function show_view_save_dashbash(data_result){
 							if(drag_measureCalculateStyle[measureName] == "最大值("+measureName+")"){
 								return;
 							}
+							delete customCalculate[measureName];
 							drag_measureCalculateStyle[measureName] = "最大值("+measureName+")";
 							measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("最大值("+measureName+")");
 							switch_chart_handle_fun();
@@ -1690,6 +1693,7 @@ function show_view_save_dashbash(data_result){
 							if(drag_measureCalculateStyle[measureName] == "最小值("+measureName+")"){
 								return;
 							}
+							delete customCalculate[measureName];
 							drag_measureCalculateStyle[measureName] = "最小值("+measureName+")";
 							measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("最小值("+measureName+")");
 							switch_chart_handle_fun();
