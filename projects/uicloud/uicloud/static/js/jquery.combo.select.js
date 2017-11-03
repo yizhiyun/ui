@@ -61,8 +61,10 @@
 	 * @param {[Node]} element [Select element]
 	 * @param {[Object]} options [Option object]
 	 */
+
+
 	function Plugin ( element, options ) {
-			
+		
 		/* Name of the plugin */
 
 		this._name = pluginName;
@@ -92,7 +94,7 @@
 		this.$options = this.$el.find('option, optgroup')
 
 		/* Initialize */
-
+		
 		this.init();
 
 		/* Instances */
@@ -100,6 +102,8 @@
 		$.fn[ pluginName ].instances.push(this);
 
 	}
+
+
 
 	$.extend(Plugin.prototype, {
 		init: function () {
@@ -179,7 +183,7 @@
 
 				if(!e.value) p = e.innerHTML
 
-				o+='<li class="'+(this.disabled? self.settings.disabledClass : "option-item") + ' ' +(k == self.selectedIndex? self.settings.selectedClass : '')+ '" data-index="'+(k)+'" data-value="'+this.value+'">'+ (this.innerHTML) + '</li>'
+				o+='<li title="'+(this.innerHTML)+'" class="'+(this.disabled? self.settings.disabledClass : "option-item") + ' ' +(k == self.selectedIndex? self.settings.selectedClass : '')+ '" data-index="'+(k)+'" data-value="'+this.value+'">'+ (this.innerHTML) + '</li>'
 
 				k++;
 			})

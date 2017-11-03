@@ -172,6 +172,8 @@
     list-style: none;
     padding: 5px 5px;
     margin: 0; 
+    overflow: hidden;
+    text-overflow: ellipsis;
     }
 
 /**
