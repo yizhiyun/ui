@@ -85,7 +85,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 			}
 			
 			if(customCalculate[measure_name_arr[i]]){
-				var obj = {"alias":drag_measureCalculateStyle[measure_name_arr[i]],"exprstr":customCalculate[measure_name_arr[i]]}
+				var obj = {"alias":customCalculate[measure_name_arr[i]]["name"],"exprstr":customCalculate[measure_name_arr[i]]["value"]}
 				expressions["exprlist"].push(obj);
 			}
 		}
