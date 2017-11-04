@@ -74,7 +74,12 @@ function dataAnalysisFunction(isOnlyLoad){
    drag_fixedWidth();
    	// 连接框可拖动帮
 	$("#connectModalprompt").draggable({
-	 containment:"#analysisContainer  .mainDragArea"
+	 containment:"#analysisContainer  .mainDragArea",
+   drag:function(){
+     $("#connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer .combo-select .custom-select").eq(0).data("plugin_comboselect")._close();
+     $("#connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer .combo-select .custom-select").eq(1).data("plugin_comboselect")._close();
+     $("#connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer .combo-select .custom-select").eq(2).data("plugin_comboselect")._close();
+   }
 	});
  if(isOnlyLoad){
 	return;
@@ -138,8 +143,11 @@ function checkCurrentPanelFileConnectionNeedDelete(backgroundExitsConnections){
 
  $(document).click(function(event){
   	event.stopPropagation();
-	$(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").remove();
+	  $(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").remove();
+    $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList .connectMoreHanldeList").remove();
   	$(".main .rightConent #analysisContainer .leftSlide #connectDirector .conn #addSourceSelects").hide();
+    $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").css("background","");
+    $("#dataSet .detailDataSetList  li .didBuildTables .tablesList .moreHandleDb").hide();
   });
 // 获取最新的数据库连接情况
 function updateDBListFromNetwork(){
@@ -158,7 +166,7 @@ function updateDBListFromNetwork(){
             continue;
           }
           var detailInfo = dbPaltList[key];
-          var li = $("<li class='dbtype'><div class='selectFlagDiv'><img src= '/static/dataCollection/images/data.png' alt='' /><span>"+detailInfo.dbtype+"-"+detailInfo.dbuser+"-"+detailInfo.dbport+"</span></div></li>");
+          var li = $("<li class='dbtype' title="+detailInfo.dbtype+"-"+detailInfo.dbuser+"-"+detailInfo.dbport+"><div class='selectFlagDiv'><img src= '/static/dataCollection/images/data.png' alt='' /><span>"+detailInfo.dbtype+"-"+detailInfo.dbuser+"-"+detailInfo.dbport+"</span></div></li>");
           li.data("dbType",detailInfo.dbtype);
           var moreHandleBtn = $("<div class='moreHanldeBtn'><img src='/static/dashboard/img/select_tra.png'></div>");
           li.children(".selectFlagDiv").append(moreHandleBtn);
@@ -170,9 +178,18 @@ function updateDBListFromNetwork(){
           moreHandleBtn.unbind("click");
           moreHandleBtn.click(function(event){
           	event.stopPropagation();
+            $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList .connectMoreHanldeList").remove();
+            $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").css("background","");
+            $("#dataSet .detailDataSetList  li .didBuildTables .tablesList .moreHandleDb").hide();
+            $(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").not($(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde")).remove();
+            if($(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde").length > 0){
+                $(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde").remove();
+                return;
+            }
           	var moreConnectHandle = $("<ul id='connectMoreHanlde'><li class='rename'>重命名</li><li class='editConnect'>编辑连接</li><li class='removeConnect'>移除</li></ul>");
           	$(this).parent(".selectFlagDiv").parent("li").append(moreConnectHandle);
-          	moreConnectHandle.find("li").unbind("click");
+          	moreConnectHandle.css("left",$(this).parent().offset().left + $(this).parent().width() + "px").css("top",$(this).parent().offset().top + ($(this).parent().height()/2 + 5) + "px");
+            moreConnectHandle.find("li").unbind("click");
           	moreConnectHandle.find("li").click(function(event){
           		var connectInfo = $(this).parent("#connectMoreHanlde").parent("li");
 	          	var connectInfoDbIndex = connectInfo.attr("dbindex");
@@ -188,6 +205,7 @@ function updateDBListFromNetwork(){
     						  contentType: "application/json; charset=utf-8",
     						  data:JSON.stringify({"dbObjIndex":connectInfoDbIndex}),
     					   	success:function(data){
+                    console.log(connectInfoDbIndex)
                     if($("#dataSet .detailDataSetList  li .nowConnectedTables .tablesList").html() == ""){
                         $("#dataSet .detailDataSetList  li .nowConnectedTables .didBuildImg").css("visibility","hidden");
                     }
@@ -250,7 +268,7 @@ function updatePanelFileListFromNetwork(){
             continue;
           }
           var detialInfo = panelList[key];
-          var li = $("<li class='filetype'><div class='selectFlagDiv'><img src= '/static/dataCollection/images/file.png' alt='' /><span>"+key+"</span></div></li>");
+          var li = $("<li class='filetype' title="+key+"><div class='selectFlagDiv'><img src= '/static/dataCollection/images/file.png' alt='' /><span>"+key+"</span></div></li>");
           $("#analysisContainer .leftSlide #connectDirector ul.paltFormList").append(li);
           li.data("panelName",key);
           li.attr("panelName",key);
@@ -264,8 +282,17 @@ function updatePanelFileListFromNetwork(){
            moreHandleBtn.unbind("click");
            moreHandleBtn.click(function(event){
           	event.stopPropagation();
+            $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList .connectMoreHanldeList").remove();
+            $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").css("background","");
+            $("#dataSet .detailDataSetList  li .didBuildTables .tablesList .moreHandleDb").hide();
+             $(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").not($(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde")).remove();
+            if($(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde").length > 0){
+                $(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde").remove();
+                return;
+            }
           	var moreConnectHandle = $("<ul id='connectMoreHanlde'><li class='rename'>重命名</li><li class='editConnect'>编辑连接<input type='file' id='editUploadFile' multiple='multiple' name='file'/></li><li class='removeConnect'>移除</li></ul>");
           	$(this).parent(".selectFlagDiv").parent("li").append(moreConnectHandle);
+            moreConnectHandle.css("left",$(this).parent().offset().left + $(this).parent().width() + "px").css("top",$(this).parent().offset().top + ($(this).parent().height()/2 + 5) + "px");
           	moreConnectHandle.find(".rename,.removeConnect").unbind("click");
           	moreConnectHandle.find(".rename,.removeConnect").click(function(event){
 	          var connectInfoFileName = $(this).parent("#connectMoreHanlde").parent("li").attr("panelname");
@@ -298,7 +325,7 @@ function updatePanelFileListFromNetwork(){
           var paneFileShow = $("<div class='panelDataShow'><div class='panelFileSheetData'></div></div>");
           paneFileShow.attr("panelName",key);
           for (var i = 0; i < detialInfo.length;i++) {
-            var p  = $("<p>"+detialInfo[i]+"</p>");
+            var p  = $("<p title="+detialInfo[i]+">"+detialInfo[i]+"</p>");
             p.data("sourcetype","tmptables");
             p.data("filename",key);
             paneFileShow.find(".panelFileSheetData").append(p);
@@ -338,11 +365,41 @@ function getCurrentDidBuildDataTable(){
         if (data["status"] == "success") {
           $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList").empty();
           for (var i = 0;i < data.results.length;i++) {
-            var li = $("<li class = 'datebaseLise'>"+data.results[i]+"</li>");
+            var li = $("<li class = 'datebaseLise clear' title="+data.results[i]+">"+data.results[i]+"<div class='moreHandleDb'><img src='/static/dashboard/img/select_tra.png' alt='moreHandle'></div></li>");
             li.data("sourcetype","hdfs");
             $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList").append(li);
+
+            li.find(".moreHandleDb").unbind("click");
+            li.find(".moreHandleDb").click(function(){
+                  $(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").remove();
+                  $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList .connectMoreHanldeList").not($(this).parents(".datebaseLise").find(".connectMoreHanldeList")).remove();
+                  $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").not($(this).parent()).css("background","");
+                  $("#dataSet .detailDataSetList  li .didBuildTables .tablesList .moreHandleDb").not( $(this).parents(".datebaseLise").find(".moreHandleDb")).hide();
+                if($(this).parents(".datebaseLise").find(".connectMoreHanldeList").length > 0){
+                   $(this).parents(".datebaseLise").find(".connectMoreHanldeList").remove();
+                   return;
+                }
+                 var moreHandleElement = $("<ul class='connectMoreHanldeList'><li class='rename'>重命名</li><li class='removeConnect'>移除</li></ul>");
+                 $(this).append(moreHandleElement);
+                 moreHandleElement.css("left",$(this).offset().left + $(this).width() + 5 + "px").css("top",$(this).offset().top + ($(this).height()/2) + "px");
+           
+                //重命名点击事件
+                moreHandleElement.find(".rename").unbind("click");
+                moreHandleElement.find(".rename").click(function(event){
+                  event.stopPropagation();
+                  console.log("重命名")
+                })
+
+                //移除点击事件
+                moreHandleElement.find(".removeConnect").unbind("click");
+                moreHandleElement.find(".removeConnect").click(function(event){
+                  event.stopPropagation();
+                  console.log("移除");
+                })
+            })
+
           }
-             $("#dataSet .detailDataSetList  li .didBuildTables").find(".didBuildImg").css("visibility","visible");
+             $("#dataSet .detailDataSetList li .didBuildTables").find(".didBuildImg").css("visibility","visible");
   
           bindEventToPerTable();
          
@@ -472,7 +529,7 @@ function handle_success_show_table(){
                 didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 // free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
-				getCurrentDidBuildDataTable();
+				        getCurrentDidBuildDataTable();
                 spinner.stop();
       }
           }
@@ -642,7 +699,7 @@ function getTablesOfaDataBase(theSelect){
     success: function(data) {
       $(theSelect).parents(".dbDataShow").children(".tablesOfaData").eq(0).empty();
       for(var i = 0; i < data.data.length; i++) {
-        var p = $("<p class='dbbaseList'>" + data.data[i] + "</p>");
+        var p = $("<p class='dbbaseList' title="+data.data[i]+">" + data.data[i] + "</p>");
         p.data("sourcetype","db");
         $(theSelect).parents(".dbDataShow").children(".tablesOfaData").eq(0).append(p);
       }
@@ -660,7 +717,7 @@ function getTablesOfaDataBase(theSelect){
       dragUIHandle($("#dataSet .detailDataSetList  li .nowConnectedTables .tablesList .dbDataShow .tablesOfaData p").add("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").add("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .panelDataShow .panelFileSheetData p"),$("#analysisContainer .mainDragArea"),function(ui,event){
       event.stopPropagation();
       event.preventDefault();
-      tableName = $(ui.draggable).html();
+      tableName = $(ui.draggable).text();
       var sourceType = $(ui.draggable).data("sourcetype");
       var dataBaseName = null;
       var dbPaltIndexForBack = null;
@@ -704,6 +761,27 @@ function getTablesOfaDataBase(theSelect){
           }
       });
     },"leftNav");
+
+  //已构建数据表的移入移出事件
+  $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").each(function(index,ele){
+    $(ele).on("mouseenter",function(){
+      if($(ele).find(".connectMoreHanldeList").length  ==  0){
+          $(ele).css("background","#EEEEEE");
+          $(ele).children("#dataSet .detailDataSetList li .didBuildTables .tablesList .moreHandleDb").show();
+      }
+      
+    })
+
+
+    $(ele).on("mouseleave",function(){
+      if($(ele).find(".connectMoreHanldeList").length  ==  0){
+          $(ele).css("background","");
+          $(ele).children("#dataSet .detailDataSetList li .didBuildTables .tablesList .moreHandleDb").hide();
+      }
+
+    })
+
+  })
   }
   
   var fixedSPlit_data =null;
@@ -800,7 +878,7 @@ function getTablesOfaDataBase(theSelect){
         $("#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch").toggle(300,function(){
             if($("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").length != 0){
                 if($("#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch").css("display") == "block"){
-                    $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35 -  $("#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch").height() + "px";
+                    $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 40 -  $("#dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow .sqlSearch").height() + "px";
                 }else{
                     $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35 + "px";
                 }
@@ -824,7 +902,7 @@ function getTablesOfaDataBase(theSelect){
         inputSearch( $("#dataSet .detailDataSetList  li .didBuildTables .sqlSearch .sqlSearch-input"),"datebaseLise",$("#dataSet .detailDataSetList  li .didBuildTables .tablesList"));
         return;
 
-    }else if($(event.target).hasClass("sqlSearch") || $(event.target).hasClass("sqlSearch-input") || $(event.target).hasClass("sqlSearch-img")){
+    }else if($(event.target).hasClass("sqlSearch") || $(event.target).hasClass("sqlSearch-input") || $(event.target).hasClass("sqlSearch-img") || $(event.target).parent().hasClass("sqlSearch-img") || $(event.target).hasClass("moreHandleDb") || $(event.target).parent().hasClass("moreHandleDb")){
       return;
     }
 
@@ -889,7 +967,7 @@ function getTablesOfaDataBase(theSelect){
         filed["isable"] = "no";
         // 如果当前底部显示的正是操作的这个表格
         if ($("#tableDataDetailListPanel").attr("nowShowTable") == $(this).parents(".boxDiv").eq(0)[0].id && currentTableAllData) {   
-          setshowHiddenEles_btn_notSelected();                  
+          setshowHiddenEles_btn_notSelected();
         }         
       }
       
@@ -1432,6 +1510,12 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
   
   // 表格详情按钮的点击
   $("#analysisContainer .mainDragArea #dragTableDetailInfo .imgBox").click(function(){
+    //判断弹窗是否展示
+    if($("#connectModalprompt").css("display") == "block"){
+        if($("#connectModalprompt").find(".selectInfoDiv .selectHeader p").eq(0).text() == $(this).parent("#dragTableDetailInfo").attr("record").split("_YZYPD_")[2] || $("#connectModalprompt").find(".selectInfoDiv .selectHeader p").eq(2).text() == $(this).parent("#dragTableDetailInfo").attr("record").split("_YZYPD_")[2])
+        $("#connectModalprompt").hide();
+        tempSaveLineInfo = false;
+    }
     $(this).siblings(".imgBox").removeClass("active");
     $(this).addClass("active");
     var dbInfo = $(this).parent("#dragTableDetailInfo").attr("record");

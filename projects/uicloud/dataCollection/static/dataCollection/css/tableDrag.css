@@ -8,14 +8,14 @@
 #connectModalprompt .btnSelects .active{background: #fff2db;}
 #connectModalprompt .btnSelects div p{height: 12px;padding-top: 12px;}
 #connectModalprompt .selectInfoDiv .selectHeader{height: 23px;background: #e7e7e7;border-top: 1px solid #dedede;font-size: 12px;color: #808080;line-height: 23px}
-#connectModalprompt .selectInfoDiv .selectHeader p{text-align: center;box-sizing:border-box;border-right: 1px solid #dedede;height: 100%;float: left;}
-#connectModalprompt .selectInfoDiv .selectHeader p:nth-child(1){width: 150px;}
+#connectModalprompt .selectInfoDiv .selectHeader p{text-align: center;box-sizing:border-box;border-right: 1px solid #dedede;height: 100%;float: left;line-height: 24px;}
+#connectModalprompt .selectInfoDiv .selectHeader p:nth-child(1){width: 150px;overflow: hidden;text-overflow: ellipsis;}
 #connectModalprompt .selectInfoDiv .selectHeader p:nth-child(2){width: 50px;}
-#connectModalprompt .selectInfoDiv .selectHeader p:nth-child(3){width: 150px;}
+#connectModalprompt .selectInfoDiv .selectHeader p:nth-child(3){width: 150px;overflow: hidden;text-overflow: ellipsis;}
 
 #connectModalprompt .selectInfoDiv .selectContent .selectDiv{height: 23px;/*border-bottom: 1px solid #dedede;*/padding-bottom: 10px}
 #connectModalprompt .selectInfoDiv .selectContent .selectDiv .combo-select{height: 21px;border-radius: 0px;border-left: 0;}
-#connectModalprompt .selectInfoDiv .selectContent .selectDiv .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;padding-top: 3px;}
+#connectModalprompt .selectInfoDiv .selectContent .selectDiv .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;padding-top: 3px;overflow: hidden;text-overflow: ellipsis;width: 90%;}
 #connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer{float: left;height: 23px;}
 #connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer:nth-child(1){width: 150px;}
 #connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer:nth-child(2){width: 50px;}

@@ -583,7 +583,7 @@ def recordCol(request, tableName):
     更改字段的维度/度量类型
     '''
     jsonData = request.data
-    logger.debug('jsondata: {0}'.format(jsonData))
+    logger.debug('jsonData: {0}'.format(jsonData))
     if request.method == 'POST':
 
         curUserName = "myfolder"
@@ -592,16 +592,18 @@ def recordCol(request, tableName):
 
 
 @api_view(['POST'])
-def deleteCsv(request, path, fileName):
+def handleHdfsFile(request, path, fileName):
     '''
-    删除hdfs上上传的文件
+    处理hdfs上的文件， 删除/重命名
     '''
+    jsonData = request.data
     if request.method == 'POST':
         pathList = ['csvfile', 'mergefile']
         if path not in pathList:
             return JsonResponse({"status": "failed", "reason": "there is no this path!"})
 
-        userName = 'myfolder'
-        deleteCsvFromHdfs(fileName, path, userName)
+        rs = handleFileFromHdfs(fileName, path, jsonData=jsonData)
+        if not rs:
+            return JsonResponse({"status": "failed", "reason": "there is no this file!"})
 
         return JsonResponse({'status': 'success'})

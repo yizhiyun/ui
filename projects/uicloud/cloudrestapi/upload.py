@@ -84,7 +84,7 @@ def uploadToHdfs(fileDict, hdfsHost="spark-master0", nnPort="50070", rootFolder=
         logger.warn("There is no tables in the fileDict.")
         return False
     fileName = fileDict["path"].split("/")[-1]
-    deleteCsvFromHdfs(fileName, userName, hdfsHost, nnPort, rootFolder)
+    handleFileFromHdfs(fileName, 'csvfile')
 
     uploadedCsvList = []
     for tableItem in fileDict["tables"]:
@@ -113,30 +113,55 @@ def convertBool(v1):
     return True
 
 
-def deleteCsvFromHdfs(fileName,
-                      path,
-                      userName='myfolder',
-                      hdfsHost="spark-master0",
-                      nnPort="50070",
-                      tmpRootFolder="/tmp/users",
-                      rootFolder="/users"):
+def handleFileFromHdfs(fileName,
+                       path,
+                       jsonData={},
+                       userName='myfolder',
+                       hdfsHost="spark-master0",
+                       nnPort="50070",
+                       tmpRootFolder="/tmp/users",
+                       rootFolder="/users"):
+    '''
+    remove or rename the file from hdfs
+    '''
     client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
 
-    if path == 'mergefile':
-        # remove if the csv file exists
+    if path == 'csvfile':
+        # remove or rename if the csv file exists
         csvFolderUri = "{0}/{1}/csv/{2}".format(tmpRootFolder, userName, fileName)
-        if client.exists(csvFolderUri):
-            client.delete(csvFolderUri, recursive=True)
+        if 'rename' in jsonData.keys():
+            newFolderUri = "{0}/{1}/csv/{2}".format(tmpRootFolder, userName, jsonData['rename'])
+            if client.exists(csvFolderUri):
+                client.rename(csvFolderUri, newFolderUri)
+            else:
+                return False
+        else:
+            if client.exists(csvFolderUri):
+                client.delete(csvFolderUri, recursive=True)
 
-        # remove if the parquet file exists
+        # remove or rename if the parquet file exists
         parquetFolderUri = "{0}/{1}/parquet/{2}".format(tmpRootFolder, userName, fileName)
-        if client.exists(parquetFolderUri):
-            client.delete(parquetFolderUri, recursive=True)
+        if 'rename' in jsonData.keys():
+            newFolderUri = "{0}/{1}/parquet/{2}".format(tmpRootFolder, userName, jsonData['rename'])
+            if client.exists(parquetFolderUri):
+                client.rename(parquetFolderUri, newFolderUri)
+            else:
+                return False
+        else:
+            if client.exists(parquetFolderUri):
+                client.delete(parquetFolderUri, recursive=True)
 
-    elif path == 'csvfile':
-        # remove if the merge file exists
+    elif path == 'mergefile':
+        # remove or rename if the merge file exists
         mergeFolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
-        if client.exists(mergeFolderUri):
-            client.delete(mergeFolderUri, recursive=True)
+        if 'rename' in jsonData.keys():
+            newFolderUri = "{0}/{1}/{2}".format(rootFolder, userName, jsonData['rename'])
+            if client.exists(mergeFolderUri):
+                client.rename(mergeFolderUri, newFolderUri)
+            else:
+                return False
+        else:
+            if client.exists(mergeFolderUri):
+                client.delete(mergeFolderUri, recursive=True)
 
     return True

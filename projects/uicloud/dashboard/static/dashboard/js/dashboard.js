@@ -1432,7 +1432,8 @@ function show_view_save_dashbash(data_result){
 	}
 
 	 	//移除函数
-	function remove_viewHandle(){
+	function remove_viewHandle(type,sortable){
+		if(type == "column"){
 			drag_row_column_data["column"]["measure"]= [];
 			drag_row_column_data["column"]["dimensionality"] =[];
 			//遍历所有行里的li 排序后更新数据
@@ -1446,10 +1447,9 @@ function show_view_save_dashbash(data_result){
 
 				drag_row_column_data["column"][data_wd_type].push(sortable_data)
 			}
-
-			drag_row_column_data["row"]["measure"]= [];
-			drag_row_column_data["row"]["dimensionality"] =[];
-
+		}else{
+				drag_row_column_data["row"]["measure"]= [];
+				drag_row_column_data["row"]["dimensionality"] =[];
 			//遍历所有行里的li 排序后更新数据
 			for(var i = 0; i < $("#drop_row_view").find("li").length;i++){
 				//获取数据字段
@@ -1461,11 +1461,13 @@ function show_view_save_dashbash(data_result){
 
 				drag_row_column_data["row"][data_wd_type].push(sortable_data)
 			}
+		}
+			if(sortable == undefined){
+				// 移除筛选列
+				rightFilterListDraw();
+				switch_chart_handle_fun();
+			}
 
-			
-			// 移除筛选列
-			rightFilterListDraw();
-			switch_chart_handle_fun();
 	}
 
 	//创建弹窗
@@ -1609,13 +1611,21 @@ function show_view_save_dashbash(data_result){
 
 						//移除
 						out_wrap_click.find(".deleting").on("click",function(){
+									if($(this).parents(".drag_main").attr("id") == "drag_col"){
+										var clickAreaType = "column";
+									}else{
+										var clickAreaType = "row";
+									}
 									
+
 									if($(this).parent().parent().parent().hasClass("list_wrap")){
 										$(this).parent().parent().parent().remove();
 									}else{
 										$(this).parent().parent().remove();
 									}
-									remove_viewHandle();
+
+									remove_viewHandle(clickAreaType);
+									
 						});
 
 						//判断拖入的是否是计数
@@ -2737,49 +2747,24 @@ function drag(){
 									
 								case "view_show_area_content":
 									
+									if($(ui.sender).parents(".drag_main").attr("id") == "drag_col"){
+										var clickAreaType = "column";
+									}else{
+										var clickAreaType = "row";
+									}
+
 									if($(this).find(".index_row_list").length > 0){
 										$(this).find(".index_row_list").remove();
 										return;
 									}
 									$(this).find(".list_wrap").remove();
 									$(this).find(".ui-draggable").parent().remove();
-									if(ui["sender"].attr("id") == "drop_col_view"){
-									drag_row_column_data["column"]["measure"]= [];
-									drag_row_column_data["column"]["dimensionality"] =[];
-									//遍历所有行里的li 排序后更新数据
-									for(var i = 0; i < $("#drop_col_view").find("li").length;i++){
-										//获取数据字段
-										var data_id = $("#drop_col_view").find("li").eq(i).attr("id").split(":");
-										//判断元素的类型
-										var data_wd_type = data_id[0];
-										//对应的数据
-										var sortable_data = data_id[1]+":"+data_id[2];
-
-										drag_row_column_data["column"][data_wd_type].push(sortable_data)
-									}
-									}
-
-									// ....
-
-									if(ui["sender"].attr("id") == "drop_row_view"){
-									drag_row_column_data["row"]["measure"]= [];
-									drag_row_column_data["row"]["dimensionality"] =[];
-	
-									//遍历所有行里的li 排序后更新数据
-									for(var i = 0; i < $("#drop_row_view").find("li").length;i++){
-										//获取数据字段
-										var data_id = $("#drop_row_view").find("li").eq(i).attr("id").split(":");
-										//判断元素的类型
-										var data_wd_type = data_id[0];
-										//对应的数据
-										var sortable_data = data_id[1]+":"+data_id[2];
-
-										drag_row_column_data["row"][data_wd_type].push(sortable_data)
-									}
-									}
 									
+									remove_viewHandle(clickAreaType,"sortable");
+									
+
 									// 移除筛选列
-									var fieldInfoArr = ui.item.attr("id").split(":");
+									var fieldInfoArr= ui.item.attr("id").split(":");
 									rightFilterListDraw();
 
 									break;
@@ -2787,7 +2772,7 @@ function drag(){
 
 									break;
 							}
-//							if(ui.)
+
 							switch_chart_handle_fun();
 							
 						}
@@ -3114,9 +3099,15 @@ function typeChangeWall(ele){
 	$(".drag_main_icon_second").not($("#drag_zb .drag_main_icon_second")).each(function(index, ele) {
 		$(ele).on("click", function() {
 			if($(ele).parents(".drag_main").find(".annotation_text .drog_row_list").length != 0){
+				if($(this).parents(".drag_main").attr("id") == "drag_col"){
+					var clickAreaType = "column";
+				}else{
+					var clickAreaType = "row";
+				}
 				$(".annotation_text").eq(index).find(".list_wrap").remove();
 				$(".annotation_text").eq(index).find("li").remove();
-				remove_viewHandle();
+
+				remove_viewHandle(clickAreaType);
 				$(".drag_text").eq(index).show();
 				//			if($("#project_chart").css("display") == "none"){
 				//				$("#sizer_mpt").css("display", "block");

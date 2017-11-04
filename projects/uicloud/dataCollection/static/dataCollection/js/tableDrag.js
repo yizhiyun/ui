@@ -1,3 +1,8 @@
+//记录上一次弹窗显示的数据
+var savePreConInfo = null;
+
+var savePreOriginalEvent = null;
+
 
 jsPlumb.ready(function(){
 instance = jsPlumb.getInstance({
@@ -16,7 +21,8 @@ instance = jsPlumb.getInstance({
 });
 	// 监听连接
 		instance.bind("connection",function(conInfo,originalEvent){
-			
+			$("#connectModalprompt").hide();
+			tempSaveLineInfo = false;
 			connectDetailSelect(conInfo,originalEvent);
 			
 		})
@@ -38,8 +44,6 @@ function modalPromptShowToPage(conInfo,lineInfo){
 		return;
 	}
 
-
-
 	if($("body").height() - ($(lineInfo.canvas).position().top + 32 + 70) > 260){
 		bodyHeightToModal = $(lineInfo.canvas).position().top + 60;
 	}else{
@@ -59,7 +63,7 @@ function modalPromptShowToPage(conInfo,lineInfo){
 		$("#confirmRelationBtn").unbind("click");
 		$("#confirmRelationBtn").on("click",function(event){
 			tempSaveLineInfo = false;
-			event.stopPropagation();	
+			event.stopPropagation();
 			var lineInfo = conInfo.connection.getOverlay("connFlag");
 			var connectType = $("#connectModalprompt .btnSelects .active").children("p").attr("data");
 			if(connectType == "delete"){
@@ -106,14 +110,36 @@ function modalPromptShowToPage(conInfo,lineInfo){
 
 //连接条件选择
 function connectDetailSelect(conInfo,originalEvent){
-	
+	savePreConInfo = conInfo;
+
+	savePreOriginalEvent = originalEvent;
 	
 	// 线条显示的图片
 	var lineInfo = conInfo.connection.getOverlay("connFlag");
-//	console.log(lineInfo);
 	lineInfo.unbind("click");
 	lineInfo.bind("click",function(){
-		 modalPromptShowToPage(conInfo,lineInfo);
+
+		if(savePreConInfo == conInfo && savePreOriginalEvent == originalEvent){
+			if(tempSaveLineInfo){
+				$("#connectModalprompt").hide();
+					tempSaveLineInfo = false;
+					
+			}else{
+				$("#connectModalprompt").show();
+					tempSaveLineInfo = true;
+					
+				}
+			$("#connectModalprompt").css({
+				"left":$(lineInfo.canvas).position().left - $("#connectModalprompt").width()/2 + 16 + "px",
+				"top":bodyHeightToModal + "px",
+			});
+			return;
+		}
+
+		 $("#connectModalprompt").hide();
+		 tempSaveLineInfo = false;
+		 connectDetailSelect(conInfo,originalEvent);
+		 return;
 	});
 	
 
@@ -220,8 +246,6 @@ function tableDrag(tableDrags){
 			instance.addEndpoint(tableDrags[tableDrags.length - 1], { anchors: "RightMiddle" }, endppintStyle);
 			instance.addEndpoint(tableDrags[tableDrags.length - 1], { anchors: "LeftMiddle" }, endppintStyle);
 		}
-				
-	
-			
+
 }
 
