@@ -10,6 +10,7 @@
 #connectDirector .conn .btn{position: absolute;right: 10px;width: 40px;top: 0;text-align: right;cursor: pointer;}
 #connectDirector{padding-left: 10px;}
 #connectDirector .paltFormList>li{padding-right: 10px;height: 27px;position: relative;margin-top: 5px;}
+#connectDirector .paltFormList>li>.detailInfo_input{width: 150px;height: 27px;line-height: 27px;position: absolute;top: 0;left: 27px;background: #EEEEEE;display: none}
 #connectDirector .paltFormList>li>.selectFlagDiv{height: 13px;padding: 7px 0 7px 0;cursor: pointer;border-radius: 2px;background:#ffffff}
 
 #connectDirector .paltFormList>li>.selectFlagDiv img{margin-left: 5px;}
@@ -38,7 +39,7 @@
 #dataSet .detailDataSetList  li .didBuildTables .sqlSearch{margin-left: 15px;margin-bottom: 5px;}
 #dataSet .detailDataSetList  li .didBuildTables .base_search_img{margin-left: 75px;}
 #dataSet .detailDataSetList  li .didBuildTables img,#dataSet .detailDataSetList  li .nowConnectedTables img{vertical-align: middle;cursor: pointer;line-height: 21px;margin-top: -5px;}
-#dataSet .detailDataSetList  li .didBuildTables span,#dataSet .detailDataSetList  li .nowConnectedTables span{display: inline-block;margin-left:6px;cursor: pointer;height: 21px;line-height: 21px;}
+#dataSet .detailDataSetList  li .didBuildTables .title,#dataSet .detailDataSetList  li .nowConnectedTables .title{display: inline-block;margin-left:6px;cursor: pointer;height: 21px;line-height: 21px;}
 #dataSet .detailDataSetList  li .nowConnectedTables span{padding-bottom: 5px;}
 #dataSet .detailDataSetList  li .didBuildTables .tablesList{padding-left: 18px;max-height:230px;overflow-x: hidden;overflow-y: auto;}
 
@@ -53,13 +54,15 @@
 #dataSet .detailDataSetList .sqlSearch .sqlSearch-input{position:absolute;height: 22px;top: 0;left: 23px;width: 117px;border-top-right-radius: 11.5px;border-bottom-right-radius: 11.5px;}
 #dataSet .detailDataSetList .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables .tablesList .buildTableTitle{color: #808080;}
-#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise{height:23px;line-height:23px;cursor: pointer;width:162px;border-radius: 2px;margin-bottom: 2px;text-indent: 5px;}
+#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise{height:23px;line-height:23px;cursor: pointer;width:162px;border-radius: 2px;margin-bottom: 2px;text-indent: 5px;position: relative;}
+#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise .datebaseLise_input{width: 162px;height:23px;border-bottom:1px solid #DEDEDE;display: none;position: absolute;left: 0;top: 0;background: white}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise:hover{background: #EEEEEE;}
 /*#analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow{margin-top: 5px;}*/
 #analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow .combo-select{width: 140px !important;margin-bottom: 5px;float: left;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow .custom-select-img{float: left;margin-top: 6px;margin-left: 10px;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow .tablesOfaData,#analysisContainer .leftSlide #dataSet .detailDataSetList li .panelDataShow .panelFileSheetData{overflow-y: auto;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .dbDataShow .tablesOfaData p,.detailDataSetList li .panelDataShow .panelFileSheetData p{height:23px;line-height:23px;text-indent:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor: pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;width: 142px;border-radius: 2px;}
+#analysisContainer .leftSlide #dataSet .detailDataSetList li .panelDataShow .panelFileSheetData p:hover{background: #EEEEEE;}
 /*#analysisContainer .leftSlide #dataSet .detailDataSetList li .panelDataShow .panelTitle{color: #808080;padding-top: 15px;}*/
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .dbDataShow .tablesOfaData p:hover{background: #EEEEEE;}
 #analysisContainer .mainDragArea{background: #f1f2f4;position: relative;}

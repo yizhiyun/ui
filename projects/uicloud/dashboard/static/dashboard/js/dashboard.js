@@ -168,15 +168,15 @@ function dashboardReadySumFunction(isOnlyLoad){
 			success:function(data){
 				
 				if (data["status"] == "success") {
-					if(Object.getOwnPropertyNames(preClickView).length != 0 && preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["viewtype"] != null){
-						cubeSelectContent_fun(data["results"],preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["tablename"]);
-					}else if(sessionStorage.getItem("edit_view_now")){
+					if(sessionStorage.getItem("edit_view_now")){
 						//获取编辑的视图
 						var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
 						var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
 						// 创建数据块
 
 						cubeSelectContent_fun(data["results"],have_view_edit[3]);
+					}else if(Object.getOwnPropertyNames(preClickView).length != 0 && preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["viewtype"] != null){
+						cubeSelectContent_fun(data["results"],preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["tablename"]);
 					}else{
 					// 创建数据块
 					cubeSelectContent_fun(data["results"]);
@@ -769,7 +769,7 @@ leftBar_sizeW_function();
 		if(/-/gi.test(title)){
 			$.post("../dashboard/setSwitch",{"switch":"isopen","id":$(".rightConent #dashboard_content #new_view ul li[title="+$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")+"]").data("tableViewId")},function(result){
 				if(result["status"] == "ok"){
-					$(".statement_li").eq(sessionStorage.getItem("edit_view_now").split(",")[4]).find(".view_show_handle").eq(sessionStorage.getItem("edit_view_now").split(",")[5]).find(".small_view_text").data("setopen",false);
+					$("#pageStatementsModule .statement_li").eq(sessionStorage.getItem("edit_view_now").split(",")[4]).find(".view_show_handle").eq(sessionStorage.getItem("edit_view_now").split(",")[5]).find(".small_view_text").data("setopen",false);
 				}
 			});
 		}
@@ -871,7 +871,7 @@ function add_state_name(){
 		//输入框内容不为空创建对应元素
 		$("#action_new_view").css("borderColor","#DEDEDED");
 
-		var new_data_name = $("<div class='statement_li save_delect clear'><div class='statement_li_content'><img src=../static/dashboard/img/form_icon.png  class='view_show_icon'><div class='view_show_name_save filter_view_class'>"+action_input_data+"</div></div><div class='view_show_content'></div></div>");
+		var new_data_name = $("<div class='dashboard_statement_li save_delect clear'><div class='dashboard_statement_li_content'><img src=../static/dashboard/img/form_icon.png  class='view_show_icon'><div class='view_show_name_save filter_view_class'>"+action_input_data+"</div></div><div class='view_show_content'></div></div>");
 		new_data_name.prependTo("#show_excel_name");
 		new_data_name.addClass("only_folder");
 		$(".filter_view_class").removeClass("active_folder_view");
@@ -952,11 +952,11 @@ function show_view_save_dashbash(data_result){
 			}
 				for(small_view_show in data_result[erv_data]){
 					
-				var oDiv = $("<div class='statement_li clear'><div class='statement_li_content'><img src=../static/dashboard/img/form_icon.png  class='view_show_icon'><div class='view_show_name_save filter_view_class'>"+small_view_show+"</div></div><div class='view_show_content'></div></div>");
+				var oDiv = $("<div class='dashboard_statement_li clear'><div class='dashboard_statement_li_content'><img src=../static/dashboard/img/form_icon.png  class='view_show_icon'><div class='view_show_name_save filter_view_class'>"+small_view_show+"</div></div><div class='view_show_content'></div></div>");
 				if(erv_data != "default" && small_view_show != ""){
 					oDiv.find(".view_show_name_save").parent().parent().addClass("floder_view_wrap");
 					oDiv.appendTo(folder);
-					folder.find(".statement_li").find(".view_show_name_save").css("width","324px");
+					folder.find(".dashboard_statement_li").find(".view_show_name_save").css("width","324px");
 
 					$("<img src=../static/dashboard/img/left_35.png  class='click_tra click_tra_floder'/>").prependTo($(folder).find(".state_folder_content"));
 				}else{
@@ -979,8 +979,8 @@ function show_view_save_dashbash(data_result){
 	//点击收起放下
 	$(".click_tra_floder").each(function(index,ele){
 		$(ele).on("click",function(){
-			$(ele).parent().parent().find(".statement_li").toggle("blind",200,function(){
-				if($(ele).parent().parent().find(".statement_li").css("display") == "none"){
+			$(ele).parent().parent().find(".dashboard_statement_li").toggle("blind",200,function(){
+				if($(ele).parent().parent().find(".dashboard_statement_li").css("display") == "none"){
 				$(ele).attr("src","../static/dashboard/img/left_40.png");
 				}else{
 				$(ele).attr("src","../static/dashboard/img/left_35.png");

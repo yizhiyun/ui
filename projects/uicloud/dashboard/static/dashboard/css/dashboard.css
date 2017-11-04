@@ -310,8 +310,8 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .state_folder_content{height: 23px;line-height: 25px;}
 .click_folder{margin:5px 5px 0px 0px;line-height: 23px;float: left;}
 .view_show_name_save{width: 120px;height: 23px;line-height: 26px;text-align: left;font-size: 12px;float: left;cursor: pointer;}
-.statement_li{width:343px;font-size: 12px;margin-left:17px;position: relative;}
-.statement_li_content{height: 23px;line-height: 26px;margin-bottom: 1px}
+.dashboard_statement_li{width:343px;font-size: 12px;margin-left:17px;position: relative;}
+.dashboard_statement_li_content{height: 23px;line-height: 26px;margin-bottom: 1px}
 .view_show_icon{margin: 5px 5px 0px 0px;float: left;}
 .click_tra{width: 9px;height:5px;margin:9.5px 8px 0px 0px ;float: left;cursor: pointer;}
 .only_folder{width: 100%;margin-left: 0;}

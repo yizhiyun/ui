@@ -105,7 +105,7 @@ input:-webkit-autofill {
 #contentChooser #common .commonSearchDiv .outer input{height: 100%;width: 340px;margin-left: 5px;}
 #contentChooser #common .detailSearchData{width: 350px;margin-left: 30px;}
 #contentChooser #common .detailSearchData .dataList{overflow-y: auto;max-height: 150px;}
-#contentChooser #common .detailSearchData .dataList li{padding-top: 5px;}
+#contentChooser #common .detailSearchData .dataList li{padding-top: 5px;height: 20px;line-height: 20px;}
 #contentChooser #common .detailSearchData .dataList li span{margin-left: 5px;}
 #contentChooser #common .handleBtns{padding: 10px 0px 20px 0;height: 18px;}
 #contentChooser #common .handleBtns .all{float: left;}
