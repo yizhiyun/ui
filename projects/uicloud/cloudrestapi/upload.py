@@ -84,7 +84,7 @@ def uploadToHdfs(fileDict, hdfsHost="spark-master0", nnPort="50070", rootFolder=
         logger.warn("There is no tables in the fileDict.")
         return False
     fileName = fileDict["path"].split("/")[-1]
-    handleFileFromHdfs(fileName, 'csvfile')
+    handleFileFromHdfs(fileName, rootFolder, jsonData={"method": "delete"})
 
     uploadedCsvList = []
     for tableItem in fileDict["tables"]:
@@ -113,55 +113,55 @@ def convertBool(v1):
     return True
 
 
-def handleFileFromHdfs(fileName,
-                       path,
-                       jsonData={},
-                       userName='myfolder',
-                       hdfsHost="spark-master0",
-                       nnPort="50070",
-                       tmpRootFolder="/tmp/users",
-                       rootFolder="/users"):
+def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', hdfsHost="spark-master0", nnPort="50070"):
     '''
     remove or rename the file from hdfs
     '''
     client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
 
-    if path == 'csvfile':
-        # remove or rename if the csv file exists
-        csvFolderUri = "{0}/{1}/csv/{2}".format(tmpRootFolder, userName, fileName)
-        if 'rename' in jsonData.keys():
-            newFolderUri = "{0}/{1}/csv/{2}".format(tmpRootFolder, userName, jsonData['rename'])
-            if client.exists(csvFolderUri):
-                client.rename(csvFolderUri, newFolderUri)
-            else:
-                return False
-        else:
-            if client.exists(csvFolderUri):
-                client.delete(csvFolderUri, recursive=True)
+    if rootFolder.startswith('/tmp/users'):
+        csvFolderUri = "{0}/{1}/csv/{2}".format(rootFolder, userName, fileName)
+        parquetFolderUri = "{0}/{1}/parquet/{2}".format(rootFolder, userName, fileName)
 
-        # remove or rename if the parquet file exists
-        parquetFolderUri = "{0}/{1}/parquet/{2}".format(tmpRootFolder, userName, fileName)
-        if 'rename' in jsonData.keys():
-            newFolderUri = "{0}/{1}/parquet/{2}".format(tmpRootFolder, userName, jsonData['rename'])
-            if client.exists(parquetFolderUri):
-                client.rename(parquetFolderUri, newFolderUri)
-            else:
-                return False
-        else:
-            if client.exists(parquetFolderUri):
-                client.delete(parquetFolderUri, recursive=True)
+        if jsonData['method'] == 'delete':
+            deleteHdfsFile(client, csvFolderUri)
+            deleteHdfsFile(client, parquetFolderUri)
+            return True
 
-    elif path == 'mergefile':
-        # remove or rename if the merge file exists
-        mergeFolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
-        if 'rename' in jsonData.keys():
-            newFolderUri = "{0}/{1}/{2}".format(rootFolder, userName, jsonData['rename'])
-            if client.exists(mergeFolderUri):
-                client.rename(mergeFolderUri, newFolderUri)
-            else:
-                return False
-        else:
-            if client.exists(mergeFolderUri):
-                client.delete(mergeFolderUri, recursive=True)
+        elif jsonData['method'] == 'rename':
+            newname = jsonData['newname']
+            csvRs = renameHdfsFile(client, csvFolderUri, newname)
+            parquetRs = renameHdfsFile(client, parquetFolderUri, newname)
 
+            if csvRs and parquetRs:
+                return True
+            return False
+
+    elif rootFolder.startswith('/users'):
+        FolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
+
+        if jsonData['method'] == 'delete':
+            return deleteHdfsFile(client, FolderUri)
+
+        elif jsonData['method'] == 'rename':
+            newname = jsonData['newname']
+            return renameHdfsFile(client, FolderUri, newname)
+
+
+def deleteHdfsFile(client, folderUri):
+    '''
+    '''
+    if client.exists(folderUri):
+        client.delete(folderUri, recursive=True)
     return True
+
+
+def renameHdfsFile(client, folderUri, newname):
+    '''
+    '''
+    newFolderUri = "{0}/{1}".format(os.path.split(folderUri)[0], newname)
+    if client.exists(folderUri):
+        client.rename(folderUri, newFolderUri)
+        return True
+    else:
+        return False

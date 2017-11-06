@@ -149,17 +149,23 @@ def filterTable(request, modeName):
                        "reason": "the mode must one of {0}".format(modeList)}
             return JsonResponse(failObj, status=400)
 
-        data = dataBaseObj.filterTableData(jsonData, modeName)
-        if data == 'failed':
+        rs = dataBaseObj.filterTableData(jsonData, modeName)
+        if rs == 'failed':
             return JsonResponse({'status': 'failed', 'reason': 'Please see the detailed logs.'})
-        elif data == 'name error':
+        elif rs == 'name error':
             return JsonResponse({'status': 'failed', 'reason': 'name repetition'})
-        elif data == 'limit type':
+        elif rs == 'limit type':
             return JsonResponse({'status': 'failed', 'reason': 'limit type must be int'})
+
+        rs = dataBaseObj.columnMap(rs, jsonData, modeName)
+        if rs == 'newNameFalse':
+            return JsonResponse({'status': 'failed', 'reason': 'new column name has been repetition'})
+        elif rs == 'oldNameFalse':
+            return JsonResponse({'status': 'failed', 'reason': "can't find the old column name"})
 
         context = {
             "status": "success",
-            "results": data
+            "results": rs
         }
         return JsonResponse(context)
 

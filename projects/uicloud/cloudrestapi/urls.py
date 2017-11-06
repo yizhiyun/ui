@@ -69,7 +69,7 @@ urlpatterns = [
         name='recordCol'
     ),
     url(
-        r'^cloudapi/v1/handleHdfsFile/(?P<path>\w+)/(?P<fileName>\w+)$',
+        r'^cloudapi/v1/handleHdfsFile/(?P<fileName>\w+)$',
         views.handleHdfsFile,
         name='handleHdfsFile'
     ),
