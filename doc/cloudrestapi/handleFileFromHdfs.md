@@ -15,11 +15,13 @@ This document describe the RESTful API of how to delete or rename the file from 
 }
 ```
 * elif you want to rename the file.
+```
 {
 	"filesource": <uploaded/generated>,
 	"method": "rename",
 	"newname": <newname>
 }
+```
 ### 5. Response Data:
 * if success. it will response as follows:
 > {"status": "success"}

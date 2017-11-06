@@ -138,14 +138,14 @@ def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', h
             return False
 
     elif rootFolder.startswith('/users'):
-        mergeFolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
+        FolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
 
         if jsonData['method'] == 'delete':
-            return deleteHdfsFile(client, mergeFolderUri)
+            return deleteHdfsFile(client, FolderUri)
 
         elif jsonData['method'] == 'rename':
             newname = jsonData['newname']
-            return renameHdfsFile(client, mergeFolderUri, newname)
+            return renameHdfsFile(client, FolderUri, newname)
 
 
 def deleteHdfsFile(client, folderUri):
