@@ -136,6 +136,14 @@ Get Table From Current User Via Spark
                    #   "weekofyear","year"
                    "col": <number> or <columnString> or <iterDict>,
                    "unarytype":<unaryType>,
+                   # parameters of "splitbydelim":
+                   #   [fieldname, delimter]
+                   # parameters of "splitbyposition":
+                   #   [fieldname, pos1, pos2, ..., posN]
+                   "customizedfuncs": {
+                        "type": <type>, "splitbydelim", "splitbyposition"
+                        "parameters": <list>
+                   },
                    "operations": [
                        # types: "+","-","*","/"
                        {
