@@ -37,6 +37,8 @@ class ConnectDataBase():
         self.tablesOfDataBase = {}
         # 记录拆分的字段
         self.list = {}
+        # 记录字段名字映射
+        self.colMap = {}
     # 连接到数据库
 
     def connectDB(self):
@@ -577,7 +579,7 @@ class ConnectDataBase():
                             results['data'][i].update(updateList[i])
 
         # 对新的拆分需要进行处理
-        if mode == 'all' and 'handleCol' in jsonData.keys() and jsonData['handleCol']:
+        if 'handleCol' in jsonData.keys() and jsonData['handleCol']:
 
             handleCol = jsonData['handleCol']
             if handleCol['method'] == 'split' or handleCol['method'] == 'limit':
@@ -663,96 +665,98 @@ class ConnectDataBase():
             if conversionList == 'name error' or conversionList == 'limit type':
                 return conversionList
 
-            logger.debug('conversionList: {0}'.format(conversionList))
-            sql = 'select {0} from {1} where 1=1 '.format(
-                ', '.join(conversionList), jsonData['tableName']) + filtersql + oracleToDate
-            if self.dbPaltName == 'sqlserver':
-                firstCol = tempList[0][3]
-                sql = sql[:6] + sqlserverstr + sql[6:] + 'order by %s' % firstCol
-            else:
-                sql += eval(self.dbPaltName + 'str')
-            logger.debug('handleColSql: {0}'.format(sql))
-
-            try:
-                cursor.execute(sql)
-            except Exception:
-                logger.error("Exception: {0}".format(sys.exc_info()))
-                return 'failed'
-
             # 把新拆分的数据加入到results里面
-            if self.dbPaltName == 'mysql':
-                newDataList = cursor.fetchall()
-                for i in range(len(results['data'])):
-                    results['data'][i].update(specialBytes(newDataList[i]))
-            elif self.dbPaltName == 'oracle' or self.dbPaltName == 'sqlserver':
-                dataList = cursor.fetchall()
-                colList = cursor.description
-                updateList = []
-                for data in dataList:
-                    dic = {}
-                    for i in range(len(colList)):
-                        dic[colList[i][0]] = data[i]
-                    updateList.append(dic)
-                for i in range(len(results['data'])):
-                        results['data'][i].update(updateList[i])
+            if mode == 'all' or mode == 'data':
+                logger.debug('conversionList: {0}'.format(conversionList))
+                sql = 'select {0} from {1} where 1=1 '.format(
+                    ', '.join(conversionList), jsonData['tableName']) + filtersql + oracleToDate
+                if self.dbPaltName == 'sqlserver':
+                    firstCol = tempList[0][3]
+                    sql = sql[:6] + sqlserverstr + sql[6:] + 'order by %s' % firstCol
+                else:
+                    sql += eval(self.dbPaltName + 'str')
+                logger.debug('handleColSql: {0}'.format(sql))
+
+                try:
+                    cursor.execute(sql)
+                except Exception:
+                    logger.error("Exception: {0}".format(sys.exc_info()))
+                    return 'failed'
+
+                if self.dbPaltName == 'mysql':
+                    newDataList = cursor.fetchall()
+                    for i in range(len(results['data'])):
+                        results['data'][i].update(specialBytes(newDataList[i]))
+                elif self.dbPaltName == 'oracle' or self.dbPaltName == 'sqlserver':
+                    dataList = cursor.fetchall()
+                    colList = cursor.description
+                    updateList = []
+                    for data in dataList:
+                        dic = {}
+                        for i in range(len(colList)):
+                            dic[colList[i][0]] = data[i]
+                        updateList.append(dic)
+                    for i in range(len(results['data'])):
+                            results['data'][i].update(updateList[i])
 
             # 把新增加的拆分字段插入到被拆分的字段后面
-            if handleCol['method'] == 'split' or handleCol['method'] == 'limit':
+            if mode == 'all' or mode == 'schema':
+                if handleCol['method'] == 'split' or handleCol['method'] == 'limit':
 
-                # 如果之前该字段有拆分过的，算着往后排
-                # 一个是同名拆分字段计数， 一个是排列位置计数
-                countname = 0
-                arangecount = 0
-                for j in self.list[coldickey]:
-                    if list(j.keys())[0].startswith(handleCol['colname'] + '_PART'):
-                        arangecount += 1
-                        try:
-                            int(list(j.keys())[0].replace(handleCol['colname'] + '_PART', ''))
-                            countname += 1
-                        except Exception:
-                            pass
+                    # 如果之前该字段有拆分过的，算着往后排
+                    # 一个是同名拆分字段计数， 一个是排列位置计数
+                    countname = 0
+                    arangecount = 0
+                    for j in self.list[coldickey]:
+                        if list(j.keys())[0].startswith(handleCol['colname'] + '_PART'):
+                            arangecount += 1
+                            try:
+                                int(list(j.keys())[0].replace(handleCol['colname'] + '_PART', ''))
+                                countname += 1
+                            except Exception:
+                                pass
 
-                for i in range(len(conversionList)):
+                    for i in range(len(conversionList)):
+                        dic = {
+                            "field": handleCol['colname'] + '_PART{0}'.format(i + 1 + countname),
+                            "type": 'VARCHAR'
+                        }
+
+                        count = 0
+                        for j in range(len(results['schema'])):
+                            if results['schema'][j]['field'] == handleCol['colname']:
+                                results['schema'].insert(j + i + 1 + arangecount, dic)
+                                count += 1
+                        if count == 0:
+                            results['schema'].append(dic)
+                        self.list[coldickey].append({handleCol['colname'] + '_PART{0}'.format(
+                            i + 1 + countname): conversionList[i]})
+
+                elif handleCol['method'] == 'merge':
+                    countMergename = 0
+                    for j in self.list[coldickey]:
+                        if list(j.keys())[0].startswith("_".join(handleCol['colnamelist']) + '_MERGE'):
+                            try:
+                                int(list(j.keys())[0].replace("_".join(handleCol['colnamelist']) + '_MERGE', ''))
+                                countMergename += 1
+                            except Exception:
+                                pass
+
                     dic = {
-                        "field": handleCol['colname'] + '_PART{0}'.format(i + 1 + countname),
+                        "field": "_".join(handleCol['colnamelist']) + '_MERGE%s' % (1 + countMergename),
                         "type": 'VARCHAR'
                     }
 
                     count = 0
-                    for j in range(len(results['schema'])):
-                        if results['schema'][j]['field'] == handleCol['colname']:
-                            results['schema'].insert(j + i + 1 + arangecount, dic)
+                    for i in range(len(results['schema'])):
+                        if results['schema'][i]['field'] == handleCol['colnamelist'][0]:
+                            results['schema'].insert(i + 1 + countMergename, dic)
                             count += 1
                     if count == 0:
                         results['schema'].append(dic)
-                    self.list[coldickey].append({handleCol['colname'] + '_PART{0}'.format(
-                        i + 1 + countname): conversionList[i]})
-
-            elif handleCol['method'] == 'merge':
-                countMergename = 0
-                for j in self.list[coldickey]:
-                    if list(j.keys())[0].startswith("_".join(handleCol['colnamelist']) + '_MERGE'):
-                        try:
-                            int(list(j.keys())[0].replace("_".join(handleCol['colnamelist']) + '_MERGE', ''))
-                            countMergename += 1
-                        except Exception:
-                            pass
-
-                dic = {
-                    "field": "_".join(handleCol['colnamelist']) + '_MERGE%s' % (1 + countMergename),
-                    "type": 'VARCHAR'
-                }
-
-                count = 0
-                for i in range(len(results['schema'])):
-                    if results['schema'][i]['field'] == handleCol['colnamelist'][0]:
-                        results['schema'].insert(i + 1 + countMergename, dic)
-                        count += 1
-                if count == 0:
-                    results['schema'].append(dic)
-                self.list[coldickey].append({
-                    "_".join(handleCol['colnamelist']) + '_MERGE%s' % (1 + countMergename): conversionList[0]
-                })
+                    self.list[coldickey].append({
+                        "_".join(handleCol['colnamelist']) + '_MERGE%s' % (1 + countMergename): conversionList[0]
+                    })
 
         try:
             cursor.close()
@@ -953,6 +957,8 @@ class ConnectDataBase():
             return [concatsql]
 
     def turnCols(self, colnamelist, key):
+        '''
+        '''
         newcolnamelist = []
         if key in self.list.keys():
             for colname in colnamelist:
@@ -962,3 +968,59 @@ class ConnectDataBase():
                 newcolnamelist.append(colname)
             return newcolnamelist
         return colnamelist
+
+    def columnMap(self, results, jsonData, mode):
+        '''
+        '''
+        coldickey = '{0}_{1}'.format(jsonData['database'], jsonData['tableName'])
+        if coldickey not in self.colMap.keys():
+            self.colMap[coldickey] = {}
+
+        if 'changename' in jsonData.keys():
+            # 获取所有的显示的字段名字
+            cList = []
+            schemaList = results['schema']
+            for i in schemaList:
+                cList.append(i['field'])
+            for key, value in self.colMap[coldickey].items():
+                cList.remove(key)
+                cList.append(value)
+
+            changeNameList = jsonData['changename']
+            logger.debug('changeNameList: {0}, cList: {1}'.format(changeNameList, cList))
+            # 添加新的映射关系
+            for changeName in changeNameList:
+                # 判断新名字是否重复
+                if changeName['newname'] in cList:
+                    return 'newNameFalse'
+                # 判断被改的名字是否存在
+                if changeName['oldname'] not in cList:
+                    return 'oldNameFalse'
+
+                count = 0
+                for key, value in self.colMap[coldickey].items():
+                    if changeName['oldname'] == value:
+                        self.colMap[coldickey][key] = changeName['newname']
+                        count += 1
+                if count == 0:
+                    self.colMap[coldickey][changeName['oldname']] = changeName['newname']
+                cList.remove(changeName['oldname'])
+                cList.append(changeName['newname'])
+
+        if mode == 'all' or mode == 'schema':
+            schemaList = results['schema']
+            for schema in schemaList:
+                if schema['field'] in self.colMap[coldickey].keys():
+                    schema['field'] = self.colMap[coldickey][schema['field']]
+                # for key, value in self.colMap[coldickey].items():
+                #     if schema['field'] == key:
+                #         schema['field'] = value
+
+        if mode == 'all' or mode == 'data':
+            dataList = results['data']
+            for data in dataList:
+                for key, value in self.colMap[coldickey].items():
+                    data[value] = data[key]
+                    if key != value:
+                        data.pop(key)
+        return results
