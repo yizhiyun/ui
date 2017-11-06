@@ -592,18 +592,25 @@ def recordCol(request, tableName):
 
 
 @api_view(['POST'])
-def handleHdfsFile(request, path, fileName):
+def handleHdfsFile(request, fileName):
     '''
     处理hdfs上的文件， 删除/重命名
     '''
     jsonData = request.data
+    logger.debug('jsonData: {0}'.format(jsonData))
     if request.method == 'POST':
-        pathList = ['csvfile', 'mergefile']
-        if path not in pathList:
-            return JsonResponse({"status": "failed", "reason": "there is no this path!"})
+        fileSource = jsonData['filesource']
+        sourceList = ['uploaded', 'generated']
+        if fileSource not in sourceList:
+            return JsonResponse({"status": "failed", "reason": "there is no this file source!"})
 
-        rs = handleFileFromHdfs(fileName, path, jsonData=jsonData)
+        if fileSource == 'uploaded':
+            rootFolder = '/tmp/users'
+        elif fileSource == 'generated':
+            rootFolder = '/users'
+
+        rs = handleFileFromHdfs(fileName, rootFolder, jsonData=jsonData)
+
         if not rs:
             return JsonResponse({"status": "failed", "reason": "there is no this file!"})
-
         return JsonResponse({'status': 'success'})
