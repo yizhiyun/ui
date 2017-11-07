@@ -30,6 +30,7 @@ class ConnectDataBase():
         self.dbUserPwd = dbUserPwd
         self.dbSid = dbSid
         self.dbTime = dbTime
+        self.dbName = '{0}-{1}-{2}'.format(dbPaltName, dbUserName, dbPort)
         self.con = None
         # 所有数据库的集合
         self.dataBasesRs = []
