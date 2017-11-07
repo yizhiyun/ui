@@ -73,7 +73,13 @@ The RESTful API Details of Verify those table relationships
             ]
         }
         ...
-    ]
+    ],
+
+    "outputs":{    # Optional
+        "outputTableName": <tableName>, # Optional, if exists, check if the table exists.
+        ...
+    },
+    ...
 
 }
 ```
@@ -142,10 +148,15 @@ The RESTful API Details of Verify those table relationships
 ```
 ### 6. Response Data:
 * if successful, it will response as follows
-> { "status": "success",
-"columns": [ "column1", "column2", ...] }
+```
+{
+  "status": "success",
+  "columns": [ "column1", "column2", ...],
+  "tableAvailable": "true/false"
+}
+```
 * if failed, it will response as follows
-> { "status":"failed" }
+> { "status":"failed", "reason": <message> }
 
 
 The RESTful API Details of Generating New Table
