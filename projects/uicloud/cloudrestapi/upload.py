@@ -121,6 +121,15 @@ def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', h
     '''
     client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
 
+    if not jsonData:
+        '''
+        check the generated file if exist
+        '''
+        FolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
+        if client.exists(FolderUri):
+            return 'true'
+        return 'false'
+
     if rootFolder.startswith('/tmp/users'):
         csvFolderUri = "{0}/{1}/csv/{2}".format(rootFolder, userName, fileName)
         parquetFolderUri = "{0}/{1}/parquet/{2}".format(rootFolder, userName, fileName)

@@ -83,16 +83,18 @@ def checkTableMapping(request):
 
     if request.method == "POST":
 
-        outputColumnsDict = getOutputColumns(jsonData)
+        results = getOutputColumns(jsonData)
 
-        if not outputColumnsDict:
+        if not results['outputColumnsDict']:
             failObj = {"status": "failed",
                        "reason": "the request data didn't meet the required format. Please check it again."}
             return JsonResponse(failObj, status=400)
 
         # response all valid columns
         successObj = {"status": "success",
-                      "columns": outputColumnsDict}
+                      "columns": results['outputColumnsDict']}
+        if 'tableAvailable' in results.keys():
+            successObj['tableAvailable'] = results['tableAvailable']
         return JsonResponse(successObj)
 
 

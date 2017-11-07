@@ -7,6 +7,7 @@ import os
 
 
 from .spark_commonlib import *
+from .upload import *
 from dataCollection.gxmHandleClass.Singleton import Singleton
 
 # Get an instance of a logger
@@ -170,7 +171,14 @@ def getOutputColumns(jsonData):
     # check if all columns is available. BTW, it maybe is unnecessary.
     #
     logger.debug("outputColumnsDict: {0}".format(outputColumnsDict))
-    return outputColumnsDict
+    results = {'outputColumnsDict': outputColumnsDict}
+
+    if 'outputs' in jsonData.keys() and 'outputTableName' in jsonData['outputs'].keys():
+        checkName = jsonData['outputs']['outputTableName']
+        rootFolder = '/users'
+        tableAvailable = handleFileFromHdfs(checkName, rootFolder)
+        results['tableAvailable'] = tableAvailable
+    return results
 
 
 def getDbSource(sourcesMappingFile=os.path.dirname(os.path.realpath(__file__)) + "/tmp/sources.json"):
