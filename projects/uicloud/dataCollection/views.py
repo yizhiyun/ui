@@ -239,7 +239,7 @@ def judgeIcon(request, hdfsHost="spark-master0", nnPort="50070", csvUrl="/tmp/us
         viewList = DashboardViewByUser.objects.filter(username=username)
         indexList = DashboardIndexByUser.objects.filter(username=username)
         logger.debug('folderList: {0}, viewList: {1}, indexList: {2}'.format(folderList, viewList, indexList))
-        if len(folderList) == 0 and len(viewList) == 0 and len(indexList) == 0:
+        if (len(folderList) == 0 and len(viewList) == 0 and len(indexList) == 0) or third == 0:
             fourth = 0
 
         context = {
