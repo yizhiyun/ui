@@ -177,7 +177,10 @@ def getOutputColumns(jsonData):
         checkName = jsonData['outputs']['outputTableName']
         rootFolder = '/users'
         tableAvailable = handleFileFromHdfs(checkName, rootFolder)
-        results['tableAvailable'] = tableAvailable
+        if tableAvailable:
+            results['tableAvailable'] = 'true'
+        else:
+            results['tableAvailable'] = 'false'
     return results
 
 

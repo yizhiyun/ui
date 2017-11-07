@@ -127,8 +127,8 @@ def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', h
         '''
         FolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
         if client.exists(FolderUri):
-            return 'true'
-        return 'false'
+            return True
+        return False
 
     if rootFolder.startswith('/tmp/users'):
         csvFolderUri = "{0}/{1}/csv/{2}".format(rootFolder, userName, fileName)
