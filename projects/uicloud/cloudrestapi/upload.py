@@ -8,6 +8,8 @@ import shutil
 import traceback
 import pandas as pd
 
+from dashboard.models import DashboardViewByUser, DashboardIndexByUser
+
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.cloudrestapi.upload")
 logger.setLevel(logging.DEBUG)
@@ -138,9 +140,12 @@ def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', h
             return False
 
     elif rootFolder.startswith('/users'):
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
         FolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
 
         if jsonData['method'] == 'delete':
+
+            checkOrDeleteView(fileName, username, delete=True)
             return deleteHdfsFile(client, FolderUri)
 
         elif jsonData['method'] == 'rename':
@@ -160,8 +165,28 @@ def renameHdfsFile(client, folderUri, newname):
     '''
     '''
     newFolderUri = "{0}/{1}".format(os.path.split(folderUri)[0], newname)
+    if client.exists(newFolderUri):
+        return 'new_name_used'
     if client.exists(folderUri):
         client.rename(folderUri, newFolderUri)
         return True
     else:
         return False
+
+
+def checkOrDeleteView(fileName, username, delete=False):
+    '''
+    '''
+    viewList = DashboardViewByUser.objects.filter(tablename=fileName, username=username)
+    indexList = DashboardIndexByUser.objects.filter(tablename=fileName, username=username)
+
+    if not delete:
+        if len(viewList) > 0 or len(indexList) > 0:
+            return True
+        else:
+            return False
+    else:
+        for view in viewList:
+            view.delete()
+        for index in indexList:
+            index.delete()

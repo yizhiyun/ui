@@ -87,6 +87,7 @@ def dashboardTableAdd(request):
     传入一个table的各项参数，保存并返回用户所有数据
     '''
     jsonData = request.data
+    username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
 
     if request.method == 'POST':
         try:
@@ -110,7 +111,7 @@ def dashboardTableAdd(request):
                 defaultfolderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['defaultparent'])
                 if len(defaultfolderlist) == 0:
                     defaultfolder = DashboardFolderByUser(
-                        username=jsonData['username'],
+                        username=username,
                         foldername=jsonData['defaultparent']
                     )
                     defaultfolder.save()
@@ -118,7 +119,7 @@ def dashboardTableAdd(request):
                 folderlist = DashboardFolderByUser.objects.filter(foldername=foldername)
                 if len(folderlist) == 0:
                     folder = DashboardFolderByUser(
-                        username=jsonData['username'],
+                        username=username,
                         foldername=foldername,
                         parentfoldername=jsonData['defaultparent']
                     )
@@ -126,7 +127,6 @@ def dashboardTableAdd(request):
                 else:
                     folder = folderlist[0]
 
-                username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
                 table = DashboardViewByUser(
                     row=jsonData['row'],
                     column=jsonData['column'],
@@ -204,6 +204,7 @@ def changeName(request):
     用户自定义view的名字
     '''
     jsonData = request.data
+    username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
 
     if request.method == 'POST':
         objtype = jsonData['objtype']
@@ -222,7 +223,6 @@ def changeName(request):
                 table = DashboardViewByUser.objects.get(id=int(jsonData['id']))
                 table.note = note
                 table.save()
-                username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
                 context = getAllDataFunction(username)
                 return JsonResponse(context)
 
@@ -234,7 +234,6 @@ def changeName(request):
                 folder = DashboardFolderByUser.objects.get(foldername=jsonData['oldname'])
                 folder.foldername = jsonData['newname']
                 folder.save()
-                username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
                 context = getAllDataFunction(username)
                 return JsonResponse(context)
 
@@ -261,6 +260,7 @@ def deleteFolder(request):
     删除文件夹，子文件夹或者视图
     '''
     jsonData = request.data
+    username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
 
     if request.method == 'POST':
         datatype = jsonData['datatype']
@@ -277,7 +277,6 @@ def deleteFolder(request):
                         parentfolder.delete()
 
                     else:
-                        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
 
                         pFolderList = DashboardFolderByUser.objects.filter(username=username,
                                                                            parentfoldername=None)
@@ -300,11 +299,10 @@ def deleteFolder(request):
                         parentfolder.delete()
 
                     else:
-                        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
                         defaultfolderlist = DashboardFolderByUser.objects.filter(foldername=jsonData['defaultparent'])
                         if len(defaultfolderlist) == 0:
                             defaultfolder = DashboardFolderByUser(
-                                username=jsonData['username'],
+                                username=username,
                                 foldername=jsonData['defaultparent']
                             )
                             defaultfolder.save()
@@ -328,7 +326,6 @@ def deleteFolder(request):
                 table = DashboardViewByUser.objects.get(id=int(jsonData['tableid']))
                 table.delete()
 
-            username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
             context = getAllDataFunction(username)
             return JsonResponse(context)
         except Exception:
