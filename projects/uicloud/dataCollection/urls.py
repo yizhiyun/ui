@@ -13,4 +13,5 @@ urlpatterns = [
     url(r"^dataBuildView$", views.dataBuildView),
     url(r"^deleteTempCol$", views.deleteTempCol),
     url(r"^judgeIcon$", views.judgeIcon),
+    url(r"^changeDbName$", views.changeDbName),
 ]

@@ -81,6 +81,7 @@ def showAllDbOfPalt(request):
                     return JsonResponse(context)
             dbObj.fetchAllDabaBase()
             context['results'][md5] = {
+                'dbname': dbObj.dbName,
                 'dbtype': dbObj.dbPaltName,
                 'dbport': dbObj.dbPort,
                 'dbuser': dbObj.dbUserName,
@@ -251,3 +252,22 @@ def judgeIcon(request, hdfsHost="spark-master0", nnPort="50070", csvUrl="/tmp/us
             }
         }
         return JsonResponse(context)
+
+
+@api_view(['POST'])
+def changeDbName(request):
+    '''
+    '''
+    jsonData = request.data
+    if request.method == 'POST':
+        newName = jsonData['newname']
+        dbObjIndex = jsonData['source']
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        if username not in Singleton().dataPaltForm.keys():
+            return JsonResponse({'status': 'failed', 'reason': '{0} has not connected to any database'.format(username)})
+        if dbObjIndex not in Singleton().dataPaltForm[username].keys():
+            return JsonResponse({'status': 'failed', 'reason': 'This database is not yet connected'})
+
+        dataBaseObj = Singleton().dataPaltForm[username][dbObjIndex]
+        dataBaseObj.dbName = newName
+        return JsonResponse({'status': 'success'})
