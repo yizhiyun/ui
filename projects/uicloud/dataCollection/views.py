@@ -211,14 +211,13 @@ def judgeIcon(request, hdfsHost="spark-master0", nnPort="50070", csvUrl="/tmp/us
     jsonData = request.data
     logger.debug('jsondata: {0}'.format(jsonData))
     if request.method == 'POST':
-        dashusername = jsonData['dashusername'] if 'dashusername' in jsonData.keys() else 'yzy'
-        datausername = jsonData['datausername'] if 'datausername' in jsonData.keys() else 'yzy'
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
         second = 0
         third = 0
         fourth = 1
 
-        if datausername in Singleton().dataPaltForm.keys():
-            for key, value in Singleton().dataPaltForm[datausername].items():
+        if username in Singleton().dataPaltForm.keys():
+            for key, value in Singleton().dataPaltForm[username].items():
                 if judgeConn(value.con):
                     second = 1
                     break
@@ -236,9 +235,9 @@ def judgeIcon(request, hdfsHost="spark-master0", nnPort="50070", csvUrl="/tmp/us
                 if parquetList:
                     second = 1
 
-        folderList = DashboardFolderByUser.objects.filter(username=dashusername)
-        viewList = DashboardViewByUser.objects.filter(username=dashusername)
-        indexList = DashboardIndexByUser.objects.filter(username=dashusername)
+        folderList = DashboardFolderByUser.objects.filter(username=username)
+        viewList = DashboardViewByUser.objects.filter(username=username)
+        indexList = DashboardIndexByUser.objects.filter(username=username)
         logger.debug('folderList: {0}, viewList: {1}, indexList: {2}'.format(folderList, viewList, indexList))
         if len(folderList) == 0 and len(viewList) == 0 and len(indexList) == 0:
             fourth = 0
