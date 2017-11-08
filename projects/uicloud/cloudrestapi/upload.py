@@ -159,7 +159,7 @@ def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', h
 
         elif jsonData['method'] == 'rename':
             newname = jsonData['newname']
-            return renameHdfsFile(client, FolderUri, newname)
+            return renameHdfsFile(client, FolderUri, newname, username=username)
 
 
 def deleteHdfsFile(client, folderUri):
@@ -170,7 +170,7 @@ def deleteHdfsFile(client, folderUri):
     return True
 
 
-def renameHdfsFile(client, folderUri, newname):
+def renameHdfsFile(client, folderUri, newname, username=None):
     '''
     '''
     newFolderUri = "{0}/{1}".format(os.path.split(folderUri)[0], newname)
@@ -178,24 +178,38 @@ def renameHdfsFile(client, folderUri, newname):
         return 'new_name_used'
     if client.exists(folderUri):
         client.rename(folderUri, newFolderUri)
+        if username:
+            checkOrDeleteView(os.path.split(folderUri)[1], username, changeName=newname)
         return True
     else:
         return False
 
 
-def checkOrDeleteView(fileName, username, delete=False):
+def checkOrDeleteView(fileName, username, delete=False, changeName=None):
     '''
     '''
     viewList = DashboardViewByUser.objects.filter(tablename=fileName, username=username)
     indexList = DashboardIndexByUser.objects.filter(tablename=fileName, username=username)
 
-    if not delete:
-        if len(viewList) > 0 or len(indexList) > 0:
-            return True
-        else:
-            return False
-    else:
+    if changeName:
+        '''
+        更改视图或指标的tablename
+        '''
         for view in viewList:
-            view.delete()
+            view.tablename = changeName
+            view.save()
         for index in indexList:
-            index.delete()
+            index.tablename = changeName
+            index.save()
+
+    else:
+        if not delete:
+            if len(viewList) > 0 or len(indexList) > 0:
+                return True
+            else:
+                return False
+        else:
+            for view in viewList:
+                view.delete()
+            for index in indexList:
+                index.delete()
