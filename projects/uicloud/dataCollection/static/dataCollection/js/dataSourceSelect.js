@@ -31,14 +31,11 @@ $(function () {
     			$("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);
     		})
     }
-    //  连接数据库的弹框显示之后，处理里面的点击事件
-    function baseInfoShowCallBack(){
-		$("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
-		
-  		$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
-  		$("#loginBtn").unbind("click");
-    		$("#loginBtn").click(function(event){
-    			if(!$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
+
+
+   //封装界面函数
+   function detail(){
+   		if(!$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
     				return;
     			}
     			 $("#dataBaseConnectForm .addressinput,#dataBaseConnectForm .portinput,#dataBaseConnectForm .usernameinput,#dataBaseConnectForm .userpwdinput,#dataBaseConnectForm .dbsidinput").css("border","1px solid #dedede");
@@ -51,7 +48,7 @@ $(function () {
 					return;
 				}
 			});
-			if(allCheckCorrect){
+    		if(allCheckCorrect){
 				return;
 			}
 			if(dataBaseName == "ORACLE" && /^(\s)*$/.test($("#dataBaseConnectForm .dbsidinput").val())){
@@ -85,11 +82,30 @@ $(function () {
 	            }
 			});
     			
-    			$("#connectDataBaseInfo").hide();
-    			$("#dataList").hide();
+    		$("#connectDataBaseInfo").hide();
+    		$("#dataList").hide();
+   }
+
+    //  连接数据库的弹框显示之后，处理里面的点击事件
+    function baseInfoShowCallBack(){
+		$("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
+  		$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
+
+  		$("#loginBtn").unbind("click");
+    	$("#loginBtn").click(function(event){
+    		detail();
     		});
     		
+
     }
+
+
+    $("#connectDataBaseInfo").keydown(function(event){
+    	if(event.keyCode == 13){
+    		detail();
+    	}
+    });
+
     
    
    $("#panelFileSettingOption .close,#panelFileSettingOption a.cancleBtn").click(function(){

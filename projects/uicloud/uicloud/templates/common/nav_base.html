@@ -47,8 +47,8 @@
 	</div>
 	
 	<div class="maskLayer" style="display: none;"> </div>
-	 <div id="connectDataBaseInfo" style="display: none;">
-    		<div class="topline"></div>
+	<div id="connectDataBaseInfo" style="display: none;">
+    	<div class="topline"></div>
 		<div class="common-head">
 			<span class="logo"></span>
 			<span class="flag"></span>
@@ -57,30 +57,31 @@
 			</div>
 	
 		</div>
-    		<form method="post" id="dataBaseConnectForm">
-    			{% csrf_token %}
-			   <input name="dataBaseName" type="hidden" id="formPostDataBaseName"/>
-    			<div class="locationDiv">
-    				<label class="server">服务器: <input type="text" name="location" class="addressinput" placeholder="请输入服务器地址" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
-    				<label class="port">端口:    <input type="text" name="port" class="portinput" placeholder="端口" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
-                    <label class="dbSid">SID:<input type="text" name="dbSid" class="dbsidinput" placeholder="请输入ORACLE数据库SID" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
-    			</div>
-    			<div class="clear"></div>
-    			<div class="userDiv">
-    				<p>输入服务器登录信息:</p>
-    				<label class="userName">用户名: <input type="text" name="dbuserName" class="usernameinput" placeholder="输入数据库用户名" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)" /></label>
-    				<label class="userPwd">密码: <input type="password" name="dbuserPwd" class="userpwdinput" placeholder="请输入数据库密码"  onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
-    			</div>
-    			
-    			<div class="otherSetting">
-    				<label><input type="checkbox" name="needSSL" id="needSSL" value="1" />需要SSL</label>
-    			</div>
-                <div class="dataBaseConnectForm_footer">
-                     <a href="#">自定义配置文件<input type="file" style="opacity: 0;"/></a>
-                     <a id="loginBtn">登录</a>
-                </div>
-    		</form>
+		<form method="post" id="dataBaseConnectForm">
+			{% csrf_token %}
+		   <input name="dataBaseName" type="hidden" id="formPostDataBaseName"/>
+			<div class="locationDiv">
+				<label class="server">服务器: <input type="text" name="location" class="addressinput" placeholder="请输入服务器地址" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
+				<label class="port">端口:    <input type="text" name="port" class="portinput" placeholder="端口" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
+                <label class="dbSid">SID:<input type="text" name="dbSid" class="dbsidinput" placeholder="请输入ORACLE数据库SID" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
+			</div>
+			<div class="clear"></div>
+			<div class="userDiv">
+				<p>输入服务器登录信息:</p>
+				<label class="userName">用户名: <input type="text" name="dbuserName" class="usernameinput" placeholder="输入数据库用户名" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)" /></label>
+				<label class="userPwd">密码: <input type="password" name="dbuserPwd" class="userpwdinput" placeholder="请输入数据库密码"  onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
+			</div>
+			
+			<div class="otherSetting">
+				<label><input type="checkbox" name="needSSL" id="needSSL" value="1" />需要SSL</label>
+			</div>
+            <div class="dataBaseConnectForm_footer">
+                 <a href="#">自定义配置文件<input type="file" style="opacity: 0;"/></a>
+                 <a id="loginBtn">登录</a>
+            </div>
+		</form>
     </div>
+
     
  <div id="filter-model">
     	<!--筛选器选择-->
@@ -95,13 +96,15 @@
 
      <!--日期筛选器-->
  {% include "common/filter/filter-date-base.html" %}
-   
+
+ {% include "common/common_popover.html" %}
    <!--筛选器模块结束-->
  </div>
 {#    {% block other %}#}
 {#    {% endblock %}#}
     {% include "dataCollection/panelFileOption.html" %}
     {% include "dataCollection/analysisOther.html" %}
+
 </body>
 <span id="calculateTextWidth"></span>
 </html>
