@@ -73,4 +73,9 @@ urlpatterns = [
         views.handleHdfsFile,
         name='handleHdfsFile'
     ),
+    url(
+        r'^cloudapi/v1/checkGeneratedFile/(?P<fileName>\w+)$',
+        views.checkGeneratedFile,
+        name='checkGeneratedFile'
+    ),
 ]

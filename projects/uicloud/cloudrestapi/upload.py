@@ -8,6 +8,8 @@ import shutil
 import traceback
 import pandas as pd
 
+from dashboard.models import DashboardViewByUser, DashboardIndexByUser
+
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.cloudrestapi.upload")
 logger.setLevel(logging.DEBUG)
@@ -119,6 +121,15 @@ def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', h
     '''
     client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
 
+    if not jsonData:
+        '''
+        check the generated file if exist
+        '''
+        FolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
+        if client.exists(FolderUri):
+            return True
+        return False
+
     if rootFolder.startswith('/tmp/users'):
         csvFolderUri = "{0}/{1}/csv/{2}".format(rootFolder, userName, fileName)
         parquetFolderUri = "{0}/{1}/parquet/{2}".format(rootFolder, userName, fileName)
@@ -138,14 +149,17 @@ def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', h
             return False
 
     elif rootFolder.startswith('/users'):
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
         FolderUri = "{0}/{1}/{2}".format(rootFolder, userName, fileName)
 
         if jsonData['method'] == 'delete':
+
+            checkOrDeleteView(fileName, username, delete=True)
             return deleteHdfsFile(client, FolderUri)
 
         elif jsonData['method'] == 'rename':
             newname = jsonData['newname']
-            return renameHdfsFile(client, FolderUri, newname)
+            return renameHdfsFile(client, FolderUri, newname, username=username)
 
 
 def deleteHdfsFile(client, folderUri):
@@ -156,12 +170,46 @@ def deleteHdfsFile(client, folderUri):
     return True
 
 
-def renameHdfsFile(client, folderUri, newname):
+def renameHdfsFile(client, folderUri, newname, username=None):
     '''
     '''
     newFolderUri = "{0}/{1}".format(os.path.split(folderUri)[0], newname)
+    if client.exists(newFolderUri):
+        return 'new_name_used'
     if client.exists(folderUri):
         client.rename(folderUri, newFolderUri)
+        if username:
+            checkOrDeleteView(os.path.split(folderUri)[1], username, changeName=newname)
         return True
     else:
         return False
+
+
+def checkOrDeleteView(fileName, username, delete=False, changeName=None):
+    '''
+    '''
+    viewList = DashboardViewByUser.objects.filter(tablename=fileName, username=username)
+    indexList = DashboardIndexByUser.objects.filter(tablename=fileName, username=username)
+
+    if changeName:
+        '''
+        更改视图或指标的tablename
+        '''
+        for view in viewList:
+            view.tablename = changeName
+            view.save()
+        for index in indexList:
+            index.tablename = changeName
+            index.save()
+
+    else:
+        if not delete:
+            if len(viewList) > 0 or len(indexList) > 0:
+                return True
+            else:
+                return False
+        else:
+            for view in viewList:
+                view.delete()
+            for index in indexList:
+                index.delete()

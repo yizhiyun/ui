@@ -83,16 +83,18 @@ def checkTableMapping(request):
 
     if request.method == "POST":
 
-        outputColumnsDict = getOutputColumns(jsonData)
+        results = getOutputColumns(jsonData)
 
-        if not outputColumnsDict:
+        if not results['outputColumnsDict']:
             failObj = {"status": "failed",
                        "reason": "the request data didn't meet the required format. Please check it again."}
             return JsonResponse(failObj, status=400)
 
         # response all valid columns
         successObj = {"status": "success",
-                      "columns": outputColumnsDict}
+                      "columns": results['outputColumnsDict']}
+        if 'tableAvailable' in results.keys():
+            successObj['tableAvailable'] = results['tableAvailable']
         return JsonResponse(successObj)
 
 
@@ -613,4 +615,20 @@ def handleHdfsFile(request, fileName):
 
         if not rs:
             return JsonResponse({"status": "failed", "reason": "there is no this file!"})
+        elif rs == 'new_name_used':
+            return JsonResponse({"status": "failed", "reason": "new_name_used!"})
         return JsonResponse({'status': 'success'})
+
+
+@api_view(['POST'])
+def checkGeneratedFile(request, fileName):
+    '''
+    删除构建表之前检测是否有关联的视图或者指标
+    '''
+    jsonData = request.data
+    if request.method == 'POST':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        exist = checkOrDeleteView(fileName, username)
+        if exist:
+            return JsonResponse({'exist': 'yes'})
+        return JsonResponse({'exist': 'no'})
