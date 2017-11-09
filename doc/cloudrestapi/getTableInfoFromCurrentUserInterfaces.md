@@ -125,6 +125,10 @@ Get Table From Current User Via Spark
        },
        # If the "expressions" item exists, "trans" is invalid.
        "trans": {
+           # Optional, "append", "drop"
+           # "append" means to reserve all the previous fields and append new fields.
+           # "drop" means to drop all the previous fields and just use new fields.
+           "transmode": <mode>,
            "pretrans": [                 # Optional,
                {
                    # iterDict also has the same structure with the parent dict.

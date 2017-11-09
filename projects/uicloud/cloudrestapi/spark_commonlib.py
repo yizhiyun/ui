@@ -281,30 +281,9 @@ def aggDataFrameSparkCode():
         if "trans" in tableDict.keys():
             # add the specified aggregations in the DataFrame
             transDict = tableDict["trans"]
+            transmode = "drop" if "transmode" in transDict.keys else transDict["transmode"]
             if "pretrans" in transDict.keys():
-                colList = getCols(transDict["pretrans"])
-                if "customizedfuncs" in transDict["pretrans"]:
-                    custfuncs = transDict["pretrans"]["customizedfuncs"]
-                    if "splitbydelim" == custfuncs["type"] and len(custfuncs["parameters"]) == 2:
-                        # parameters: fieldName, delimiter
-                        import pyspark.sql.types as T
-                        arrlenFunc = F.udf(lambda arr: len(arr), T.IntegerType())
-                        splitField, delimiter = custfuncs["parameters"]
-                        maxLen = inDF.select(F.max(arrlenFunc(inDF.splitField)).alias('maxLen')).first().maxLen
-                        for i in range(maxLen):
-                            colList.append(F.split(splitField, delimiter)[i].alias(
-                                "{0}_{1}{2}".format(splitField, "PART", i + 1)))
-                    if "splitbyposition" == custfuncs["type"] and len(custfuncs["parameters"]) > 1:
-                        # parameters: fieldName, pos1, pos2, ..., posN
-                        parasLt = custfuncs["parameters"]
-                        splitField = parasLt[0]
-                        parasLt[0] = 0
-                        lenLt2 = [parasLt[i + 1] - parasLt[i] for i in range(len(parasLt) - 1)]
-                        # specified an enough length to make sure all strings from the last position to end included.
-                        lenLt2.append(10**9)
-                        for i in range(len(lenLt2)):
-                            colList.append(F.substring(splitField, parasLt[i] + 1, lenLt2[i]).alias(
-                                "{0}_{1}{2}".format(splitField, "PART", i + 1)))
+                colList = getCols(transDict["pretrans"], transmode)
 
                 inDF = inDF.select(*colList)
             if "groupby" in transDict.keys():
@@ -339,21 +318,43 @@ def aggDataFrameSparkCode():
                     inDF = grpData.agg(*cols)
 
             if "posttrans" in transDict.keys():
-                colList = getCols(transDict["posttrans"])
+                colList = getCols(transDict["posttrans"], transmode)
                 inDF = inDF.select(*colList)
             if "orderby" in transDict.keys():
                 inDF = inDF.orderBy(transDict["orderby"])
         return inDF
 
 
-    def getCols(operList):
+    def getCols(operList, mode="append"):
         """
         get the columns operations' results.
         """
-        selectCols = []
+        selectCols = inDF.columns if mode == "append" else []
         logger.debug("operList: {0}".format(operList))
         for itemdt in operList:
             selectCols.append(getOperCol(itemdt))
+            if "customizedfuncs" in itemdt.keys():
+                custfuncs = itemdt["customizedfuncs"]
+                if "splitbydelim" == custfuncs["type"] and len(custfuncs["parameters"]) == 2:
+                    # parameters: fieldName, delimiter
+                    import pyspark.sql.types as T
+                    arrlenFunc = F.udf(lambda arr: len(arr), T.IntegerType())
+                    splitField, delimiter = custfuncs["parameters"]
+                    maxLen = inDF.select(F.max(arrlenFunc(inDF.splitField)).alias('maxLen')).first().maxLen
+                    for i in range(maxLen):
+                        selectCols.append(F.split(splitField, delimiter)[i].alias(
+                            "{0}_{1}{2}".format(splitField, "PART", i + 1)))
+                if "splitbyposition" == custfuncs["type"] and len(custfuncs["parameters"]) > 1:
+                    # parameters: fieldName, pos1, pos2, ..., posN
+                    parasLt = custfuncs["parameters"]
+                    splitField = parasLt[0]
+                    parasLt[0] = 0
+                    lenLt2 = [parasLt[i + 1] - parasLt[i] for i in range(len(parasLt) - 1)]
+                    # specified an enough length to make sure all strings from the last position to end included.
+                    lenLt2.append(10**9)
+                    for i in range(len(lenLt2)):
+                        selectCols.append(F.substring(splitField, parasLt[i] + 1, lenLt2[i]).alias(
+                            "{0}_{1}{2}".format(splitField, "PART", i + 1)))
         return selectCols
 
 
