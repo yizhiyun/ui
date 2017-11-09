@@ -4,7 +4,7 @@
 html,body{-webkit-user-select: none;overflow: hidden;}
 
 #dashboard_content{width:auto;position: absolute;}
-#dashboard_content #new_view{;height:30px;width:100%;position: relative;z-index:1000;}
+#dashboard_content #new_view{;height:30px;width:100%;position: relative;z-index:300;}
 #dashboard_content #new_view ul{width: 100%;height: 100%;}
 #dashboard_content #new_view ul li{float: left;width:90px;height: 30px;font-size:12px;height:30px;line-height:30px;text-align: center;cursor: pointer;box-sizing: border-box;position: relative;border-right: 1px solid #DEDEDE}
 #dashboard_content #new_view ul li .folderview_li_del_btn{width: 14px;height: 14px;background: url("../img/del-nor_03.png") no-repeat center center;cursor: pointer;position: absolute;top: 7px;right:5px}

@@ -95,13 +95,15 @@
 
      <!--日期筛选器-->
  {% include "common/filter/filter-date-base.html" %}
-   
+
+ {% include "common/common_popover.html" %}
    <!--筛选器模块结束-->
  </div>
 {#    {% block other %}#}
 {#    {% endblock %}#}
     {% include "dataCollection/panelFileOption.html" %}
     {% include "dataCollection/analysisOther.html" %}
+
 </body>
 <span id="calculateTextWidth"></span>
 </html>

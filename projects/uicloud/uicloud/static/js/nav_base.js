@@ -17,7 +17,8 @@ function initWindowSize(doc,win,paHeight){
 		var leftNav = doc.getElementsByClassName("leftNav")[0];
 		
 		main.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";
-		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";		
+		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";
+
 }
 
 function inputSearch(ele,activeClass,showContent,md){
@@ -29,6 +30,7 @@ function inputSearch(ele,activeClass,showContent,md){
 
     if(search_input_data == ""){
       $(showContent).children().css("display","block");
+      	$("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
       return;
     }
 
@@ -56,10 +58,24 @@ function inputSearch(ele,activeClass,showContent,md){
 
     }
 
+   	$("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
+
   })
 }
 
-
+function deleteCookie(){
+	$.post("../dashboard/getAllData",function(result){
+		if(sessionStorage.getItem("edit_view_now")){
+			//获取编辑的视图
+			var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
+			var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
+			if(Object.getOwnPropertyNames(result).length == 0 || result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]] == undefined){
+				sessionStorage.removeItem("edit_view_now");
+			}
+		}
+	});
+}
+deleteCookie();
 //获取指定form中的所有的<input>对象  
 function getElements(formId) {
   var form = document.getElementById(formId);  
@@ -287,7 +303,6 @@ $(function(){
 			}
 			saveNowWallDict["row"]= JSON.stringify(drag_row_column_data["row"]);
 			saveNowWallDict["column"]= JSON.stringify(drag_row_column_data["column"]);
-			saveNowWallDict["username"] = username;
 			saveNowWallDict["tablename"] = current_cube_name;
 			saveNowWallDict["viewtype"] = view_name;
 			saveNowWallDict["defaultparent"] = "default";
@@ -306,7 +321,7 @@ function pallasdaraFunctionNavBtnHandle(){
           dataType:"json",
           contentType: "application/json; charset=utf-8",
           async: true,
-          data:JSON.stringify({"dashusername":"liuyue"}),
+          data:JSON.stringify(),
           success:function(data){
        		if(data.status == 'success'){
        			var res = data.results;
@@ -315,20 +330,27 @@ function pallasdaraFunctionNavBtnHandle(){
 				}
 				if(res.dashboardview == 1) {
 					dashBoradFunction_able();
+				}else{
+					$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/icon_disable_08.png");
+					$(".container .main .leftNav #navDashBoardViewBtn").removeClass("ableFlag").addClass("disableFlag");
 				}
 				if(res.statementview == 1) {
 					reporttingFunction_abale();
+				}else{
+					$(".container .main .leftNav #navReporttingViewBtn").find("img").attr("src","/static/images/icon_disable_10.png");
+					$(".container .main .leftNav #navReporttingViewBtn").removeClass("ableFlag").addClass("disableFlag");
 				}
+				$(".container .main .leftNav .functionBtn").unbind("click");
 				$(".container .main .leftNav .functionBtn").click(function(event){
 					if($(this).children("div").hasClass("active") || $(this).hasClass("disableFlag") ) {
+
 						event.preventDefault();
 						return;
 					}
 					if($(this).attr("id") != "navDashBoardViewBtn"){
 							var preClickViewNav = preClickView || {} ;
-							if(Object.getOwnPropertyNames(preClickViewNav).length != 0){
-								preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] = realSaveData();
-							}
+							preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] = realSaveData();
+
 					}
 			
 					switch ($(this).attr("id")){
@@ -513,7 +535,7 @@ function specialRemoveDataTypeHandle(obj){
 
 //input  onfoucs 事件
 function toInputStyle(ele){
-	$(ele).css("borderColor","#000");
+	$(ele).css("borderColor","#505050");
 }
 
 function toInputStyleBlur(ele){

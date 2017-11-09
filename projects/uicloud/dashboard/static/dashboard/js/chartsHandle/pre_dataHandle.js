@@ -122,6 +122,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		handleSuccessFunction(preAllData);
 		return;
 	}
+	
 	$.ajax({
 		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
 		type:"post",
