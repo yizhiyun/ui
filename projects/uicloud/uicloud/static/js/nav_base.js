@@ -342,9 +342,12 @@ function pallasdaraFunctionNavBtnHandle(){
 				}
 				$(".container .main .leftNav .functionBtn").unbind("click");
 				$(".container .main .leftNav .functionBtn").click(function(event){
+					// alert(1);
+
 					if($(this).children("div").hasClass("active") || $(this).hasClass("disableFlag") ) {
 
 						event.preventDefault();
+
 						return;
 					}
 					if($(this).attr("id") != "navDashBoardViewBtn"){
@@ -403,14 +406,19 @@ function changePageTo_DataBaseAndPanleFileConnectionView(){
 	$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").addClass("active");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #dataSourceConnectSelectDiv").show();
+
+
+
 }
 function changePageTo_navBuildDataView(){
+
 	hidenSomeElementsWhenChangePage();
 	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navBuildDataViewBtn").children("div").addClass("active");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #analysisContainer").show();
+
 	if($(".main .rightConent #analysisContainer").data("isFirstInto")){
 		dataAnalysisFunction();
 //		navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
@@ -427,7 +435,9 @@ function changePageTo_navDashBoardView(){
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navDashBoardViewBtn").children("div").addClass("active");
 	$(".main .rightConent .pageModuleNav").hide();
-	$(".main .rightConent #pageDashboardModule").show();	
+	$(".main .rightConent #pageDashboardModule").show();
+
+
 	if($(".main .rightConent #pageDashboardModule").data("isFirstInto")){
 		dashboardReadySumFunction();
 //		navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
@@ -447,6 +457,7 @@ function changePageTo_navReporttingView(unloadPage){
 	$(".container .main .leftNav #navReporttingViewBtn").children("div").addClass("active");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #pageStatementsModule").show();
+
 	if($(".main .rightConent #pageStatementsModule").data("isFirstInto")){
 		satetementsReadySumFunction(unloadPage);
 //		navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
@@ -458,12 +469,31 @@ function changePageTo_navReporttingView(unloadPage){
 	}
 }
 
+
+
 function hidenSomeElementsWhenChangePage(){
 	$("#buildDataPanelView").hide();
 	$(".maskLayer").hide();
+	$("#connectDataBaseInfo").hide();
 	$(".rightConent #dataSourceConnectSelectDiv #dataList").hide();
 	$(".rightConent #analysisContainer .leftSlide #analysis_dataList").hide();
+	$("#user-filter-select").hide();
+	// $("#sizer_content").hide();
 }
+
+// 进行判断,如果已经显示弹窗并点击的时候隐藏
+// if($(".filter_content_btn").clicked == true && $(this).id == "navDashBoardViewBtn"){
+// 	$("sizer_content").hide();
+// }
+
+
+// $(".filter_content_btn").click(function(){
+// 	alert("123ljdflaj");
+// 	//$("#navDashBoardViewBtn").click(function(){
+// 	// 	alert(1);
+// 	// 	// $("sizer_content").hide();
+// 	// })
+// })
 
 //function navBtnAbleAndDisablesaveHandle(info){
 //	var arr = navBtnAbleAndDisablegetHandle();

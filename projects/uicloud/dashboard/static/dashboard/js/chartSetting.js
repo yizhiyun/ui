@@ -59,7 +59,10 @@ function dahboardSetting_function(){
 				}
 				 someColorList.find(".colorGroupItem .colorsContainer").click(function(event){
 		  			 event.stopPropagation();
+		  			 // console.log(currentColorGroupName);
 		  			 currentColorGroupName = $(this).siblings(".colorName").text();
+		  			 console.log(currentColorGroupName);
+
 		  			 // 图形改变颜色
 		  			 var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
 		  			 if(mycharts){
@@ -68,8 +71,12 @@ function dahboardSetting_function(){
 		  			 // 默认显示改变颜色
 		  			 $("#project_style .module_style .color_control .defaultColors span.color_flag").text(currentColorGroupName);
 		  			 $("#project_style .module_style .color_control .selectedColors span").each(function(index,ele){
+		  			 	// console.log(allColorsDict[currentColorGroupName][index]);
+		  			 	console.log(index);
 						$(ele).css("background",allColorsDict[currentColorGroupName][index]);
 					});
+
+
 					// 隐藏更多颜色的展示面板
 					$("#project_style .module_style .color_control .otherColorsModule").hide();
 		  			$("#project_style .module_style .color_control .otherColorsModule").data("openOrColse","close"); 

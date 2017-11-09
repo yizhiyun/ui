@@ -243,6 +243,16 @@ $(function(){
 		}else if(type == "date-filter"){
 			date_screeningWasher_fun(true,filterInfo,activeLi.index());
 		}		
+
+		//点击每个筛选器上的重置按钮
+		$("#filter-model .screeningWasher .common-filer-footer .resetBtn").click(function(event){
+			event.stopPropagation();
+			$("input").val("");
+			$("select").val("");
+			// $(".ui-slider-range").val("");
+			// $(".ui-rangeSlider-handle").val("");
+		})
+
 	});
 	//移除按钮
 	$("#filter-model #user-filter-select .common-filer-footer .removeBtn").click(function(){
@@ -310,7 +320,10 @@ $(function(){
 			// 取出所有条件 处理数据
 		screeningWasher_did_finish_filter_handle_data_fun(filterID);
 	});
-
+	// 
+	// 
+	// 
+	
 	
 	
 	// 全选按钮

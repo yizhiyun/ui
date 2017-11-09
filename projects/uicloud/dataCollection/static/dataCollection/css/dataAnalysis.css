@@ -120,7 +120,7 @@
 #tableDataDetailListPanel{position: absolute;border: 1px solid #dedede;font-size: 12px;background: white;text-align: center;right: 0;bottom: 0;border-left: 0px;z-index: 300;}
 #tableDataDetailListPanel #closeableDataDetailListPanel{position: absolute;top: 0;z-index: 300;cursor: pointer;}
 #tableDataDetailListPanel .topInfo{height: 60px;border-left: 1px solid #dedede;}
-#tableDataDetailListPanel .topInfo div{height: 60px;float: right;margin-right: 20px;line-height: 60px;cursor: pointer;}
+#tableDataDetailListPanel .topInfo div{heigt: 60px;float: right;margin-right: 20px;line-height: 60px;cursor: pointer;}
 #tableDataDetailListPanel .topInfo #splitFileds_btn{opacity: 0.5}
 #tableDataDetailListPanel .topInfo #top_expression{font-size: 16px;float: left;}
 #tableDataDetailListPanel .topInfo div img{vertical-align: text-top;}

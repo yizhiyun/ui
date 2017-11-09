@@ -127,7 +127,7 @@ function save_btn_fun(){
 		$(ele).css("background", "white");
 		})
 	})
-	}
+}
 
 function dashboardReadySumFunction(isOnlyLoad){
 	//判断在仪表板是否删除过视图 使仪表板同步
@@ -256,6 +256,16 @@ leftBar_sizeW_function();
 
 	$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
 
+	// 撤销
+	// $("#prev").click(function(){
+	// 	$(window).history.back(-1);
+	// })
+
+	// // 下一步
+	// $("#next").click(function(){
+		
+	// })
+	
 	//视图清空 页面初始化
 	function empty_viem_init(change_or_click){
 		$("#operational_view .annotation_text .drag_text").show();

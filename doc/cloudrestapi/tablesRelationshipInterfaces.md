@@ -233,6 +233,7 @@ The RESTful API Details of Generating New Table
 
     "outputs":{
         "outputTableName": <tableName>,
+        "mode": <mode>, # "append", "overwrite", "ignore" and "error".
         "columnsMapping": {
             "<databaseName>.<tableName>.<columnName>": <renamedColumnName>,
             ...
