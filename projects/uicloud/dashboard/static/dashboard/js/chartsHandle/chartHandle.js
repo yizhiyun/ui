@@ -443,7 +443,7 @@ function one_de_one_me_handle (chart_type_need) {
 	
 	// area_generate_fun();
 
-
+	// 甘特图
  function gantt_generate_fun(){
  	
 		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){

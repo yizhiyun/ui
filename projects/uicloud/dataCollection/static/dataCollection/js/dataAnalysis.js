@@ -658,6 +658,8 @@ function expression_click_handle(){
       }).attr("nowShowTable","hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"").addClass("expression_show");
 
       $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").css("maxHeight", $(".rightConent #analysisContainer #tableDataDetailListPanel").height()-$(".topInfo").height() + "px");
+      // $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").scrollLeft();
+      // $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").css("maxWidth",$(".rightConent").width()-$("#analysisContainer .leftSlide").width() + 'px');
       $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent table thead tr").css("background","white");
       $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo").css("borderLeft","none");
 
@@ -708,6 +710,7 @@ function expression_click_handle(){
     $("#analysisContainer .leftSlide").css("height",(document.offsetHeight | document.body.offsetHeight) - 70 + "px");
     $("#analysisContainer .mainDragArea").css({"margin-left":$("#analysisContainer .leftSlide").width() + "px","height":(document.offsetHeight | document.body.offsetHeight) - 70 + "px"});
     $("#foldSideBtn").css("top",($("#analysisContainer .leftSlide").height() - 38) / 2 + "px");
+    // $("#tableDataDetailListPanel").css({"width":"100%","overflow":"auto"});
   }
 
   // 窗口调整的时候
@@ -744,9 +747,41 @@ function expression_click_handle(){
         $("#analysisContainer .mainDragArea").css("margin-left","0px");
       }
       //看具体情况。。。。。要不要处理
-//      autoSizetableDataDetailListPanel();
+     
+      //autoSizetableDataDetailListPanel();
+      
     });
   })
+
+
+// $(window).resize(function(){
+//   $("#tableDataDetailListPanel").css("overflow","auto");
+// });
+
+// window.onresize = adjust;
+// adjust();
+// function adjust(){
+   
+//    // alert(1)
+//  $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").css("overflow-x","auto");
+
+// }
+
+
+// window.onresize = autoSizetableDataDetailListPanel;
+// autoSizetableDataDetailListPanel();
+// function autoSizetableDataDetailListPanel(){
+   
+//    alert(1)
+// }
+
+// window.onresize = function(){
+//   autoSizetableDataDetailListPanel();
+// }
+// function autoSizetableDataDetailListPanel(){
+//     alert(1);
+//     // $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").scrollLeft();
+// }
 
 // 取消滑动事件的冒泡行为
 $("#analysisContainer .tablesOfaData").scroll(function(event){
@@ -1224,71 +1259,82 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
     $(".maskLayer").hide();
   });
 })
+
+ $("#buildDataPanelView").keydown(function(event){
+      if(event.keyCode == 13){
+        enter();
+      }
+    });
+
+ function enter(){
+     if ($("#buildDataPanelView .build-body .cube-name-radio .new-cube").hasClass("active")) {
+      if (!$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val()) {
+        $("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).css("border","1px solid red");
+        return;
+      }
+      postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val(),"removedColumns":[],"columnRenameMapping":outName_of_check};
+    }else{
+      postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check};
+    }
+    
+
+    // 记录
+    preBuildDataName = postData["outputs"]["outputTableName"];
+    
+    if ($("#buildDataPanelView .build-body .build-options .more-content-div .check-label input").eq(0).is(':checked') && $("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val() && $("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).is(":visible")) {
+      var value = Number($("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val());
+  //    console.log("--------",value);
+      for (var k = 0;k < postData["tables"].length;k++) {
+        var aTable = postData["tables"][k];
+        var conditions = aTable["conditions"];
+        var index = conditions.hasObject("type", "limit");
+        if(index == -1){
+          var filter = {"type":"limit","value":value};
+          conditions.push(filter);
+        }else{
+          conditions[index]["value"] = value;
+        }
+      }
+    }
+    loading_init();
+    //进度条
+    loading_bar();
+
+    var xhr = $.ajax({
+        url:"/cloudapi/v1/mergetables/generate",
+        type:"post",
+        dataType:"json",
+        contentType: "application/json; charset=utf-8",
+        async: true,
+        data:JSON.stringify(postData),
+        success:function(data){
+  //      console.log(data)
+  //      console.log("success")
+          // 构建。。。。完成
+          data_success_show();
+          // end-------------------
+        },
+        error:function(){
+  //      console.log("error")
+          //构建失败
+          data_error_show();
+        }
+    });
+
+    //进度条关闭按钮
+    $("#build_upload #loding_close").click(function(){
+      $("#build_upload").hide("shake",100,function(){
+        $(".maskLayer").hide();
+      });
+      loading_init();
+      xhr.abort();
+    })
+ }
+
 // 确定按钮
 $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").click(function(){
     // remove_splitData(store_split_tableArr);
-  if ($("#buildDataPanelView .build-body .cube-name-radio .new-cube").hasClass("active")) {
-    if (!$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val()) {
-      $("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).css("border","1px solid red");
-      return;
-    }
-    postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val(),"removedColumns":[],"columnRenameMapping":outName_of_check};
-  }else{
-    postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check};
-  }
-  
-
-  // 记录
-  preBuildDataName = postData["outputs"]["outputTableName"];
-  
-  if ($("#buildDataPanelView .build-body .build-options .more-content-div .check-label input").eq(0).is(':checked') && $("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val() && $("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).is(":visible")) {
-    var value = Number($("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val());
-//    console.log("--------",value);
-    for (var k = 0;k < postData["tables"].length;k++) {
-      var aTable = postData["tables"][k];
-      var conditions = aTable["conditions"];
-      var index = conditions.hasObject("type", "limit");
-      if(index == -1){
-        var filter = {"type":"limit","value":value};
-        conditions.push(filter);
-      }else{
-        conditions[index]["value"] = value;
-      }
-    }
-  }
-  loading_init();
-  //进度条
-  loading_bar();
-
-  var xhr = $.ajax({
-      url:"/cloudapi/v1/mergetables/generate",
-      type:"post",
-      dataType:"json",
-      contentType: "application/json; charset=utf-8",
-      async: true,
-      data:JSON.stringify(postData),
-      success:function(data){
-//      console.log(data)
-//      console.log("success")
-        // 构建。。。。完成
-        data_success_show();
-        // end-------------------
-      },
-      error:function(){
-//      console.log("error")
-        //构建失败
-        data_error_show();
-      }
-  });
-
-  //进度条关闭按钮
-  $("#build_upload #loding_close").click(function(){
-    $("#build_upload").hide("shake",100,function(){
-      $(".maskLayer").hide();
-    });
-    loading_init();
-    xhr.abort();
-  })
+    enter();
   
 });
 
@@ -1462,9 +1508,12 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
   
   //  连接数据库的弹框显示之后，处理里面的点击事件
     function baseInfoShowCallBack(){
-    	  var dataBaseName =  $("#connectDataBaseInfo").data("dataBaseName");
+    	var dataBaseName =  $("#connectDataBaseInfo").data("dataBaseName");
       $("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
       $("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
+
+
+
       $("#loginBtn").unbind("click");
       $("#loginBtn").click(function(event){   	
         // 待处理
@@ -1498,11 +1547,16 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
           }
       });
         
+
 //      上面是链接数据库的字段信息
           $("#connectDataBaseInfo").hide();
           $(".maskLayer").hide();
         })
     }
+
+
+  
+  
   
   // 给拖拽区域的表格绑定鼠标移入事件
   function dragBoxBindMosueOver(){
