@@ -185,7 +185,10 @@ def generateNewTable(request):
     if request.method == "POST":
 
         # response all valid columns
-        sparkCode = getGenNewTableSparkCode(jsonData)
+        mode = 'overwrite'
+        if 'outputs' in jsonData.keys() and 'mode' in jsonData['outputs'].keys():
+            mode = jsonData['outputs']['mode']
+        sparkCode = getGenNewTableSparkCode(jsonData, mode=mode)
 
         if not sparkCode:
             failObj = {"status": "failed",
@@ -204,12 +207,18 @@ def generateNewTable(request):
                        "reason": output}
             return JsonResponse(failObj, status=400)
         else:
-            sucessObj = {"status": "success"}
+            outputTableName = jsonData['outputs']['outputTableName']
             curUserName = "myfolder"
             colMapList = []
             for relationship in jsonData['relationships']:
                 colMapList += relationship['columnMap']
-            handleColTypeForm(curUserName, jsonData['outputs']['outputTableName'], colMapList)
+            # 增加字段对应的维度或者度量
+            handleColTypeForm(curUserName, outputTableName, colMapList)
+            # 删除被覆盖表相应视图
+            username = 'yzy'
+            checkOrDeleteView(outputTableName, username, delete=True)
+
+            sucessObj = {"status": "success"}
             return JsonResponse(sucessObj)
 
 
