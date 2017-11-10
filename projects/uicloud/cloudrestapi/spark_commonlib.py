@@ -281,9 +281,11 @@ def aggDataFrameSparkCode():
         if "trans" in tableDict.keys():
             # add the specified aggregations in the DataFrame
             transDict = tableDict["trans"]
+            logger.debug("transDict:{0}".format(transDict))
             transmode = "drop" if "transmode" in transDict.keys else transDict["transmode"]
             if "pretrans" in transDict.keys():
-                colList = getCols(transDict["pretrans"], transmode)
+                colList = inDF.columns if transmode == "append" else []
+                colList.extends(getCols(transDict["pretrans"], inDF))
 
                 inDF = inDF.select(*colList)
             if "groupby" in transDict.keys():
@@ -318,47 +320,30 @@ def aggDataFrameSparkCode():
                     inDF = grpData.agg(*cols)
 
             if "posttrans" in transDict.keys():
-                colList = getCols(transDict["posttrans"], transmode)
+                colList = inDF.columns if transmode == "append" else []
+                colList.extends(getCols(transDict["posttrans"], inDF))
                 inDF = inDF.select(*colList)
             if "orderby" in transDict.keys():
                 inDF = inDF.orderBy(transDict["orderby"])
         return inDF
 
 
-    def getCols(operList, mode="append"):
+    def getCols(operList, inDF):
         """
         get the columns operations' results.
         """
-        selectCols = inDF.columns if mode == "append" else []
+        selectCols = []
         logger.debug("operList: {0}".format(operList))
         for itemdt in operList:
-            selectCols.append(getOperCol(itemdt))
-            if "customizedfuncs" in itemdt.keys():
-                custfuncs = itemdt["customizedfuncs"]
-                if "splitbydelim" == custfuncs["type"] and len(custfuncs["parameters"]) == 2:
-                    # parameters: fieldName, delimiter
-                    import pyspark.sql.types as T
-                    arrlenFunc = F.udf(lambda arr: len(arr), T.IntegerType())
-                    splitField, delimiter = custfuncs["parameters"]
-                    maxLen = inDF.select(F.max(arrlenFunc(inDF.splitField)).alias('maxLen')).first().maxLen
-                    for i in range(maxLen):
-                        selectCols.append(F.split(splitField, delimiter)[i].alias(
-                            "{0}_{1}{2}".format(splitField, "PART", i + 1)))
-                if "splitbyposition" == custfuncs["type"] and len(custfuncs["parameters"]) > 1:
-                    # parameters: fieldName, pos1, pos2, ..., posN
-                    parasLt = custfuncs["parameters"]
-                    splitField = parasLt[0]
-                    parasLt[0] = 0
-                    lenLt2 = [parasLt[i + 1] - parasLt[i] for i in range(len(parasLt) - 1)]
-                    # specified an enough length to make sure all strings from the last position to end included.
-                    lenLt2.append(10**9)
-                    for i in range(len(lenLt2)):
-                        selectCols.append(F.substring(splitField, parasLt[i] + 1, lenLt2[i]).alias(
-                            "{0}_{1}{2}".format(splitField, "PART", i + 1)))
+            col = getOperCol(itemdt, inDF)
+            if isinstance(col, list):
+                selectCols.extends(col)
+            else:
+                selectCols.append(col)
         return selectCols
 
 
-    def getOperCol(operDict):
+    def getOperCol(operDict, inDF):
         """
         """
         logger.debug("operDict: {0}".format(operDict))
@@ -376,6 +361,28 @@ def aggDataFrameSparkCode():
 
         if "unarytype" in operDict.keys():
             col = F.__getattribute__(operDict["unarytype"])(col)
+        elif "customizedfuncs" in operDict.keys():
+            custfuncs = operDict["customizedfuncs"]
+            selectCols = []
+            if "splitbydelim" == custfuncs["type"] and len(custfuncs["parameters"]) == :
+                # parameters: delimiter
+                import pyspark.sql.types as T
+                arrlenFunc = F.udf(lambda arr: len(arr), T.IntegerType())
+                delimiter = custfuncs["parameters"]
+                maxLen = inDF.select(F.max(arrlenFunc(inDF.col)).alias('maxLen')).first().maxLen
+                for i in range(maxLen):
+                    selectCols.append(F.split(col, delimiter)[i].alias(
+                        "{0}_{1}{2}".format(col, "PART", i + 1)))
+            if "splitbyposition" == custfuncs["type"] and len(custfuncs["parameters"]) > 0:
+                # parameters: pos1, pos2, ..., posN
+                parasLt = [0].extends(custfuncs["parameters"])
+                lenLt2 = [parasLt[i + 1] - parasLt[i] for i in range(len(parasLt) - 1)]
+                # specified an enough length to make sure all strings from the last position to end included.
+                lenLt2.append(10**9)
+                for i in range(len(lenLt2)):
+                    selectCols.append(F.substring(col, parasLt[i] + 1, lenLt2[i]).alias(
+                        "{0}_{1}{2}".format(col, "PART", i + 1)))
+            return selectCols
 
         if "operations" in operDict.keys():
             for opIt in operDict["operations"]:
@@ -386,7 +393,7 @@ def aggDataFrameSparkCode():
                     elif isinstance(opColVal, str) or isinstance(opColVal, unicode):
                         col = col + F.col(opIt["col"])
                     elif isinstance(opColVal, dict):
-                        resCol = getOperCol(opColVal)
+                        resCol = getOperCol(opColVal, inDF)
                         if resCol:
                             col = col + resCol
                         else:
@@ -399,7 +406,7 @@ def aggDataFrameSparkCode():
                     elif isinstance(opColVal, str) or isinstance(opColVal, unicode):
                         col = col - F.col(opIt["col"])
                     elif isinstance(opColVal, dict):
-                        resCol = getOperCol(opColVal)
+                        resCol = getOperCol(opColVal, inDF)
                         if resCol:
                             col = col - resCol
                         else:
@@ -412,7 +419,7 @@ def aggDataFrameSparkCode():
                     elif isinstance(opColVal, str) or isinstance(opColVal, unicode):
                         col = col * F.col(opIt["col"])
                     elif isinstance(opColVal, dict):
-                        resCol = getOperCol(opColVal)
+                        resCol = getOperCol(opColVal, inDF)
                         if resCol:
                             col = col * resCol
                         else:
@@ -425,7 +432,7 @@ def aggDataFrameSparkCode():
                     elif isinstance(opColVal, str) or isinstance(opColVal, unicode):
                         col = col / F.col(opIt["col"])
                     elif isinstance(opColVal, dict):
-                        resCol = getOperCol(opColVal)
+                        resCol = getOperCol(opColVal, inDF)
                         if resCol:
                             col = col / resCol
                         else:

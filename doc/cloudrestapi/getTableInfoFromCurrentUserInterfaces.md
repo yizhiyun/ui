@@ -141,9 +141,9 @@ Get Table From Current User Via Spark
                    "col": <number> or <columnString> or <iterDict>,
                    "unarytype":<unaryType>,
                    # parameters of "splitbydelim":
-                   #   [fieldname, delimter]
+                   #   delimter
                    # parameters of "splitbyposition":
-                   #   [fieldname, pos1, pos2, ..., posN]
+                   #   [pos1, pos2, ..., posN]
                    "customizedfuncs": {
                         "type": <type>, "splitbydelim", "splitbyposition"
                         "parameters": <list>
