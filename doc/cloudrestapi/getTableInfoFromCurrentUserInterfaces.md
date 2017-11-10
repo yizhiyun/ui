@@ -140,14 +140,6 @@ Get Table From Current User Via Spark
                    #   "weekofyear","year"
                    "col": <number> or <columnString> or <iterDict>,
                    "unarytype":<unaryType>,
-                   # parameters of "splitbydelim":
-                   #   delimter
-                   # parameters of "splitbyposition":
-                   #   [pos1, pos2, ..., posN]
-                   "customizedfuncs": {
-                        "type": <type>, "splitbydelim", "splitbyposition"
-                        "parameters": <list>
-                   },
                    "operations": [
                        # types: "+","-","*","/"
                        {
@@ -202,6 +194,19 @@ Get Table From Current User Via Spark
            },
            "orderby": <columnList>,       # Optional,
        },
+       "customized": [
+           {
+               "col": <columnString> or <iterDict>,
+               # parameters of "splitbydelim":
+               #   delimter
+               # parameters of "splitbyposition":
+               #   [pos1, pos2, ..., posN]
+               "customizedfuncs": {
+                    "type": <type>, "splitbydelim", "splitbyposition"
+                    "parameters": <list>
+           },
+       ]
+
        <otherProperty>:<otherValue>,
        ...
    }
