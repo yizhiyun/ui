@@ -45,7 +45,7 @@ html,body{-webkit-user-select:none;}
 /*新建文件夹*/
 
 .click_new_folder{width: 180px;height: 23px;line-height: 23px;margin: 0 auto 5px;position: relative;}
-.click_new_folder_input{width: 137px;height: 23px;box-sizing: border-box;float: left;border: 1px solid #E1E1E1;text-indent: 3px;font-size: 12px;}
+.click_new_folder_input{width: 137px;height: 23px;box-sizing: border-box;float: left;border: 1px solid #505050;text-indent: 3px;font-size: 12px;}
 .click_folder{float: left;}
 .click_or{float: left;margin:5px 5px 0px 0px;line-height: 25px;}
 .folder_name_show{width: 137px;height: 23px;line-height: 26px;text-align: left;font-size: 12px;float: left;cursor: pointer;}
