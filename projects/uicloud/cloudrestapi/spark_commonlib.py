@@ -59,7 +59,7 @@ def getDataFrameFromSourceSparkCode():
     return the spark code which provide the specialDataTypesEncoder class to be used.
     """
 
-    return filterDataFrameSparkCode() + aggDataFrameSparkCode() + '''
+    return filterDataFrameSparkCode() + aggDataFrameSparkCode() + splitColumnSparkCode() + '''
     def getDataFrameFromSource(jsonData, userTableUrl=None, removedColsDict={}, maxRowCount=10000):
         """
         get spark DataFrame once the input data source is valid.
@@ -156,6 +156,7 @@ def getDataFrameFromSourceSparkCode():
         else:
             df1 = filterDF(df1.limit(maxRow), jsonData)
             df1 = aggDF(df1.limit(maxRow), jsonData)
+        df1 = splitColumn(df1, jsonData)
         return df1
     '''
 
@@ -285,7 +286,7 @@ def aggDataFrameSparkCode():
             transmode = "drop" if "transmode" in transDict.keys else transDict["transmode"]
             if "pretrans" in transDict.keys():
                 colList = inDF.columns if transmode == "append" else []
-                colList.extends(getCols(transDict["pretrans"], inDF))
+                colList.extends(getCols(transDict["pretrans"]))
 
                 inDF = inDF.select(*colList)
             if "groupby" in transDict.keys():
@@ -321,21 +322,21 @@ def aggDataFrameSparkCode():
 
             if "posttrans" in transDict.keys():
                 colList = inDF.columns if transmode == "append" else []
-                colList.extends(getCols(transDict["posttrans"], inDF))
+                colList.extends(getCols(transDict["posttrans"]))
                 inDF = inDF.select(*colList)
             if "orderby" in transDict.keys():
                 inDF = inDF.orderBy(transDict["orderby"])
         return inDF
 
 
-    def getCols(operList, inDF):
+    def getCols(operList):
         """
         get the columns operations' results.
         """
         selectCols = []
         logger.debug("operList: {0}".format(operList))
         for itemdt in operList:
-            col = getOperCol(itemdt, inDF)
+            col = getOperCol(itemdt)
             if isinstance(col, list):
                 selectCols.extends(col)
             else:
@@ -343,7 +344,7 @@ def aggDataFrameSparkCode():
         return selectCols
 
 
-    def getOperCol(operDict, inDF):
+    def getOperCol(operDict):
         """
         """
         logger.debug("operDict: {0}".format(operDict))
@@ -361,28 +362,6 @@ def aggDataFrameSparkCode():
 
         if "unarytype" in operDict.keys():
             col = F.__getattribute__(operDict["unarytype"])(col)
-        elif "customizedfuncs" in operDict.keys():
-            custfuncs = operDict["customizedfuncs"]
-            selectCols = []
-            if "splitbydelim" == custfuncs["type"] and len(custfuncs["parameters"]) == :
-                # parameters: delimiter
-                import pyspark.sql.types as T
-                arrlenFunc = F.udf(lambda arr: len(arr), T.IntegerType())
-                delimiter = custfuncs["parameters"]
-                maxLen = inDF.select(F.max(arrlenFunc(inDF.col)).alias('maxLen')).first().maxLen
-                for i in range(maxLen):
-                    selectCols.append(F.split(col, delimiter)[i].alias(
-                        "{0}_{1}{2}".format(col, "PART", i + 1)))
-            if "splitbyposition" == custfuncs["type"] and len(custfuncs["parameters"]) > 0:
-                # parameters: pos1, pos2, ..., posN
-                parasLt = [0].extends(custfuncs["parameters"])
-                lenLt2 = [parasLt[i + 1] - parasLt[i] for i in range(len(parasLt) - 1)]
-                # specified an enough length to make sure all strings from the last position to end included.
-                lenLt2.append(10**9)
-                for i in range(len(lenLt2)):
-                    selectCols.append(F.substring(col, parasLt[i] + 1, lenLt2[i]).alias(
-                        "{0}_{1}{2}".format(col, "PART", i + 1)))
-            return selectCols
 
         if "operations" in operDict.keys():
             for opIt in operDict["operations"]:
@@ -442,4 +421,48 @@ def aggDataFrameSparkCode():
         if "alias" in operDict.keys():
             col = col.alias(operDict["alias"])
         return col
+    '''
+
+
+def splitColumnSparkCode():
+    '''
+    '''
+    return '''
+    def splitColumn(inDF, jsonData):
+        logger.debug(u"jsonData:{0}".format(jsonData))
+        if "customized" in jsonData.keys():
+            import pyspark.sql.types as T
+            arrlenFunc = F.udf(lambda arr: len(arr), T.IntegerType())
+
+            customizedList = operDict["customized"]
+            for customized in customizedList:
+                selectCols = inDF.columns
+                splitCol = customized['col']
+                newColPart = '{0}{1}'.format(splitCol, '_part')
+                custfuncs = customized['customizedfuncs']
+
+                count = 0
+                for column in selectCols:
+                    if colimn.startswith(newColPart):
+                        try:
+                            int(column.replace(newColPart, ''))
+                            count += 1
+                        except Exception:
+                            pass
+                if custfuncs['type'] == 'splitbydelim' and len(custfuncs["parameters"]) == 1:
+                    delimiter = custfuncs["parameters"][0]
+                    maxLen = inDF.select(F.max(arrlenFunc(F.split(splitCol, delimiter))).alias('maxLen')).first().maxLen
+                    for i in range(maxLen):
+                        selectCols.append(F.split(splitCol, delimiter)[i].alias(
+                                                "{0}{1}".format(newColPart, i + 1 + count)))
+                elif custfuncs['type'] == 'splitbyposition' and len(custfuncs["parameters"]) > 0:
+                    parasLt = [0].extends(custfuncs["parameters"])
+                    lenLt2 = [parasLt[i + 1] - parasLt[i] for i in range(len(parasLt) - 1)]
+                    # specified an enough length to make sure all strings from the last position to end included.
+                    lenLt2.append(10**9)
+                    for i in range(len(lenLt2)):
+                        selectCols.append(F.substring(splitCol, parasLt[i] + 1, lenLt2[i]).alias(
+                            "{0}{1}".format(newColPart, i + 1 + count)))
+                inDF = inDF.select(*selectCols)
+        return inDF
     '''
