@@ -434,7 +434,7 @@ def splitColumnSparkCode():
             import pyspark.sql.types as T
             arrlenFunc = F.udf(lambda arr: len(arr), T.IntegerType())
 
-            customizedList = operDict["customized"]
+            customizedList = jsonData["customized"]
             for customized in customizedList:
                 selectCols = inDF.columns
                 splitCol = customized['col']
@@ -443,7 +443,7 @@ def splitColumnSparkCode():
 
                 count = 0
                 for column in selectCols:
-                    if colimn.startswith(newColPart):
+                    if column.startswith(newColPart):
                         try:
                             int(column.replace(newColPart, ''))
                             count += 1
@@ -456,7 +456,9 @@ def splitColumnSparkCode():
                         selectCols.append(F.split(splitCol, delimiter)[i].alias(
                                                 "{0}{1}".format(newColPart, i + 1 + count)))
                 elif custfuncs['type'] == 'splitbyposition' and len(custfuncs["parameters"]) > 0:
-                    parasLt = [0].extends(custfuncs["parameters"])
+                    parasLt = [0]
+                    for index in custfuncs["parameters"]:
+                        parasLt.append(index)
                     lenLt2 = [parasLt[i + 1] - parasLt[i] for i in range(len(parasLt) - 1)]
                     # specified an enough length to make sure all strings from the last position to end included.
                     lenLt2.append(10**9)
