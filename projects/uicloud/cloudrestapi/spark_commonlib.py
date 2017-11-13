@@ -438,7 +438,7 @@ def splitColumnSparkCode():
             for customized in customizedList:
                 selectCols = inDF.columns
                 splitCol = customized['col']
-                newColPart = '{0}{1}'.format(splitCol, '_part')
+                newColPart = '{0}{1}'.format(splitCol, '_PART')
                 custfuncs = customized['customizedfuncs']
 
                 count = 0
