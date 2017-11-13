@@ -671,7 +671,7 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
     logger.debug("rootUrl: {0}, filterJson: {1}, type: {2}".format(rootUrl, filterJson, type(filterJson)))
 
     sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + \
-        splitColumnSparkCode() + '''
+        splitColumnSparkCode() + aggDataFrameSparkCode() + '''
     import json
 
 
@@ -690,6 +690,7 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
         filterJson = json.loads(filterJson, encoding="utf-8")
         if len(filterJson) > 0:
             dframe1 = filterDF(dframe1, filterJson)
+            dframe1 = aggDF(dframe1, filterJson)
             dframe1 = splitColumn(dframe1, filterJson)
 
         outputDict = {}
