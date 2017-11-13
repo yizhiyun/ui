@@ -537,6 +537,14 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
         dframe1 = spark.read.parquet(url)
 
         outputDict = {}
+        logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
+        filterJson = json.loads(filterJson, encoding='utf-8')
+        if len(filterJson) > 0:
+            dframe1 = filterDF(dframe1, filterJson)
+            dframe1 = aggDF(dframe1, filterJson)
+            dframe1 = splitColumn(dframe1, filterJson)
+        dframe1 = dframe1.limit(maxRowCount)
+
         if mode == 'all' or mode == 'schema':
             outputDict['schema'] = []
             for colItem in dframe1.schema.fields:
@@ -544,14 +552,6 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
                 outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
         if mode == 'all' or mode == 'data':
             outputDict['data'] = []
-
-            logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
-            filterJson = json.loads(filterJson, encoding='utf-8')
-            if len(filterJson) > 0:
-                dframe1 = filterDF(dframe1, filterJson)
-                dframe1 = aggDF(dframe1, filterJson)
-                dframe1 = splitColumn(dframe1, filterJson)
-            dframe1 = dframe1.limit(maxRowCount)
             for rowItem in dframe1.collect():
                 # logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
                 outputDict['data'].append(rowItem.asDict())
@@ -686,6 +686,12 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
         logger.debug(u"csvUrl:{0}".format(csvUrl))
         dframe1 = spark.read.csv(csvUrl, header=True, inferSchema=True).limit(maxRowCount)
 
+        logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
+        filterJson = json.loads(filterJson, encoding="utf-8")
+        if len(filterJson) > 0:
+            dframe1 = filterDF(dframe1, filterJson)
+            dframe1 = splitColumn(dframe1, filterJson)
+
         outputDict = {}
         if mode == "all" or mode == "schema":
             parquetUrl = u"{0}/parquet/{1}".format(rootUrl, fileTable)
@@ -693,9 +699,9 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
 
             csvFields = dframe1.schema.fields
             # logger.debug(u"parquetFileds:{0}, csvFields:{1}".format(parquetFileds, csvFields))
-            if len(csvFields) != len(parquetFileds):
-                logger.error(u"csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
-                return False
+            # if len(csvFields) != len(parquetFileds):
+            #     logger.error(u"csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
+            #     return False
             outputDict["schema"] = []
             for i in range(len(csvFields)):
                 # logger.debug(u"i:{0}, item: {1}".format(i, csvFields[i]))
@@ -706,12 +712,6 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
 
         if mode == "all" or mode == "data":
             outputDict["data"] = []
-
-            logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
-            filterJson = json.loads(filterJson, encoding="utf-8")
-            if len(filterJson) > 0:
-                dframe1 = filterDF(dframe1, filterJson)
-                dframe1 = splitColumn(dframe1, filterJson)
             for rowItem in dframe1.collect():
                 outputDict["data"].append(rowItem.asDict())
         logger.debug(u"Getting {0} url successfully".format(csvUrl))
