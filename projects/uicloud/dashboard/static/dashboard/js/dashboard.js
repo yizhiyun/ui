@@ -562,32 +562,90 @@
 
 		 // 创建左侧列表一个指标元素
 	 function createAIndexElementToLeftList(indexContent,isnewAdd){
-	 	var indexLi = $("<li class='index_li'><p class='index_list_text'><span class='index_list_text_left'>"+indexContent+"</span></p>"+"<input class='userinput' value="+indexContent+"><div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div></li>");
+	 	var indexLi = $("<li class='index_li'><div class='index_list_text'><span class='index_list_text_left'>"+indexContent+"</span><div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div></div>"+"<input class='userinput' value="+indexContent+"></li>");
 	 	
 	 	$("#dashboard_content #lateral_bar #indicator #index_show ul").prepend(indexLi);
 	 	indexLi.find(".userinput").data("originalValue",indexContent).css("textIndent","5px");
-	 	
-	 	indexLi.find(".index_list_text").on("mouseenter", function(event) {
+	 	indexLi.unbind("mouseenter");
+	 	indexLi.on("mouseenter", function(event) {
 	 			event.stopPropagation();
-	 			$(this).css("background", "#a7eff4");
-	 			$(this).css({
+	 			$(this).find(".index_list_text").css({
 					height: "21px",
 					border: "1px solid #2ee1ed",
 					lineHeight: "21px",
-					padding: "0px 4px"
+					padding: "0px 4px",
+					background:"#a7eff4"
 				});
+				$(this).find(".moreSelectBtn").show();
 		})
 
-		indexLi.find(".index_list_text").on("mouseleave", function() {
-			$(this).css({
+		indexLi.on("mouseleave", function() {
+			$(this).find(".index_list_text").css({
 				background: "white",
 				height: "23px",
 				lineHeight: "23px",
 				padding: "0px 5px",
 				border: "none",
 			});
+			$(this).find(".moreSelectBtn").hide();
+			$(this).find("#indexHandle").remove();
 		});
 		
+		//更多按钮点击事件
+		indexLi.find(".moreSelectBtn").unbind("click");
+		indexLi.find(".moreSelectBtn").click(function(event){
+			event.stopPropagation();
+			var showIndexWall = $("<ul id='indexHandle'><li class='indexChangeName'>重命名</li><li class='indexRename'>移除</li></ul>");
+			showIndexWall.appendTo($(this).parents(".index_li"));
+			$(showIndexWall).css({
+				"top":$(this).parents("li").eq(0).offset().top-47+'px',
+			});
+
+			//重命名
+			showIndexWall.children(".indexChangeName").unbind("click");
+			showIndexWall.children(".indexChangeName").click(function(event){
+				event.stopPropagation();
+				$(this).parents(".index_li").find(".index_list_text").hide();
+	 			$(this).parents(".index_li").find(".index_list_text").siblings(".userinput").show();
+	 			$(this).parents(".index_li").find(".index_list_text").siblings(".userinput").get(0).focus();
+	 			$(this).parent("#indexHandle").remove();
+			})
+
+			//移除
+			showIndexWall.children(".indexRename").unbind("click");
+			showIndexWall.children(".indexRename").click(function(event){
+				var tempThis = $(this);
+				event.stopPropagation();
+				$.ajax({
+					url:"/dashboard/indexGet",
+					type:"post",
+					dataType:"json",
+					contentType: "application/json; charset=utf-8",
+					async: true,
+					data:JSON.stringify({"tablename":current_cube_name,"indexname":$(this).parents(".index_li").find(".index_list_text .index_list_text_left").text(),"remove":"yes"}),
+					success:function(result){
+						if(result["status"] == "success"){
+							tempThis.parents(".index_li").remove();
+							
+							var originalValueInput = tempThis.parents(".index_li").find(".index_list_text .index_list_text_left").text();
+
+							getIndexName.splice($.inArray(originalValueInput,getIndexName),1);
+
+							//指标如果正在展示移除
+							if($("#dashboard_content .handleAll_wrap #operational_view #drag_wrap_content #drag_zb #drop_zb_view li[title="+originalValueInput+"]").length > 0){
+								$("#dashboard_content .handleAll_wrap #operational_view #drag_wrap_content #drag_zb #drop_zb_view li[title="+originalValueInput+"]").remove();
+								if($("#dashboard_content .handleAll_wrap #operational_view #drag_wrap_content #drag_zb #drop_zb_view li[title="+originalValueInput+"]").parent().hasClass("list_wrap")){
+									$("#dashboard_content .handleAll_wrap #operational_view #drag_wrap_content #drag_zb #drop_zb_view li[title="+originalValueInput+"]").parent().remove();
+								}
+								empty_viem_init("change");
+							}
+						}
+					}
+				});
+			})
+
+		})
+
 	 	if(!isnewAdd){
 	 		indexLi.find(".index_list_text").show();
 	 		indexLi.find(".userinput").hide();
@@ -689,7 +747,7 @@
 
 					$(this).find(".drag_text").css("display", "none");
 					$(ui.draggable).parent().find(".userinput").remove();
-					$("<li class='index_row_list'></li>").html($(ui.draggable).parent().html()).appendTo(this);
+					$("<li class='index_row_list' title="+ui.draggable.find("span").text()+"></li>").html($(ui.draggable).parent().html()).appendTo(this);
 
 					$(".index_row_list").each(function(index, ele) {
 						if($(ele).parent().attr("class") != "list_wrap") {

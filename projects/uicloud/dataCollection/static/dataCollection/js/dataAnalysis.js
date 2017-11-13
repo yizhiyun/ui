@@ -1297,7 +1297,7 @@
    
    
     function bindEventToBoxDivFiledsCheckBox(){
-       // 拖拽区域每个表格中的复选框进行选择时候触发的方法
+    // 拖拽区域每个表格中的复选框进行选择时候触发的方法
     $("#mainDragArea .boxDiv .fields input[type='checkbox']").unbind("change");
       $("#mainDragArea .boxDiv .fields input[type='checkbox']").change(function(event){
         var index = $(this).parent()[0].index;
@@ -1359,7 +1359,7 @@
 
           for (var i = 0;i < didShowDragAreaTableInfo[key].length;i++) {
           var originalFileds = didShowDragAreaTableInfo[key];
-          if (originalFileds[i]["isable"] == "yes" && originalFileds[i]["null"]) {
+          if (originalFileds[i]["isable"] == "yes" && originalFileds[i]["split"] == undefined) {
             var columnName = originalFileds[i]["field"];
             if(originalFileds[i]["mappedfield"]){
               columnName = originalFileds[i]["mappedfield"];
@@ -2140,7 +2140,8 @@
         var gather_table_schema_split = data["results"]["schema"];
         filterNeedAllData = data["results"]["data"];
         for(var i = 0 ; i < gather_table_schema_split.length;i++){
-          gather_table_schema_split[i]["isable"] = "yes";
+            gather_table_schema_split[i]["isable"] = "yes";
+          
         }
         didShowDragAreaTableInfo[now_click_table_name] = gather_table_schema_split;
         
@@ -2218,27 +2219,41 @@
 
       expressions_free_dict["cutsymbol"] = table_split_symbol;
 
-     
+      saveSplitTables[dbArr_split[2]] = saveSplitTables[dbArr_split[2]] || [];
+      
+      saveSplitTables[dbArr_split[2]].push(generate_free_dict);
 
-      var postFilterCondition_split = {
-      "source":dbArr_split[0],
-      "database":dbArr_split[1],
-      "tableName":dbArr_split[2],
-      "columns":{},
-      "conditions":now_table_filter_dict["common"].concat(now_table_filter_dict["condition"]),
-      "handleCol":expressions_free_dict,
-      }
+
+      var postFilterCondition_split = {};
+
+     if(dbArr_split[0] != "hdfs"){
+        var postChangeUrl = "/dataCollection/filterTable/all";
+        postFilterCondition_split = {
+          "source":dbArr_split[0],
+          "database":dbArr_split[1],
+          "tableName":dbArr_split[2],
+          "columns":{},
+          "conditions":now_table_filter_dict["common"].concat(now_table_filter_dict["condition"]),
+          "handleCol":expressions_free_dict,
+        }
+     }else{
+        
+        var postChangeUrl = "/cloudapi/v1/tables/" + dbArr_split[2] + "/all";
+        postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
+        console.log(postFilterCondition_split)
+     }
+
   //   console.log(postFilterCondition_split)
 
 
         $.ajax({
-        url:"/dataCollection/filterTable/all",
+        url:postChangeUrl,
         type:"post",
         dataType:"json",
         contentType: "application/json; charset=utf-8",
         async: true,
         data:JSON.stringify(postFilterCondition_split),
-          beforeSend:function(){
+        beforeSend:function(){
           var target =  $("body").get(0);
           spinner.spin(target);
         },
@@ -2265,13 +2280,15 @@
             store_split_tableName_free.push(dbArr_split[2]);
           // }
           
-          saveSplitTables[dbArr_split[2]] = saveSplitTables[dbArr_split[2]] || [];
-          saveSplitTables[dbArr_split[2]].push(generate_free_dict);
+
 
         },
         error:function(){
           spinner.stop();
-          $("<p class='split_error'>拆分失败</p>").appendTo($(".split_fileds .splitFileds_footer"));
+          if($(".split_fileds .splitFileds_footer").find(".split_error").length == 0){
+              $("<p class='split_error'>拆分失败</p>").appendTo($(".split_fileds .splitFileds_footer"));
+          }
+          
         }
     });
     })
@@ -2500,7 +2517,7 @@
     if(dbArr[0] == "hdfs"){
       postURL = "/cloudapi/v1/tables/"+dbArr[2]+"/data";
       postFilterCondition = {
-        "conditions":conditions
+        "conditions":conditions,
       }
     }else if(dbArr[0] == "tmptables"){
       postURL = "/cloudapi/v1/uploadedcsv/"+dbArr[1]+"/"+dbArr[2]+"/data"
