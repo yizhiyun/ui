@@ -522,6 +522,35 @@
                   $(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde").remove();
                   return;
               }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              
               var moreConnectHandle = $("<ul id='connectMoreHanlde'><li class='rename'>重命名</li><li class='editConnect'>编辑连接<input type='file' id='editUploadFile' multiple='multiple' name='file'/></li><li class='removeConnect'>移除</li></ul>");
               $(this).parent(".selectFlagDiv").parent("li").append(moreConnectHandle);
               moreConnectHandle.css("left",$(this).parent().offset().left + $(this).parent().width() + "px").css("top",$(this).parent().offset().top + ($(this).parent().height()/2 + 5) + "px");
@@ -2199,7 +2228,6 @@
       }
 
       var dbArr_split = now_click_table_name.split("_YZYPD_");
-
 
       var expressions_free_dict = {};
 
