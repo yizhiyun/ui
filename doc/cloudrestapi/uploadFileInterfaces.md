@@ -120,6 +120,26 @@ NULL if you don't need to filter the data. Or else, please specify the following
            },
            ...
        ],
+       "customized": [
+           {
+               "col": <columnString> or <iterDict>,
+               # parameters of "splitbydelim":
+               #   delimter
+               # parameters of "splitbyposition":
+               #   [pos1, pos2, ..., posN]
+               "customizedfuncs": {
+                    "type": <type>, "splitbydelim", "splitbyposition"
+                    "parameters": <list>
+           },
+       ],
+       "mapcustomized": [
+           {
+               "col": <mapColumnString> or <iterDict>,
+               "customizedfuncs": {
+                    "type": <type>, "splitbydelim", "splitbyposition"
+                    "parameters": <list>
+           },
+       ]
        <otherProperty>:<otherValue>,
        ...
    }

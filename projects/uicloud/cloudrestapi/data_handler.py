@@ -696,13 +696,16 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
         outputDict = {}
         if mode == "all" or mode == "schema":
             parquetUrl = u"{0}/parquet/{1}".format(rootUrl, fileTable)
-            parquetFileds = spark.read.parquet(parquetUrl).schema.fields
+            parquetDF = spark.read.parquet(parquetUrl)
+            if "mapcustomized" in filterJson.keys():
+                parquetDF = splitColumn(parquetDF, {"customized": filterJson["mapcustomized"]})
+            parquetFileds = parquetDF.schema.fields
 
             csvFields = dframe1.schema.fields
-            # logger.debug(u"parquetFileds:{0}, csvFields:{1}".format(parquetFileds, csvFields))
-            # if len(csvFields) != len(parquetFileds):
-            #     logger.error(u"csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
-            #     return False
+            logger.debug(u"parquetFileds:{0}, csvFields:{1}".format(parquetFileds, csvFields))
+            if len(csvFields) != len(parquetFileds):
+                logger.error(u"csvUrl:{0}, parquetUrl:{1}. csv don't match parquet.".format(csvUrl, parquetUrl))
+                return False
             outputDict["schema"] = []
             for i in range(len(csvFields)):
                 # logger.debug(u"i:{0}, item: {1}".format(i, csvFields[i]))
