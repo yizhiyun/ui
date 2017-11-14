@@ -2162,6 +2162,11 @@
    //判断是否是汉字
 
    var if_chtext = false;
+
+   var postFilterCondition_split = {};
+
+   var postChangeUrl = null;
+   
    //拆分按钮点击事件
    function splitFileds_handle_table(save_col_text,col_name_click){
    
@@ -2223,24 +2228,26 @@
       
       saveSplitTables[dbArr_split[2]].push(generate_free_dict);
 
+      postChangeUrl = null;
 
-      var postFilterCondition_split = {};
+      postFilterCondition_split = {};
+      if(dbArr_split[0] == "hdfs"){
+          postChangeUrl = "/cloudapi/v1/tables/" + dbArr_split[2] + "/all";
+          postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
+      }else if(dbArr_split[0] == "tmptables"){
+          postChangeUrl = "/cloudapi/v1/uploadedcsv/"+ dbArr_split[1] +"/"+ dbArr_split[2] + "/data";
+          postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
+      }else{
+          postChangeUrl = "/dataCollection/filterTable/all";
+          postFilterCondition_split = {
+            "source":dbArr_split[0],
+            "database":dbArr_split[1],
+            "tableName":dbArr_split[2],
+            "columns":{},
+            "conditions":now_table_filter_dict["common"].concat(now_table_filter_dict["condition"]),
+            "handleCol":expressions_free_dict,
+          }
 
-     if(dbArr_split[0] != "hdfs"){
-        var postChangeUrl = "/dataCollection/filterTable/all";
-        postFilterCondition_split = {
-          "source":dbArr_split[0],
-          "database":dbArr_split[1],
-          "tableName":dbArr_split[2],
-          "columns":{},
-          "conditions":now_table_filter_dict["common"].concat(now_table_filter_dict["condition"]),
-          "handleCol":expressions_free_dict,
-        }
-     }else{
-        
-        var postChangeUrl = "/cloudapi/v1/tables/" + dbArr_split[2] + "/all";
-        postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
-        console.log(postFilterCondition_split)
      }
 
   //   console.log(postFilterCondition_split)
@@ -2256,9 +2263,10 @@
         beforeSend:function(){
           var target =  $("body").get(0);
           spinner.spin(target);
+          console.log(postChangeUrl,postFilterCondition_split)
         },
         success:function(data){
-  //      console.log(data)
+          console.log(data)
           $(".split_error").remove();
           spinner.stop();
 
@@ -2421,7 +2429,7 @@
       col_name_click = currentHandleColOrRowEles.eq(0).text();
 
       currentHandleColOrRowEles.each(function(index,ele){
-           save_click_col_data.push($(ele).text()) ;
+           save_click_col_data.push($(ele).text());
           })
 
         save_col_text[currentHandleColOrRowEles.eq(0).text()] = save_click_col_data;

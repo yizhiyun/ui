@@ -303,13 +303,13 @@ $(function(){
 	$("#filter-model .screeningWasher .common-head .close").click(function(event){
 		event.stopPropagation();
 		$(this).parents(".screeningWasher").eq(0).hide();
-		$(".maskLayer").hide();	
+		// $(".maskLayer").hide();	
 	});
 	// 点击每个筛选器上的取消按钮的时候
 	$("#filter-model .screeningWasher .common-filer-footer .cancleBtn").click(function(event){
 		event.stopPropagation();
 		$(this).parents(".screeningWasher").eq(0).hide();
-		$(".maskLayer").hide();	
+		// $(".maskLayer").hide();	
 	});
 	
 	//点击每个筛选器上的确定按钮的时候
@@ -1505,6 +1505,7 @@ function localStorageSaveData(tableInfo,type,column,state,savedIndex){
 		filterDataArr = [new_obj_filter];
 	}
 	window.localStorage.setItem(tableInfo,JSON.stringify(filterDataArr));
+	console.log(conditionFilter_record);
 }
 function localStorageGetData(tableInfo){
 	var arr =  JSON.parse(window.localStorage.getItem(tableInfo));
