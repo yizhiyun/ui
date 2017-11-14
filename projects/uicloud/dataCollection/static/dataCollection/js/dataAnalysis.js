@@ -1343,6 +1343,8 @@ function newName(){
       var dbArr = key.split("_YZYPD_");
       var source = dbArr[0];
       console.log(dbArr);
+      var table_end = dbArr[2];
+      //console.log(table_end);
       var end = key.split("myfolder");
 
       if(source == "hdfs"){
@@ -1394,8 +1396,6 @@ function newName(){
         // alert(1);
 
         // 如果是未构建的数据表，执行这部分
-        // var lenn = $('div[id^="1f9"]').length;
-        // alert(lenn);
         var len = $('div[id^="hdfs"]').length;
 
         if(len == 0){
@@ -1410,12 +1410,11 @@ function newName(){
           $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube").hide();
 
           var listselect = $(".lists").find(".custom-select");
-          var end_name = end[1].split("_YZYPD_")[1];
           // console.log(end_name);
           // console.log($(".lists .combo-select .custom-select option[value="+end_name+"]"));
 
-          if($(".lists .combo-select .custom-select option[value="+end_name+"]").length == 0){
-            var selectoption = $("<option value="+end_name+">"+end_name+"</option>");
+          if($(".lists .combo-select .custom-select option[value="+table_end+"]").length == 0){
+            var selectoption = $("<option value="+table_end+">"+table_end+"</option>");
             listselect.append(selectoption);
             listselect.comboSelect();
           }
@@ -2761,4 +2760,5 @@ function getFilterNeedAllData_fun(dbInfo){
 
   }
 
+}
 }
