@@ -698,6 +698,7 @@ function getCurrentDidBuildDataTable(){
                 })
             })
 
+
           }
           if(data["results"].length != 0){
             $("#dataSet .detailDataSetList li .didBuildTables").find(".didBuildImg").css("visibility","visible");
@@ -858,6 +859,7 @@ function expression_click_handle(){
       delete didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
       // delete free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
       bindEventToPerTable();
+
 
     });
     // 添加集合表的导出excel 功能
@@ -1379,6 +1381,7 @@ function newName(){
               listselect.comboSelect();
             }
            
+
         }
          
 
@@ -2211,6 +2214,9 @@ function table_if_type(){
   
 }
 
+
+  var expressions_free_dict = {};
+
 //拆分弹窗初始化
 function splitWall_init(){
     $(".split_fileds").add(".maskLayer").hide();
@@ -2257,9 +2263,47 @@ function split_change_schame(split_table_name,data,now_click_table_name){
 //记录上一个点击显示的列名
  var pre_click_table_name = null;
 
+
  var everyTable_split_dict = {};
 
- //判断是否是汉字
+      generate_free_dict["col"] = col_name_click;
+
+      generate_free_dict["customizedfuncs"] = {};
+
+      generate_free_dict["customizedfuncs"]["type"] = save_handel_split_way == "limit" ? "splitbyposition" : "splitbydelim";
+
+      generate_free_dict["customizedfuncs"]["parameters"] = table_split_symbol;
+
+      expressions_free_dict["method"] = save_handel_split_way;
+
+      expressions_free_dict["cutsymbol"] = table_split_symbol;
+
+      saveSplitTables[dbArr_split[2]] = saveSplitTables[dbArr_split[2]] || [];
+      saveSplitTables[dbArr_split[2]].push(generate_free_dict);
+      postChangeUrl = null;
+
+      postFilterCondition_split = {};
+      if(dbArr_split[0] == "hdfs"){
+          postChangeUrl = "/cloudapi/v1/tables/" + dbArr_split[2] + "/all";
+          postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
+
+      }else if(dbArr_split[0] == "tmptables"){
+          postChangeUrl = "/cloudapi/v1/uploadedcsv/"+ dbArr_split[1] +"/"+ dbArr_split[2] + "/all";
+          postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
+
+      }else{
+
+          postChangeUrl = "/dataCollection/filterTable/all";
+          postFilterCondition_split = {
+            "source":dbArr_split[0],
+            "database":dbArr_split[1],
+            "tableName":dbArr_split[2],
+            "columns":{},
+            "conditions":now_table_filter_dict["common"].concat(now_table_filter_dict["condition"]),
+            "handleCol":expressions_free_dict,
+
+            
+          }
 
  var if_chtext = false;
  //拆分按钮点击事件
@@ -2296,7 +2340,7 @@ function split_change_schame(split_table_name,data,now_click_table_name){
     var dbArr_split = now_click_table_name.split("_YZYPD_");
 
 
-    var expressions_free_dict = {};
+    expressions_free_dict = {};
 
     //用于拆分的字符
     var table_split_symbol = table_if_type();
@@ -2305,6 +2349,7 @@ function split_change_schame(split_table_name,data,now_click_table_name){
     expressions_free_dict["colname"] = col_name_click;
 
     expressions_free_dict["method"] = save_handel_split_way;
+
 
     expressions_free_dict["cutsymbol"] = table_split_symbol;
 
