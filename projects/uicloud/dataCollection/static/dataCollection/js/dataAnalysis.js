@@ -1066,6 +1066,9 @@ function getTablesOfaDataBase(theSelect){
         dataBaseName = "myfolder"; // 当前用户名
         dbPaltIndexForBack = "hdfs";
         dataUrl = "/cloudapi/v1/tables/" +tableName+"/schema";
+
+
+
         
       }else if(sourceType == "tmptables"){
         var fileName = $(ui.draggable).data("filename");
@@ -1308,26 +1311,95 @@ function getTablesOfaDataBase(theSelect){
      });
      
 }
+
+function newName(){
+    var ele = $("#buildDataPanelView .build-body .cube-name-radio .new-cube");
+    ele.show();
+    ele.addClass("active"); 
+    ele.css("margin-left","20px");
+
+    $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
+    $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
+    $(".msg").hide();
+    $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube").hide();
+    
+}
  
  
  // 构建数据传递的参数
  var postData = null;
  var outName_of_check = null;
+
  // 构建数据点击事件
   $("#constructData").click(function(event){
+   
+    // console.log(count);
     var tables = [];
     for (var key in didShowDragAreaTableInfo) {
       var aTable = {};
       var dbArr = key.split("_YZYPD_");
       var source = dbArr[0];
+      var end = key.split("myfolder");
+
       if(source == "hdfs"){
           aTable["sourcetype"] = source;
+
+          //如果有已经构建的数据表，执行这部分
+          var len = $('div[id^="hdfs"]').length;
+          // alert(len);
+          
+ 
+          // 弹窗提示覆盖和新建
+          if(len != 0){
+            var e1 = $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube");
+            e1.show();
+            e1.removeClass("active");
+            $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube").css("margin-left","45px");
+
+            $("#buildDataPanelView .build-body .cube-name-radio .new-cube").addClass("active");
+            $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("margin-left","20px");
+            $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("float","left");
+         
+            $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
+            $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
+            $(".msg").hide();
+
+           
+
+            var listselect = $(".lists").find(".custom-select");
+            var end_name = end[1].split("_YZYPD_")[1];
+            // console.log(end_name);
+            // console.log($(".lists .combo-select .custom-select option[value="+end_name+"]"));
+
+            if($(".lists .combo-select .custom-select option[value="+end_name+"]").length == 0){
+              var selectoption = $("<option value="+end_name+">"+end_name+"</option>");
+              listselect.append(selectoption);
+              listselect.comboSelect();
+            }
+           
+        }
+         
+
       }else if(source == "tmptables"){
         aTable["sourcetype"] = source;
+        newName();
       }else{
         aTable["source"] = source;
         aTable["sourcetype"] = "db";
+        // alert(1);
+
+        // 如果是未构建的数据表，执行这部分
+        // var lenn = $('div[id^="1f9"]').length;
+        // alert(lenn);
+        var len = $('div[id^="hdfs"]').length;
+
+        if(len == 0){
+          newName();
+        }
+
       }
+
+
         aTable["database"] = dbArr[1];
         aTable["tableName"] = dbArr[2];
         if(saveSplitTables[dbArr[2]] != undefined && saveSplitTables[dbArr[2]].length > 0){
@@ -1361,6 +1433,8 @@ function getTablesOfaDataBase(theSelect){
         tables.push(aTable);
 
     }
+
+
     var relationships = [];
     // 获取所有连接
     var cons = instance.getAllConnections();
@@ -1416,22 +1490,18 @@ function getTablesOfaDataBase(theSelect){
           return;
         }
         outName_of_check = data["columns"];
-        if (preBuildDataName == null) {
-          var ele = $("#buildDataPanelView .build-body .cube-name-radio .new-cube");
-          ele.siblings(".radio").removeClass("active");
-          ele.addClass("active");   
-          $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
-          $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube").eq(0).hide();
-          ele.css("margin-left","20px");
-        }else{  
+
+
+        if(preBuildDataName!=null){  
           var ele = $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube");
           ele.show();
           ele.siblings(".radio").removeClass("active");
           ele.addClass("active");
           
-          $("#buildDataPanelView .build-body .cube-name-radio .new-cube").eq(0).css("margin-left","40px");
+          $("#buildDataPanelView .build-body .cube-name-radio .new-cube").eq(0).css("margin-left","20px");
           ele.html("覆盖 " + preBuildDataName);
           $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).hide();
+
         }
         
         $(".maskLayer").show();
@@ -1458,9 +1528,20 @@ $("#buildDataPanelView .build-body .cube-name-radio .radio").click(function(){
 // 是否显示 输入 cube 名称
 function showOrHidencubeNamenputiv(ele){
   if ($(ele).hasClass("new-cube") && !$("#buildDataPanelView .build-body .cube-name-input-div").eq(0).is(":visible")) {
-    $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show("blind",200);
+    $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
+    $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).hide();
+    $(".msg").hide();
   }else if ($(ele).hasClass("cover-original-cube")) {
-    $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).hide("blind",200);
+    $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).hide();
+    $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).show();
+    $(".msg").show();
+    var value = $(".cube-name-input-div .lists .combo-select .combo-dropdown .option-selected").html();
+
+    $(".cube-name-input-div .lists .combo-select .option-item").click(function(){
+        $(".msg").html($(this).html() + "关联了视图/指标，覆盖会导致视图/指标同时删除！");
+    })
+    $(".msg").html(value + "关联了视图/指标，覆盖会导致视图/指标同时删除！");
+
   }
 }
 
@@ -1495,14 +1576,15 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
         $("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).css("border","1px solid red");
         return;
       }
-      postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val(),"removedColumns":[],"columnRenameMapping":outName_of_check};
+      postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val(),"removedColumns":[],"columnRenameMapping":outName_of_check,"mode":"error"};
     }else{
-      postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check};
+      postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check,"mode":"overwrite"};
     }
     
 
     // 记录
     preBuildDataName = postData["outputs"]["outputTableName"];
+
     
     if ($("#buildDataPanelView .build-body .build-options .more-content-div .check-label input").eq(0).is(':checked') && $("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val() && $("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).is(":visible")) {
       var value = Number($("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val());
@@ -1728,6 +1810,45 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
 	  }
 	  $("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);
   }
+
+
+  function com(){
+     // 待处理
+      var formData = new FormData($("#dataBaseConnectForm").get(0));
+      formData.append("username","yzy");
+
+      $.ajax({
+        url:"/dataCollection/connectDataBaseHandle",
+        type:"POST",
+        processData: false,
+              contentType:false,
+              data:formData,
+              success:function(data){
+            if(data.status == "success"){
+              var isEditConnect = $("#connectDataBaseInfo").data("isEditConnect");
+            if(isEditConnect){
+              deleteDBConnection($("#connectDataBaseInfo").data("preDBInfo"));
+              $.ajax({
+                  url:"/dataCollection/deletePlat",
+                  type:"post",
+                  dataType:"json",
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify({"dbObjIndex":connectInfoDbIndex}),
+                success:function(data){alert(data.status);}
+                });
+            }
+            theRecordConnectionShouldShow = "database";
+            dbOrFileTablesRefreshRecord["dbNeedRefresh"] = true;
+              updateDBListFromNetwork();
+            }
+          }
+      });
+
+
+//      上面是链接数据库的字段信息
+    $("#connectDataBaseInfo").hide();
+    $(".maskLayer").hide();
+  }
   
   //  连接数据库的弹框显示之后，处理里面的点击事件
     function baseInfoShowCallBack(){
@@ -1738,44 +1859,17 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
 
 
       $("#loginBtn").unbind("click");
-      $("#loginBtn").click(function(event){   	
-        // 待处理
-      var formData = new FormData($("#dataBaseConnectForm").get(0));
-      formData.append("username","yzy");
-      
-      $.ajax({
-        url:"/dataCollection/connectDataBaseHandle",
-        type:"POST",
-        processData: false,
-              contentType:false,
-              data:formData,
-              success:function(data){
-	          if(data.status == "success"){
-	          	var isEditConnect = $("#connectDataBaseInfo").data("isEditConnect");
-      			if(isEditConnect){
-      				deleteDBConnection($("#connectDataBaseInfo").data("preDBInfo"));
-      				$.ajax({
-	          			url:"/dataCollection/deletePlat",
-	          			type:"post",
-	          			dataType:"json",
-    						contentType: "application/json; charset=utf-8",
-    						data:JSON.stringify({"dbObjIndex":connectInfoDbIndex}),
-    						success:function(data){alert(data.status);}
-	          		});
-      			}
-      			theRecordConnectionShouldShow = "database";
-      			dbOrFileTablesRefreshRecord["dbNeedRefresh"] = true;
-	            updateDBListFromNetwork();
-	          }
-          }
-      });
-        
-
-//      上面是链接数据库的字段信息
-          $("#connectDataBaseInfo").hide();
-          $(".maskLayer").hide();
+      $("#loginBtn").click(function(event){
+            com();
         })
     }
+
+
+    $("#connectDataBaseInfo").keydown(function(event){
+        if(event.keyCode == 13){
+             com();
+        }
+      });
 
 
   

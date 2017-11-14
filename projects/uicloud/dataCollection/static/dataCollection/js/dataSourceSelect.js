@@ -95,16 +95,18 @@ $(function () {
     	$("#loginBtn").click(function(event){
     		detail();
     		});
+
+    	$("#connectDataBaseInfo").keydown(function(event){
+	    	if(event.keyCode == 13){
+	    		detail();
+	    	}
+    	});
     		
 
     }
 
 
-    $("#connectDataBaseInfo").keydown(function(event){
-    	if(event.keyCode == 13){
-    		detail();
-    	}
-    });
+   
 
     
    
