@@ -515,7 +515,8 @@ class ConnectDataBase():
                             addsql += value + ', '
                             dic = {
                                 "field": key,
-                                "type": "VARCHAR"
+                                "type": "VARCHAR",
+                                "split": "yes"
                             }
 
                             list1 = key.split('_')
@@ -720,7 +721,8 @@ class ConnectDataBase():
                     for i in range(len(conversionList)):
                         dic = {
                             "field": handleCol['colname'] + '_PART{0}'.format(i + 1 + countname),
-                            "type": 'VARCHAR'
+                            "type": 'VARCHAR',
+                            "split": "yes"
                         }
 
                         count = 0
@@ -745,7 +747,8 @@ class ConnectDataBase():
 
                     dic = {
                         "field": "_".join(handleCol['colnamelist']) + '_MERGE%s' % (1 + countMergename),
-                        "type": 'VARCHAR'
+                        "type": 'VARCHAR',
+                        "merge": "yes"
                     }
 
                     count = 0
