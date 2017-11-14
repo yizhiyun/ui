@@ -838,7 +838,10 @@ function handle_success_show_table(){
   //集合表添加功能的点击事件
 function expression_click_handle(){
     //重构数据点击事件
+    var re_flag = 0;
     $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #data_reconstruction a").click(function(){
+      re_flag = 1;
+      // console.log(re_flag);
       $("._jsPlumb_endpoint").css("visibility","visible");
       $(".rightConent #analysisContainer #tableDataDetailListPanel").removeClass("expression_show").css("width",$(".rightConent").width()-$("#analysisContainer .leftSlide").width() + 'px').hide().removeAttr("nowshowtable");
       $("#analysisContainer .leftSlide").eq(0).css("display","block");
@@ -1331,14 +1334,16 @@ function newName(){
  var outName_of_check = null;
 
  // 构建数据点击事件
+  var con_flag = 0;
   $("#constructData").click(function(event){
-   
-    // console.log(count);
+    con_flag = 1;
+    // console.log(con_flag);
     var tables = [];
-    $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #data_reconstruction a").click(function(){
-      alert(1);
+    
+    if(re_flag == 1 && con_flag == 1){
 
-    })
+    }
+
     for (var key in didShowDragAreaTableInfo) {
       var aTable = {};
       var dbArr = key.split("_YZYPD_");
