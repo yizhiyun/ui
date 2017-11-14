@@ -2209,6 +2209,7 @@
       //用于拆分的字符
       var table_split_symbol = table_if_type();
 
+      console.log("abcdefg");
 
       expressions_free_dict["colname"] = col_name_click;
 
