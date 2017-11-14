@@ -10,11 +10,22 @@
 		</div>
  		<div class="build-body">
  			<div class="cube-name-radio">
- 				<p class="cover-original-cube radio">覆盖</p>
- 				<p class="new-cube radio">新建cube</p>
+ 				<p class="cover-original-cube radio">覆盖数据表</p>
+ 				<p class="new-cube radio">新建数据表</p>
  			</div>
  			<div class="cube-name-input-div">
- 				<span>数据cube名称 : </span><input type="text" placeholder="请输入数据Cube名称" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/>
+ 				<span>数据表名称 : </span><input type="text" placeholder="请输入数据表名称" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/>
+ 			</div>
+ 			<div class="cube-name-input-div">
+ 				<span>数据表名称 : </span>
+ 				<div class="lists">
+ 					
+					<select class='custom-select'>
+						<!-- <option value="">123</option>
+						<option value="">56343</option> -->
+					</select>
+ 					
+ 				</div>
  			</div>
  			<div class="build-options">
  				<p class="title">构建选项</p>
@@ -22,6 +33,8 @@
  					<p class="radio active lcoal-save">全部保存</p>
  					<p class="radio global-save">局部保存</p>
  				</div>
+ 				<!-- <div class="msg">“”关联了视图/指标，覆盖会导致视图/指标同时删除!</div> -->
+ 				<div class="msg"></div>
  				<div class="more-content-div" style="display: none;">
  					<p>更多设置 ( 单个表数据量 ) </p>
  					<label class="check-label"><input type="checkbox"/>行数</label><label class="text-label"><input type="text" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
