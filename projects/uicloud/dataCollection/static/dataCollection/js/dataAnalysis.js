@@ -64,28 +64,28 @@
 
   // 记录 左侧列表是否需要更新
   var dbOrFileTablesRefreshRecord={
-  	"dbNeedRefresh":true,
-  	"fileNeedRefresh":true,
+    "dbNeedRefresh":true,
+    "fileNeedRefresh":true,
   }
 
   // 数据连接操作页面整体函数
   function dataAnalysisFunction(isOnlyLoad){
      getDBAndPannelList();
-  	// select选项卡问题
+    // select选项卡问题
      $('.custom-select').comboSelect();
      ElementAutoSize();
      drag_fixedWidth();
-     	// 连接框可拖动帮
-  	$("#connectModalprompt").draggable({
-  	 containment:"#analysisContainer  .mainDragArea",
+      // 连接框可拖动帮
+    $("#connectModalprompt").draggable({
+     containment:"#analysisContainer  .mainDragArea",
      drag:function(){
        $("#connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer .combo-select .custom-select").eq(0).data("plugin_comboselect")._close();
        $("#connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer .combo-select .custom-select").eq(1).data("plugin_comboselect")._close();
        $("#connectModalprompt .selectInfoDiv .selectContent .selectDiv>div.selectContainer .combo-select .custom-select").eq(2).data("plugin_comboselect")._close();
      }
-  	});
+    });
    if(isOnlyLoad){
-  	return;
+    return;
    }
 
   function isExitInCurrentConnection(key,dbinfo){
@@ -109,7 +109,7 @@
     $("#analysisContainer .mainDragArea .boxDiv").each(function(index,ele){
       var idInfo = $(ele).attr("id");
       if(idInfo.split("_YZYPD_")[0] == flagKey){
-      	deleteTableHandleFunction(idInfo);
+        deleteTableHandleFunction(idInfo);
       }
     })
     
@@ -122,7 +122,7 @@
       var idInfo = $(ele).attr("id");
 
       if(idInfo.split("_YZYPD_")[1] == fileName){
-      		deleteTableHandleFunction(idInfo);
+          deleteTableHandleFunction(idInfo);
       }
     });
     
@@ -165,10 +165,10 @@
   }
 
    $(document).click(function(event){
-    	event.stopPropagation();
-  	  $(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").remove();
+      event.stopPropagation();
+      $(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").remove();
       $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList .connectMoreHanldeList").remove();
-    	$(".main .rightConent #analysisContainer .leftSlide #connectDirector .conn #addSourceSelects").hide();
+      $(".main .rightConent #analysisContainer .leftSlide #connectDirector .conn #addSourceSelects").hide();
       $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").css("background","");
       $("#dataSet .detailDataSetList  li .didBuildTables .tablesList .moreHandleDb").hide();
     });
@@ -382,8 +382,8 @@
             li.children(".selectFlagDiv").append(moreHandleBtn);
             li.unbind("click");
             li.click(function(event){
-            	event.stopPropagation();
-            	setTheDataSetActiveFunction(this,"database");
+              event.stopPropagation();
+              setTheDataSetActiveFunction(this,"database");
             });
             li.unbind("dblclick");
             li.dblclick(function(event){
@@ -395,7 +395,7 @@
             })
             moreHandleBtn.unbind("click");
             moreHandleBtn.click(function(event){
-            	event.stopPropagation();
+              event.stopPropagation();
               setTheDataSetActiveFunction($(this).parents(".dbtype"),"database");
               $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList .connectMoreHanldeList").remove();
               $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").css("background","");
@@ -405,38 +405,38 @@
                   $(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde").remove();
                   return;
               }
-            	var moreConnectHandle = $("<ul id='connectMoreHanlde'><li class='rename'>重命名</li><li class='editConnect'>编辑连接</li><li class='removeConnect'>移除</li></ul>");
-            	$(this).parent(".selectFlagDiv").parent("li").append(moreConnectHandle);
-            	moreConnectHandle.css("left",$(this).parent().offset().left + $(this).parent().width() + "px").css("top",$(this).parent().offset().top + ($(this).parent().height()/2 + 5) + "px");
+              var moreConnectHandle = $("<ul id='connectMoreHanlde'><li class='rename'>重命名</li><li class='editConnect'>编辑连接</li><li class='removeConnect'>移除</li></ul>");
+              $(this).parent(".selectFlagDiv").parent("li").append(moreConnectHandle);
+              moreConnectHandle.css("left",$(this).parent().offset().left + $(this).parent().width() + "px").css("top",$(this).parent().offset().top + ($(this).parent().height()/2 + 5) + "px");
               moreConnectHandle.find("li").unbind("click");
-            	moreConnectHandle.find("li").click(function(event){
-            		var connectInfo = $(this).parent("#connectMoreHanlde").parent("li");
-  	          	var connectInfoDbIndex = connectInfo.attr("dbindex");
-  	          	if($(this).hasClass("removeConnect")){
-  					deleteDBConnection(connectInfoDbIndex);
-  					theRecordConnectionShouldShow = "none";
-  					decideDataSourceNeedShowFunction();
-  	          		// 发送 ajax 请求，后端移除连接
-  	          		$.ajax({
-  	          			url:"/dataCollection/deletePlat",
-  	          			type:"post",
-  	          			dataType:"json",
-      						  contentType: "application/json; charset=utf-8",
-      						  data:JSON.stringify({"dbObjIndex":connectInfoDbIndex}),
-      					   	success:function(data){
+              moreConnectHandle.find("li").click(function(event){
+                var connectInfo = $(this).parent("#connectMoreHanlde").parent("li");
+                var connectInfoDbIndex = connectInfo.attr("dbindex");
+                if($(this).hasClass("removeConnect")){
+            deleteDBConnection(connectInfoDbIndex);
+            theRecordConnectionShouldShow = "none";
+            decideDataSourceNeedShowFunction();
+                  // 发送 ajax 请求，后端移除连接
+                  $.ajax({
+                    url:"/dataCollection/deletePlat",
+                    type:"post",
+                    dataType:"json",
+                    contentType: "application/json; charset=utf-8",
+                    data:JSON.stringify({"dbObjIndex":connectInfoDbIndex}),
+                    success:function(data){
                       if($("#dataSet .detailDataSetList  li .nowConnectedTables .tablesList").html() == ""){
                           $("#dataSet .detailDataSetList  li .nowConnectedTables .didBuildImg").css("visibility","hidden");
                       }
                     alert(data.status);
                   }
-  	          		});		
-  	          	}else if($(this).hasClass("editConnect")){
-  	          		connectDataBaseViewShowFunction(connectInfo.data("dbType"),true,connectInfoDbIndex);
-  	          	}else if($(this).hasClass("rename")){
+                  });   
+                }else if($(this).hasClass("editConnect")){
+                  connectDataBaseViewShowFunction(connectInfo.data("dbType"),true,connectInfoDbIndex);
+                }else if($(this).hasClass("rename")){
                     alreadyChangeName($(this).parents(".dbtype"),"detailInfo_input","detailInfo_text",null,"dbdata",$(this).parents(".dbType").attr("dbIndex"));
                 }
-  	          	$(this).parent("#connectMoreHanlde").remove();
-           	 });
+                $(this).parent("#connectMoreHanlde").remove();
+             });
             }); 
             $("#analysisContainer .leftSlide #connectDirector ul.paltFormList").append(li);
             li.data("dbIndex",key);
@@ -496,8 +496,8 @@
             li.children(".selectFlagDiv").append(moreHandleBtn);
             li.unbind("click");
             li.click(function(event){
-            	event.stopPropagation();
-            	setTheDataSetActiveFunction(this,"panelFile");
+              event.stopPropagation();
+              setTheDataSetActiveFunction(this,"panelFile");
             });
 
             li.unbind("dblclick");
@@ -512,7 +512,7 @@
 
              moreHandleBtn.unbind("click");
              moreHandleBtn.click(function(event){
-            	event.stopPropagation();
+              event.stopPropagation();
               setTheDataSetActiveFunction($(this).parents(".filetype"),"panelFile");
               $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables  ul.tablesList .connectMoreHanldeList").remove();
               $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList li").css("background","");
@@ -522,28 +522,28 @@
                   $(this).parent(".selectFlagDiv").parent("li").find("#connectMoreHanlde").remove();
                   return;
               }
-            	var moreConnectHandle = $("<ul id='connectMoreHanlde'><li class='rename'>重命名</li><li class='editConnect'>编辑连接<input type='file' id='editUploadFile' multiple='multiple' name='file'/></li><li class='removeConnect'>移除</li></ul>");
-            	$(this).parent(".selectFlagDiv").parent("li").append(moreConnectHandle);
+              var moreConnectHandle = $("<ul id='connectMoreHanlde'><li class='rename'>重命名</li><li class='editConnect'>编辑连接<input type='file' id='editUploadFile' multiple='multiple' name='file'/></li><li class='removeConnect'>移除</li></ul>");
+              $(this).parent(".selectFlagDiv").parent("li").append(moreConnectHandle);
               moreConnectHandle.css("left",$(this).parent().offset().left + $(this).parent().width() + "px").css("top",$(this).parent().offset().top + ($(this).parent().height()/2 + 5) + "px");
-            	moreConnectHandle.find(".rename,.removeConnect").unbind("click");
-            	moreConnectHandle.find(".rename,.removeConnect").click(function(event){
-  	          var connectInfoFileName = $(this).parent("#connectMoreHanlde").parent("li").attr("panelname");
-  	          if($(this).hasClass("removeConnect")){
-  //	          		// 发送 ajax 请求，后端移除连接
+              moreConnectHandle.find(".rename,.removeConnect").unbind("click");
+              moreConnectHandle.find(".rename,.removeConnect").click(function(event){
+              var connectInfoFileName = $(this).parent("#connectMoreHanlde").parent("li").attr("panelname");
+              if($(this).hasClass("removeConnect")){
+  //                // 发送 ajax 请求，后端移除连接
                 tableRemoveChangeName($(this).parents(".filetype").find(".selectFlagDiv .detailInfo_text").text(),{"filesource":"uploaded","method":"delete"});
                 }else if($(this).hasClass("rename")){
                     alreadyChangeName($(this).parents(".filetype"),"detailInfo_input","detailInfo_text","uploaded");
-  	          	}
-  	          	$(this).parent("#connectMoreHanlde").remove();
-           	 });
-           	 moreConnectHandle.find(".editConnect #editUploadFile").unbind("click");
-           	 moreConnectHandle.find(".editConnect #editUploadFile").click(function(event){event.stopPropagation();$(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").hide()});
-           	 moreConnectHandle.find(".editConnect #editUploadFile").unbind("change");
-           	 moreConnectHandle.find(".editConnect #editUploadFile").change(function(event){
-           	 	event.stopPropagation();
-           	 	var fileInfo = $(this).get(0).files[0];
-    	 			  panelFileUploadBtnDidTrickFunction(fileInfo,true,$(this).parent(".editConnect").parent("#connectMoreHanlde").parent("li").attr("panelname"));
-           	 });
+                }
+                $(this).parent("#connectMoreHanlde").remove();
+             });
+             moreConnectHandle.find(".editConnect #editUploadFile").unbind("click");
+             moreConnectHandle.find(".editConnect #editUploadFile").click(function(event){event.stopPropagation();$(".main .rightConent #analysisContainer .leftSlide #connectDirector .paltFormList #connectMoreHanlde").hide()});
+             moreConnectHandle.find(".editConnect #editUploadFile").unbind("change");
+             moreConnectHandle.find(".editConnect #editUploadFile").change(function(event){
+              event.stopPropagation();
+              var fileInfo = $(this).get(0).files[0];
+              panelFileUploadBtnDidTrickFunction(fileInfo,true,$(this).parent(".editConnect").parent("#connectMoreHanlde").parent("li").attr("panelname"));
+             });
             });
             var paneFileShow = $("<div class='panelDataShow'><div class='panelFileSheetData'></div></div>");
             paneFileShow.attr("panelName",key);
@@ -728,32 +728,32 @@
 
   // 默认用户选择了数据源处理
   function decideDataSourceNeedShowFunction(){
-  	if(theRecordConnectionShouldShow == "database"){
-  		setTheDataSetActiveFunction($("#analysisContainer .leftSlide #connectDirector .paltFormList>li.dbtype:last"),"database");
-  	}else if(theRecordConnectionShouldShow == "panelFile"){
-  		setTheDataSetActiveFunction($("#analysisContainer .leftSlide #connectDirector .paltFormList>li.filetype:last"),"panelFile");
-  	}else if(theRecordConnectionShouldShow == "none"){
-  		var ele = $("#analysisContainer .leftSlide #connectDirector .paltFormList>li:last");
-  		if(ele.hasClass("dbtype")){
-  			setTheDataSetActiveFunction(ele,"database");
-  		}else{
-  			setTheDataSetActiveFunction(ele,"panelFile");
-  		}	
-  	}
+    if(theRecordConnectionShouldShow == "database"){
+      setTheDataSetActiveFunction($("#analysisContainer .leftSlide #connectDirector .paltFormList>li.dbtype:last"),"database");
+    }else if(theRecordConnectionShouldShow == "panelFile"){
+      setTheDataSetActiveFunction($("#analysisContainer .leftSlide #connectDirector .paltFormList>li.filetype:last"),"panelFile");
+    }else if(theRecordConnectionShouldShow == "none"){
+      var ele = $("#analysisContainer .leftSlide #connectDirector .paltFormList>li:last");
+      if(ele.hasClass("dbtype")){
+        setTheDataSetActiveFunction(ele,"database");
+      }else{
+        setTheDataSetActiveFunction(ele,"panelFile");
+      } 
+    }
   }
 
 
   // 用户手动切换数据源
   function setTheDataSetActiveFunction(ele,sourceType){
-  	if($(ele).hasClass("active")){return};
-  	$(ele).siblings("li.active").removeClass("active");
+    if($(ele).hasClass("active")){return};
+    $(ele).siblings("li.active").removeClass("active");
       $(ele).addClass("active");
 
       $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList").children("div").hide();
       if(sourceType == "database"){
-      		$("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow[dbIndex="+$(ele).attr("dbindex")+"]").show();
+          $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow[dbIndex="+$(ele).attr("dbindex")+"]").show();
       }else if(sourceType == "panelFile"){
-      		$("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .panelDataShow[panelName="+$(ele).attr("panelname")+"]").show();
+          $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .panelDataShow[panelName="+$(ele).attr("panelname")+"]").show();
       }
   }
 
@@ -842,7 +842,7 @@
                   didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                   // free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                   createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
-  				        getCurrentDidBuildDataTable();
+                  getCurrentDidBuildDataTable();
                   spinner.stop();
         }
             }
@@ -875,11 +875,11 @@
       });
       // 添加集合表的导出excel 功能
       $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #table_export_excel").click(function(event){
-      		event.stopPropagation();
-      		var formData = $("<form method='get' style='display:none'></form>");
-      		formData.attr("action","/cloudapi/v1/downLoadExcel/"+preBuildDataName);
-      		$("body").append(formData);
-      		formData.submit();
+          event.stopPropagation();
+          var formData = $("<form method='get' style='display:none'></form>");
+          formData.attr("action","/cloudapi/v1/downLoadExcel/"+preBuildDataName);
+          $("body").append(formData);
+          formData.submit();
       });
     }
 
@@ -936,7 +936,7 @@
       $("#prompt_message #data_success_content").removeClass().addClass("data_success_img");
       $("#loading_percentage").css("right","-10px");
       //构建数据成功隐藏构建数据弹窗--显示选择进入模块弹窗
-  	dashBoradFunction_able();
+    dashBoradFunction_able();
       $("#build_upload").hide("blind",1000,function(){
         $(".rightConent #analysisContainer").css("visibility","hidden");
         //构建成功显示集合表
@@ -1180,9 +1180,9 @@
             stop:function(event,ui){
               instance.repaintEverything();
               $("#analysisContainer .mainDragArea #dragTableDetailInfo").css({
-            	left:this.offsetLeft + "px",
-           	  top:this.offsetTop - 40 + "px" 
-       	       });
+              left:this.offsetLeft + "px",
+              top:this.offsetTop - 40 + "px" 
+               });
               $("#analysisContainer .mainDragArea #dragTableDetailInfo").show();
 
               var dragTable = $(ui.helper).data("split_record").split("_YZY_");
@@ -1206,9 +1206,9 @@
              // free_didShowDragAreaTableInfo[boxDiv[0].id] = data;
              tableDrag(allKeys(didShowDragAreaTableInfo));
            }else{
-           	 instance.repaintEverything();
+             instance.repaintEverything();
            }
-   		
+      
             
            // 选择框绑定事件
            bindEventToBoxDivFiledsCheckBox();
@@ -1635,8 +1635,8 @@
       panelFileUploadBtnDidTrickFunction(fileInfo);
     });
     function panelFileUploadBtnDidTrickFunction(fileInfo,isEditUploadFile,preFileName){
-    	
-    	$(".maskLayer").show();  
+      
+      $(".maskLayer").show();  
       if (fileInfo.name.substring(fileInfo.name.indexOf(".")).toLowerCase() == ".csv"){
         $("#panelFileSettingOption").data("isEditUploadFile",isEditUploadFile);
         $("#panelFileSettingOption").data("preFileName",preFileName);
@@ -1655,25 +1655,25 @@
     });
       
     function analysis_uploadCSVFileFun(formData,isEditUploadFile,preFileName){
-    	if(isEditUploadFile){
-     		deleteFileConnection(preFileName);
+      if(isEditUploadFile){
+        deleteFileConnection(preFileName);
            // 发送 ajax 请求，后端移除连接
-    		$.ajax({
-    			url:"cloudapi/v1/deletecsv/"+preFileName,
-    			type:"post",
-    			dataType:"json",
-  				contentType: "application/json; charset=utf-8",
-  				success:function(data){
-  					if(data.status == "success"){
-  						startUploadTheFileFunction(formData);
-  					}
-  				}
-    		});	
-    	}else{
-    		startUploadTheFileFunction(formData);
-    	}
-    	function startUploadTheFileFunction(formData){
-    		 $.ajax({
+        $.ajax({
+          url:"cloudapi/v1/deletecsv/"+preFileName,
+          type:"post",
+          dataType:"json",
+          contentType: "application/json; charset=utf-8",
+          success:function(data){
+            if(data.status == "success"){
+              startUploadTheFileFunction(formData);
+            }
+          }
+        }); 
+      }else{
+        startUploadTheFileFunction(formData);
+      }
+      function startUploadTheFileFunction(formData){
+         $.ajax({
         url:"/cloudapi/v1/uploadcsv",
         type:"POST",
         processData: false,
@@ -1694,8 +1694,8 @@
                   updatePanelFileListFromNetwork();
                     }
                 }
-     	 });
-    	}
+       });
+      }
      
     }
       
@@ -1706,7 +1706,7 @@
       var formData = new FormData();
       var fileInfo = $("#analysisContainer .leftSlide #addSourceSelects #addPanelFileInput").get(0).files[0];
       if($("#panelFileSettingOption").data("isEditUploadFile")){
-      	 fileInfo = $("#analysisContainer .leftSlide #connectDirector ul.paltFormList li.filetype #connectMoreHanlde .editConnect #editUploadFile").get(0).files[0];
+         fileInfo = $("#analysisContainer .leftSlide #connectDirector ul.paltFormList li.filetype #connectMoreHanlde .editConnect #editUploadFile").get(0).files[0];
       }
       formData.append("file",fileInfo);
       formData.append("delimiter",delimiter);
@@ -1726,33 +1726,33 @@
       }
     
     function connectDataBaseViewShowFunction(dataBaseName,isEditConnect,preDBInfo){
-    	if(dataBaseName == "ORACLE"){
-  	    $("#connectDataBaseInfo").height(320);
-  	    $("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").show();
-  	  }else{
-  	    $("#connectDataBaseInfo").height(300);
-  	    $("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").hide();
-  	  }
-  	  $("#analysis_dataList").hide();
-  	  $("#connectDataBaseInfo").data("dataBaseName",dataBaseName);
-  	  $("#connectDataBaseInfo").data("isEditConnect",isEditConnect);
-  	  $("#connectDataBaseInfo").data("preDBInfo",preDBInfo);
-  	  if(!$(".maskLayer").is(":visible")){
-  	  	$(".maskLayer").show();
-  	  }
-  	  $("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);
+      if(dataBaseName == "ORACLE"){
+        $("#connectDataBaseInfo").height(320);
+        $("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").show();
+      }else{
+        $("#connectDataBaseInfo").height(300);
+        $("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").hide();
+      }
+      $("#analysis_dataList").hide();
+      $("#connectDataBaseInfo").data("dataBaseName",dataBaseName);
+      $("#connectDataBaseInfo").data("isEditConnect",isEditConnect);
+      $("#connectDataBaseInfo").data("preDBInfo",preDBInfo);
+      if(!$(".maskLayer").is(":visible")){
+        $(".maskLayer").show();
+      }
+      $("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);
     }
     
     //  连接数据库的弹框显示之后，处理里面的点击事件
       function baseInfoShowCallBack(){
-      	var dataBaseName =  $("#connectDataBaseInfo").data("dataBaseName");
+        var dataBaseName =  $("#connectDataBaseInfo").data("dataBaseName");
         $("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
         $("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
 
 
 
         $("#loginBtn").unbind("click");
-        $("#loginBtn").click(function(event){   	
+        $("#loginBtn").click(function(event){     
           // 待处理
         var formData = new FormData($("#dataBaseConnectForm").get(0));
         formData.append("username","yzy");
@@ -1764,23 +1764,23 @@
                 contentType:false,
                 data:formData,
                 success:function(data){
-  	          if(data.status == "success"){
-  	          	var isEditConnect = $("#connectDataBaseInfo").data("isEditConnect");
-        			if(isEditConnect){
-        				deleteDBConnection($("#connectDataBaseInfo").data("preDBInfo"));
-        				$.ajax({
-  	          			url:"/dataCollection/deletePlat",
-  	          			type:"post",
-  	          			dataType:"json",
-      						contentType: "application/json; charset=utf-8",
-      						data:JSON.stringify({"dbObjIndex":connectInfoDbIndex}),
-      						success:function(data){alert(data.status);}
-  	          		});
-        			}
-        			theRecordConnectionShouldShow = "database";
-        			dbOrFileTablesRefreshRecord["dbNeedRefresh"] = true;
-  	            updateDBListFromNetwork();
-  	          }
+              if(data.status == "success"){
+                var isEditConnect = $("#connectDataBaseInfo").data("isEditConnect");
+              if(isEditConnect){
+                deleteDBConnection($("#connectDataBaseInfo").data("preDBInfo"));
+                $.ajax({
+                    url:"/dataCollection/deletePlat",
+                    type:"post",
+                    dataType:"json",
+                  contentType: "application/json; charset=utf-8",
+                  data:JSON.stringify({"dbObjIndex":connectInfoDbIndex}),
+                  success:function(data){alert(data.status);}
+                  });
+              }
+              theRecordConnectionShouldShow = "database";
+              dbOrFileTablesRefreshRecord["dbNeedRefresh"] = true;
+                updateDBListFromNetwork();
+              }
             }
         });
           
@@ -1814,7 +1814,7 @@
     }
     // 移除其中一个表格
     function deleteTableHandleFunction(dbInfo){
-    	 // 移除线
+       // 移除线
           instance.detachAllConnections($(".mainDragArea #"+dbInfo)); 
           // 移除点
           var endPonints = instance.getEndpoints($(".mainDragArea #"+dbInfo));
@@ -1838,9 +1838,9 @@
 
 
         // 设置当前显示的 table 为空
-  	 $("#tableDataDetailListPanel").attr("nowShowTable","none");
-  	 // 清楚底部的表格
-  	  $("#tableDataDetailListPanel .mainContent table thead tr").html("");
+     $("#tableDataDetailListPanel").attr("nowShowTable","none");
+     // 清楚底部的表格
+      $("#tableDataDetailListPanel .mainContent table thead tr").html("");
         $("#tableDataDetailListPanel .mainContent table tbody").html("");
 
         if(store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2]) != -1){
