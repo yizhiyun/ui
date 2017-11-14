@@ -321,3 +321,168 @@ def getHypothesisTestSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="900
     '''.format(jsonData, userTableUrl)
 
     return sparkCode
+
+
+def getCorrationAnaSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
+    '''
+    return the running spark code which will get the basic statistics information,
+    Notes:
+    hdfsHost, hdfsPort, rootFolder are available if jsonData["sourceType"] is hdfs and
+    the hdfsUrl key isn't provided
+    '''
+    userTableUrl = getUserTableUrl(jsonData, hdfsHost, hdfsPort, rootFolder)
+
+    sparkCode = '''
+    import sys
+    import traceback
+    from sklearn.cross_decomposition import CCA
+    ''' + specialDataTypesEncoderSparkCode() + getDataFrameFromSourceSparkCode() + setupLoggingSparkCode() + '''
+    def getCorrationAnalysis(corrtype, dataFrame):
+        """
+        it will output json data.
+        """
+        outputDict = {}
+        if corrtype == "corr":
+            outputDict["corr"] = json.loads(dataFrame.toPandas().corr().to_json())
+        elif corrtype == "pcorr":
+            dataFrame.toPandas().corr()
+            outputDict["pcorr"] = json.loads(dataFrame.toPandas().corr().to_json())
+        elif corrtype == "cca":
+            pass
+        else:
+            logger.warn("Don't support other types.")
+        return outputDict
+    ''' + '''
+    df3 = getDataFrameFromSource({0}, '{1}', maxRowCount=False)
+    if df3:
+        print(json.dumps(getCorrationAnalysis({0}["corrtype"], df3), cls = SpecialDataTypesEncoder))
+    else:
+        logger.error("Cannot get data from the given source!")
+        print(False)
+    '''.format(jsonData, userTableUrl)
+
+    return sparkCode
+
+
+def getRegressionSparkCode(jsonData, hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
+    '''
+    return the running spark code which will get the regression information,
+    Notes:
+    hdfsHost, hdfsPort, rootFolder are available if jsonData["sourceType"] is hdfs and
+    the hdfsUrl key isn't provided
+    '''
+    userTableUrl = getUserTableUrl(jsonData, hdfsHost, hdfsPort, rootFolder)
+
+    sparkCode = '''
+    import sys
+    import traceback
+    from pyspark.ml.feature import VectorAssembler
+    from pyspark.ml.regression import LinearRegression
+    from pyspark.ml.linalg import Vectors
+    import pyspark.sql.functions as F
+    import numpy as np
+    ''' + specialDataTypesEncoderSparkCode() + getDataFrameFromSourceSparkCode() + setupLoggingSparkCode() + '''
+    def getRegressionAna(inParams, dataFrame, maxIter=10, pointsNum=100):
+        """
+        it will output json data.
+        maxIter control the max Iteration while generating the regression model.
+        pointsNum control the output Points' number for UI drawing.
+        """
+        outputDict = {}
+        if "rtype" not in inParams.keys():
+            logger.warn("Cannot get the 'rtype' key from {0}".format(inParams))
+            return outputDict
+
+        if "linearreg" == inParams["rtype"]:
+            polynomial = inParams["polynomial"] if "polynomial" in inParams.keys() else 1
+            if not isinstance(polynomial, int) or polynomial > 6 or polynomial < 1:
+                logger.error("The polynomial value should be and integer and  ranges from 1 to 6")
+                return outputDict
+
+            inputColsList = ["x{0}".format(i) for i in range(1, polynomial + 1)]
+            vecass1 = VectorAssembler(inputCols=inputColsList, outputCol="features")
+
+            linearType = inParams["lineartype"] if "lineartype" in inParams.keys() else "normal"
+
+            if linearType == "exponential":
+                featureCols = [
+                    (F.column(inParams["col_x"])**i).alias("x{0}".format(i))
+                    for i in range(1, polynomial + 1)
+                ]
+                labelCol = F.log(F.column(inParams["col_y"])).alias("label")
+            elif linearType == "logarithm":
+                featureCols = [
+                    (F.log(F.column(inParams["col_x"]))**i).alias("x{0}".format(i))
+                    for i in range(1, polynomial + 1)
+                ]
+                labelCol = F.column(inParams["col_y"]).alias("label")
+            elif linearType == "power":
+                featureCols = [
+                    (F.log(F.column(inParams["col_x"]))**i).alias("x{0}".format(i))
+                    for i in range(1, polynomial + 1)
+                ]
+                labelCol = F.log(F.column(inParams["col_y"])).alias("label")
+            else:
+                featureCols = [
+                    (F.column(inParams["col_x"])**i).alias("x{0}".format(i))
+                    for i in range(1, polynomial + 1)
+                ]
+                labelCol = F.column(inParams["col_y"]).alias("label")
+
+            transdf1 = dataFrame.select(*featureCols, labelCol)
+            newdf1 = vecass1.transform(transdf1)
+            lr = LinearRegression(maxIter=maxIter)
+            model1 = lr.fit(newdf1)
+
+            resdict = {}
+            resdict["coefficients"] = model1.coefficients.values.tolist()
+            resdict["intercept"] = model1.intercept
+            resdict["standarderrors"] = model1.summary.coefficientStandardErrors
+            resdict["tvalues"] = model1.summary.tValues
+            resdict["pvalues"] = model1.summary.pValues
+            resdict["r2"] = model1.summary.r2
+
+            agg1st = dataFrame.agg(F.min(inParams["col_x"]).alias("min"), F.max(inParams["col_x"]).alias("max")).first()
+            min1, max1 = agg1st.min, agg1st.max
+            if linearType in ["logarithm", "power"]:
+                predf1 = spark.createDataFrame(
+                    [(Vectors.dense(
+                        np.log(min1 + i * (max1 - min1) / pointsNum)),
+                        min1 + i * (max1 - min1) / pointsNum) for i in range(pointsNum)],
+                    ["features", "x"])
+            else:
+                predf1 = spark.createDataFrame(
+                    [(Vectors.dense(
+                        min1 + i * (max1 - min1) / pointsNum),
+                        min1 + i * (max1 - min1) / pointsNum) for i in range(pointsNum)],
+                    ["features", "x"])
+
+            transdf1 = model1.transform(predf1)
+            if linearType in ["exponential", "power"]:
+                resdf1 = transdf1.select("x", F.exp(F.column('prediction')).alias("y"))
+            else:
+                resdf1 = transdf1.select("x", F.column('prediction').alias("y"))
+            predictlist = []
+            for rowItem in resdf1.collect():
+                predictlist.append(rowItem.asDict())
+            resdict["predictlist"] = predictlist
+
+            outputDict["linearreg"] = resdict
+
+        logger.debug("outputDict: {0}".format(outputDict))
+        return outputDict
+    ''' + '''
+    df3 = getDataFrameFromSource({0}, '{1}', maxRowCount=False)
+    if df3:
+        maxIter, pointsNum = 10, 100
+        if "outputparams" in {0}.keys():
+            outputPara = {0}["outputparams"]
+            maxIter = outputPara["maxiter"] if "maxiter" in outputPara.keys() else 10
+            pointsNum = outputPara["pointsnum"] if "pointsnum" in outputPara.keys() else 100
+        print(json.dumps(getRegressionAna({0}["inputparams"], df3, maxIter, pointsNum), cls = SpecialDataTypesEncoder))
+    else:
+        logger.error("Cannot get data from the given source!")
+        print(False)
+    '''.format(jsonData, userTableUrl)
+
+    return sparkCode
