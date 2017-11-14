@@ -2241,32 +2241,74 @@
 
       expressions_free_dict["colname"] = col_name_click;
 
+
+
+
       generate_free_dict["col"] = col_name_click;
+
+
+
+
 
       generate_free_dict["customizedfuncs"] = {};
 
+
+
+
       generate_free_dict["customizedfuncs"]["type"] = save_handel_split_way == "limit" ? "splitbyposition" : "splitbydelim";
+
+
+
 
       generate_free_dict["customizedfuncs"]["parameters"] = table_split_symbol;
 
+
+
+
       expressions_free_dict["method"] = save_handel_split_way;
+
+
+
 
       expressions_free_dict["cutsymbol"] = table_split_symbol;
 
+
+
+
       saveSplitTables[dbArr_split[2]] = saveSplitTables[dbArr_split[2]] || [];
+
+
+
       
       saveSplitTables[dbArr_split[2]].push(generate_free_dict);
 
+
+
+
       postChangeUrl = null;
+
+
+
 
       postFilterCondition_split = {};
       if(dbArr_split[0] == "hdfs"){
           postChangeUrl = "/cloudapi/v1/tables/" + dbArr_split[2] + "/all";
           postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
+
+
+
       }else if(dbArr_split[0] == "tmptables"){
           postChangeUrl = "/cloudapi/v1/uploadedcsv/"+ dbArr_split[1] +"/"+ dbArr_split[2] + "/all";
+
+
+
           postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
+
+
+
       }else{
+
+
           postChangeUrl = "/dataCollection/filterTable/all";
           postFilterCondition_split = {
             "source":dbArr_split[0],
@@ -2275,6 +2317,8 @@
             "columns":{},
             "conditions":now_table_filter_dict["common"].concat(now_table_filter_dict["condition"]),
             "handleCol":expressions_free_dict,
+
+            
           }
 
      }
