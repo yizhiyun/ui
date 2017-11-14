@@ -640,43 +640,6 @@
                 if($(this).find(".connectMoreHanldeList").length > 0){
                   $(this).find(".connectMoreHanldeList").remove();
                 }
-<<<<<<< HEAD
-                didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
-                // free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
-                createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
-                getCurrentDidBuildDataTable();
-                spinner.stop();
-      }
-          }
-        }); 
-  }
-
-  //集合表添加功能的点击事件
-function expression_click_handle(){
-    //重构数据点击事件
-    var re_flag = 0;
-    $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #data_reconstruction a").click(function(){
-      re_flag = 1;
-      // console.log(re_flag);
-      $("._jsPlumb_endpoint").css("visibility","visible");
-      $(".rightConent #analysisContainer #tableDataDetailListPanel").removeClass("expression_show").css("width",$(".rightConent").width()-$("#analysisContainer .leftSlide").width() + 'px').hide().removeAttr("nowshowtable");
-      $("#analysisContainer .leftSlide").eq(0).css("display","block");
-      $(".rightConent #analysisContainer").css("visibility","visible");
-      $(".rightConent #analysisContainer #tableDataDetailListPanel #closeableDataDetailListPanel").css("display","inline");
-      //移除多余的功能
-      $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #top_expression").add($(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #expression_save,.rightConent #analysisContainer #tableDataDetailListPanel .topInfo #data_reconstruction,.rightConent #analysisContainer #tableDataDetailListPanel .topInfo #table_export_excel,.rightConent #analysisContainer #tableDataDetailListPanel .topInfo #table_add_field,.rightConent #analysisContainer #tableDataDetailListPanel .topInfo #merge_table")).remove();
-      $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo").css("borderLeft","1px solid #DEDEDE");
-      $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent table thead tr").css("background","#F5F5F5");
-      $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").css("maxHeight","440px");
-      //创建相对应的已构建的数据表
-
-      $("<li>"+preBuildDataName+"</li>").data("sourcetype","hdfs").appendTo($("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables ul.tablesList"));
-      
-      // 数据的移除
-      delete didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
-      // delete free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
-      bindEventToPerTable();
-=======
                 alreadyChangeName($(this),"datebaseLise_input","datebaseLise_text","generated");
               })
 
@@ -742,7 +705,6 @@ function expression_click_handle(){
                             })
                           }
                       });
->>>>>>> cc755a6d3003f20d5f18495314269d539b69a3a8
 
                      
 
@@ -1011,68 +973,6 @@ function expression_click_handle(){
         }
       })
     
-<<<<<<< HEAD
-}
- 
- 
- // 构建数据传递的参数
- var postData = null;
- var outName_of_check = null;
-
- // 构建数据点击事件
-  var con_flag = 0;
-  $("#constructData").click(function(event){
-    con_flag = 1;
-    // console.log(con_flag);
-    var tables = [];
-    
-    if(re_flag == 1 && con_flag == 1){
-
-    }
-
-    for (var key in didShowDragAreaTableInfo) {
-      var aTable = {};
-      var dbArr = key.split("_YZYPD_");
-      var source = dbArr[0];
-      var end = key.split("myfolder");
-
-      if(source == "hdfs"){
-          aTable["sourcetype"] = source;
-
-          //如果有已经构建的数据表，执行这部分
-          var len = $('div[id^="hdfs"]').length;
-          // alert(len);
-          
- 
-          // 弹窗提示覆盖和新建
-          if(len != 0){
-            var e1 = $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube");
-            e1.show();
-            e1.removeClass("active");
-            $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube").css("margin-left","45px");
-
-            $("#buildDataPanelView .build-body .cube-name-radio .new-cube").addClass("active");
-            $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("margin-left","20px");
-            $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("float","left");
-         
-            $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
-            $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
-            $(".msg").hide();
-
-           
-
-            var listselect = $(".lists").find(".custom-select");
-            var end_name = end[1].split("_YZYPD_")[1];
-            // console.log(end_name);
-            // console.log($(".lists .combo-select .custom-select option[value="+end_name+"]"));
-
-            if($(".lists .combo-select .custom-select option[value="+end_name+"]").length == 0){
-              var selectoption = $("<option value="+end_name+">"+end_name+"</option>");
-              listselect.append(selectoption);
-              listselect.comboSelect();
-            }
-           
-=======
     // 左侧边栏隐藏和显示
     $("#foldSideBtn").click(function(event){
       $("#analysisContainer .leftSlide").toggle("fold",{horizFirst:true},50,function(){
@@ -1085,7 +985,6 @@ function expression_click_handle(){
           $("#foldSideBtn").children("img").attr("src","/../../../static/dataCollection/images/pull_.png")
           $("#foldSideBtn").css("left", "-7px")
           $("#analysisContainer .mainDragArea").css("margin-left","0px");
->>>>>>> cc755a6d3003f20d5f18495314269d539b69a3a8
         }
         //看具体情况。。。。。要不要处理
        
