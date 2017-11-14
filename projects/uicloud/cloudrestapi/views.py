@@ -205,6 +205,9 @@ def generateNewTable(request):
         elif output["status"] != "ok" or output["data"]["text/plain"] != "True":
             failObj = {"status": "failed",
                        "reason": output}
+
+            if 'ename' in output.keys() and output['ename'] == 'AnalysisException':
+                return JsonResponse({"status": "failed", "reason": "AnalysisException"})
             return JsonResponse(failObj, status=400)
         else:
             outputTableName = jsonData['outputs']['outputTableName']
