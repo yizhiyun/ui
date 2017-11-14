@@ -838,9 +838,7 @@ function handle_success_show_table(){
   //集合表添加功能的点击事件
 function expression_click_handle(){
     //重构数据点击事件
-    var re_flag = 0;
     $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #data_reconstruction a").click(function(){
-      re_flag = 1;
       // console.log(re_flag);
       $("._jsPlumb_endpoint").css("visibility","visible");
       $(".rightConent #analysisContainer #tableDataDetailListPanel").removeClass("expression_show").css("width",$(".rightConent").width()-$("#analysisContainer .leftSlide").width() + 'px').hide().removeAttr("nowshowtable");
@@ -1334,19 +1332,15 @@ function newName(){
  var outName_of_check = null;
 
  // 构建数据点击事件
-  var con_flag = 0;
   $("#constructData").click(function(event){
-    
     // console.log(count);
     var tables = [];
-    $(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo #data_reconstruction a").click(function(){
-      alert(1);
-
-    })
+   
     for (var key in didShowDragAreaTableInfo) {
       var aTable = {};
       var dbArr = key.split("_YZYPD_");
       var source = dbArr[0];
+      console.log(dbArr);
       var end = key.split("myfolder");
 
       if(source == "hdfs"){
@@ -1402,7 +1396,26 @@ function newName(){
         var len = $('div[id^="hdfs"]').length;
 
         if(len == 0){
-          newName();
+          var ele = $("#buildDataPanelView .build-body .cube-name-radio .new-cube");
+          ele.show();
+          ele.addClass("active"); 
+          ele.css("margin-left","20px");
+
+          $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
+          $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
+          $(".msg").hide();
+          $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube").hide();
+
+          var listselect = $(".lists").find(".custom-select");
+          var end_name = end[1].split("_YZYPD_")[1];
+          // console.log(end_name);
+          // console.log($(".lists .combo-select .custom-select option[value="+end_name+"]"));
+
+          if($(".lists .combo-select .custom-select option[value="+end_name+"]").length == 0){
+            var selectoption = $("<option value="+end_name+">"+end_name+"</option>");
+            listselect.append(selectoption);
+            listselect.comboSelect();
+          }
         }
 
       }
