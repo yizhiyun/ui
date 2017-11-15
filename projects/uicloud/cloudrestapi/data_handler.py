@@ -271,6 +271,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         # refer to the spark.sql.shuffle.partitions parameter, the default is 200.
         if partitionBy is not None:
             newDF.write.parquet(savedPathUrl, mode=mode, partitionBy=partitionBy)
+        elif newDF.count() == 0:
+            return False
         elif newDF.count() < 10000:
             newDF.coalesce(1).write.parquet(savedPathUrl, mode=mode, partitionBy=partitionBy)
         else:

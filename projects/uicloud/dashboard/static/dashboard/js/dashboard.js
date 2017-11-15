@@ -436,7 +436,7 @@
 				}
 			}
 			//度量更多操作过程
-			md_click_show($(".annotation_text .measure_list_text_left").parent().find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null});
+			md_click_show($(".annotation_text .measure_list_text_left").parent().find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});
 			if(indexEdit && indexEdit != "noLocation"){
 				var viewIndexStyle = "indexstyle";
 				var viewIndexType = "indextype";
@@ -1626,15 +1626,20 @@
 							}
 
 							if(out_wrap_click.hasClass("dimensionalityWrap")){
-									out_wrap_click.find(".me_out_content_li").eq(0).unbind("click mouseenter mouseleave").css("background","#F5F5F5");
-									out_wrap_click.find(".me_out_content_li").eq(1).unbind("click mouseenter mouseleave").css("background","#F5F5F5");
+									out_wrap_click.find(".me_out_content_li").eq(0).add(out_wrap_click.find(".me_out_content_li").eq(1)).add(out_wrap_click.find(".me_out_content_li").eq(2)).add(out_wrap_click.find(".me_out_content_li").eq(3)).add(out_wrap_click.find(".me_out_content_li").eq(4)).remove();
 							}
 
 							// 点击事件-------------
 							//编辑计算
 							out_wrap_click.find(".edit_calculation").on("click",function(){
+								$(".me_out_content").remove();
 								if($(this).parent(".me_out_content").hasClass("dimensionalityWrap")) return;
 	//							$("#editMeasureCalculateView").data("userCustomTile",false);
+
+								
+								$("#editMeasureCalculateView .dimensionalityFiled").hide();
+								$("#editMeasureCalculateView .edit_measure_body").show();
+								
 								$("#editMeasureCalculateView").show(0,function(){
 									if(editMeasureCalculateView_isFirstShow){
 										editMeasureCalculateView_isFirstShow = false;
@@ -1687,7 +1692,7 @@
 									}
 									drag_measureCalculateStyle[measureName] = val;
 									if(!customCalculate[measureName]){
-										customCalculate[measureName] = {};									
+										customCalculate[measureName] = {};
 									}
 									customCalculate[measureName]["name"] = val;
 									customCalculate[measureName]["value"] =  editor.getValue();
@@ -1699,9 +1704,45 @@
 								})
 								
 							});
+							//同比环比弹窗
+							out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).unbind("click");
+							out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).click(function(event){
+								$(".me_out_content").remove();
+															
+								$("#editMeasureCalculateView .dimensionalityFiled").show();
+								$("#editMeasureCalculateView .edit_measure_body").hide();
+								$("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").comboSelect();
+								$("#editMeasureCalculateView .dimensionalityFiled .basisDay").comboSelect();
+								$("#editMeasureCalculateView .dimensionalityFiled .withRatio").comboSelect().width(100);
+								$("#editMeasureCalculateView .dimensionalityFiled .combo-select").eq(0).width(200);
+								$("#editMeasureCalculateView .dimensionalityFiled .combo-select").eq(1).width(70).css("float","right");
+							
 
+								$("#editMeasureCalculateView")
+								event.stopPropagation();
+								$("#editMeasureCalculateView").show(0,function(){
+									$(".maskLayer").show();
+								})
+
+								//取消点击事件
+								$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").unbind("click");
+								$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").click(function(event){
+									event.stopPropagation();
+									$("#editMeasureCalculateView").hide();
+									$(".maskLayer").hide();
+								});
+
+								//确定点击事件
+								$("#editMeasureCalculateView .common-filer-footer .confirmBtn").unbind("click");
+								$("#editMeasureCalculateView .common-filer-footer .confirmBtn").click(function(event){
+									event.stopPropagation();
+									console.log("确定");
+								})
+
+							})
 							//移除
 							out_wrap_click.find(".deleting").on("click",function(){
+										$(".me_out_content").remove();
 										if($(this).parents(".drag_main").attr("id") == "drag_col"){
 											var clickAreaType = "column";
 										}else{
@@ -1725,6 +1766,7 @@
 							}
 							//度量里点击事件
 							out_wrap_click.find(".pop_count_all").click(function(event){
+								$(".me_out_content").remove();
 								event.stopPropagation();
 								var measureList = $(this).parents(".me_out_content").eq(0);
 								var measureInfo = measureList.data("pop_data_handle");
@@ -2505,7 +2547,7 @@
 						rightFilterListDraw();		
 						switch_chart_handle_fun();
 						//度量更多操作过程
-						md_click_show(current_li.find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"移除_YZY_deleting":null})
+						md_click_show(current_li.find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null})
 
 							}
 
