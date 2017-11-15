@@ -1345,6 +1345,7 @@ function newName(){
 
  // 构建数据点击事件
   $("#constructData").click(function(event){
+    init_clear();
     // console.log(count);
     var tables = [];
    
@@ -1358,9 +1359,6 @@ function newName(){
 
       // var table_end = dbArr[2];
       //console.log(table_end);
-
-
-
 
       if(source == "hdfs"){
           aTable["sourcetype"] = source;
@@ -1580,6 +1578,16 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
       }
     });
 
+
+ // 初始化清空内容函数
+ function init_clear(){
+    $("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val('');
+    $(".lists .combo-select .custom-select").html("");
+    $(".buildDataPanelView  #rename").html('');
+    // $(".buildDataPanelView .build-body .build-options").css("padding-top","10px");
+ }
+
+
  function enter(){
      if ($("#buildDataPanelView .build-body .cube-name-radio .new-cube").hasClass("active")) {
       if (!$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val()) {
@@ -1588,7 +1596,7 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
       }
       postData["outputs"] = {"outputTableName":$("#buildDataPanelView .build-body .cube-name-input-div input").eq(0).val(),"removedColumns":[],"columnRenameMapping":outName_of_check,"mode":"error"};
     }else{
-      postData["outputs"] = {"outputTableName":preBuildDataName,"removedColumns":[],"columnRenameMapping":outName_of_check,"mode":"overwrite"};
+      postData["outputs"] = {"outputTableName":$(".cube-name-input-div .lists .combo-select .combo-dropdown .option-selected").html(),"removedColumns":[],"columnRenameMapping":outName_of_check,"mode":"overwrite"};
     }
     
 
@@ -1611,8 +1619,8 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
         }
       }
     }
-    loading_init();
-    //进度条
+    // loading_init();
+    // //进度条
     // loading_bar();
 
     var xhr = $.ajax({
@@ -1623,13 +1631,27 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
         async: true,
         data:JSON.stringify(postData),
         success:function(data){
-  //      console.log(data)
+      // console.log(data)
   //      console.log("success")
           // 构建。。。。完成
-          if(data == "success"){
+          if(data.status == "success"){
+            loading_init();
             loading_bar();
+            data_success_show();
+          }else if(data.status == "failed"){
+            init_clear();
+            $(".buildDataPanelView .build-body .cube-name-input-div").append($("<p id='rename'>名字已重复！</p>"));
+            $(".buildDataPanelView #rename").css({"fontSize":"12px","color":"red"});
+            $(".buildDataPanelView .build-body .build-options").css("padding-top","20px");
+
+            var inp = $(".buildDataPanelView .build-body .cube-name-input-div input").val();
+            //console.log(inp);
+            if(inp != '' && $(".detailDataSetList .didBuildTables .tablesList .datebaseLise[title="+inp+"]").length == 0){
+              loading_bar();
+              data_success_show();
+            }
+            
           }
-          data_success_show();
           // end-------------------
         },
         error:function(){
@@ -1651,9 +1673,10 @@ $("#buildDataPanelView .build-footer .cancleBtn").add("#buildDataPanelView .comm
 
 // 确定按钮
 $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").click(function(){
+
     // remove_splitData(store_split_tableArr);
     enter();
-  
+
 });
 
   // 创建新数据集按钮的点击
