@@ -16,6 +16,9 @@ var save_col_text = {};
 
 var col_name_click = null;
 
+//记录拆分mapFiled
+var tempSaveMapFiled = null;
+
 //记录当前是拆分还是依据固定宽度去拆分
 
 var save_handel_split_way = null;
@@ -43,6 +46,8 @@ var saveSplitTables = {};
 
 //记录拖拽行列显示的每个表的Scamne
 var saveTableScame = {};
+
+var saveSplitTablesCsv = {};
 
 //判断侧边栏已经加载完毕
 // var leftNavCount = 0;
@@ -275,6 +280,7 @@ if(handleType["method"] == "delete"){
 
  }
 }else{
+
 if(handleType["filesource"] == "generated"){
     if(data["status"] == "success"){
         $("#analysisContainer .mainDragArea .boxDiv[tabletype = 'hdfgTable'] p[title="+preName+"]").text(handleType["newname"]).attr("title",handleType["newname"]);
@@ -717,7 +723,7 @@ function getCurrentDidBuildDataTable(){
           bindEventToPerTable();
          
         } 
-        getLeftNavHeight();
+        // getLeftNavHeight();
       },
 
   });
@@ -935,7 +941,7 @@ function expression_click_handle(){
     $("#prompt_message #data_success_content").removeClass().addClass("data_success_img");
     $("#loading_percentage").css("right","-10px");
     //构建数据成功隐藏构建数据弹窗--显示选择进入模块弹窗
-  dashBoradFunction_able();
+     dashBoradFunction_able();
     $("#build_upload").hide("blind",1000,function(){
       $(".rightConent #analysisContainer").css("visibility","hidden");
       //构建成功显示集合表
@@ -1964,6 +1970,10 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
         //移除拆分条件
         delete saveSplitTables[dbInfo.split("_YZYPD_")[2]];
 
+        if(dbInfo.split("_YZYPD_")[0] == "tmptables"){
+          delete saveSplitTablesCsv[dbInfo.split("_YZYPD_")[2]];
+        }
+
         var free_handle_table = store_split_tableArr[store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2])];
 
         nowDelete_split_father.push(store_split_tableArr[store_split_tableName_free.indexOf(dbInfo.split("_YZYPD_")[2])]);
@@ -2068,7 +2078,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
           for (var i= 0;i <  bottom_panel_fileds.length;i++) {
             var img = $("<img/>");
             var th = $("<th title='单击选中列'><span>" + bottom_panel_fileds[i]["field"]+"</span></th>");
-            th.data("type",bottom_panel_fileds[i]["type"]);
+            th.data("type",bottom_panel_fileds[i]["type"]).data("mappedfield",bottom_panel_fileds[i]["mappedfield"]);
             if (bottom_panel_fileds[i]["type"].isTypeString()) {
               img.attr("src","/../../../static/dataCollection/images/tableDataDetail/String.png");
             }else if (bottom_panel_fileds[i]["type"].isTypeDate()) {
@@ -2325,6 +2335,7 @@ var table_split_symbol = table_if_type();
 
 expressions_free_dict["colname"] = col_name_click;
 
+
 generate_free_dict["col"] = col_name_click;
 
 generate_free_dict["customizedfuncs"] = {};
@@ -2336,6 +2347,15 @@ generate_free_dict["customizedfuncs"]["parameters"] = table_split_symbol;
 expressions_free_dict["method"] = save_handel_split_way;
 
 expressions_free_dict["cutsymbol"] = table_split_symbol;
+
+if(dbArr_split[0] == "tmptables"){
+    var generate_free_dictCsv = {};
+    generate_free_dictCsv["col"] = tempSaveMapFiled;
+    generate_free_dictCsv["customizedfuncs"] = generate_free_dict["customizedfuncs"];
+    saveSplitTablesCsv[dbArr_split[2]] = saveSplitTablesCsv[dbArr_split[2]] || [];
+    saveSplitTablesCsv[dbArr_split[2]].push(generate_free_dictCsv);
+
+  }
 
 saveSplitTables[dbArr_split[2]] = saveSplitTables[dbArr_split[2]] || [];
 
@@ -2350,6 +2370,8 @@ if(dbArr_split[0] == "hdfs"){
 }else if(dbArr_split[0] == "tmptables"){
     postChangeUrl = "/cloudapi/v1/uploadedcsv/"+ dbArr_split[1] +"/"+ dbArr_split[2] + "/all";
     postFilterCondition_split["customized"] =  saveSplitTables[dbArr_split[2]];
+    postFilterCondition_split["mapcustomized"] = saveSplitTablesCsv[dbArr_split[2]]
+
 }else{
     postChangeUrl = "/dataCollection/filterTable/all";
     postFilterCondition_split = {
@@ -2539,6 +2561,8 @@ $("#tableDataDetailListPanel #splitFileds_btn").click(function(){
     var save_click_col_data = [];
 
     col_name_click = currentHandleColOrRowEles.eq(0).text();
+
+    tempSaveMapFiled = currentHandleColOrRowEles.data("mappedfield");
 
     currentHandleColOrRowEles.each(function(index,ele){
          save_click_col_data.push($(ele).text()) ;

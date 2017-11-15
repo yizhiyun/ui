@@ -44,6 +44,11 @@ urlpatterns = [
         name='getHypothesisTest'
     ),
     url(
+        r'^cloudapi/v1/ml/regression$',
+        views.getRegressionAna,
+        name='getRegressionAna'
+    ),
+    url(
         r'^cloudapi/v1/uploadcsv$',
         views.uploadCsv,
         name='uploadCsv'
