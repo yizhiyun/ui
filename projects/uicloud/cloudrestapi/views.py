@@ -401,6 +401,30 @@ def getHypothesisTest(request):
 
         return getRespData(output, True)
 
+@api_view(['POST'])
+def getRegressionAna(request):
+    '''
+    POST:
+    Get regression analysis information.
+    '''
+
+    jsonData = request.data
+    logger.debug("request.data: {0}".format(jsonData))
+    if request.method == 'POST':
+
+        # check the request data
+        if ("sourcetype" not in jsonData or "inputparams" not in jsonData):
+            failObj = {"status": "failed",
+                       "reason": "Please make sure your request data is valid."}
+            return JsonResponse(failObj, status=400)
+        # response all valid columns
+        sparkCode = getRegressionSparkCode(jsonData)
+
+        maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
+        duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
+        output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
+
+        return getRespData(output, True)
 
 @api_view(['POST'])
 def uploadCsv(request):

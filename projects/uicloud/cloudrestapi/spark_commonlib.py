@@ -66,6 +66,7 @@ def getDataFrameFromSourceSparkCode():
         userTableUrl, it's just used for hdfs customized url.
         removedColsDict, it's just used for the generateNewDataFrame function.
         """
+        from pyspark.sql.utils import AnalysisException
 
         if ("sourcetype" in jsonData.keys()) and (jsonData["sourcetype"] in ["hdfs", "tmptables"]):
             if ("hdfsurl" in jsonData.keys()) and jsonData["hdfsurl"].startswith("hdfs:"):
