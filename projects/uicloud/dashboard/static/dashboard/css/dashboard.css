@@ -107,8 +107,11 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .label_right_text{width: 75px;height: 23px;position: absolute;left: 25px;text-align: center;line-height: 25px}
 .label_left_img img{position: absolute;top: 0;right: 0;bottom: 0;left: 0;margin: auto}
 
-
-
+/*同比环比样式*/
+#editMeasureCalculateView .dimensionalityFiled{width: 360px;margin: 20px auto;}
+#editMeasureCalculateView .dimensionalityFiled .timeChange span{float: left;margin-top: 3px}
+#editMeasureCalculateView .dimensionalityFiled .combo-select{float: left;height: 23px;cursor: pointer;}
+#editMeasureCalculateView .dimensionalityFiled .combo-select input{height: 23px;padding-right: 0px;cursor: pointer;}
 
 
 /*视图区域*/

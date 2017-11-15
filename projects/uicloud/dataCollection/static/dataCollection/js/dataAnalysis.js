@@ -1,6 +1,6 @@
 var didShowDragAreaTableInfo= {}; // 用来记录拖拽到拖拽区域的所有表格信息
 //临时存储拖拽表的数据
-// var free_didShowDragAreaTableInfo = {};
+var free_didShowDragAreaTableInfo = {};
 
 var currentTableAllData = null;// 当前操作表格的所有数据
 //var current
@@ -843,7 +843,7 @@ function handle_success_show_table(){
                   gather_table_schema[i]["isable"] = "yes";
                 }
                 didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
-                // free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
+                free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""] = gather_table_schema;
                 createTableDetailView("hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+"",result["results"]["data"]);
                 getCurrentDidBuildDataTable();
                 spinner.stop();
@@ -873,7 +873,7 @@ function expression_click_handle(){
       
       // 数据的移除
       delete didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
-      // delete free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
+      delete free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
       bindEventToPerTable();
       getLeftNavHeight();
 
@@ -1211,7 +1211,7 @@ function getTablesOfaDataBase(theSelect){
            // 记录已经拖拽的表格数据
            didShowDragAreaTableInfo[boxDiv[0].id] = data;
          
-           // free_didShowDragAreaTableInfo[boxDiv[0].id] = data;
+           free_didShowDragAreaTableInfo[boxDiv[0].id] = data;
            tableDrag(allKeys(didShowDragAreaTableInfo));
          }else{
            instance.repaintEverything();
@@ -1353,8 +1353,7 @@ function newName(){
   $("#constructData").click(function(event){
     // console.log(count);
     var tables = [];
-   
-    for (var key in didShowDragAreaTableInfo) {
+    for (var key in free_didShowDragAreaTableInfo) {
       var aTable = {};
       var dbArr = key.split("_YZYPD_");
       var source = dbArr[0];
@@ -1408,6 +1407,7 @@ function newName(){
 
       }else if(source == "tmptables"){
         aTable["sourcetype"] = source;
+
         newName();
       }else{
         aTable["source"] = source;
@@ -1442,10 +1442,13 @@ function newName(){
       }
 
 
-   aTable["database"] = dbArr[1];
+      aTable["database"] = dbArr[1];
       aTable["tableName"] = dbArr[2];
       if(saveSplitTables[dbArr[2]] != undefined && saveSplitTables[dbArr[2]].length > 0){
           aTable["customized"] = saveSplitTables[dbArr[2]];
+          if(source == "tmptables"){
+              aTable["mapcustomized"] = saveSplitTablesCsv[dbArr[2]];
+          }
       }
       // aTable["SchemaList"] = saveTableScame[dbArr[2]];
 
@@ -1457,8 +1460,8 @@ function newName(){
         aTable["conditions"] = [];
       }
 
-      for (var i = 0;i < didShowDragAreaTableInfo[key].length;i++) {
-      var originalFileds = didShowDragAreaTableInfo[key];
+      for (var i = 0;i < free_didShowDragAreaTableInfo[key].length;i++) {
+      var originalFileds = free_didShowDragAreaTableInfo[key];
       if (originalFileds[i]["isable"] == "yes" && originalFileds[i]["split"] == undefined) {
         var columnName = originalFileds[i]["field"];
         if(originalFileds[i]["mappedfield"]){
@@ -1532,7 +1535,6 @@ function newName(){
           return;
         }
         outName_of_check = data["columns"];
-
 
         if(preBuildDataName!=null){  
           var ele = $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube");
@@ -1951,7 +1953,7 @@ $("#buildDataPanelView .build-footer .confirmBtn,#build_upload .confirmBtn").cli
       // 数据的移除
       delete didShowDragAreaTableInfo[dbInfo];
 
-      // delete free_didShowDragAreaTableInfo[dbInfo];
+      delete free_didShowDragAreaTableInfo[dbInfo];
       // 移除筛选条件
       deleteATableAllConditions(dbInfo);
 
