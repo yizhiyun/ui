@@ -1717,17 +1717,15 @@
 								out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).unbind("click");
 								out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).click(function(event){
 									$(".me_out_content").remove();
-									open_or_close = true;	
+									open_or_close = true;
 									$("#editMeasureCalculateView .dimensionalityFiled").show();
 									$("#editMeasureCalculateView .edit_measure_body").hide();
 									$("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").comboSelect();
-									$("#editMeasureCalculateView .dimensionalityFiled .basisDay").comboSelect();
-									$("#editMeasureCalculateView .dimensionalityFiled .withRatio").comboSelect().width(100);
 									$("#editMeasureCalculateView .dimensionalityFiled .combo-select").eq(0).width(200);
-									$("#editMeasureCalculateView .dimensionalityFiled .combo-select").eq(1).width(70).css("float","right");
+
 								
 
-									$("#editMeasureCalculateView")
+									
 									event.stopPropagation();
 									$("#editMeasureCalculateView").show(0,function(){
 										$(".maskLayer").show();

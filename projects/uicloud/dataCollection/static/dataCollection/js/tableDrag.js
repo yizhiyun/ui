@@ -36,6 +36,9 @@ var tempSaveLineInfo = false;
 //判断浏览器高度给定联接框位置
 var bodyHeightToModal = null;
 
+//记录表关联
+var saveTableRelevance = {};
+
 // 连接框显示
 function modalPromptShowToPage(conInfo,lineInfo){
 	if(tempSaveLineInfo){
@@ -80,6 +83,7 @@ function modalPromptShowToPage(conInfo,lineInfo){
 			$("#connectModalprompt .selectInfoDiv .selectContent .selectDiv").each(function(index,ele){
 				var relation = $(ele).children("div").eq(0).find(".select_sourceList").val() + "===" + $(ele).children("div").eq(2).find(".select_targetList").val();
 				releationShipArr.push(relation);
+				saveTableRelevance[$("#connectModalprompt .selectInfoDiv .selectHeader p").eq(0).text()+"_YZYPD_"+$("#connectModalprompt .selectInfoDiv .selectHeader p").eq(2).text()] = relation;
 			})
 			
 			
@@ -185,8 +189,12 @@ function connectDetailSelect(conInfo,originalEvent){
 		if (dataInfo["isable"] == "no") {
 			continue
 		}
-		var op = $("<option value="+dataInfo["field"]+">"+dataInfo["field"]+"</option>")
+		var op = $("<option value="+dataInfo["field"]+">"+dataInfo["field"]+"</option>");
+
 		sourceSelect.append(op);
+	}
+	if(saveTableRelevance[sourceTBName+"_YZYPD_"+targetTBName] != undefined){
+		sourceSelect.find("option[value="+saveTableRelevance[sourceTBName+"_YZYPD_"+targetTBName].split("===")[0]+"]").attr("selected","selected");
 	}
 	sourceSelect.comboSelect();
 	
@@ -202,6 +210,9 @@ function connectDetailSelect(conInfo,originalEvent){
 		var op = $("<option value="+dataInfo["field"]+">"+dataInfo["field"]+"</option>")
 		targetSelect.append(op);
 		
+	}
+	if(saveTableRelevance[sourceTBName+"_YZYPD_"+targetTBName] != undefined){
+		targetSelect.find("option[value="+saveTableRelevance[sourceTBName+"_YZYPD_"+targetTBName].split("===")[1]+"]").attr("selected","selected");
 	}
 	targetSelect.comboSelect();
 	

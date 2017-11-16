@@ -2066,6 +2066,7 @@ function comparisonStrip_generate_fun(){
 					name: commonLegend.join("\n"),
 			        nameLocation:"end",
 			        nameGap:10,
+			        // offset:maxLength * 5,
 			    }
 			];
 			var gridArr = [];
@@ -2076,8 +2077,9 @@ function comparisonStrip_generate_fun(){
 				var theDimeInfo = [];
 				for(var k = 0;k < all_dimensionality.length;k++){
 					theDimeInfo.push(aData[all_dimensionality[k]]);
-					if(aData[all_dimensionality[k]].length > maxLength){
-						maxLength = aData[all_dimensionality[k]];
+					// console.log(typeof(String(aData[all_dimensionality[k]])),String(aData[all_dimensionality[k]]))
+					if(aData[all_dimensionality[k]].toString().getLength() > maxLength){
+						maxLength = aData[all_dimensionality[k]].toString().getLength();
 					}
 				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
@@ -2123,7 +2125,7 @@ function comparisonStrip_generate_fun(){
 					}
 				}
 			}
-			console.log(maxLength)
+			
 			
 			
 			for(var i = 0;i < dimensionality_show_data.length;i++){
@@ -2134,6 +2136,7 @@ function comparisonStrip_generate_fun(){
 					"nameRotate":15,
 					"nameLocation":"end",
 					"type":"category",
+					// "offset":maxLength,
 					// "boundaryGap": ['20%', '20%'],
 
 					axisTick:{
@@ -2163,7 +2166,7 @@ function comparisonStrip_generate_fun(){
 				}
 				if(i > 0){
 					var obj = {
-				    		show:false,
+				    	show:false,
 				        type: "value",
 				        gridIndex:dimensionality_show_data.length - 1 - i,
 				        min:0,
