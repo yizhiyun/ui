@@ -182,7 +182,7 @@
 #buildDataPanelView .build-body .cube-name-radio .radio:nth-of-type(1){margin-left: 20px;}
 #buildDataPanelView .build-body .cube-name-radio .radio:nth-of-type(2){margin-left: 40px;}
 
-#buildDataPanelView .build-body .cube-name-input-div{padding-left: 37px;height: 23px;line-height: 23px;}
+#buildDataPanelView .build-body .cube-name-input-div{padding-left: 37px;height: 23px;line-height: 23px;padding-top: 10px;}
 #buildDataPanelView .build-body .cube-name-input-div input{height: 21px;border:1px solid #dedede;text-indent: 5px;width: 250px;border-radius: 2px;}
 
 #buildDataPanelView .build-body .build-options{padding-top: 10px;}
@@ -190,7 +190,7 @@
 #buildDataPanelView .build-body .build-options .save-type{box-sizing: border-box;padding: 0px 0px 0px 20px}
 #buildDataPanelView .build-body .build-options .save-type .global-save{margin-left: 40px;}
 #buildDataPanelView .build-body .build-options .msg{margin-left:25px;margin-top:50px;color:red;font-size:13px;border:1px solid white;width:340px;height:25px;}
-#buildDataPanelView .build-body .build-options .more-content-div{box-sizing:border-box;padding-left: 20px;padding-top: 25px;}
+#buildDataPanelView .build-body .build-options .more-content-div{box-sizing:border-box;padding-left: 20px;padding-top: 15px;}
 #buildDataPanelView .build-body .build-options .more-content-div p{color: #808080;padding-bottom: 10px}
 #buildDataPanelView .build-body .build-options .more-content-div .text-label input{box-sizing:border-box;border:1px solid #dedede;border-radius: 2px;height: 23px;width: 150px;margin-left: 10px;text-indent: 5px;}
 #buildDataPanelView .build-body .build-options .more-content-div .check-label input{margin-right: 10px;float: left;margin-top: 3px;}

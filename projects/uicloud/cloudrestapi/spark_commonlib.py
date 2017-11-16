@@ -182,35 +182,35 @@ def filterDataFrameSparkCode():
             # add the specified conditions in the DataFrame
             for condIt in tableDict["conditions"]:
                 condType = condIt["type"]
-                colName = condIt["columnName"] if "columnName" in condIt.keys() else ""
+                colExpr = F.expr(condIt["columnName"]) if "columnName" in condIt.keys() else ""
                 logger.debug(u"condIt:{0}".format(condIt))
                 if condType == "limit" and type(condIt["value"]) == int:
                     inDataFrame = inDataFrame.limit(condIt["value"])
                 elif condType in [">",">=","=","==","<","<=","!="]:
-                    condStr = u"{0} {1} '{2}'".format(colName, condType, condIt["value"])
+                    condStr = u"{0} {1} '{2}'".format(condIt["columnName"], condType, condIt["value"])
                     inDataFrame = inDataFrame.filter(condStr)
                 elif condType == "like":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].like(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(colExpr.like(condIt["value"]))
                 elif condType == "startswith":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].startswith(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(colExpr.startswith(condIt["value"]))
                 elif condType == "notstartswith":
-                    inDataFrame = inDataFrame.filter(~inDataFrame[colName].startswith(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(~colExpr.startswith(condIt["value"]))
                 elif condType == "endswith":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].endswith(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(colExpr.endswith(condIt["value"]))
                 elif condType == "notendswith":
-                    inDataFrame = inDataFrame.filter(~inDataFrame[colName].endswith(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(~colExpr.endswith(condIt["value"]))
                 elif condType == "contains":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].contains(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(colExpr.contains(condIt["value"]))
                 elif condType == "notcontains":
-                    inDataFrame = inDataFrame.filter(~inDataFrame[colName].contains(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(~colExpr.contains(condIt["value"]))
                 elif condType == "isin":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isin(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(colExpr.isin(condIt["value"]))
                 elif condType == "isnotin":
-                    inDataFrame = inDataFrame.filter(~inDataFrame[colName].isin(condIt["value"]))
+                    inDataFrame = inDataFrame.filter(~colExpr.isin(condIt["value"]))
                 elif condType == "isnull":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNull())
+                    inDataFrame = inDataFrame.filter(colExpr.isNull())
                 elif condType == "isnotnull":
-                    inDataFrame = inDataFrame.filter(inDataFrame[colName].isNotNull())
+                    inDataFrame = inDataFrame.filter(colExpr.isNotNull())
                 else:
                     pass
         return inDataFrame
