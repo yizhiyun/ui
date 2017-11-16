@@ -103,30 +103,7 @@
 		//存放数据源的数组
 		var save_data_sum_handle = [];
 
-<<<<<<< HEAD
-	//保存视图触发事件
-	function save_btn_fun(){
-		$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
-		//保存按钮下拉框
-		$("#dashboard_content #action_box #action_box_ul #action_save").on("click", function() {
-		
-			$("#action_save_view").stop(true).toggle();
-		
-		});
-		
-		$("#dashboard_content #action_box #action_box_ul #action_save").on("mouseleave", function() {
-			$("#action_save_view").css("display", "none")
-		})
-			
-		$("#action_save_view p").each(function(index, ele) {
-			$(ele).on("mouseenter", function() {
-				$(ele).css("background", "#DEDEDE");
 
-			})
-			
-			$(ele).on("mouseleave", function() {
-				$(ele).css("background", "white");
-=======
 		//保存视图触发事件
 		function save_btn_fun(){
 			$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -145,7 +122,6 @@
 			$(ele).on("mouseenter", function() {
 				$(ele).css("background", "#DEDEDE");
 
->>>>>>> 85f0dad8c62802393e33b8b0070f53294a287166
 			})
 			
 			$(ele).on("mouseleave", function() {

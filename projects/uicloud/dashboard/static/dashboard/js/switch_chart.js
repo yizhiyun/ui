@@ -62,6 +62,7 @@ function beginDrawChart(edit_view){
 	function view_init(){
 		show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
 		$("#text_table_need_show").hide();
+		$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 	}
 
 	show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
@@ -103,13 +104,7 @@ function beginDrawChart(edit_view){
 
 
 	// 文本表end----------------------------------------------
-
-
-	//只拖入度量显示柱状图或者条形图表格
-	// 度量
-	if((switch_row_me > 0 && switch_col_di ==0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me > 0 && switch_col_di ==0 && switch_row_me == 0 && switch_row_di == 0)){
-		view_init();
-		if(switch_col_me > 2 || switch_row_me > 2){
+	function handleTableShow(){
 			$("#view_show_wrap #card").hide();
 			$("#text_table_need_show").show();
 			$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
@@ -118,17 +113,31 @@ function beginDrawChart(edit_view){
 			if(!click_view_icon){
 				save_now_show_view_text = $("#show_table");
 			}
+	}
+
+	//只拖入度量显示柱状图或者条形图表格
+	// 度量
+	if((switch_row_me > 0 && switch_col_di ==0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me > 0 && switch_col_di ==0 && switch_row_me == 0 && switch_row_di == 0)){
+		view_init();
+		if(switch_col_me > 2 || switch_row_me > 2 ){
+				handleTableShow();
 
 		}else{
-		
-			$("#view_show_wrap #card").show();
-			$("#text_table_need_show").hide();
-			$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
-			$("#show_bar,#show_histogram,#show_card,#show_table").css("opacity","1");
-				change_view_css("#show_card");
-				if(!click_view_icon){
-					save_now_show_view_text = $("#show_card");
+			if(save_now_show_view_text == null || (save_now_show_view_text.attr("id") != "show_bar" && save_now_show_view_text.attr("id") != "show_histogram" && save_now_show_view_text.attr("id") != "show_table")){
+					$("#view_show_wrap #card").show();
+					$("#text_table_need_show").hide();
+					$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+					$("#show_bar,#show_histogram,#show_card,#show_table").css("opacity","1");
+					change_view_css("#show_card");
+					if(!click_view_icon){
+						save_now_show_view_text = $("#show_card");
+					}
+				}else{
+					$("#view_show_wrap #card").hide();
+					$("#show_bar,#show_histogram,#show_card,#show_table").css("opacity","1");
+					change_view_css("#show_card");
 				}
+
 
 		}
 	}
@@ -150,7 +159,7 @@ function beginDrawChart(edit_view){
 		
 		view_init();
 		
-		show_btn_change.not($("#show_storehis,#show_percontrasth,#show_storebar,#show_contrastbar,#prestorebar,#show_histogram,#show_bar,#show_treemap")).css("opacity","1");
+		show_btn_change.not($("#show_storehis,#show_percontrasth,#show_storebar,#show_contrastbar,#prestorebar,#show_histogram,#show_bar,#show_treemap,#show_card")).css("opacity","1");
 		//判断是条形图还是柱状图为默认
 		if(switch_col_me > 0){
 			change_view_css("#show_bar");
@@ -282,15 +291,15 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 						save_now_show_view_text = $(ele);
 						if(save_now_show_view_text.attr("id") == "show_table"){
 								
-								$("#view_show_area #view_show_area_content #view_show_wrap #main").css("display","none");
-								$("#view_show_area #view_show_area_content #view_show_wrap #card").css("display","none");
+								$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+								$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 
 							}else if(save_now_show_view_text.attr("id") == "show_card"){
-								$("#view_show_area #view_show_area_content #view_show_wrap #main").css("display","none");
-								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
+								$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").hide();
 							}else{
-								$("#view_show_area #view_show_area_content #view_show_wrap #card").css("display","none");
-								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
+								$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
+								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").hide();
 							}
 //						console.log(save_now_show_view_text)
 						eval(save_now_show_view_text.data("show_view_fun"));

@@ -161,13 +161,10 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #view_show_area #view_show_area_content .tableView_name input{width: 150px;height: 25px;font-size: 18px;border: 1px solid #DEDEDE;text-indent: 3px;line-height: 100px;}
 
 
-/*#view_show_wrap #card{min-width: 100%;min-height: 100%;font-size: 12px;position: relative;left: 0;top: 0; overflow: auto;height: 100%;}
-#view_show_wrap #card .top_column_container{overflow: visible;}
-#view_show_wrap #card .top_column_container .top_column_name{text-align: center;font-weight: bold}
-#view_show_wrap #card .top_column_container .column_data_list{border-bottom: 1px solid #dedede;border-left: 1px solid #dedede;}*/
-#card .right_module .content_body #data_list_for_body .measureDiv{text-align:center;width:1100px;margin:170px auto;}
+#view_show_wrap #card{min-width: 100%;min-height: 100%;font-size: 12px;position: absolute;left: 0;top: 0;height: 100%;width:100%;display: none;}
+#card .right_module .content_body #data_list_for_body .measureDiv{text-align:center;width:100%;margin:130px auto 0px;}
 #card .right_module .content_body #data_list_for_body .measureDiv .p0{font-weight: bold;font-size:30px;margin-right:90px;}
-#card .right_module .content_body #data_list_for_body .measureDiv .sp0{color:black;font-size:50px;}
+#card .right_module .content_body #data_list_for_body .measureDiv .sp0{color:black;font-size:50px;margin-left: -15px;}
 #card .right_module .content_body #data_list_for_body .measureDiv .p1{display: inline-block;font-weight: normal;font-size:30px;margin-left:20px;}
 #card .right_module .content_body #data_list_for_body .measureDiv .sp1{color:red;font-size:30px;display: inline-block;margin-left:15px;}
 

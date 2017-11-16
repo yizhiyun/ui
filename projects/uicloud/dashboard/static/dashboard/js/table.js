@@ -364,6 +364,8 @@ function emptyAllTable(){
 
 
 function col_card(){
+	$("#view_show_area #view_show_area_content #view_show_wrap #card").show();
+	$("#card").find(".right_module .content_body #data_list_for_body").html("");
 	var current_all_measure = drag_row_column_data["column"]["measure"].concat(drag_row_column_data["row"]["measure"]);
 
 	measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
