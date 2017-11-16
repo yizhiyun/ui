@@ -49,7 +49,7 @@ function beginDrawChart(edit_view){
 	switch_col_me = drag_row_column_data["column"]["measure"].length;
 
 	current_data = _cube_all_data[current_cube_name];
-
+	//console.log(current_data);
 	//所有视图点击按钮
 	var show_btn_change = $("#project_chart ul li");
 	//满足条件给定指定样式
@@ -106,7 +106,34 @@ function beginDrawChart(edit_view){
 
 
 	//只拖入度量显示柱状图或者条形图表格
+	// 度量
 	if((switch_row_me > 0 && switch_col_di ==0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me > 0 && switch_col_di ==0 && switch_row_me == 0 && switch_row_di == 0)){
+		view_init();
+		if(switch_col_me > 2 || switch_row_me > 2){
+			$("#view_show_wrap #card").hide();
+			$("#text_table_need_show").show();
+			$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+			$("#show_bar,#show_histogram").css("opacity","1");
+			change_view_css("#show_table");
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_table");
+			}
+
+		}else{
+		
+			$("#view_show_wrap #card").show();
+			$("#text_table_need_show").hide();
+			$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+			$("#show_bar,#show_histogram,#show_card,#show_table").css("opacity","1");
+				change_view_css("#show_card");
+				if(!click_view_icon){
+					save_now_show_view_text = $("#show_card");
+				}
+
+		}
+	}
+	// 维度
+	if((switch_row_me == 0 && switch_col_di > 0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me == 0 && switch_col_di == 0 && switch_row_me == 0 && switch_row_di > 0)){
 		view_init();
 		$("#text_table_need_show").show();
 		$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
@@ -116,6 +143,7 @@ function beginDrawChart(edit_view){
 				save_now_show_view_text = $("#show_table");
 			}
 	}
+	
 
 	//1维度1度量展示
 	if((switch_col_di == 1 && switch_row_me ==1 && switch_col_me == 0 && switch_row_di == 0 ) || (switch_row_di == 1 && switch_col_me ==1 && switch_row_me ==0 && switch_col_di == 0)){
@@ -142,7 +170,10 @@ function beginDrawChart(edit_view){
 	// 1维度多度量
 	if(switch_col_di == 1 && switch_col_me == 0 && switch_row_me >1 && switch_row_di ==0 || switch_col_di == 0 && switch_col_me >1 && switch_row_me ==0 && switch_row_di ==1){
 		view_init();
-		
+		$("#view_show_wrap #card").hide();
+		// $("#card .right_module .content_body #data_list_for_body .measureDiv").remove();
+
+		// showTable_by_dragData();
 		$("#show_table,#show_polyline,#show_randar,#show_polyline").css("opacity","1");
 
 		if(switch_col_me > 1){
@@ -215,6 +246,7 @@ function beginDrawChart(edit_view){
 		$("#show_contrastbar").css("opacity","0.5");
 	}
 
+	
 
 
 	//存储视图切换按钮对应的方法
@@ -251,7 +283,13 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 						if(save_now_show_view_text.attr("id") == "show_table"){
 								
 								$("#view_show_area #view_show_area_content #view_show_wrap #main").css("display","none");
+								$("#view_show_area #view_show_area_content #view_show_wrap #card").css("display","none");
+
+							}else if(save_now_show_view_text.attr("id") == "show_card"){
+								$("#view_show_area #view_show_area_content #view_show_wrap #main").css("display","none");
+								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
 							}else{
+								$("#view_show_area #view_show_area_content #view_show_wrap #card").css("display","none");
 								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
 							}
 //						console.log(save_now_show_view_text)
