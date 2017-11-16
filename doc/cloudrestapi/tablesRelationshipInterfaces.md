@@ -31,25 +31,7 @@ The RESTful API Details of Verify those table relationships
                 },
                 ...
             },
-            "conditions": [
-                {
-                    # types: ">",">=","=","<","<=","!=",'like','startswith','notstartswith',
-                    # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
-                    # note: if type is 'isin' or 'isnotin', the value should be a list.
-                    "type":<conditionTypeValue>,
-                    "columnName": <columnName>,
-                    "value": <value>
-                },
-                {
-                    "type":"limit",
-                    "value": <value>
-                },
-                {
-                    "type":"isnull", # or 'isnotnull'
-                    "columnName": "<columnName>"
-                },
-                ...
-            ],
+            "conditions": [ ... ],  # Please refer to getTableInfoFromCurrentUserInterfaces.md for the details.
             "expressions":{ ... },  # Please refer to getTableInfoFromCurrentUserInterfaces.md for the details.
             # If the "expressions" item exists, "trans" is invalid.
             "trans": { ... },       # Please refer to getTableInfoFromCurrentUserInterfaces.md for the details.

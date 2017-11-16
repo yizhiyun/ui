@@ -65,8 +65,10 @@ Get Table From Current User Via Spark
                # types: ">",">=","=","<","<=","!=",'like','startswith','notstartswith',
                # 'endswith','notendswith','contains','notcontains','isin','isnotin'.
                # note: if type is 'isin' or 'isnotin', the value should be a list.
+               # As for the expr item, please refer to the "operators", "unary type", "binary types" and
+               # "ternary types" of the "expressions.exprlist" item.
                "type":<conditionTypeValue>,
-               "columnName": <columnName>,
+               "columnName": <columnName> or <expr>,
                "value": <value>
            },
            {
