@@ -128,19 +128,23 @@ function one_de_one_me_handle (chart_type_need) {
 			    },
 			    dataZoom:[
 			    			{
-			    			type: 'slider',
+			    		type: 'slider',
            			 	show: dimensionality_need_show.length > 15,
            			 	filterMode:"filter",
            			 	backgroundColor:"#dedede",
            			 	fillerColor:"#ff7e00",
            			 	showDataShadow:false,
 			            xAxisIndex: [0],
-			            height:8,
+			            height:10,
 			            handleStyle:{
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
 			            endValue:15,
+			            handleSize:12,
+			            maxValueSpan:15,
+			            throttle:100,
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
 			    			type: 'slider',
@@ -175,7 +179,7 @@ function one_de_one_me_handle (chart_type_need) {
 			            stack: '总量',
 			            label: {
 			                normal: {
-			                    show: true,
+			                    show: false,
 			                    position: 'top',
 			                    formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -271,7 +275,7 @@ function one_de_one_me_handle (chart_type_need) {
 						data: measure_need_show,
 						label: {
 			                normal: {
-			                    show: true,
+			                    show: false,
 			                    formatter:function(params){
 			                    		if(normalUnitValue != -1){
 			                    			return params.name+":"+params.value.toFixed(normalUnitValue);
@@ -379,19 +383,23 @@ function one_de_one_me_handle (chart_type_need) {
 				],
 				 dataZoom:[
 			    			{
-			    			type: 'slider',
+			    		type: 'slider',
            			 	show: dimensionality_need_show.length > 15,
            			 	filterMode:"filter",
            			 	backgroundColor:"#dedede",
            			 	fillerColor:"#ff7e00",
            			 	showDataShadow:false,
 			            xAxisIndex: [0],
-			            height:8,
+			            height:10,
 			            handleStyle:{
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
 			            endValue:15,
+			            handleSize:12,
+			            maxValueSpan:15,
+			            throttle:100,
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",			            
 			    			},
 			    			{
 			    			type: 'slider',
@@ -417,7 +425,7 @@ function one_de_one_me_handle (chart_type_need) {
 						},
 						label:{
 							normal:{
-								show:true,
+								show:false,
 								position:"top",
 								formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -548,21 +556,25 @@ function one_de_one_me_handle (chart_type_need) {
 			  		  },
 				      dataZoom:[
 			    			{
-				    			type: 'slider',
+				    		type: 'slider',
 	           			 	show: dimensionality_need_show.length > 15,
 	           			 	filterMode:"filter",
 	           			 	backgroundColor:"#dedede",
 	           			 	fillerColor:"#ff7e00",
 	           			 	showDataShadow:false,
 				            yAxisIndex: [0],
-				            height:8,
+				            height:10,
 				            handleStyle:{
 				            		color:"#ff7e00"	
 				            },
 				            startValue:0,
 				            endValue:15,
 				            orient:"horizontal",
-				            bottom:35
+				            bottom:35,
+			            	handleSize:12,
+			            	maxValueSpan:15,
+			            	throttle:100,
+			            	handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",				            
 			    			},
 			    			{
 			    			type: 'slider',
@@ -594,7 +606,7 @@ function one_de_one_me_handle (chart_type_need) {
 				            stack: '总量',
 				            label: {
 				                normal: {
-				                    show: true,
+				                    show: false,
 				                    position: 'right',
 				                    formatter:function(params){
 				                    		if(normalUnitValue != -1){
@@ -862,7 +874,7 @@ function many_de_many_me_handle(chart_type_need){
 					var measure = measure_show_data_arr[i];
            			var obj = {name:drag_measureCalculateStyle[all_measure[i]],type:"line",smooth:true,data:measure,label:{
            				normal:{
-           					show:true,
+           					show:false,
            					position:"top",
            					offset:[10,0],
            					formatter:function(params){
@@ -880,19 +892,24 @@ function many_de_many_me_handle(chart_type_need){
 				
 				option["dataZoom"] = [
 					{
-			    			type: 'slider',
+			    		type: 'slider',
            			 	show: dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length > 15,
            			 	filterMode:"filter",
            			 	backgroundColor:"#dedede",
            			 	fillerColor:"#ff7e00",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
-			            height:8,
+			            height:10,
 			            handleStyle:{
 			            		color:"#ff7e00"	
 			            },
+			            
 			            startValue:0,
 			            endValue:15,
+			            handleSize:12,
+			            maxValueSpan:15,
+			            throttle:100,
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
 			    			type: 'slider',
@@ -1120,14 +1137,14 @@ function comparisonStrip_generate_fun(){
 					],
 					dataZoom:[
 					{
-			    			type: 'slider',
+			    	 	type: 'slider',
            			 	show: dimensionality_show_data.length > 15,
            			 	filterMode:"filter",
            			 	backgroundColor:"#dedede",
            			 	fillerColor:"#ff7e00",
            			 	showDataShadow:false,
 			            yAxisIndex: [0,1,2],
-			            height:8,
+			            height:10,
 			            handleStyle:{
 			            		color:"#ff7e00"	
 			            },
@@ -1137,9 +1154,13 @@ function comparisonStrip_generate_fun(){
 				        bottom:35,
 				        left:"4%",
 				        right:"4%",
+			            handleSize:12,
+			            maxValueSpan:15,
+			            throttle:100,
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
-			    			type: 'slider',
+			    		type: 'slider',
            			 	show: false,
            			 	filterMode:"empty",
 			            xAxisIndex: [0,1,2],
@@ -1153,7 +1174,7 @@ function comparisonStrip_generate_fun(){
 						barGap: 20,
 						label: {
 							normal: {
-								show: true,
+								show: false,
 								position:"left",
 								formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -1182,7 +1203,7 @@ function comparisonStrip_generate_fun(){
 						yAxisIndex: 2,
 						label: {
 							normal: {
-								show: true,
+								show: false,
 								position:"right",
 								formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -1416,7 +1437,7 @@ function comparisonStrip_generate_fun(){
 					},
 					label:{
 						normal:{
-							show:true,
+							show:false,
 							position:"insideRight",
 							formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -1554,19 +1575,23 @@ function comparisonStrip_generate_fun(){
 				
 				option["dataZoom"] = [
 					{
-			    			type: 'slider',
+			    		type: 'slider',
            			 	show: need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15,
            			 	filterMode:"filter",
            			 	backgroundColor:"#dedede",
            			 	fillerColor:"#ff7e00",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
-			            height:8,
+			            height:10,
 			            handleStyle:{
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
 			            endValue:10,
+						handleSize:12,
+			            maxValueSpan:15,
+			            throttle:100,
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",			            
 			    			},
 			    			{
 			    			type: 'slider',
@@ -1578,22 +1603,25 @@ function comparisonStrip_generate_fun(){
 			}else{
 				option["dataZoom"] = [
 					{
-			    			type: 'slider',
+			    		type: 'slider',
            			 	show: need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15,
            			 	filterMode:"filter",
            			 	backgroundColor:"#dedede",
            			 	fillerColor:"#ff7e00",
            			 	showDataShadow:false,
 			            yAxisIndex: dataZoomXindexArray,
-			            height:8,
+			            height:10,
 			            handleStyle:{
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
 			            endValue:10,
 			            orient:"horizontal",
-				        bottom:25
-			            
+				        bottom:25,
+			          	handleSize:12,
+			            maxValueSpan:15,
+			            throttle:100,
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
 			    			type: 'slider',
@@ -1662,7 +1690,7 @@ function comparisonStrip_generate_fun(){
 							label:{
 								normal:
 								{
-									show:true,
+									show:false,
 									formatter:function(params){
 										var names = params["name"].split("_YZYPD_");
 										var needValue = params.value;
@@ -1815,7 +1843,7 @@ function comparisonStrip_generate_fun(){
 							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
 							label:{
 								normal:{
-									show:true,
+									show:false,
 									position:"top",
 									formatter:function(params){
 				                    		if(normalUnitValue != -1){
@@ -1972,19 +2000,23 @@ function comparisonStrip_generate_fun(){
 			    	color:allColorsDict[currentColorGroupName],
 			    dataZoom:[
 			    			{
-			    			type: 'slider',
+			    		type: 'slider',
            			 	show: dimensionality_show_data[dimensionality_show_data.length - 1].length >15,
            			 	filterMode:"filter",
            			 	backgroundColor:"#dedede",
            			 	fillerColor:"#ff7e00",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
-			            height:8,
+			            height:10,
 			            handleStyle:{
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
 			            endValue:15,
+			            handleSize:12,
+			            maxValueSpan:15,
+			            throttle:100,
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
 			    			type: 'slider',
@@ -2019,7 +2051,7 @@ function comparisonStrip_generate_fun(){
 			
 		});
 	}
-	
+	var maxLength = 0;
 	// 条形图 
 	function barChart_generate_fun(){
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
@@ -2034,6 +2066,7 @@ function comparisonStrip_generate_fun(){
 					name: commonLegend.join("\n"),
 			        nameLocation:"end",
 			        nameGap:10,
+			        // offset:maxLength * 5,
 			    }
 			];
 			var gridArr = [];
@@ -2044,6 +2077,10 @@ function comparisonStrip_generate_fun(){
 				var theDimeInfo = [];
 				for(var k = 0;k < all_dimensionality.length;k++){
 					theDimeInfo.push(aData[all_dimensionality[k]]);
+					// console.log(typeof(String(aData[all_dimensionality[k]])),String(aData[all_dimensionality[k]]))
+					if(aData[all_dimensionality[k]].toString().getLength() > maxLength){
+						maxLength = aData[all_dimensionality[k]].toString().getLength();
+					}
 				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
@@ -2059,7 +2096,7 @@ function comparisonStrip_generate_fun(){
 							z:3,
 							label:{
 								normal:{
-									show:true,
+									show:false,
 									position:"right",
 									formatter:function(params){
 				                    		if(normalUnitValue != -1){
@@ -2099,6 +2136,9 @@ function comparisonStrip_generate_fun(){
 					"nameRotate":15,
 					"nameLocation":"end",
 					"type":"category",
+					// "offset":maxLength,
+					// "boundaryGap": ['20%', '20%'],
+
 					axisTick:{
 						inside:false,
 						interval:function(index,value){return !/^YZYPD/.test(value)}
@@ -2126,7 +2166,7 @@ function comparisonStrip_generate_fun(){
 				}
 				if(i > 0){
 					var obj = {
-				    		show:false,
+				    	show:false,
 				        type: "value",
 				        gridIndex:dimensionality_show_data.length - 1 - i,
 				        min:0,
@@ -2227,21 +2267,25 @@ function comparisonStrip_generate_fun(){
 				},
 				  dataZoom:[
 			    			{
-				    			type: 'slider',
+				    		type: 'slider',
 	           			 	show: dimensionality_show_data[dimensionality_show_data.length - 1].length > 15,
 	           			 	filterMode:"filter",
 	           			 	backgroundColor:"#dedede",
 	           			 	fillerColor:"#ff7e00",
 	           			 	showDataShadow:false,
 				            yAxisIndex: dataZoomXindexArray,
-				            height:8,
+				            height:10,
 				            handleStyle:{
 				            		color:"#ff7e00"	
 				            },
 				            startValue:0,
 				            endValue:15,
 				            orient:"horizontal",
-				            bottom:25
+				            bottom:25,
+				            handleSize:12,
+			            	maxValueSpan:15,
+			           		throttle:100,
+			            	handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
 			    			type: 'slider',
