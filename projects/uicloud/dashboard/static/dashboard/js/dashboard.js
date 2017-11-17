@@ -2609,19 +2609,19 @@
 								update: function(event,ui) {
 									event.stopPropagation();
 									//排序后重新存储数据
-									function for_row_col(ele){
-										//遍历所有行里的li 排序后更新数据
-										for(var i = 0; i < $(ele).find("li").length;i++){
-											//获取数据字段
-											var data_id = $(ele).find("li").eq(i).attr("id").split(":");
-											//判断元素的类型
-											var data_wd_type = data_id[0];
-											//对应的数据
-											var sortable_data = data_id[1]+":"+data_id[2];
+									// function for_row_col(ele){
+									// 	//遍历所有行里的li 排序后更新数据
+									// 	for(var i = 0; i < $(ele).find("li").length;i++){
+									// 		//获取数据字段
+									// 		var data_id = $(ele).find("li").eq(i).attr("id").split(":");
+									// 		//判断元素的类型
+									// 		var data_wd_type = data_id[0];
+									// 		//对应的数据
+									// 		var sortable_data = data_id[1]+":"+data_id[2];
 
-											drag_row_column_data["column"][data_wd_type].push(sortable_data)
-										}
-									}
+									// 		drag_row_column_data["column"][data_wd_type].push(sortable_data)
+									// 	}
+									// }
 													
 									//判断展示窗是否为空
 									if($(this).find("li").length == 0) {
@@ -2771,9 +2771,8 @@
 											break;
 										case "drop_row_view":
 											$(this).find("li").removeClass().addClass("drog_row_list date_list bj_information");
-											drag_row_column_data["row"]["dimensionality"].splice(0,$(this).find(".dimensionality_list_text").length);
-											//删除排序前存入的数据
-											drag_row_column_data["row"]["measure"].splice(0,$(this).find(".measure_list_text").length);
+											drag_row_column_data["row"]["dimensionality"] = [];
+											drag_row_column_data["row"]["measure"] = [];
 											//排序拖拽走元素 删除存储的数据
 											if($(this).find(".measure_list_text").length  == 0){
 												drag_row_column_data["row"]["measure"] = [];
@@ -2801,8 +2800,8 @@
 											break;
 
 										case "drop_col_view":
-											drag_row_column_data["column"]["dimensionality"].splice(0,$(this).find(".dimensionality_list_text").length);
-											drag_row_column_data["column"]["measure"].splice(0,$(this).find(".measure_list_text").length);
+											drag_row_column_data["column"]["dimensionality"] = [];
+											drag_row_column_data["column"]["measure"] = [];
 											$(this).find("li").removeClass().addClass("drog_row_list date_list bj_information");
 											//排序拖拽走元素 删除存储的数据
 											if($(this).find(".measure_list_text").length  == 0){

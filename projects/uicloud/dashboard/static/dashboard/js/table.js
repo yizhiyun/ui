@@ -24,6 +24,11 @@ var isColumnFinished = false;
 function showTable_by_dragData(){
 	$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
 	$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
+	// console.log(drag_row_column_data)
+	//清除列数据
+	if(drag_row_column_data["column"]["dimensionality"].length == 0 && drag_row_column_data["column"]["measure"].length == 0){
+		$("#text_table_need_show .right_module .top_column_container .top_column_name").eq(0).text("");
+	}
 	// 绘制行数据
 	function function_draw_row_data(needAllData){
 
