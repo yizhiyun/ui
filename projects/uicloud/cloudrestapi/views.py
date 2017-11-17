@@ -20,70 +20,18 @@ logger.setLevel(logging.DEBUG)
 def checkTableMapping(request):
     """
     POST:
-    Here is request data schema.
-    {
-        "tables": [
-            {
-                "source": <sourceName or connectString>,
-                "database": <databaseName>,
-                "tableName": <tableName>,
-                "columns": {
-                    <columnName1>: {
-                        "columnType": <columnType>,
-                        "nullable": "yes/no",
-                        "primaryKey": "yes/no",
-                        "uniqueKey": "yes/no",
-                        "foreignKey": "no"
-                    },
-                    <columnName2>: {
-                        ...
-                    },
-                    ...
-                },
-                <otherProperty>:<otherValue>,
-                ...
-            },
-            ...
-        ],
-
-        "relationships": [
-            {
-                "fromTable": "<databaseName>.<tableName>",
-                "toTable": "<databaseName>.<tableName>",
-                "joinType": <connectionType>,
-                "columnMap": [
-                    {
-                        "fromCol": <columnName>,
-                        "toCol": <columnName>
-                    },
-                    ...
-                ]
-            }
-            ...
-        ],
-
-        "conditions": [
-            {
-                "type":"equal", # type include "equal","greate than", "less than", "like" and so on.
-                "columnName": "<databaseName>.<tableName>.<columnName>",
-                "value": <value>
-            },
-            {
-                "type":"limit",
-                "value": <value>
-            },
-            ...
-        ]
-    }
+    As for the request data schema, please refer to the related document.
     """
     logger.info("type(request.data): {0}, \n request.data: {1}".format(
         type(request.data), request.data))
 
     jsonData = request.data
 
+    logger.info("Start to check the generating new table. type(jsonData): {0}, jsonData: {1}".format(
+        type(jsonData), jsonData))
     if request.method == "POST":
-
         results = getOutputColumns(jsonData)
+        logger.info("checking the generating new table finished. results: {0}".format(results))
 
         if not results['outputColumnsDict']:
             failObj = {"status": "failed",
@@ -102,85 +50,12 @@ def checkTableMapping(request):
 def generateNewTable(request):
     """
     POST:
-    Here is request data schema.
-    {
-        "tables": [
-            {
-                "source": <sourceName or connectString>,
-                "database": <databaseName>,
-                "tableName": <tableName>,
-                "columns": {
-                    <columnName1>: {
-                        "columnType": <columnType>,
-                        "nullable": "yes/no",
-                        "primaryKey": "yes/no",
-                        "uniqueKey": "yes/no",
-                        "foreignKey": "no"
-                    },
-                    <columnName2>: {
-                        ...
-                    },
-                    ...
-                },
-                "handleColList": [
-                    {
-                        "colname": <colname>,
-                        "method": <split/limit>,
-                        "cutsymbol": <cutsymbol>
-                    },
-                    ...
-                ],
-                "SchemaList": ["schema1", "schema2", ...]
-                <otherProperty>:<otherValue>,
-                ...
-            },
-            ...
-        ],
-
-        "relationships": [
-            {
-                "fromTable": "<databaseName>.<tableName>",
-                "toTable": "<databaseName>.<tableName>",
-                "joinType": <connectionType>,
-                "columnMap": [
-                    {
-                        "fromCol": <columnName>,
-                        "toCol": <columnName>
-                    },
-                    ...
-                ]
-            }
-            ...
-        ],
-
-        "conditions": [
-            {
-                "type":"equal", # type include "equal","greate than", "less than", "like" and so on.
-                "columnName": "<databaseName>.<tableName>.<columnName>",
-                "value": <value>
-            },
-            {
-                "type":"limit",
-                "value": <value>
-            },
-            ...
-        ],
-
-        "outputs":{
-            "outputTableName": <tableName>,
-            "columnsMapping": {
-                "<databaseName>.<tableName>.<columnName>": <renamedColumnName>,
-                ...
-            },
-            "removedColumns": ["<databaseName>.<tableName>.<columnName>","<tableName>.<columnName>",...],
-            ...
-        }
-    }
+    As for the request data schema, please refer to the related document.
     """
 
     jsonData = request.data
 
-    logger.debug("type(request.data): {0}, \n request.data: {1}".format(
+    logger.info("Start to generate new table. type(jsonData): {0}, jsonData: {1}".format(
         type(jsonData), jsonData))
     if request.method == "POST":
 
@@ -197,7 +72,8 @@ def generateNewTable(request):
         maxCheck = 300 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
-        logger.debug("output: {0}".format(output))
+        logger.info("Generating the new table finished. output: {0}".format(output))
+
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the detailed logs."}
@@ -255,7 +131,7 @@ def getTableViaSpark(request, tableName, modeName):
     """
 
     jsonData = request.data
-    logger.info("request.data: {0}, tableName: {1}".format(jsonData, tableName))
+    logger.info("Start to get table info. tableName: {0}, request.data: {1}".format(tableName, jsonData))
     if request.method == "POST":
 
         modeList = ["all", "data", "schema"]
@@ -270,6 +146,7 @@ def getTableViaSpark(request, tableName, modeName):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
+        logger.info("Getting the {0} table finished.".format(tableName))
 
         if not output:
             failObj = {"status": "failed",
@@ -280,7 +157,7 @@ def getTableViaSpark(request, tableName, modeName):
                        "reason": output}
             return JsonResponse(failObj, status=400)
         else:
-            logger.debug("output: {}".format(output))
+            # logger.debug("output: {}".format(output))
             data = output["data"]["text/plain"]
             if data.startswith("False") or data.endswith("False"):
                 failObj = {"status": "failed",
@@ -359,7 +236,7 @@ def getBasicStats(request):
     """
 
     jsonData = request.data
-    logger.debug("request.data: {0}".format(jsonData))
+    logger.info("Start to get the basic stats. request.data: {0}".format(jsonData))
     if request.method == "POST":
 
         # check the request data
@@ -372,6 +249,7 @@ def getBasicStats(request):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
+        logger.info("Getting the basic stats finished. request.data: {0}".format(jsonData))
 
         return getRespData(output, True)
 
@@ -384,7 +262,7 @@ def getHypothesisTest(request):
     '''
 
     jsonData = request.data
-    logger.debug("request.data: {0}".format(jsonData))
+    logger.info("Start to get the hypothesis test. request.data: {0}".format(jsonData))
     if request.method == 'POST':
 
         # check the request data
@@ -398,8 +276,10 @@ def getHypothesisTest(request):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
+        logger.info("Getting the hypothesis test finished. request.data: {0}".format(jsonData))
 
         return getRespData(output, True)
+
 
 @api_view(['POST'])
 def getRegressionAna(request):
@@ -409,7 +289,7 @@ def getRegressionAna(request):
     '''
 
     jsonData = request.data
-    logger.debug("request.data: {0}".format(jsonData))
+    logger.info("Start to get the regression analysis. request.data: {0}".format(jsonData))
     if request.method == 'POST':
 
         # check the request data
@@ -423,8 +303,10 @@ def getRegressionAna(request):
         maxCheck = 600 if "maxchecknum" not in jsonData.keys() else jsonData["maxchecknum"]
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
+        logger.info("Getting the regression analysis finished. request.data: {0}".format(jsonData))
 
         return getRespData(output, True)
+
 
 @api_view(['POST'])
 def uploadCsv(request):

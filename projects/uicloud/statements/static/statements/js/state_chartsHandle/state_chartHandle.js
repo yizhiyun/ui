@@ -78,6 +78,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			     trigger: 'axis',
 			     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
 			         type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+			  
 			     },
 			     formatter: function (params) {			     	
 			         var tar;
@@ -179,7 +180,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			            stack: '总量',
 			            label: {
 			                normal: {
-			                    show: false,
+			                    show: dimensionality_need_show.length < 25,
 			                    position: 'top',
 			                    formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -281,7 +282,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 						data: measure_need_show,
 						label: {
 			                normal: {
-			                    show: false,
+			                    show:dimensionality_need_show.length < 25,
 			                    formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
 			                    			return params.name+":"+params.value.toFixed(normalUnitValue_arr[storeNum_toview]);
@@ -439,7 +440,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 						},
 						label:{
 							normal:{
-								show:false,
+								show:dimensionality_need_show.length < 25,
 								position:"top",
 								formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -554,7 +555,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				 	},
 				    xAxis: {
 				     	 type : 'value',
-				     	 name:need_handle_measureName,
+				     	// name:need_handle_measureName,
 						nameGap:10,
 						nameLocation:"end",
 				    },
@@ -626,7 +627,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				            stack: '总量',
 				            label: {
 				                normal: {
-				                    show: false,
+				                    show: dimensionality_need_show.length < 25,
 				                    position: 'right',
 				                    formatter:function(params){
 				                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -872,7 +873,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 					var measure = measure_show_data_arr[i];
            			var obj = {name:drag_measureCalculateStyle_arr[storeNum_toview][all_measure[i]],type:"line",smooth:true,data:measure,label:{
            				normal:{
-           					show:false,
+           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25,
            					position:"top",
            					offset:[10,0],
            					formatter:function(params){
@@ -1178,7 +1179,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						barGap: 20,
 						label: {
 							normal: {
-								show: false,
+								show: dimensionality_show_data.length < 25,
 								position:"left",
 								formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -1374,7 +1375,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 	    				 series:[]
 				};
 			//number_liner、percentage_bar、percentage_liner
-			var axisLabelSetteing = 	{type:"value",gridIndex:0,name:drag_measureCalculateStyle_arr[storeNum_toview][measureName],nameLocation:"end",nameGap:10};
+			var axisLabelSetteing = 	{type:"value",gridIndex:0,nameLocation:"end",nameGap:10};
 			if(bar_type == "percentage_liner" || bar_type == "percentage_bar"){
 				axisLabelSetteing["min"] = 0;
 				axisLabelSetteing["max"] = 1;
@@ -1427,7 +1428,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 					label:{
 						normal:{
-							show:false,
+							show:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length < 25,
 							position:"insideRight",
 							formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -1509,7 +1510,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						
 					}
 					aGrid["left"] = "10%";
-					aGrid["bottom"] = 60 + 20*k;
+					aGrid["bottom"] = 60 + 40*k;
 					
 					
 				}else{
@@ -1547,7 +1548,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						option["series"].push(aSeriesData);
 					}	
 					aGrid["containLabel"] = false;
-					aGrid["left"] =  60 + 50*k;
+					aGrid["left"] =  150 + 70*k;
 					aGrid["bottom"] = 60;
 					
 				}
@@ -1563,7 +1564,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					dataZoomXindexArray.push(k);
 				}
 			if (bar_type == "number_bar" || bar_type == "percentage_bar"){
-				
+				console.log(need_show_dimensionality_arr);
 				option["dataZoom"] = [
 					{
 			    		type: 'slider',
@@ -1692,7 +1693,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							label:{
 								normal:
 								{
-									show:false,
+									show:need_dimensionality.length < 25,
 									formatter:function(params){
 										var names = params["name"].split("_YZYPD_");
 										var needValue = params.value;
@@ -1823,7 +1824,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			var needYais = [{
 			    		show:true,
 			        type: "value",
-			        name: commonLegend.join("/"),
+			        //name: commonLegend.join("/"),
 			        nameLocation:"middle",
 			        nameGap:60,
 			        gridIndex:0,
@@ -1846,7 +1847,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							"data":[{"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
 							label:{
 								normal:{
-									show:false,
+									show:all_dimensionality.length < 25,
 									position:"top",
 									formatter:function(params){
 				                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -1905,7 +1906,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					containLabel:true,
 				}
 				aGrid["left"] = "10%";
-				aGrid["bottom"] = 60 + 20*(dimensionality_show_data.length - 1 - i);		
+				aGrid["bottom"] = 60 + 40*(dimensionality_show_data.length - 1 - i);		
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
 					var obj = {
@@ -2042,6 +2043,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
             }, 400)			
 		});
 	}
+	var maxLength = 0;
 	
 	// 条形图 
 	function barChart_generate_fun(storeNum_toview){
@@ -2061,7 +2063,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			   	 	show:true,
 			        type: "value",
 					gridIndex:all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-					name: commonLegend.join("\n"),
+					//name: commonLegend.join("\n"),
 			        nameLocation:"end",
 			        nameGap:10,
 			    }
@@ -2071,6 +2073,14 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			
 			for(var i = 0;i < data.length;i++){
 				var aData = data[i];
+				var theDimeInfo = [];
+				for(var k = 0;k < all_dimensionality.length;k++){
+					theDimeInfo.push(aData[all_dimensionality[k]]);
+					// console.log(typeof(String(aData[all_dimensionality[k]])),String(aData[all_dimensionality[k]]))
+					if(aData[all_dimensionality[k]].toString().getLength() > maxLength){
+						maxLength = aData[all_dimensionality[k]].toString().getLength();
+					}
+				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]]){
 						valueMax = aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]];
@@ -2085,7 +2095,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							z:3,
 							label:{
 								normal:{
-									show:false,
+									show:dimensionality_show_data.length < 25,
 									position:"right",
 									formatter:function(params){
 				                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -2144,7 +2154,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					show:false,
 					
 				}
-				aGrid["left"] = 60 + i * 50;
+				aGrid["left"] = 150 + i * (60 + maxLength);
 				aGrid["bottom"] = 60;	
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}

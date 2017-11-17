@@ -179,7 +179,7 @@ function one_de_one_me_handle (chart_type_need) {
 			            stack: '总量',
 			            label: {
 			                normal: {
-			                    show: false,
+			                    show:dimensionality_need_show.length < 25,
 			                    position: 'top',
 			                    formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -275,7 +275,7 @@ function one_de_one_me_handle (chart_type_need) {
 						data: measure_need_show,
 						label: {
 			                normal: {
-			                    show: false,
+			                    show: dimensionality_need_show.length < 25,
 			                    formatter:function(params){
 			                    		if(normalUnitValue != -1){
 			                    			return params.name+":"+params.value.toFixed(normalUnitValue);
@@ -425,7 +425,7 @@ function one_de_one_me_handle (chart_type_need) {
 						},
 						label:{
 							normal:{
-								show:false,
+								show:dimensionality_need_show.length < 25,
 								position:"top",
 								formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -534,7 +534,7 @@ function one_de_one_me_handle (chart_type_need) {
 				 	},
 				    xAxis: {
 				     	 type : 'value',
-				     	 name:need_handle_measureName,
+				     	 // name:need_handle_measureName,
 						nameGap:10,
 						nameLocation:"end",
 				    },
@@ -606,7 +606,7 @@ function one_de_one_me_handle (chart_type_need) {
 				            stack: '总量',
 				            label: {
 				                normal: {
-				                    show: false,
+				                    show: dimensionality_need_show.length < 25,
 				                    position: 'right',
 				                    formatter:function(params){
 				                    		if(normalUnitValue != -1){
@@ -861,7 +861,7 @@ function many_de_many_me_handle(chart_type_need){
 						containLabel:true,
 					}
 					aGrid["left"] = "10%";
-					aGrid["bottom"] = 60 + 20* i;
+					aGrid["bottom"] = 60 + 40* i;
 					if(i != dimensionality_show_data_arr.length - 1){
 						aGrid["tooltip"] = {show:false};
 					}
@@ -874,7 +874,7 @@ function many_de_many_me_handle(chart_type_need){
 					var measure = measure_show_data_arr[i];
            			var obj = {name:drag_measureCalculateStyle[all_measure[i]],type:"line",smooth:true,data:measure,label:{
            				normal:{
-           					show:false,
+           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25,
            					position:"top",
            					offset:[10,0],
            					formatter:function(params){
@@ -913,7 +913,7 @@ function many_de_many_me_handle(chart_type_need){
 			    			},
 			    			{
 			    			type: 'slider',
-           			 	show: false,
+           			 	show: dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25,
            			 	filterMode:"empty",
 			            yAxisIndex: [0],
 			    			}
@@ -1174,7 +1174,7 @@ function comparisonStrip_generate_fun(){
 						barGap: 20,
 						label: {
 							normal: {
-								show: false,
+								show: dimensionality_show_data.length < 25,
 								position:"left",
 								formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -1203,7 +1203,7 @@ function comparisonStrip_generate_fun(){
 						yAxisIndex: 2,
 						label: {
 							normal: {
-								show: false,
+								show: dimensionality_show_data.length < 25,
 								position:"right",
 								formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -1372,7 +1372,7 @@ function comparisonStrip_generate_fun(){
 	    				 series:[]
 				};
 			//number_liner、percentage_bar、percentage_liner
-			var axisLabelSetteing = 	{type:"value",gridIndex:0,name:drag_measureCalculateStyle[measureName],nameLocation:"end",nameGap:10};
+			var axisLabelSetteing = 	{type:"value",gridIndex:0,nameLocation:"end",nameGap:10};
 			if(bar_type == "percentage_liner" || bar_type == "percentage_bar"){
 				axisLabelSetteing["min"] = 0;
 				axisLabelSetteing["max"] = 1;
@@ -1437,7 +1437,7 @@ function comparisonStrip_generate_fun(){
 					},
 					label:{
 						normal:{
-							show:false,
+							show:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length < 25,
 							position:"insideRight",
 							formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -1518,7 +1518,7 @@ function comparisonStrip_generate_fun(){
 						
 					}
 					aGrid["left"] = "10%";
-					aGrid["bottom"] = 60 + 20*k;
+					aGrid["bottom"] = 60 + 40*k;
 					
 					
 				}else{
@@ -1556,7 +1556,7 @@ function comparisonStrip_generate_fun(){
 						option["series"].push(aSeriesData);
 					}	
 					aGrid["containLabel"] = false;
-					aGrid["left"] =  150 + 50*k;
+					aGrid["left"] =  150 + 70*k;
 					aGrid["bottom"] = 60;
 					
 				}
@@ -1690,7 +1690,7 @@ function comparisonStrip_generate_fun(){
 							label:{
 								normal:
 								{
-									show:false,
+									show:need_dimensionality.length < 25,
 									formatter:function(params){
 										var names = params["name"].split("_YZYPD_");
 										var needValue = params.value;
@@ -1816,7 +1816,7 @@ function comparisonStrip_generate_fun(){
 			var needYais = [{
 			    		show:true,
 			        type: "value",
-			        name: commonLegend.join("/"),
+			        //name: commonLegend.join("/"),
 			        nameLocation:"middle",
 			        nameGap:60,
 			        gridIndex:0,
@@ -1843,7 +1843,7 @@ function comparisonStrip_generate_fun(){
 							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
 							label:{
 								normal:{
-									show:false,
+									show:all_dimensionality.length < 25,
 									position:"top",
 									formatter:function(params){
 				                    		if(normalUnitValue != -1){
@@ -1902,7 +1902,7 @@ function comparisonStrip_generate_fun(){
 					containLabel:true,
 				}
 				aGrid["left"] = "10%";
-				aGrid["bottom"] = 60 + 20*(dimensionality_show_data.length - 1 - i);		
+				aGrid["bottom"] = 60 + 40*(dimensionality_show_data.length - 1 - i);		
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
 					var obj = {
@@ -2063,7 +2063,7 @@ function comparisonStrip_generate_fun(){
 			   	 	show:true,
 			        type: "value",
 					gridIndex:all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-					name: commonLegend.join("\n"),
+					// name: commonLegend.join("\n"),
 			        nameLocation:"end",
 			        nameGap:10,
 			        // offset:maxLength * 5,
@@ -2096,7 +2096,7 @@ function comparisonStrip_generate_fun(){
 							z:3,
 							label:{
 								normal:{
-									show:false,
+									show:dimensionality_show_data.length < 25,
 									position:"right",
 									formatter:function(params){
 				                    		if(normalUnitValue != -1){
@@ -2106,7 +2106,8 @@ function comparisonStrip_generate_fun(){
 				                    		}
 			                  		 },
 								}
-							},};
+							},
+						};
 					}else{
 						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
 					}
@@ -2159,7 +2160,7 @@ function comparisonStrip_generate_fun(){
 					show:false,
 					
 				}
-				aGrid["left"] = 150 + i * 50;
+				aGrid["left"] = 150 + i * (60 + maxLength);
 				aGrid["bottom"] = 60;	
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
