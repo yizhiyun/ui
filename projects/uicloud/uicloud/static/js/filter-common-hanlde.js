@@ -10,7 +10,7 @@ var dataNumberControl = 100;
 // 编辑筛选器出现
 function editFilterViewShow_fun(from,successFun){
 		$(".maskLayer").show();
-		
+
 		if(from == "buildData"){
 			 tableInfo = $("#tableDataDetailListPanel").attr("nowShowTable");
 			 currentNeedAllFields = bottom_panel_fileds;
@@ -31,14 +31,14 @@ function editFilterViewShow_fun(from,successFun){
 					$("#filter-model #user-filter-select .common-filer-footer .editBtn").show();
 					$("#filter-model #user-filter-select .common-filer-footer .removeBtn").show();
 				}
-				
+
 			})
 		}
 		$("#filter-model #user-filter-select").data("tableInfo",tableInfo);
 		$("#filter-model #user-filter-select").show();
 		$("#filter-model #user-filter-select a.editBtn,#filter-model #user-filter-select a.removeBtn").hide();
 			//  调整筛选器的大小和位置
-		size_of_screeningWasher_fun();	
+		size_of_screeningWasher_fun();
 		// 筛选器从构建数据页面进入
 		filter_from_in = from;
 		didSelectColumn = null; // 没有选中字段
@@ -51,7 +51,7 @@ function didSelectedField_needFilter(isEdit,fieldInfo,successFun){
 	$(".maskLayer").show();
 	tableInfo = current_cube_name;
 	currentNeedAllFields = _cube_all_data[current_cube_name]["schema"];
-	size_of_screeningWasher_fun();	
+	size_of_screeningWasher_fun();
 	finishCallBackFun = successFun;
 	var type = fieldInfo.split(":")[1];
 	didSelectColumn = fieldInfo.split(":")[0];
@@ -67,7 +67,7 @@ function didSelectedField_needFilter(isEdit,fieldInfo,successFun){
 }
 
 $(function(){
-	
+
 /*-------------- 折叠切换,-----------------------、*/
 	$("#filter-model .common-fold-module").tabs();
 	// 选择器单选按钮
@@ -77,7 +77,7 @@ $(function(){
 				$("#contentChooser #condition .radio").removeClass("active");
 			  	$(this).addClass("active");
 			}
-			 
+
 		}else if($(this).attr("belong") =="number-filter"){
 			if(!$(this).hasClass("active")){
 				$("#filter-model #number-filter .number-filter-body .condition-select-box .radiosBtns .radio").removeClass("active");
@@ -95,51 +95,51 @@ $(function(){
 				  $(this).addClass("active");
 			 }
 		}
-		
-		
+
+
 	});
-	
-		/*数值选择器部分配置-------------------*/	
+
+		/*数值选择器部分配置-------------------*/
 	$("#filter-model #number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box").focusin(function(event){
-		
+
 		event.stopPropagation();
 		$("#filter-model #number-filter .number-filter-body .condition-select-box .radiosBtns .radio").removeClass("active");
 		$("#filter-model #number-filter .number-filter-body .condition-select-box .radiosBtns .userInput_box .radio").addClass("active");
 	});
-	
+
 	$("#filter-model #number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div").focusin(function(event){
 		event.stopPropagation();
 		$("#filter-model #number-filter .number-filter-body .condition-select-box .radiosBtns .radio").removeClass("active");
 		$("#filter-model #number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .radio").addClass("active");
 	});
 	/*end-----------数值选择器部分配置-------------------*/
-	
-	
-	
+
+
+
 		//  设置中文
-	 $.datepicker.regional['zh-CN'] = {  
-        closeText: '关闭',  
-        prevText: '<上月',  
-        nextText: '下月>',  
-        currentText: '今天',  
-        monthNames: ['一月','二月','三月','四月','五月','六月',  
-        '七月','八月','九月','十月','十一月','十二月'],  
-        monthNamesShort: ['一','二','三','四','五','六',  
-        '七','八','九','十','十一','十二'],  
-        dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],  
-        dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],  
-        dayNamesMin: ['日','一','二','三','四','五','六'],  
-        weekHeader: '周',  
-        dateFormat: 'yy-mm-dd',  
-        firstDay: 1,  
-        isRTL: false,  
-        showMonthAfterYear: true,  
-        yearSuffix: '年'};  
+	 $.datepicker.regional['zh-CN'] = {
+        closeText: '关闭',
+        prevText: '<上月',
+        nextText: '下月>',
+        currentText: '今天',
+        monthNames: ['一月','二月','三月','四月','五月','六月',
+        '七月','八月','九月','十月','十一月','十二月'],
+        monthNamesShort: ['一','二','三','四','五','六',
+        '七','八','九','十','十一','十二'],
+        dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+        dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],
+        dayNamesMin: ['日','一','二','三','四','五','六'],
+        weekHeader: '周',
+        dateFormat: 'yy-mm-dd',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: true,
+        yearSuffix: '年'};
     $.datepicker.setDefaults($.datepicker.regional['zh-CN']);
-    
-    
-    
-//  
+
+
+
+//
 	// 日期选择器部分配置
 	// 相对日期--按钮点击设置
 	$("#date-filter .date-filter-body #relative-date-box .date-unit-btns a").click(function(){
@@ -176,8 +176,8 @@ $(function(){
 			this.value=this.value.replace(/\D/g,'');
 		}
 		bottom_date_indictor_label_fun();
-	});	
-	
+	});
+
 	// 日期上方 tab 切换的时候
 	$("#date-filter .date-filter-body .fold-select-btns li>a").click(function(){
 		if($(this).attr("data") == "range"){
@@ -188,37 +188,37 @@ $(function(){
 		}else{
 			dateBottomLableShow($(this).attr("data"));
 		}
-		
-		
-		
+
+
+
 	})
-	
-	
+
+
 	//日期输入框变化的时候
 	$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").change(function(){
 		var dateValueArr = $(this).val().split("/");
 		$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).dateRangeSlider("min",new Date( dateValueArr[0], Number(dateValueArr[1]) - 1, dateValueArr[2]));
-		
+
 //		$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(dateValueArr[0] + "/" + dateValueArr[1]+"/"+dateValueArr[2]);
 		bottom_date_indictor_label_fun();
 	});
-	
+
 	$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").change(function(){
 		var dateValueArr = $(this).val().split("/");
 		$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).dateRangeSlider("max",new Date( dateValueArr[0], Number(dateValueArr[1]) - 1, dateValueArr[2]));
-//		$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(dateValueArr[0] + "/" + dateValueArr[1]+"/"+dateValueArr[2]);	
+//		$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(dateValueArr[0] + "/" + dateValueArr[1]+"/"+dateValueArr[2]);
 		bottom_date_indictor_label_fun();
 	});
-	
-	
-	
-	
+
+
+
+
 	// 筛选器的位置
 	$(window).resize(function(){
 		//  调整筛选器的大小和位置
 		size_of_screeningWasher_fun();
 	});
-	
+
 	/*编辑-选择字段的时候-筛选器*/
 	$("#filter-model #user-filter-select .addBtn").click(function(){
 		loading_data_of_select_fields_fun();
@@ -229,7 +229,7 @@ $(function(){
 			left:($("body").outerWidth() - $("#filter-model #fileds-content-select").outerWidth()) / 2,
 		});
 	});
-	
+
 	//编辑按钮
 	$("#filter-model #user-filter-select .common-filer-footer .editBtn").click(function(){
 		var tableFilterArr = localStorageGetData($("#filter-model #user-filter-select").data("tableInfo"));
@@ -242,7 +242,7 @@ $(function(){
 			number_screeningWasher_fun(true,filterInfo,activeLi.index());
 		}else if(type == "date-filter"){
 			date_screeningWasher_fun(true,filterInfo,activeLi.index());
-		}		
+		}
 
 		//点击每个筛选器上的重置按钮
 		$("#filter-model .screeningWasher .common-filer-footer .resetBtn").click(function(event){
@@ -256,15 +256,15 @@ $(function(){
 	});
 	//移除按钮
 	$("#filter-model #user-filter-select .common-filer-footer .removeBtn").click(function(){
-		
+
 		var activeLi = $("#filter-model #user-filter-select .filter-select-body .didFilteredList li.active");
 		localStoragedeleteData($("#filter-model #user-filter-select").data("tableInfo"),activeLi.index());
 		activeLi.remove();
 		getCurrentTableFilterData(tableInfo);
 		if(finishCallBackFun){
-			finishCallBackFun(false);	
+			finishCallBackFun(false);
 		}
-		
+
 	});
 	// 编辑--取消的时候
 	$("#filter-model #user-filter-select .close").click(function(event){
@@ -273,8 +273,8 @@ $(function(){
 		$(".maskLayer").hide();
 	});
 	/*end---------编辑-选择字段的时候-筛选器*/
-	
-	
+
+
 	// 取消关闭按钮点击的时候
 	$("#filter-model #fileds-content-select .close").add("#filter-model #fileds-content-select .common-filer-footer .cancleBtn").click(function(){
 		$("#filter-model #fileds-content-select").hide();
@@ -295,23 +295,23 @@ $(function(){
 		$("#filter-model #fileds-content-select").hide();
 		$("#filter-model #user-filter-select").css("opacity",1);
 	});
-	
-	
-	
-	
+
+
+
+
 	// 点击每个筛选器上的关闭按钮的时候
 	$("#filter-model .screeningWasher .common-head .close").click(function(event){
 		event.stopPropagation();
 		$(this).parents(".screeningWasher").eq(0).hide();
-		// $(".maskLayer").hide();	
+		// $(".maskLayer").hide();
 	});
 	// 点击每个筛选器上的取消按钮的时候
 	$("#filter-model .screeningWasher .common-filer-footer .cancleBtn").click(function(event){
 		event.stopPropagation();
 		$(this).parents(".screeningWasher").eq(0).hide();
-		// $(".maskLayer").hide();	
+		// $(".maskLayer").hide();
 	});
-	
+
 	//点击每个筛选器上的确定按钮的时候
 	$("#filter-model .screeningWasher .common-filer-footer .confirmBtn").click(function(event){
 		event.stopPropagation();
@@ -320,12 +320,12 @@ $(function(){
 			// 取出所有条件 处理数据
 		screeningWasher_did_finish_filter_handle_data_fun(filterID);
 	});
-	// 
-	// 
-	// 
-	
-	
-	
+	//
+	//
+	//
+
+
+
 	// 全选按钮
 	$("#filter-model #contentChooser #common #selectAllInCommon").change(function(event){
 		event.stopPropagation();
@@ -348,21 +348,21 @@ $(function(){
 		event.stopPropagation();
 		$("#filter-model #contentChooser ul.btns li a.conditionBtn").trigger("click");
 	});
-	
-	
+
+
 	// 条件部分
 	$("#filter-model #contentChooser #condition .radio").click(function(event){
 		event.stopPropagation();
 		if ($(this).html() == "无") {
 			$("#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .mask_cover").show();
-			
+
 		}else if($(this).html() == "按字段"){
 			$("#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .mask_cover").hide();
 		}
 		content_common_summary_show_fun("condition");
-		
+
 	});
-	
+
 	// 条件部分添加按钮
 	$("#contentChooser #condition .byFiledConditionSelectDiv .topTitle .add").eq(0).click(function(event){
 			event.stopPropagation();
@@ -375,28 +375,28 @@ $(function(){
 				detailSelectConidtion_content_generate_fun($("#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition:last .conditionSelectDiv select"));
 				// 每个条件上关闭按钮点击的时候
 				lineCondition_closeBtnDidClicked_fun();
-				
+
 				content_common_summary_show_fun("condition");
-		});	
-		
+		});
+
 	});
-	
+
 	lineCondition_closeBtnDidClicked_fun();
-	
-	
+
+
 	// 等于、不等于等关系条件变化的时候
 	contidon_value_change_fun();
-	
+
 });
 
 // 底部指示 label的显示选择
 function dateBottomLableShow(whichLabel){
 	if(whichLabel == "releative" && $("#date-filter p.bottomDateIndictor.range").is(":visible")){
 		$("#date-filter p.bottomDateIndictor.range").hide();
-		$("#date-filter p.bottomDateIndictor.releative").show();	
+		$("#date-filter p.bottomDateIndictor.releative").show();
 	}else if(whichLabel == "range" && $("#date-filter p.bottomDateIndictor.releative").is(":visible")){
 		$("#date-filter p.bottomDateIndictor.releative").hide();
-		$("#date-filter p.bottomDateIndictor.range").show();	
+		$("#date-filter p.bottomDateIndictor.range").show();
 	}
 }
 // 日期选择器  摘要显示内容
@@ -404,13 +404,13 @@ function bottom_date_indictor_label_fun(){
 	var dateActiveMode = $("#date-filter .date-filter-body ul.fold-select-btns li.ui-state-active a").eq(0);
 	if (dateActiveMode.html() == "相对日期") {
 		var activeRadio = $("#date-filter .date-filter-body #relative-date-box .radio-group .radio.active");
-		
+
 		var type = activeRadio.attr("data"); // 用来区分单选按钮
-		
+
 		var unit = $("#date-filter .date-filter-body #relative-date-box .date-unit-btns a.active").eq(0).html(); // 当前单位
-		var primaryText = null; // 要显示的文字	
+		var primaryText = null; // 要显示的文字
 		switch (type){
-			case "full":	
+			case "full":
 			primaryText = GetDateStr(0,unit);
 				break;
 			case "now":
@@ -433,22 +433,22 @@ function bottom_date_indictor_label_fun(){
 		}
 		dateBottomLableShow("releative");
 		$("#date-filter p.bottomDateIndictor.releative").eq(0).html(primaryText);
-		
+
 	}else{
 		dateBottomLableShow("range");
 		var startDate = $("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").val();
 		var endDate =  $("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").val();
 		$("#date-filter p.bottomDateIndictor.range").eq(0).html(startDate + " 至 " + endDate);
-		
+
 	}
 }
-function GetDateStr(AddCount,unit) {   
+function GetDateStr(AddCount,unit) {
    var dd = new Date(); // 当前日期
    var currentYear = dd.getFullYear();
    var currentMonth = dd.getMonth();
    var currentDay = dd.getDate();
    var currentWeek = dd.getDay();
-   var currQuarter = Math.floor( ((currentMonth+1) % 3 == 0 ? ( (currentMonth+1) / 3 ) : ( (currentMonth+1) / 3 + 1 ) ) );	
+   var currQuarter = Math.floor( ((currentMonth+1) % 3 == 0 ? ( (currentMonth+1) / 3 ) : ( (currentMonth+1) / 3 + 1 ) ) );
    var startDate = null; // 下方显示的开始日期
    var endDate  = null;  // 下方显示的结束日期
    if(unit == "年"){
@@ -464,7 +464,7 @@ function GetDateStr(AddCount,unit) {
    	 }else{
    	 	startDate = new Date(currentYear,0,1);
    	 	endDate = dd;
-   	 } 	  
+   	 }
    }else if(unit == "季"){
    		if(AddCount == 0 || AddCount == -1 || AddCount == 1){
    			startDate = new Date(currentYear,(currQuarter-1 + AddCount)*3,1);
@@ -479,7 +479,7 @@ function GetDateStr(AddCount,unit) {
    			startDate = new Date(currentYear,(currQuarter -1)*3,1);
    			endDate = new Date(currentYear,currentMonth,currentDay);
    		}
-   		
+
    }else if(unit == "月"){
    		if(AddCount == 0 || AddCount == -1 || AddCount == 1){
    			startDate = new Date(currentYear,currentMonth+AddCount,1);
@@ -494,10 +494,10 @@ function GetDateStr(AddCount,unit) {
    			startDate = new Date(currentYear,currentMonth,1);
    			endDate = new Date(currentYear,currentMonth,currentDay);
    		}
-   		
+
    }else if(unit == "周"){
    		var num = AddCount * 7;
-   		
+
    		if(AddCount == 0){
    		 	startDate = new Date(currentYear,currentMonth,currentDay - currentWeek);
    		 	endDate = new Date(currentYear,currentMonth,currentDay + (6 - currentWeek));
@@ -511,7 +511,7 @@ function GetDateStr(AddCount,unit) {
    			startDate = new Date(currentYear,currentMonth,currentDay - currentWeek);
    			endDate = new Date(currentYear,currentMonth,currentDay + (6 - currentWeek));
    		}
-   		
+
    }else if(unit == "天"){
    	if(AddCount == 0 || AddCount == -1 || AddCount == 1){
    	 	startDate = new Date(currentYear,currentMonth,currentDay + AddCount);
@@ -522,30 +522,30 @@ function GetDateStr(AddCount,unit) {
    	 }else if(AddCount < -1){
    	 		startDate = new Date(currentYear,currentMonth,currentDay + AddCount);
    	 		endDate =  new Date(currentYear,currentMonth,currentDay - 1);
-   	 }  
+   	 }
    }
    return formatDate(startDate) + " 至 " + formatDate(endDate);
-	   
-	} 
+
+	}
    function formatDate(aDate){
-   	 var y = aDate.getFullYear();   
-	 var m = (aDate.getMonth()+1)<10?"0"+(aDate.getMonth()+1):(aDate.getMonth()+1);//获取当前月份的日期，不足10补0  
- var d = aDate.getDate()<10?"0"+aDate.getDate():aDate.getDate();//获取当前几号，不足10补0  
- return y+"-"+m+"-"+d;   
+   	 var y = aDate.getFullYear();
+	 var m = (aDate.getMonth()+1)<10?"0"+(aDate.getMonth()+1):(aDate.getMonth()+1);//获取当前月份的日期，不足10补0
+ var d = aDate.getDate()<10?"0"+aDate.getDate():aDate.getDate();//获取当前几号，不足10补0
+ return y+"-"+m+"-"+d;
    }
-	   
+
    function getDaysInOneMonth(year, month){
 		month = parseInt(month+1,10);
 		var d= new Date(year,month,0);  //这个是都可以兼容的
-	return d.getDate();
+	 return d.getDate();
 }
 
 // 加载选择字段-弹框-的数据
 function loading_data_of_select_fields_fun(){
-	
-	$("#filter-model #fileds-content-select .fileds-list").html("");	
-		
-		
+
+	$("#filter-model #fileds-content-select .fileds-list").html("");
+
+
 		for (var i = 0;i < currentNeedAllFields.length;i++){
    			if (currentNeedAllFields[i]["isable"] == "yes"){
    				var li = $("<li>"+currentNeedAllFields[i]["field"]+"</li>");
@@ -556,13 +556,13 @@ function loading_data_of_select_fields_fun(){
 	   					li.addClass("active");
 	   				}
    				}
-   				
+
    				$("#filter-model #fileds-content-select .fileds-list").append(li);
-   			}	
+   			}
    		}
 		if(!$("#filter-model #fileds-content-select .fileds-list .active").length || $("#filter-model #fileds-content-select .fileds-list .active").length < 1){
 			$("#filter-model #fileds-content-select .fileds-list li:first").addClass("active");
-		}			
+		}
 	// 给所有li绑定点击事件
 	$("#filter-model #fileds-content-select .fileds-list li").click(function(){
 		$(this).siblings("li").removeClass("active");
@@ -583,9 +583,9 @@ function content_common_summary_show_fun(from,field){
 		if(field){
 			$("#filter-model #contentChooser #common .summaryPanel .summary-list .filedLi span").html(field);
 		}
-		
+
 		// 摘要部分所选内容
-		var  select_content = $("#filter-model #contentChooser #common .summaryPanel .summary-list .selectedContentLi span").eq(0);		
+		var  select_content = $("#filter-model #contentChooser #common .summaryPanel .summary-list .selectedContentLi span").eq(0);
 		if(SelectAllBtn.get(0).checked && !eliminateBtn.get(0).checked){
 			select_content.html("全部 (总共"+content_select_max+"项)");
 		}else if(SelectAllBtn.get(0).checked && eliminateBtn.get(0).checked){
@@ -608,7 +608,7 @@ function content_common_summary_show_fun(from,field){
 				if($(ele).find(".relation_and_or_div span.active") && $(ele).find(".relation_and_or_div span.active").length && $(ele).find(".relation_and_or_div span.active").length > 0){
 					str += "<span style='color:#ff7e00'>"+$(ele).find(".relation_and_or_div span.active").html()+"</span>";
 				}
-				
+
 				if(!(relation_eleValue == "前N个" || relation_eleValue == "后N个")){
 					str += $(ele).find(".fieldSelctDiv .field-selct").val() + " " + relation_eleValue;
 				}
@@ -616,17 +616,17 @@ function content_common_summary_show_fun(from,field){
 					str +=  $(ele).find(".detailConditionDiv .detail-condition").val();
 				}else if(relation_eleValue == "前N个" || relation_eleValue == "后N个"){
 					str += "前" + $(ele).find(".detailConditionDiv .flagUserInputLabel input").val() + "个";
-				}else if (relation_eleValue == "为空" || relation_eleValue == "非空") {	
+				}else if (relation_eleValue == "为空" || relation_eleValue == "非空") {
 				}else{
 					str += $(ele).find(".detailConditionDiv .simpleUserInputLabel input").val();
 				}
 			});
 			condition_content.html(str);
 		}
-		
+
 	}
-	
-	
+
+
 }
 
 //条件部分 按字段  填充数据
@@ -646,7 +646,7 @@ function condition_by_field_dataFill_fun(isEdit,filterConditions){
 								lineCondition = $("#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition.first-line-condition").eq(0);
 								lineCondition.find(".fieldSelctDiv select").empty();
 							}
-							
+
 							var condition = filterConditions.conditions[i];
 							for (var j = 0;j < currentNeedAllFields.length;j++){
 								if (currentNeedAllFields[j]["isable"] == "yes"){
@@ -655,13 +655,13 @@ function condition_by_field_dataFill_fun(isEdit,filterConditions){
 									if(currentNeedAllFields[j]["field"] == condition["field"]){
 										op.prop("selected",true);
 									}
-								}	
+								}
 							}
 							lineCondition.find(".fieldSelctDiv select")
 							if(i != 0){
 								$("#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box").eq(0).append(lineCondition);
 								lineCondition_closeBtnDidClicked_fun();
-								
+
 							}
 							lineCondition.find(".conditionSelectDiv .condition-selct option").each(function(index,ele){
 								if ($(ele).attr("data") == condition["relation"]) {
@@ -676,23 +676,23 @@ function condition_by_field_dataFill_fun(isEdit,filterConditions){
 							lineCondition.find(".fieldSelctDiv select").change(function(){
 								detailSelectConidtion_content_generate_fun($(this).parents(".fieldSelctDiv:eq(0)").siblings(".conditionSelectDiv").find(".condition-selct").eq(0));
 							})
-							
+
 						}
 						content_common_summary_show_fun("condition");
 					}
 				});
-		return;	
+		return;
 	}
-	
+
 	var parent = $("#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition .fieldSelctDiv select");
 	parent.eq(parent.length - 1).empty();
 	for (var i = 0;i < currentNeedAllFields.length;i++){
 		if (currentNeedAllFields[i]["isable"] == "yes"){
 			var op = $("<option>"+currentNeedAllFields[i]["field"]+"</option>");
-			parent.eq(parent.length - 1).append(op);		
+			parent.eq(parent.length - 1).append(op);
 //			console.log(currentNeedAllFields[i]);
-		}	
-		
+		}
+
 	}
 	parent.eq(parent.length - 1).comboSelect();
 //	console.log(parent);
@@ -700,7 +700,7 @@ function condition_by_field_dataFill_fun(isEdit,filterConditions){
 	parent.eq(parent.length - 1).change(function(){
 		detailSelectConidtion_content_generate_fun($(this).parents(".fieldSelctDiv:eq(0)").siblings(".conditionSelectDiv").find(".condition-selct").eq(0));
 	});
-	
+
 }
 
 // 每个条件上关闭按钮点击的时候
@@ -717,7 +717,7 @@ function detailSelectConidtion_content_generate_fun(relation_select_ele){
 	var detailConditionDiv = $(relation_select_ele).parents(".conditionSelectDiv").eq(0).next(".detailConditionDiv");
 	detailConditionDiv.children().hide();
 	detailConditionDiv.find(".valueShow").removeClass("active");
-	
+
 	if (val== "=" || val == "!=") {
 		var field_selct = detailConditionDiv.siblings(".fieldSelctDiv").eq(0).find(".field-selct");
 		var field = field_selct.val();
@@ -726,7 +726,7 @@ function detailSelectConidtion_content_generate_fun(relation_select_ele){
 				var repeat_record = [];
 				for (var i = 0;i <  filterNeedAllData.length;i++) {
 					if(repeat_record.indexOf(filterNeedAllData[i][field]) == -1){
-						repeat_record.push(filterNeedAllData[i][field]);	
+						repeat_record.push(filterNeedAllData[i][field]);
 						var op = $("<option>"+filterNeedAllData[i][field]+"</option>");
 						op.attr("value",filterNeedAllData[i][field]);
 						detailConditionDiv.find(".detail-condition").append(op);
@@ -744,31 +744,31 @@ function detailSelectConidtion_content_generate_fun(relation_select_ele){
 					detailConditionDiv.find(".detail-condition").append(op);
 				}
 			}
-			
+
 		detailConditionDiv.find(".detail-condition").comboSelect();
 		detailConditionDiv.children(".combo-select").show();
 		detailConditionDiv.find(".detail-condition").addClass("active");
-		
+
 	}else if(val == "前N个" || val == "后N个"){
 		detailConditionDiv.children(".flagUserInputLabel").show();
 		detailConditionDiv.find(".flagUserInputLabel input").addClass("active");
-	}else if(val == "为空" || val == "非空"){	
+	}else if(val == "为空" || val == "非空"){
 	}else{
 		detailConditionDiv.children(".simpleUserInputLabel").show();
 		detailConditionDiv.find(".simpleUserInputLabel input").addClass("active");
 	}
-	
+
 	content_common_summary_show_fun("condition");
-	
+
 }
 // 等于、不等于等关系条件变化的时候
 function contidon_value_change_fun(){
 	var parent = $("#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition:last .conditionSelectDiv select");
-		
+
 	parent.change(function(){
-			
+
 		  detailSelectConidtion_content_generate_fun($(this));
-		
+
 	});
 }
 
@@ -785,7 +785,7 @@ function contidon_value_change_fun(){
 			content_select_count = 0;
 			// 清空
 			$("#filter-model #contentChooser #common .detailSearchData .dataList").empty();
-			
+
 		//1、创建常规区域的选择列表
 		var field = $("#filter-model #fileds-content-select .fileds-list .active").eq(0).html();
 		if(didSelectColumn){
@@ -798,15 +798,15 @@ function contidon_value_change_fun(){
 		}else{
 			$("#filter-model #contentChooser").data("state","normal");
 		}
-		
+
 		if(filter_from_in == "buildData"){
 			for (var i = 0;i <  filterNeedAllData.length;i++) {
 				if(repeat_record.indexOf(filterNeedAllData[i][field]) == -1){
 					repeat_record.push(filterNeedAllData[i][field]);
-					
+
 					var li = $("<li><label><input type='checkbox' checked='checked'/><span>"+filterNeedAllData[i][field]+"</span></label></li>");
 					li.find("input").attr("value",filterNeedAllData[i][field]);
-					$("#filter-model #contentChooser #common .detailSearchData .dataList").append(li);	
+					$("#filter-model #contentChooser #common .detailSearchData .dataList").append(li);
 					// 每个复选框绑定事件
 					li.find("input").change(function(){
 						if (this.checked) {
@@ -822,13 +822,13 @@ function contidon_value_change_fun(){
 						content_common_summary_show_fun("common");
 					});
 					// 如果是重新编辑一个存在的筛选
-					if(isEdit){ 
-						if(filterConditions.commonSelected.indexOf(filterNeedAllData[i][field]) != -1){		
+					if(isEdit){
+						if(filterConditions.commonSelected.indexOf(filterNeedAllData[i][field]) != -1){
 							li.find("input").eq(0).prop("checked",true);
 						}else{
 							li.find("input").eq(0).attr("checked",false);
 						}
-					}		
+					}
 				}
 			}
 			content_select_max = repeat_record.length;
@@ -856,8 +856,8 @@ function contidon_value_change_fun(){
 						content_common_summary_show_fun("common");
 					});
 					// 如果是重新编辑一个存在的筛选
-					if(isEdit){ 
-						if(filterConditions.commonSelected.indexOf(theData) != -1){		
+					if(isEdit){
+						if(filterConditions.commonSelected.indexOf(theData) != -1){
 							li.find("input").eq(0).prop("checked",true);
 						}else{
 							li.find("input").eq(0).attr("checked",false);
@@ -866,7 +866,7 @@ function contidon_value_change_fun(){
 			}
 			content_select_max = filterNeedAllData[field].length;
 		}
-		
+
 		if(isEdit){
 			content_select_count = filterConditions.commonSelected.length;
 		}else{
@@ -878,29 +878,29 @@ function contidon_value_change_fun(){
 			}else{
 				$("#filter-model #contentChooser #common #selectAllInCommon").attr("checked",false);
 			}
-			
+
 			if(filterConditions.deleteFlag){
 				$("#filter-model #contentChooser #common #cancleSelectedInCommmon").prop("checked",true)
 			}else{
 				$("#filter-model #contentChooser #common #cancleSelectedInCommmon").attr("checked",false)
 			}
-			
+
 		}
-		
+
 		// logo头部
 		$("#filter-model #contentChooser .contentChooser_head span.flag").html("   "+field);
-		
+
 		//2、摘要 字段填充数据
 		content_common_summary_show_fun("common",field);
 			//3、条件部分 按字段填充
 		condition_by_field_dataFill_fun(isEdit,filterConditions);
-		
+
 			// 第一次调用，显示具体的选择条件内容
 		detailSelectConidtion_content_generate_fun($("#contentChooser #condition .byFiledConditionSelectDiv .scrollBody-box .line-condition:eq(0) .conditionSelectDiv select"));
-		
-		
+
+
 	}
-	
+
 
 /*数值选择器*/
 	function number_screeningWasher_fun(isEdit,filterConditions,savedIndex){
@@ -929,11 +929,11 @@ function contidon_value_change_fun(){
 		}else{
 			$("#filter-model #number-filter").data("state","normal");
 		}
-		
+
 		$("#filter-model #number-filter .number-filter-head span.flag").eq(0).html("   " + field);
 		// 处理筛选器上的数据
 		dataHandleWork(filter_from_in,tableInfo,field,"numberType",function(data){
-			
+
 			// 众数处理
 //			var userSelect_num =  $("#number-filter .number-filter-body .condition-select-box .radiosBtns .userSelect_div .custom-select");
 //			if(data.modeArr.length > 0){
@@ -960,8 +960,8 @@ function contidon_value_change_fun(){
 			// 最大值最小值
 			$("#number-filter .number-filter-body  .slider-common-setting .value-slider-box .range-flag .min-value-flag").html(data.min);
 			$("#number-filter .number-filter-body  .slider-common-setting .value-slider-box .range-flag .max-value-flag").html(data.max);
-			
-			
+
+
 			if(isEdit){
 				filter_ele.find(".number-filter-body #value-range-box .value-input-box .scalesInput-box .min-value-input").val(filterConditions["sliderMinValue"]);
 				filter_ele.find(".number-filter-body #value-range-box .value-input-box .scalesInput-box .max-value-input").val(filterConditions["sliderMaxValue"]);
@@ -969,15 +969,15 @@ function contidon_value_change_fun(){
 				$("#number-filter  #value-range-box .value-input-box .min-value-input").eq(0).val(data.min);
 				$("#number-filter  #value-range-box .value-input-box .max-value-input").eq(0).val(data.max);
 			}
-			
+
 		});
-		
-		
+
+
 		$("#filter-model .screeningWasher").hide();
 		$("#filter-model #number-filter").show();
-		size_of_screeningWasher_fun();	
+		size_of_screeningWasher_fun();
 }
-	
+
 function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 	var field = $("#filter-model #fileds-content-select .fileds-list .active").eq(0).html();
 	if(didSelectColumn){
@@ -994,14 +994,14 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 		$("#filter-model #number-filter").data("state","normal");
 	}
 	$("#filter-model #date-filter .date-filter-head span.flag").eq(0).html("   "+field);
-	
+
 	bottom_date_indictor_label_fun(); // 第一次计算相对日期里面的数据
 	// 计算日期范围里面的数据
 	dataHandleWork(filter_from_in,tableInfo,field,"dateType",function(data){
-		
+
 		var backgroundMinDate = new Date(data.min);
 		var backgroundMaxDate = new Date(data.max);
-		
+
 		var defaultMinDate = null;
 		var defaultMaxDate = null;
 		if(isEdit){
@@ -1017,7 +1017,7 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 		}
 		$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(backgroundMinDate.getFullYear()+"/"+(backgroundMinDate.getMonth()+1)+"/"+backgroundMinDate.getDate());
 		$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(backgroundMaxDate.getFullYear()+"/"+(backgroundMaxDate.getMonth()+1)+"/"+backgroundMaxDate.getDate());
-		
+
 		// 日期范围--日期选择
 		$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").datepicker({
 			dateFormat:"yy/mm/dd",
@@ -1041,7 +1041,7 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
      		 showOn: "both",
      		 buttonImageOnly: true
 		});
-			// 滑动条					
+			// 滑动条
 			$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).dateRangeSlider({
 				defaultValues:{min:defaultMinDate, max:defaultMaxDate},
 				bounds:{min:backgroundMinDate, max:backgroundMaxDate},
@@ -1054,18 +1054,18 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 			$(".ui-rangeSlider .ui-rangeSlider-handle").css("top","-3px");
 			$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).unbind("userValuesChanged");
 			$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).bind("userValuesChanged",function(e,data){
-				
+
 				$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").val(formatDate(data.values.min));
 				$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").val(formatDate(data.values.max));
-		
+
 //					$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(formatDate(data.values.min));
-//					$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(formatDate(data.values.max));			
-				
+//					$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(formatDate(data.values.max));
+
 				$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.mindate").datepicker("setDate",data.values.min);
 				$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").datepicker("setDate",data.values.max);
-				
+
 				bottom_date_indictor_label_fun();
-			});	
+			});
 	});
 
 	$("#filter-model .screeningWasher").hide();
@@ -1073,9 +1073,9 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 	if($("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).is(":visible")){
 		$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).dateRangeSlider("resize");
 		}
-		size_of_screeningWasher_fun();	
+		size_of_screeningWasher_fun();
 }
-	
+
    /*end--- 日期选择器*/
 
 
@@ -1132,15 +1132,15 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 	if(didSelectColumn){
 	 	column_name = didSelectColumn;
 	}
-	
+
 	var state = "normal"; // 当前筛选器的类型，添加还是编辑
 	var savedIndex = -1; // 编辑的下标索引
-	
-	
+
+
 	if(!conditionFilter_record[tableInfo]) {
-		
+
 		getCurrentTableFilterData(tableInfo);
-		
+
 	}
 	if(filterID == "contentChooser") {
 		// 全选按钮
@@ -1150,7 +1150,7 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 
 		// 常规里面选中的列
 		 column_name = $("#filter-model #contentChooser #common .summaryPanel .summary-list .filedLi span").html();
-		 
+
 		 state = $("#filter-model #contentChooser").data("state");
 		 savedIndex = $("#filter-model #contentChooser").data("savedIndex");
 
@@ -1253,7 +1253,7 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 		state = $("#filter-model #number-filter").data("state");
 		 savedIndex = $("#filter-model #number-filter").data("savedIndex");
 		 column_name = $("#filter-model #number-filter .number-filter-head span.flag").eq(0).html().replace(/\s+/g,"");
-		 
+
 		 var columnDataInfo = numberColumn_needValueInfo[tableInfo][column_name];
 		if(!Number(relation_value)){
 			relation_value = columnDataInfo[relation_value];
@@ -1330,7 +1330,7 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 				} else {
 					conditionFilter_record[tableInfo]["condition"][index]["value"] = value;
 				}
-				
+
 				numberSpecialFilter = conditionFilter_record[tableInfo]["condition"][index];
 
 			} else {
@@ -1353,7 +1353,7 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 			}
 		}
 	} else if(filterID == "date-filter") {
-		
+
 		state = $("#filter-model #date-filter").data("state");
 		savedIndex = $("#filter-model #date-filter").data("savedIndex");
 		column_name = $("#filter-model #date-filter .date-filter-head span.flag").eq(0).html().replace(/\s+/g,"");
@@ -1374,7 +1374,7 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 		}else{
 			conditionFilter_record[tableInfo]["condition"][start_index]["value"] = startDate ;
 		}
-		
+
 		var end_index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], ["<=", column_name]);
 		if(end_index == -1){
 			var filter = {
@@ -1386,15 +1386,15 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 			conditionFilter_record[tableInfo]["condition"].push(filter);
 		}else{
 			conditionFilter_record[tableInfo]["condition"][end_index]["value"] = endDate ;
-		}	
+		}
 	}
-	
+
 		$("#filter-model #user-filter-select").hide();
 		$("#filter-model .screeningWasher").hide();
 		$(".maskLayer").hide();
 		localStorageSaveData(tableInfo,filterID,column_name,state,savedIndex);
 		if(finishCallBackFun){
-			finishCallBackFun(false);	
+			finishCallBackFun(false);
 		}
 }
 
@@ -1433,7 +1433,7 @@ function localStorageSaveData(tableInfo,type,column,state,savedIndex){
 			"allSelectFlag":$("#filter-model #contentChooser #common #selectAllInCommon").get(0).checked,
 			"deleteFlag":$("#filter-model #contentChooser #common #cancleSelectedInCommmon").get(0).checked,
 			"conditions":conditionsArr,
-			
+
 		}
 	}else if(type == "number-filter"){
 		var filter_ele = $("#filter-model #number-filter");
@@ -1454,9 +1454,9 @@ function localStorageSaveData(tableInfo,type,column,state,savedIndex){
 				indictorText += "且取 " +  bottomRelation + bottomValue + bottomUnit;
 			}else{
 				indictorText += "且取 " +  bottomRelation +"%"+ bottomValue + "项";
-			}	
+			}
 		}
-		
+
 		new_obj_filter = {
 			"column":column,
 			"type":type,
@@ -1470,7 +1470,7 @@ function localStorageSaveData(tableInfo,type,column,state,savedIndex){
 			"bottomUnit":bottomUnit,
 			"indictorText":column+filter_ele.find(".number-filter-body .condition-select-box .logic_relation_select_div .custom-select").val()+filter_ele.find(".number-filter-body .condition-select-box .radiosBtns .radio.active").parent(".value-select-float").find(".relationvalue").val(),
 			"bottomConidtion":numberSpecialFilter
-			
+
 		}
 	}else if(type == "date-filter"){
 		var dateActiveMode = $("#date-filter .date-filter-body ul.fold-select-btns li.ui-state-active a").eq(0);
@@ -1491,16 +1491,16 @@ function localStorageSaveData(tableInfo,type,column,state,savedIndex){
 			"indictorText":indictorText
 		}
 	}
-	
-	
-	
+
+
+
 	if(filterDataArr){
 		if(state == "edit" && savedIndex >= 0){
 			filterDataArr.splice(savedIndex,1,new_obj_filter);
 		}else{
 			filterDataArr.push(new_obj_filter);
 		}
-		
+
 	}else{
 		filterDataArr = [new_obj_filter];
 	}
@@ -1568,8 +1568,8 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 			}
 			conditionFilter_record[tableInfo]["condition"].push(filter1);
 			conditionFilter_record[tableInfo]["condition"].push(filter2);
-			
-			
+
+
 		}else if(obj.type == "date-filter"){
 			var dateValueArr  = obj.indictorText.split(" 至 ");
 			var startDate =  dateValueArr[0];
@@ -1580,6 +1580,6 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 			var filter2 = {"type":"<=","columnName":obj.column,"value":endDate,"datatype":"date"}
 			conditionFilter_record[tableInfo]["dateCondition"].push(filter1);
 			conditionFilter_record[tableInfo]["dateCondition"].push(filter2);
-		}		
+		}
 	}
 }
