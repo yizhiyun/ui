@@ -1929,6 +1929,9 @@
 						if(backgroundMaxDate > today){
 							defaultMinDate = new Date(today_year,today_month,1);
 							defaultMaxDate = new Date(today_year,today_month,getDaysInOneMonth(today_year,today_month));
+						}else{
+							defaultMinDate = new Date(backgroundMaxDate_year,backgroundMaxDate_month,1);
+							defaultMaxDate = new Date(backgroundMaxDate_year,backgroundMaxDate_month,getDaysInOneMonth(backgroundMaxDate_year,backgroundMaxDate_month));
 						}
 						$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val(formatDate(defaultMinDate));
 						$("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val(formatDate(defaultMaxDate));
