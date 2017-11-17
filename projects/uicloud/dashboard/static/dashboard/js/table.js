@@ -361,6 +361,8 @@ function emptyAllTable(){
 	$("#text_table_need_show #data_list_for_body li").remove();
 }
 
+
+
 function col_card(){
 	$("#view_show_area #view_show_area_content #view_show_wrap #card").show();
 	$("#card").find(".right_module .content_body #data_list_for_body").html("");
@@ -395,4 +397,6 @@ function col_card(){
 			}
 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
 		}
-	});
+	})
+
+}
