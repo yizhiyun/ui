@@ -296,6 +296,7 @@
 				//清空视图展示区域
 				$("#view_show_wrap #main").hide();
 				$("#view_show_wrap #text_table_need_show").hide();
+				$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 				$("#view_show_area_content #view_show_empty").show();
 				initTable_name();
 				$("#project_chart ul li").data("if_show","").css("border","").css("opacity","0.3");
@@ -435,13 +436,13 @@
 								display: "block",
 							})
 
-
+							md_click_show(reason_old_content.find("li").find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});
 							}
 						}
 					}
 				}
 				//度量更多操作过程
-				md_click_show($(".annotation_text .measure_list_text_left").parent().find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});
+				
 				if(indexEdit && indexEdit != "noLocation"){
 					var viewIndexStyle = "indexstyle";
 					var viewIndexType = "indextype";

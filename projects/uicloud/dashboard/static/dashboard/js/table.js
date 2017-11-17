@@ -22,7 +22,8 @@ var isRowFinished = false;
 var isColumnFinished = false;
 
 function showTable_by_dragData(){
-
+	$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+	$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 	// 绘制行数据
 	function function_draw_row_data(needAllData){
 
