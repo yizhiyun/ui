@@ -236,6 +236,7 @@ input::-webkit-input-placeholder{
 #date-filter .date-filter-body .common-date-settering {padding: 40px 20px 0 20px;position: relative;}
 #date-filter .date-filter-body .common-date-settering .date-input-select-box{height: 23px;}
 #date-filter .date-filter-body .common-date-settering .date-input-select-box .input-box{width: 138px;height: 21px;border: 1px solid #dedede;float: left;}
+#date-filter .date-filter-body .common-date-settering .date-input-select-box .input-box .ui-datepicker-trigger,#date-filter .date-filter-body .common-date-settering .date-input-select-box .max-date-input-box .ui-datepicker-trigger{vertical-align: middle;}
 #date-filter .date-filter-body .common-date-settering .date-input-select-box .input-box input{height: 100%;width: 120px;text-indent: 5px;}
 /*#date-filter .date-filter-body .common-date-settering .date-input-select-box .input-box img{float: right;margin-top: 4px;margin-right: 5px;cursor: pointer;}*/
 #date-filter .date-filter-body .common-date-settering .date-input-select-box .max-date-input-box{margin-left: 80px;}

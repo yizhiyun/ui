@@ -699,8 +699,11 @@
 	                         			myChartsChange.setOption({
 	                         				toolbox:{
 	                         					show:false,
-	                         				}
+	                         				},
+
 	                         			});
+
+	                         			console.log(myChartsChange.series)
 	                         		}
 
 
