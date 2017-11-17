@@ -17,10 +17,10 @@
 		<!--新建图表-->
 		<div id="new_view" class="clear">
 			<ul class="clear">
-				
+
 			</ul>
 		</div>
-		
+
 		<!--操作栏-->
 		<div id="action_box" >
 			<ul class="clear" id="action_box_ul">
@@ -87,7 +87,7 @@
 						<div class="cell_wrap_content"><p>方形单元格</p></div>
 						<div class="cell_wrap_content"><p>文本单元格</p></div>
 					</div>
-					
+
 				</li>
 				<!--突出显示-->
 				<li>
@@ -120,17 +120,17 @@
 					<div class="buildOpa_wrap"><p class="buildOpa">整个视图</p></div>
 				</div>
 			</div>
-			
+
 		</div>
-		
+
 		<!--侧边栏-->
 		<div id="lateral_bar">
 			<div id="lateral_title">
 				<select class="custom-select">
 				</select>
 			</div>
-			
-			
+
+
 			<!--维度-->
 			<div id="dimensionality">
 				<div id="dimensionality_title" class="clear">
@@ -139,12 +139,12 @@
 					<div class="dimensionality_hanble">
 						<img src={% static "dashboard/img/select_tra.png" %} alt="操作目录" />
 					</div>
-					
+
 					<!--搜索-->
 					<div class="search">
 						<img src={% static "dashboard/img/search.png" %} alt="搜索" />
 					</div>
-					
+
 					<!--计算公式-->
 					<div class="funcation">
 						<img src={% static "dashboard/img/funcation.png" %} alt="计算公式" />
@@ -160,11 +160,11 @@
 				<!--维度展示-->
 				<div id="dimensionality_show" class="viewTableShow">
 					<ul>
-						
+
 					</ul>
 				</div>
 			</div>
-			
+
 			<!--度量-->
 			<div id="measurement">
 				<div id="measurement_title" class="clear">
@@ -173,12 +173,12 @@
 					<div class="dimensionality_hanble">
 						<img src={% static "dashboard/img/select_tra.png" %} alt="操作目录" />
 					</div>
-					
+
 					<!--搜索-->
 					<div class="search">
 						<img src={% static "dashboard/img/search.png" %} alt="搜索" />
 					</div>
-					
+
 					<!--计算公式-->
 					<div class="funcation">
 						<img src={% static "dashboard/img/funcation.png" %} alt="计算公式" />
@@ -194,26 +194,26 @@
 				<!--度量展示-->
 				<div id="measure_show" class="viewTableShow">
 					<ul>
-						
+
 					</ul>
 				</div>
 			</div>
-			
+
 			<!--指标-->
 			<div id="indicator" class="clear">
 				<div id="indicator_title">
 					<p>指标</p>
 				</div>
-				
+
 				<!--指标展示-->
 				<div id="index_show">
 					<ul>
-						
+
 					</ul>
 				</div>
 			</div>
 			<!--参数-->
-			
+
 			<div id="parameter">
 				<div id="parameter_title">
 					<p>参数</p>
@@ -221,13 +221,13 @@
 				<!--参数展示-->
 				<div id="parameter_show">
 					<ul>
-						
+
 					</ul>
 				</div>
 			</div>
 		</div>
-		
-		
+
+
 	<!-- 视图区域-->
 	<div class="handleAll_wrap">
 			<!--视图区域-->
@@ -241,7 +241,7 @@
 						<img src={% static "dashboard/img/row.png" %}/>
 						<span>行</span>
 						</div>
-						
+
 						<!---->
 						<div id="row_icon_tra" class="drag_main_icon_second">
 							<img src={% static "dashboard/img/delete_small.png" %}/>
@@ -250,9 +250,9 @@
 					<!--注释内容-->
 					<div class="annotation_text drop_view droptrue" id="drop_row_view"><span class="drag_text">请拖入左边的字段</span></div>
 				</div>
-				
+
 			</div>
-			
+
 			<!--行列拖拽区域-->
 			<div id="drag_col" class="drag_main ">
 				<div id="drap_row_title" class="drag_main_title">
@@ -261,7 +261,7 @@
 						<img src={% static "dashboard/img/Column.png" %}/>
 						<span>列</span>
 						</div>
-						
+
 						<!---->
 						<div id="col_icon_tra" class="drag_main_icon_second">
 							<img src={% static "dashboard/img/delete_small.png" %}/>
@@ -278,7 +278,7 @@
 						<img src={% static "dashboard/img/index.png" %}/>
 						<span>指标</span>
 						</div>
-						
+
 						<!---->
 						<div id="index_icon_tra" class="drag_main_icon_second">
 							<img src={% static "dashboard/img/delete_small.png" %}/>
@@ -295,7 +295,7 @@
 						<img src={% static "dashboard/img/mark.png" %}/>
 						<span>标记</span>
 						</div>
-						
+
 						<!---->
 						<div id="parameter_icon_tra" class="drag_main_icon_second">
 							<img src={% static "dashboard/img/delete_small.png" %}/>
@@ -314,61 +314,40 @@
 						<span  class="handle_bj">详细</span>
 						<img src={% static "dashboard/img/details.png" %} alt="详细" />
 					</div>
-					
+
 					<!--提示-->
 					<div id="reminder" class="handle_one drop_view" >
 						<span  class="handle_bj">提示</span>
 						<img src={% static "dashboard/img/prompt.png" %} alt="提示" />
 					</div>
 				</div>
-				
-				
+
+
 				<!--注释文字-->
 				<div class="annotation_text drop_view droptrue " id="handle_color_text">
 					<span class="drag_text">请拖入左边的字段</span>
-					
-					
+
+
 				</div>
 			</div>
-			
-			
-			
-			
+
+
+
+
 			</div>
 		</div>
-		
+
 		<!--视图展示区域-->
 		<div id="view_show_area">
-			<div class="MoMInfo">
-					<div class="monHeader">
-						<div class="unitSelectDiv">
-							<select class="custom-select">
-								<option value="年">年</option>
-								<option value="季">季</option>
-								<option value="月">月</option>
-								<option value="周">周</option>
-							</select>
-						</div>
-						<div class="filedSelectdiv">
-							<input type="text" placeholder="输入字段"/>
-						</div>
-						<div class="productBtn">环比</div>
-					</div>	
-				</div>
-				<div class="momshowArea">
-						<table>
-							<thead><tr class="title"><th>环比视图</th></tr><tr class="use"></tr></thead>
-							<tbody></tbody>
-						</table>
-			</div>
+
 			<div id="view_show_area_content" class="drop_view">
-			
-				
+
+
 				<!--提示框-->
 				<div id="view_show_empty">
 					当前图表无数据
 				</div>
-				
+
 				<!-- 表标题的增加 修改 -->
 				<div class="tableView_name">
 					<h4>添加表标题</h4>
@@ -381,7 +360,7 @@
 
 					<!-- echarts图形展示 -->
 					<div id="main" style="width: 100%;height: 100%;display: none"></div>
-					
+
 					{% include "dashboard/dashBorad_table.html" %}
 
 				</div>
@@ -391,28 +370,28 @@
 						<span class="drillDown">下钻</span>
 						<ul class="drillSelctionList"></ul>
 				</div>
-			</div>	
+			</div>
 		</div>
-		
+
 	</div>
-		
+
 		<!--筛选器-->
 		<div id="sizer">
-			
+
 			<div id="sizer_title">
 				<div id="sizer_wrap">
 					<img src={% static "dashboard/img/sxq.png" %} alt="sizer" />
 					<!--line-->
 					<div class="sizer_line"></div>
 				</div>
-			
+
 				<div id="project">
 					<img src={% static "dashboard/img/design.png" %} alt="project"/>
 					<!--line-->
 					<div class="sizer_line"></div>
 				</div>
 			</div>
-			
+
 			<!--筛选器内容区域-->
 			<div id="sizer_place">
 				<!--视图操作区域-->
@@ -421,36 +400,57 @@
 					<div id="project_chart_title">
 						<h5>图表</h5>
 					</div>
-					
+
 					<!--视图icon-->
 					<ul>
-						
+
 					</ul>
 					<div class="clear"></div>
 					<!--line-->
 					<div id="project_show_line"></div>
 					{% include "dashboard/chartSetting.html" %}
 				</div>
-				
-				
-				
+
+
+
 				<!--筛选器-->
 				<div id="sizer_content">
 					<div class="filter_header_div">
-						<span class="floatLeft logoFlag">筛选器</span>
+						<span class="floatLeft logoFlag">智能筛选</span>
 						<span class="cubeTableName floatLeft"></span>
 						<div class="filter_content_btn">
 							<img src = {% static "dashboard/img/3filter_content.png" %} alt="" />
 						</div>
+						<div class="bottomLine"></div>
+					</div>
+					<div class="dateSelectDataModule">
+							<div class="fieldSelectPart">
+									<p>维度</p>
+									<div class="fieldSelect-box">
+											<select class="custom-select"></select>
+									</div>
+
+							</div>
+							<div class="startDatePart">
+								<p>开始</p>
+								<div class="startDateInput-box">
+										<input type="text" class="startDateInput">
+								</div>
+							</div>
+							<div class="endDatePart">
+								<p>结束</p>
+								<div class="endDateInput-box">
+										<input type="text" class="endDateInput">
+								</div>
+							</div>
 					</div>
 					<div class="filter_body_div">
-						<p class="cubeTableName"></p>
 						<ul class="table_field_list">
-							
+
 						</ul>
 					</div>
 				</div>
-								
+
 				<!--提示-->
 				<div id="sizer_mpt">
 					<img src={% static "dashboard/img/sxq-sel-tis.png" %} alt="sizer_mpt" />
@@ -484,12 +484,12 @@
 					<div id="key_search_img_wrap"><img src={% static "images/contentFilter/search.png" %} alt="关键字搜索"></div>
 				</div>
 				<div id="show_excel_name">
-					
+
 				</div>
 			</div>
 			<!-- 取消保存按钮 -->
 			<div id="save_view_handle" class="clear">
-				
+
 				<!-- 隐藏显示新建报表 -->
 				<div class="show_view_if_hide">新建报表</div>
 
