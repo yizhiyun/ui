@@ -334,6 +334,9 @@
 
 				view_name = null;
 
+				save_now_show_view_text =  null;
+
+				click_view_icon = false;
 				//移除指标恢复拖拽滚动
 				if($(".drop_view").hasClass("ui-droppable")){
 					var disabled = $(".drop_view").droppable("option", "disabled");

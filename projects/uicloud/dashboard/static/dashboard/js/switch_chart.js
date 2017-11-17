@@ -74,6 +74,10 @@ function beginDrawChart(edit_view){
 			$("#view_show_empty").show();
 			$("#view_show_area #view_show_area_content .tableView_name h4").html("添加表标题");
 			$("#view_show_area #view_show_area_content .tableView_name").css("color","#B4B4B4").hide();
+			save_now_show_view_text =  null;
+			click_view_icon =false;
+			spinner.stop();
+			return;
 		}
 	
 
