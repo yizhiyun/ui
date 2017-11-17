@@ -274,7 +274,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         elif newDF.count() == 0:
             return False
         elif newDF.count() < 10000:
-            newDF.coalesce(1).write.parquet(savedPathUrl, mode=mode, partitionBy=partitionBy)
+            newDF.coalesce(1).write.parquet(savedPathUrl, mode=mode)
         else:
             newDF.write.parquet(savedPathUrl, mode=mode)
         return True

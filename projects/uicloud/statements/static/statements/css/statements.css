@@ -112,7 +112,8 @@ html,body{-webkit-user-select:none;}
 .view_show_handle .thumbnail_wrap img{width:198px;float: left;}
 .view_show_handle .thumbnail_wrap .thumbnail_img{width: 180px;height: 140px;margin: 30px 10px 0px 10px;}
 /*表格样式*/
-.new_view_table{min-width: 100%;font-size: 12px;position: relative;left: 0;top: 0;background: white}
+/*.new_view_table{min-width: 100%;font-size: 12px;position: absolute;left: 0;background: white}*/
+.new_view_table{min-width: 100%;font-size: 12px;position: relative;left: 0;top: 0;background: white;}
 .new_view_table .top_column_container,.edit_table .top_column_container{overflow: visible;}
 .new_view_table .top_column_container .top_column_name,.edit_table .top_column_container .top_column_name{text-align: center;font-weight: bold}
 .new_view_table .top_column_container .column_data_list,.edit_table .top_column_container .column_data_list{border-bottom: 1px solid #dedede;border-left: 1px solid #dedede;}
@@ -120,7 +121,7 @@ html,body{-webkit-user-select:none;}
 .new_view_table .top_column_container .column_data_list tr:nth-of-type(1) td,.edit_table .top_column_container .column_data_list tr:nth-of-type(1) td{color: black;}
 .view_table_clone{position: absolute;left: 0px !important;top: 0px !important;}
 
-.new_view_table .left_row_container,.edit_table .left_row_container{position: absolute;top: 10px;left: 10px;}
+.new_view_table .left_row_container,.edit_table .left_row_container{position: absolute;top: 10px;left:40px;top: 40px;}
 .new_view_table .left_row_container table,.edit_table .left_row_container table{border:0px;border-collapse: collapse;overflow: auto;}
 .new_view_table .left_row_container table tr,.edit_table .left_row_container table tr{border-bottom: 1px solid #dedede;}
 .new_view_table .left_row_container table tbody tr,.edit_table .left_row_container table tbody tr {border-right: 1px solid #dedede;}
@@ -137,3 +138,12 @@ html,body{-webkit-user-select:none;}
 .new_view_table .content_body #data_list_for_body li:nth-of-type(even),.edit_table .content_body #data_list_for_body li:nth-of-type(even){background: white;}
 .new_view_table .content_body #data_list_for_body  .measureDiv,.edit_table .content_body #data_list_for_body  .measureDiv{position: absolute;}
 
+/*指标样式*/
+
+.new_view_indexPage{min-width: 100%;font-size: 12px;position: absolute;left: 0;display: none;background: white}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body{width: auto !important;position: static !important;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv{text-align:center;width:100%;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .p0{font-weight: bold;font-size:30px;margin-right:90px;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .sp0{color:black;font-size:50px;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .p1{display: inline-block;font-weight: normal;font-size:30px;margin-left:20px;}
+.new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv .sp1{color:red;font-size:30px;display: inline-block;margin-left:15px;}

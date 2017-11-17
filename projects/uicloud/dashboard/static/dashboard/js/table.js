@@ -22,7 +22,8 @@ var isRowFinished = false;
 var isColumnFinished = false;
 
 function showTable_by_dragData(){
-
+	$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+	$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 	// 绘制行数据
 	function function_draw_row_data(needAllData){
 
@@ -95,7 +96,7 @@ function showTable_by_dragData(){
 						td.addClass(className);
 						$("#text_table_need_show .top_column_container .column_data_list tbody tr."+aColumnName).eq(0).append(td);
 					}
-					
+
 				}
 				if(i == 0){
 					topTitle = topTitle.slice(0,-1);
@@ -354,3 +355,39 @@ function emptyAllTable(){
 	$("#text_table_need_show #data_list_for_body div.vertical_line").remove();
 	$("#text_table_need_show #data_list_for_body li").remove();
 }
+
+function col_card(){
+	$("#view_show_area #view_show_area_content #view_show_wrap #card").show();
+	$("#card").find(".right_module .content_body #data_list_for_body").html("");
+	var current_all_measure = drag_row_column_data["column"]["measure"].concat(drag_row_column_data["row"]["measure"]);
+
+	measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
+
+		$("#text_table_need_show").hide();
+		$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+		$("#card .right_module .content_body #data_list_for_body .measureDiv").remove();
+		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
+		var needAllData = data;
+		for(var i = 0;i < needAllData.length;i++){
+			//console.log(needAllData);
+			var aData = needAllData[i];
+			//console.log(aData);
+			var measureDiv = $("<div class='measureDiv'></div>");
+			//console.log(allMeasure.length);
+			for(var j = 0;j < allMeasure.length;j++){
+				var aMeasure = allMeasure[j];
+				//console.log(aMeasure);
+				if(allMeasure.length < 3){
+					var p = $("<p class=p"+j+">" + aMeasure +"</p>");
+					var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
+					measureDiv.append(p);
+					measureDiv.append(span);
+				}
+				if(j != allMeasure.length - 1){
+					// measureDiv.append("<span class='seperate'>/</span>");
+					measureDiv.append("<br>");
+				}
+			}
+			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
+		}
+	});

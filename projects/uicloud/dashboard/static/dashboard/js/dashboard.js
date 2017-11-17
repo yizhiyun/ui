@@ -298,9 +298,11 @@
 				//清空视图展示区域
 				$("#view_show_wrap #main").hide();
 				$("#view_show_wrap #text_table_need_show").hide();
+				$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 				$("#view_show_area_content #view_show_empty").show();
 				initTable_name();
 				$("#project_chart ul li").data("if_show","").css("border","").css("opacity","0.3");
+
 
 
 				drag_measureCalculateStyle = {};
@@ -335,6 +337,9 @@
 
 				view_name = null;
 
+				save_now_show_view_text =  null;
+
+				click_view_icon = false;
 				//移除指标恢复拖拽滚动
 				if($(".drop_view").hasClass("ui-droppable")){
 					var disabled = $(".drop_view").droppable("option", "disabled");
@@ -433,13 +438,13 @@
 								display: "block",
 							})
 
-
+							md_click_show(reason_old_content.find("li").find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});
 							}
 						}
 					}
 				}
 				//度量更多操作过程
-				md_click_show($(".annotation_text .measure_list_text_left").parent().find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});
+
 				if(indexEdit && indexEdit != "noLocation"){
 					var viewIndexStyle = "indexstyle";
 					var viewIndexType = "indextype";
@@ -3263,29 +3268,48 @@
 		/*gxm-----end*/
 			drag();
 
-
 			//..........................右侧设计样式点击事件
 			dahboardSetting_function();
 
-		 	//..........................视图图标的操作事件
-			//设计视图icon
-			var project_icon = [["文本表","1或多个维度","1或多个度量","show_table"], ["饼图","1个维度","1个度量","show_cake"],["折线图","1个维度","1或多个度量","show_polyline"], ["柱状图","0或多个维度","1或多个度量","show_histogram"],["堆积柱状图","2或3个维度","1个度量","show_storehis"], ["瀑布图","1个维度","1个度量","show_waterfall"],["百分比堆积柱状图","2或3个维度","1个度量","show_percontrasth"], ["条形图","0或多个维度","1或多个度量","show_bar"], ["堆积条形图","2或3个维度","1个度量","show_storebar"], ["对比条形图","1个维度","2个度量","show_contrastbar"], ["百分比堆积条形图","2或3个维度","1个度量","prestorebar"], ["面积图","1个维度","1个度量","show_area"], ["范围图","1个维度","1个度量","show_scale"],["甘特图","1个维度","1个度量","show_gantt"],["雷达图","1个维度","1或多个度量","show_randar"], ["树状图","2或多个维度","1个度量","show_treemap"]];
+		//..........................右侧设计样式点击事件
+		dahboardSetting_function();
+
+	 	//..........................视图图标的操作事件
+		//设计视图icon
+		var project_icon = [["文本表","1或多个维度","1或多个度量","show_table"],["指标卡","0个维度","1或2个度量","show_card"],["饼图","1个维度","1个度量","show_cake"],["折线图","1个维度","1或多个度量","show_polyline"], ["柱状图","0或多个维度","1或多个度量","show_histogram"],["堆积柱状图","2或3个维度","1个度量","show_storehis"], ["瀑布图","1个维度","1个度量","show_waterfall"],["百分比堆积柱状图","2或3个维度","1个度量","show_percontrasth"], ["条形图","0或多个维度","1或多个度量","show_bar"], ["堆积条形图","2或3个维度","1个度量","show_storebar"], ["对比条形图","1个维度","2个度量","show_contrastbar"], ["百分比堆积条形图","2或3个维度","1个度量","prestorebar"], ["面积图","1个维度","1个度量","show_area"], ["范围图","1个维度","1个度量","show_scale"],["甘特图","1个维度","1个度量","show_gantt"],["雷达图","1个维度","1或多个度量","show_randar"], ["树状图","2或多个维度","1个度量","show_treemap"]];
 
 
-			//图表对应生成的视图
-			var save_show_click_change_das = ["showTable_by_dragData()","one_de_one_me_handle('cake')","many_de_many_me_handle('polyline')","many_de_many_me_handle('histogram')","many_de_many_me_handle('number_bar')","one_de_one_me_handle('waterWall')","many_de_many_me_handle('percentage_bar')","many_de_many_me_handle('barChart')","many_de_many_me_handle('number_liner')","many_de_many_me_handle('comparisonStrip')","many_de_many_me_handle('percentage_liner')","one_de_one_me_handle('area')","one_de_one_me_handle('scale')","one_de_one_me_handle('gantt')","many_de_many_me_handle('radarChart')","many_de_many_me_handle('reliationTree')"];
+		//图表对应生成的视图
+		var save_show_click_change_das = ["showTable_by_dragData()","col_card()","one_de_one_me_handle('cake')","many_de_many_me_handle('polyline')","many_de_many_me_handle('histogram')","many_de_many_me_handle('number_bar')","one_de_one_me_handle('waterWall')","many_de_many_me_handle('percentage_bar')","many_de_many_me_handle('barChart')","many_de_many_me_handle('number_liner')","many_de_many_me_handle('comparisonStrip')","many_de_many_me_handle('percentage_liner')","one_de_one_me_handle('area')","one_de_one_me_handle('scale')","one_de_one_me_handle('gantt')","many_de_many_me_handle('radarChart')","many_de_many_me_handle('reliationTree')"];
+
 
 
 			for(var i = 0; i < project_icon.length;i++) {
 
-				var project_icon_list = $("<li class='project_icon_hover'><img alt=" + project_icon[i][0] + "></li>");
 
-				project_icon_list.attr("id",project_icon[i][3]).data("show_view_fun",save_show_click_change_das[i]);
+
+
+			var project_icon_list = $("<li class='project_icon_hover'><img alt=" + project_icon[i][0] + "></li>");
+
+			project_icon_list.attr("id",project_icon[i][3]).data("show_view_fun",save_show_click_change_das[i]);
+
+			if(i == 1){
+				project_icon_list.find("img").attr("src", "/static/dashboard/img/chart_222.png");
+			}else if(i == 0){
 				project_icon_list.find("img").attr("src", "/static/dashboard/img/chart_" + (i + 1) + ".png");
+			}else{
+				project_icon_list.find("img").attr("src", "/static/dashboard/img/chart_" + i + ".png");
+			}
+
 
 				project_icon_list.appendTo($("#project_chart ul"));
 
-			}
+
+
+
+		}
+
+
 
 			$(".project_icon_hover").each(function(index, ele) {
 
