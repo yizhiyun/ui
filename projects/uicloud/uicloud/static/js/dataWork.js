@@ -46,18 +46,22 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 	 }else if(filterType == "tmptables"){
 	 	postUrl = "/cloudapi/v1/uploadedcsv/"+tableInfo.split("_YZYPD_")[1]+"/"+tableInfo.split("_YZYPD_")[2]+"/data"
 	 }else{
-	 	postUrl = "/dataCollection/filterTable/data"
-	 	var dbArr = tableInfo.split("_YZYPD_");
-			handleDataPost = {
-			 "source":dbArr[0],
-    			"database":dbArr[1],
-    			"tableName":dbArr[2],
-			 "expressions":{
-				"exprlist":exprlist
-				}
-		 	}
+		if(handleType == "dashBoard"){
+			postUrl = "/cloudapi/v1/tables/" +tableInfo+"/data";
+		}else{
+			postUrl = "/dataCollection/filterTable/data"
+		 	var dbArr = tableInfo.split("_YZYPD_");
+				handleDataPost = {
+				 "source":dbArr[0],
+	    			"database":dbArr[1],
+	    			"tableName":dbArr[2],
+				 "expressions":{
+					"exprlist":exprlist
+					}
+			 	}
+		}
 	 }
-	 
+
 	 $.ajax({
 	      url:postUrl,
 	      type:"post",
@@ -75,7 +79,7 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 				finish(numberColumn_needValueInfo[tableInfo][field]);
 			}
 	      }
-	   });	
+	   });
 }
 
 // date1>date2 返回bigger，date1 < date2 返回 smaller，date1=date2 返回 equal
@@ -93,5 +97,5 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 //			}
 //		}
 //	}
-//	
+//
 //}

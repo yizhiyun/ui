@@ -57,7 +57,7 @@ function one_de_one_me_handle (chart_type_need) {
 				{
 					  	text: "单位: "+valueUnitValue,
 					  	show:true,
-					  	bottom:70,
+					  	bottom:30,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -220,7 +220,7 @@ function one_de_one_me_handle (chart_type_need) {
 					},
 					  {
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -321,7 +321,7 @@ function one_de_one_me_handle (chart_type_need) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -477,7 +477,7 @@ function one_de_one_me_handle (chart_type_need) {
 				    },
 				    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -735,7 +735,7 @@ function many_de_many_me_handle(chart_type_need){
 					},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -903,7 +903,7 @@ function many_de_many_me_handle(chart_type_need){
 			            handleStyle:{
 			            		color:"#ff7e00"	
 			            },
-			            
+			            // orient:"horizontal",
 			            startValue:0,
 			            endValue:15,
 			            handleSize:12,
@@ -913,7 +913,8 @@ function many_de_many_me_handle(chart_type_need){
 			    			},
 			    			{
 			    			type: 'slider',
-           			 	show: dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25,
+
+           			 	show: false,
            			 	filterMode:"empty",
 			            yAxisIndex: [0],
 			    			}
@@ -954,7 +955,7 @@ function comparisonStrip_generate_fun(){
 					},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1304,7 +1305,7 @@ function comparisonStrip_generate_fun(){
 					},
 						{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1556,7 +1557,7 @@ function comparisonStrip_generate_fun(){
 						option["series"].push(aSeriesData);
 					}	
 					aGrid["containLabel"] = false;
-					aGrid["left"] =  150 + 70*k;
+					aGrid["left"] =  60 + 70*k;
 					aGrid["bottom"] = 60;
 					
 				}
@@ -1721,7 +1722,7 @@ function comparisonStrip_generate_fun(){
 				},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1907,7 +1908,7 @@ function comparisonStrip_generate_fun(){
 					containLabel:true,
 				}
 				aGrid["left"] = "10%";
-				aGrid["bottom"] = 60 + 40*(dimensionality_show_data.length - 1 - i);		
+				aGrid["bottom"] = 60 + 40*(dimensionality_show_data.length - 1 - i);
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
 					var obj = {
@@ -1958,7 +1959,7 @@ function comparisonStrip_generate_fun(){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2180,7 +2181,7 @@ function comparisonStrip_generate_fun(){
 					show:false,
 					
 				}
-				aGrid["left"] = 150 + i * (60 + maxLength);
+				aGrid["left"] = 60 + i * (60 + maxLength);
 				aGrid["bottom"] = 60;	
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
@@ -2226,7 +2227,7 @@ function comparisonStrip_generate_fun(){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2363,7 +2364,7 @@ function comparisonStrip_generate_fun(){
 		    },
 		    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:70,
+					  	bottom:30,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2500,7 +2501,7 @@ function colorsPanelDidSelectedColor(){
 	var op = mycharts.getOption();
 	op.title[1] = {
 		text: "单位: "+valueUnitValue,
-		bottom:70,
+		bottom:30,
 		show:true,
 		textStyle:{
 			fontSize:14,
@@ -2536,7 +2537,7 @@ function valueUnitDidChangedValue(){
 	var op = mycharts.getOption();
 	op.title[1] = {
 		text: "单位: "+valueUnitValue,
-		bottom:70,
+		bottom:30,
 		show:true,
 		textStyle:{
 			fontSize:14,

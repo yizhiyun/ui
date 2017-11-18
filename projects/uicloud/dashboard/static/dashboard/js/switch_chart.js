@@ -33,6 +33,7 @@ function switch_chart_handle_fun(edit_view){
 
 
 function beginDrawChart(edit_view){
+	console.log(drag_row_column_data)
 	var target =  $("#view_show_wrap").get(0);
     spinner.spin(target);
 	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
@@ -150,7 +151,7 @@ function beginDrawChart(edit_view){
 		view_init();
 		$("#text_table_need_show").show();
 		$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
-		$("#show_bar,#show_histogram").css("opacity","1");
+		// $("#show_bar,#show_histogram").css("opacity","1");
 			change_view_css("#show_table");
 			if(!click_view_icon){
 				save_now_show_view_text = $("#show_table");

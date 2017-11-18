@@ -44,7 +44,7 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 #pageDashboardModule #dashboard_content #lateral_bar .dimensionality_search .dimensionality_search_input{position:absolute;height: 22px;top: 0;left: 23px;width:150px;border-top-right-radius: 11.5px;border-bottom-right-radius: 11.5px;}
 
 .dimensionality_li,.index_li,.parameter_li,.measure_li{list-style: none;width: 100%;height: 23px;font-size: 12px}
-.dimensionality_datatype,.measure_datatype{padding: 0px 5px;width: 18px;height: 23px;float: left;text-align: 
+.dimensionality_datatype,.measure_datatype{padding: 0px 5px;width: 18px;height: 23px;float: left;text-align:
 center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .dimensionality_li img,.index_li img,.parameter_li img,.measure_li img{vertical-align: middle;}
 .set_style{float: left;width: 135px;height: 23px;line-height: 23px;padding:  0px 5px;cursor: pointer;border-radius: 2px;font-size: 12px}
@@ -193,7 +193,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #view_show_area,#operational_view{width: 100%;min-width: 854px;}
 
 /*筛选器*/
-#sizer{width: 210px;position: absolute;top:30px;right: 0;box-sizing:border-box;border: 1px solid #DEDEDE;border-bottom: none;} 
+#sizer{width: 210px;position: absolute;top:30px;right: 0;box-sizing:border-box;border: 1px solid #DEDEDE;border-bottom: none;}
 #project .sizer_line{background:#0d53a4}
 
 #sizer_wrap,#project{width: 105px;height:50px;position: absolute;cursor: pointer;}
@@ -212,10 +212,27 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #sizer_content .filter_header_div span.cubeTableName{margin-left: 10px;font-size: 10px;}
 #sizer_content .filter_header_div div.filter_content_btn{position: absolute;height: 100%;width: 23px;line-height: 35px;right: 0;cursor:pointer;}
 #sizer_content .filter_header_div div.filter_content_btn img{margin-left: 10px;vertical-align: middle;}
+#sizer_content .filter_header_div .bottomLine{position: absolute;height: 1px;background: #dedede;bottom: 0;width: 183px;}
 
-#sizer_content .filter_body_div{font-size: 10px;}
+#sizer_content .dateSelectDataModule{margin: 10px 0 0 10px;background: white; box-shadow: 0px 3px 5px 0px rgba(0,49,98,0.08);width: 180px;height: 120px;}
+#sizer_content .dateSelectDataModule .fieldSelectPart{width: 100%;height: 40px;background: #f5f5f5}
+#sizer_content .dateSelectDataModule .fieldSelectPart>p{color: #808080;float: left;height: 40px;line-height: 40px;width: 35px;text-align: right;font-size: 12px;}
+#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box{float: left;margin-left: 5px;width: 130px;height: 23px;margin-top: 8px}
+#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .combo-select{height: 21px;}
+#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
+
+#sizer_content .dateSelectDataModule .startDatePart{height: 23px;margin-top: 15px;}
+#sizer_content .dateSelectDataModule .startDatePart>p{color: #808080;float: left;height: 23px;line-height: 23px;width: 35px;text-align: right;font-size: 12px;}
+#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box{float: left;margin-left: 5px;width: 130px;border: 1px solid #dedede;height: 21px;border-radius: 2px}
+#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input,#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input{width: 113px;text-indent: 5px}
+#sizer_content .dateSelectDataModule .endDatePart{height: 23px;margin-top: 5px;}
+#sizer_content .dateSelectDataModule .endDatePart>p{color: #808080;float: left;height: 23px;line-height: 23px;width: 35px;text-align: right;font-size: 12px;}
+#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box{float: left;margin-left: 5px;width: 130px;border: 1px solid #dedede;height: 21px;border-radius: 2px}
+#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box .ui-datepicker-trigger,#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box .ui-datepicker-trigger{vertical-align: middle;}
+
+#sizer_content .filter_body_div{font-size: 10px;margin-top: 5px;}
 #sizer_content .filter_body_div p {height:20px;line-height: 20px;border-top: 1px solid #DEDEDE;}
-#sizer_content .filter_body_div p.cubeTableName{font-size: 12px;text-indent: 10px;}
+/*#sizer_content .filter_body_div p.cubeTableName{font-size: 12px;text-indent: 10px;}*/
 #sizer_content .filter_body_div ul.table_field_list li .field_header_div{position: relative;height: 23px;}
 #sizer_content .filter_body_div ul.table_field_list li .openAndCloseImg{position: absolute;left: 10px;top: 9px;}
 #sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv{position: absolute;left: 25px;height: 23px;width: 165px;}
@@ -360,5 +377,3 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 /*标记icon展示替换*/
 .change_lable_icon{width:25px;height: 23px;background: #FF7E00;float: left;}
-
-

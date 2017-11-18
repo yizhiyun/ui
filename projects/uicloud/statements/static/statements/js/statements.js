@@ -691,6 +691,23 @@
 	                         		if($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main").hasClass("new_view_indexPage")){
 	                         			$(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_indexPage").find(".right_module").css("marginTop",($(".new_view_indexPage").parent().height()-30)/2 - 80 + "px");
 	                         		}
+
+
+	                         		//判断视图区域过小隐藏小部件
+	                         		if($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").height() < 320){
+	                         			var myChartsChange = echarts.getInstanceByDom($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main").get(0));
+	                         			myChartsChange.setOption({
+	                         				toolbox:{
+	                         					show:false,
+	                         				},
+
+	                         			});
+
+	                         			console.log(myChartsChange.series)
+	                         		}
+
+
+
 	                         	},
 	                         	stop:function(event,ui){
 	                         	//获取所有视图的位置大小信息
@@ -778,7 +795,6 @@
 			})
 
 		}
-		var ceshiha = null;
 	function view_change_click_mou(ele){
 				if(!$(ele).hasClass("now_click_view") && $(ele).data("table_show") != "false"){
 					cookie_view_each();
@@ -818,7 +834,7 @@
 				}
 			}
 
-var ceshiha = null;
+
 	function cookie_view_each(){
 				$("#statements_left_bar_area .statement_li .view_show_content .view_show_handle").unbind("mouseenter mouseleave");
 				$(".cookie_handle_view .view_show_handle").each(function(index,ele){
