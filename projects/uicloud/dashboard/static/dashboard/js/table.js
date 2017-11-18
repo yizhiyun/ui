@@ -345,9 +345,9 @@ function layout_table_size(){
 		// 左侧行设置 th 的高度
 		var top_height = $("#text_table_need_show .right_module .top_column_container").eq(0).height();
 		$("#text_table_need_show .left_row_container table th").css("height",top_height -1);
-		// setTimeout(function(){
-		// 	 spinner.stop();
-		// },100)
+		setTimeout(function(){
+			 spinner.stop();
+		},100)
 }
 
 

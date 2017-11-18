@@ -91,11 +91,6 @@
 		var saveTypeElement = null;
 
 
-		//临时记录数据源的数据
-
-		var tempDataAll = {};
-
-
 		//判断仪表板是否删除过视图
 
 		var statementsToView =  null;
@@ -1126,6 +1121,7 @@
 							 $("#pageDashboardModule #view_save_up #show_excel_name").html("");
 							 $("#pageDashboardModule #body_content_shadow").hide();
 							 clickViewTo($(nowDeleteElement).attr("title"));
+							 console.log(saveViewShowArr)
 						}else{
 							alert("保存失败");
 						}
@@ -1358,8 +1354,10 @@
 						empty_viem_init("change");
 						isDisaed = false;
 						saveScameView =true;
-						load_measurement_module(cube_select.val());
+						load_measurement_module(cube_select.val(),"changeData");
 					}
+					// $("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search").hide();
+					// $("#pageDashboardModule #dashboard_content #lateral_bar #measurement .dimensionality_search").hide();
 				});
 			}
 
@@ -1386,7 +1384,7 @@
 					success:function(data){
 						if(data.status == "success"){
 							filterNeedAllData = data.results.data[0];
-							tempDataAll = data.results.data[0];
+							
 						}
 					}
 				})
@@ -1394,7 +1392,7 @@
 
 
 			// 加载维度、度量等，需要在 select 加载完毕之后
-			function load_measurement_module(current_cube){
+			function load_measurement_module(current_cube,changeData){
 				// 之前选择过的数据块  内存保存一份
 				// 记录当前操作数据块的名称
 				current_cube_name = current_cube;
@@ -1402,9 +1400,8 @@
 
 				if (_cube_all_data[current_cube_name]) {
 					var schema = _cube_all_data[current_cube_name]["schema"];
-					if(!saveScameView){
-						filterNeedAllData = tempDataAll;
-					}
+
+					getFilterAllData();
 					factory_create_li_to_measurement_module(schema);
 					if(!if_or_load){
 						// $("#dashboard_content #new_view ul").html("");
@@ -2036,14 +2033,39 @@
 				//搜索功能
 				$("#pageDashboardModule #dashboard_content #lateral_bar .search").click(function(event){
 					event.stopPropagation();
-					$(this).parent().parent().find(".dimensionality_search").toggle(300);
-					if($(this).parent().find(".dimensionality_search").css("display") == "block"){
-						$(this).parent().find(".viewTableShow").height($(this).parent().height() - $(this).parent().children(".dimensionality_search").height() - 32);
+					if($(this).parents(".mdContent").find(".dimensionality_search").css("display") == "block"){
+						$(this).parents(".mdContent").find(".dimensionality_search").hide(300);
+
+						$(this).parents(".mdContent").find(".viewTableShow").animate({
+							"height":$(this).parents(".mdContent").height() - 32 + "px",
+						},300);
+					
 					}else{
-						$(this).parent().find(".viewTableShow").height($(this).parent().height() - 32);
+						$(this).parents(".mdContent").find(".dimensionality_search_input").focus();
+						$(this).parents(".mdContent").find(".dimensionality_search").show(300);
+						$(this).parents(".mdContent").find(".viewTableShow").stop(true).animate({
+							"height":$(this).parents(".mdContent").height() - 22 - 32 + "px",
+						},300);
 					}
 
 				})
+				inputSearch($("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search_input"),"dimensionality_list_text_left",$("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality #dimensionality_show ul"),"md");
+				inputSearch($("#pageDashboardModule #dashboard_content #lateral_bar #measurement .dimensionality_search_input"),"measure_list_text_left",$("#pageDashboardModule #dashboard_content #lateral_bar #measurement #measure_show ul"),"md");
+				
+
+				// $("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search_input").on("focusout",function(event){
+				// 	$("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search").hide(300,function(){
+				// 		$("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .viewTableShow").height($("#pageDashboardModule #dashboard_content #lateral_bar #measurement").height() -32);
+				// 	});
+				// })
+
+				// $("#pageDashboardModule #dashboard_content #lateral_bar #measurement .dimensionality_search_input").on("focusout",function(){
+				// 	$("#pageDashboardModule #dashboard_content #lateral_bar #measurement .dimensionality_search").hide(300,function(){
+				// 		$("#pageDashboardModule #dashboard_content #lateral_bar #measurement .viewTableShow").height($("#pageDashboardModule #dashboard_content #lateral_bar #measurement")-32);
+				// 	});
+				// })
+
+
 			}
 			mdHandleFun();
 
@@ -2076,6 +2098,7 @@
 				if(!$(e.target).is($("#buildBoard")) && !$(e.target).is($("#build_show")) && !$(e.target).is($("#buildBoard_content")) && !$(e.target).is($("#select_show")) && !$(e.target).is($("#buildBoard_content img")) && $(e.target).parent("#buildBoard").length === 0) {
 					$("#buildBoard_buildOpa").css("display", "none");
 				}
+
 			})
 		/*end---视图大小调整  select 下拉框*/
 
@@ -3486,6 +3509,7 @@
 						saveViewShowArr[post_dict["foldername"]] = [];
 						$(".gridster").html("");
 						$(".gridster").append($("<ul></ul>"));
+						saveViewShowArr = {};
 						 //移除编辑视图storage
 						 sessionStorage.removeItem("edit_view_now");
 						 $("#pageDashboardModule #view_save_up").hide();
@@ -3518,11 +3542,13 @@
 							reporttingFunction_abale();
 							$(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
 							changePageTo_navReporttingView(false);
+							 saveViewShowArr = {};
 							 //移除编辑视图storage
 							 sessionStorage.removeItem("edit_view_now");
 						 	$("#pageDashboardModule #view_save_up").hide();
 							$("#pageDashboardModule #view_save_up #show_excel_name").html("");
 							$("#pageDashboardModule #body_content_shadow").hide();
+
 							return;
 						}
 
@@ -3537,7 +3563,7 @@
 							post_dict["foldername"] =  $(".auto_show").data("edit_view").split(",")[1];
 							delete post_dict["defaultparent"];
 							saveViewToWall(post_dict);
-							return;
+														return;
 						}
 
 					}

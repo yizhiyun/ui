@@ -29,7 +29,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
  	
 	 // 一个维度一个度量
 	function waterWall_generate_fun(storeNum_toview){
-		
+		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			mycharts.showLoading({
 				  text: '数据获取中',
@@ -60,7 +60,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -72,6 +72,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			   	 	data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 			   	 	left:"center",
 			   	 	bottom:0,
+			   	 	width:"60%",
 			    },
 			    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 			 	tooltip : {
@@ -100,21 +101,21 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			    grid: {
 			        containLabel: true
 			    },
-			    // toolbox: {
-			    //     show: true,
-			    //     feature: {
-			    //         dataView: {readOnly: true},
-			    //         restore: {},
-			    //         saveAsImage: {
-			    //         	title:"保存为png"
-			    //         }
-			    //     },
-			    //     orient:"vertical",
-			    //     right:20,
-			    //     top:"middle",
-			    //     itemSize:20,
-			    //     itemGap:30
-   				// },
+			    toolbox: {
+			        show: true,
+			        feature: {
+			            dataView: {readOnly: true},
+			            restore: {},
+			            saveAsImage: {
+			            	title:"保存为png"
+			            }
+			        },
+			        orient:"vertical",
+			        right:20,
+			        top:"middle",
+			        itemSize:20,
+			        itemGap:30
+   				},
    				
 			    xAxis: {
 			        type : 'category',
@@ -201,6 +202,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                elementContent($("."+tempSaveClassName+""),option);	
+                
+                
             }, 400)
 		});
 	}
@@ -208,7 +212,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 	//  饼图
 	function  cake_generate_fun (storeNum_toview) {
 			
-		
+		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			mycharts.showLoading({
 				  text: '数据获取中',
@@ -231,7 +235,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					},
 					  {
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -271,7 +275,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 						type: 'scroll',
 						left: 'center',
 						bottom:0,
-						data: dimensionality_need_show
+						data: dimensionality_need_show,
+						width:"60%",
 					},
 					color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 					series: [{
@@ -307,6 +312,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+               // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
+
             }, 400)
 				
 				
@@ -316,7 +324,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 	
 	// 4、面积图
 	function area_generate_fun (storeNum_toview) {
-
+		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
@@ -339,7 +347,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -364,6 +372,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 					left: 'center',
 					bottom:0,
+					width:"60%",
 				},
 				toolbox: {
 			        show: true,
@@ -461,6 +470,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+               // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)
 		});
 		
@@ -471,7 +482,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 
 
  function gantt_generate_fun(storeNum_toview){
- 	
+ 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
@@ -502,7 +513,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				    },
 				    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -513,7 +524,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				    legend:{
 				    		data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 				    		left:"center",
-				    		bottom:0
+				    		bottom:0,
+				    		width:"60%",
 				    },
 				    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 					toolbox: {
@@ -649,6 +661,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)
 		});
 		
@@ -747,6 +761,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 	
 	// 1、折线图
 	function polyLine_generate_fun(storeNum_toview){
+			var tempSaveClassName = viewshow_class;
 			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
@@ -762,7 +777,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 					},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -795,7 +810,8 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 	    			legend: {
 	       		 	data:commonLegend,
 	       		 	left:"center",
-	       		 	bottom:0
+	       		 	bottom:0,
+	       		 	width:"60%",
 	    			},
 	    			 grid: {
 			        containLabel: true
@@ -925,6 +941,8 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)
 			});
 					
@@ -932,7 +950,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 
 //2、对比条形图
 function comparisonStrip_generate_fun(storeNum_toview){
-
+			var tempSaveClassName = viewshow_class;
 			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
@@ -962,7 +980,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -974,6 +992,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						data: commonLegend,
 						left:"center",
 						bottom:0,
+						width:"60%",
 						textStyle: {
 							color: '#00000',
 						},
@@ -1237,6 +1256,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)
 			});	
 }
@@ -1252,7 +1273,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
  	function stackedBar_generate_fun(bar_type,storeNum_toview){
 
  		var  chartTile = {"number_bar":"堆积柱状图","number_liner":"堆积条形图","percentage_bar":"百分比堆积柱","percentage_liner":"百分比堆积条形"}
- 					
+ 			var tempSaveClassName = viewshow_class;		
 			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
@@ -1319,7 +1340,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 						{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1330,7 +1351,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					legend:{
 						data:[drag_measureCalculateStyle_arr[storeNum_toview][measureName]],
 						left:'center',
-						bottom:0
+						bottom:0,
+						width:"60%",
 					},
 					 grid: [],
 					toolbox: {
@@ -1630,6 +1652,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)
 				
 			});
@@ -1640,7 +1664,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 
 // 关系图
 	function reliationTree_generate_fun(storeNum_toview){
-		
+		var tempSaveClassName = viewshow_class;
 		var categorys = [];// 分类，主要用作图例
 		var need_all_nodes = []; // 所需要的所有节点
 		var need_all_link = [];
@@ -1724,7 +1748,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1736,6 +1760,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					data:categorys,
 					left:"center",
 					bottom:0,
+					width:"60%",
 					type:'scroll',
 				}],
 				toolbox: {
@@ -1802,13 +1827,15 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)
 		}
 	}
 
 // 柱状图
 	function histogram_generate_fun(storeNum_toview){
-		
+		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
@@ -1957,7 +1984,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1984,7 +2011,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			   legend: {
 			        data: commonLegend,
 					left:"center",
-					bottom:0
+					bottom:0,
+					width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 			    dataZoom:[
@@ -2040,6 +2068,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)			
 		});
 	}
@@ -2047,6 +2077,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 	
 	// 条形图 
 	function barChart_generate_fun(storeNum_toview){
+		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
@@ -2200,7 +2231,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2227,7 +2258,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    legend: {
 			        data: commonLegend,
 			        left:"center",
-			        bottom:0
+			        bottom:0,
+			        width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 				toolbox: {
@@ -2287,6 +2319,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)
 
 
@@ -2294,6 +2328,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 	}
 	//  雷达图
 	function radarChart_generate_fun(storeNum_toview){
+		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
@@ -2334,7 +2369,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		    },
 		    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2366,7 +2401,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		    legend: {
 		        data: commonLegend,
 		        left:"center",
-		        bottom:0
+		        bottom:0,
+		        width:"60%",
 		    },
 		    	color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 			toolbox: {
@@ -2398,6 +2434,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
+                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+                elementContent($("."+tempSaveClassName+""),option);
             }, 400)
 			
 		});

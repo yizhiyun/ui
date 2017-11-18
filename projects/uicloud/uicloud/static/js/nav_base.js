@@ -30,7 +30,9 @@ function inputSearch(ele,activeClass,showContent,md){
 
     if(search_input_data == ""){
       $(showContent).children().css("display","block");
-      	$("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
+      	if(md != "md"){
+      		$("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
+      	}
       return;
     }
 
@@ -58,7 +60,9 @@ function inputSearch(ele,activeClass,showContent,md){
 
     }
 
-   	$("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
+   	if(md != "md"){
+   		$("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
+   	}
 
   })
 }
