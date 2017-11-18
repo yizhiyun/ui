@@ -399,4 +399,7 @@ function col_card(){
 		}
 	})
 
+		setTimeout(function(){
+			 spinner.stop();
+		},100)
 }
