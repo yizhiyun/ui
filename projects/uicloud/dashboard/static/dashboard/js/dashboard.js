@@ -105,7 +105,9 @@
 
 		// 记录当前集合表中的日期字段
 		var currentSetTableDateFieldArray = [];
-
+		var currentSetTableDateFieldName = null;
+		var currentSetTableDateMinDate = null;
+		var currentSetTableDateMaxDate = null;
 		//保存视图触发事件
 		function save_btn_fun(){
 			$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -1452,13 +1454,20 @@
 							}
 						});
 				}
+				// 清空右侧智能筛选选择的日期
+				function emptySetTableDateSelectRecordFunction(){
+					 currentSetTableDateFieldArray = [];
+					 currentSetTableDateFieldName = null;
+					 currentSetTableDateMinDate = null;
+					 currentSetTableDateMaxDate = null;
+				}
 
 				//2、工厂，根据数据去创建 维度和度量等的 Li
 				function factory_create_li_to_measurement_module(schema){
 					// 清空展示区域
 				$("#dimensionality #dimensionality_show ul").html("");
 				$("#measurement #measure_show ul").html("");
-					currentSetTableDateFieldArray = [];
+					emptySetTableDateSelectRecordFunction();
 					for (var i = 0; i < schema.length;i++) {
 						var column_name_info = schema[i];
 						var  _name = column_name_info["field"]; // 字段名
@@ -1736,47 +1745,49 @@
 								out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).unbind("click");
 								out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).click(function(event){
 									event.stopPropagation();
-									$(".me_out_content").remove();
-									open_or_close = true;
-									$("#editMeasureCalculateView .dimensionalityFiled").show();
-									$("#editMeasureCalculateView .edit_measure_body").hide();
-									// 添加日期选项
-									$("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").empty();
-									for (var i =0;i < currentSetTableDateFieldArray.length;i++) {
-										var op = $("<option>"+currentSetTableDateFieldArray[i]+"</option>");
-										$("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").append(op);
-									}
-									$("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").comboSelect();
-									$("#editMeasureCalculateView .dimensionalityFiled .combo-select").eq(0).width(200);
-									event.stopPropagation();
-									$("#editMeasureCalculateView").show(0,function(){
-										$(".maskLayer").show();
-									})
-
-									//取消点击事件
-									$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").unbind("click");
-									$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").click(function(event){
-										event.stopPropagation();
-										$("#editMeasureCalculateView").hide();
-										$(".maskLayer").hide();
-									});
-
-									//确定点击事件,出现同比
-									$("#editMeasureCalculateView .common-filer-footer .confirmBtn").unbind("click");
-									$("#editMeasureCalculateView .common-filer-footer .confirmBtn").click(function(event){
-										event.stopPropagation();
-										var dateField = $(this).parents("#editMeasureCalculateView").eq(0).find("div select.timeDimensionality").eq(0).val();
-										var dateRange = $(this).parents("#editMeasureCalculateView").eq(0).find("div div.withSelect p.active").eq(0)
-									})
-
-
-									//选择类型切换
-									  $("#editMeasureCalculateView .dimensionalityFiled .withSelect .radio").click(function(){
-	    									if (!$(this).hasClass("active")) {
-	      									$(this).siblings(".radio").removeClass("active");
-	      									$(this).addClass("active");
-	   									 }
-	 								 })
+									 isNeedShowTongBiOption = true;
+									 isNeedShowHuanBiOption = true;
+									// $(".me_out_content").remove();
+									// open_or_close = true;
+									// $("#editMeasureCalculateView .dimensionalityFiled").show();
+									// $("#editMeasureCalculateView .edit_measure_body").hide();
+									// // 添加日期选项
+									// $("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").empty();
+									// for (var i =0;i < currentSetTableDateFieldArray.length;i++) {
+									// 	var op = $("<option>"+currentSetTableDateFieldArray[i]+"</option>");
+									// 	$("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").append(op);
+									// }
+									// $("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").comboSelect();
+									// $("#editMeasureCalculateView .dimensionalityFiled .combo-select").eq(0).width(200);
+									// event.stopPropagation();
+									// $("#editMeasureCalculateView").show(0,function(){
+									// 	$(".maskLayer").show();
+									// })
+                  //
+									// //取消点击事件
+									// $("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").unbind("click");
+									// $("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").click(function(event){
+									// 	event.stopPropagation();
+									// 	$("#editMeasureCalculateView").hide();
+									// 	$(".maskLayer").hide();
+									// });
+                  //
+									// //确定点击事件,出现同比
+									// $("#editMeasureCalculateView .common-filer-footer .confirmBtn").unbind("click");
+									// $("#editMeasureCalculateView .common-filer-footer .confirmBtn").click(function(event){
+									// 	event.stopPropagation();
+									// 	var dateField = $(this).parents("#editMeasureCalculateView").eq(0).find("div select.timeDimensionality").eq(0).val();
+									// 	var dateRange = $(this).parents("#editMeasureCalculateView").eq(0).find("div div.withSelect p.active").eq(0)
+									// })
+                  //
+                  //
+									// //选择类型切换
+									//   $("#editMeasureCalculateView .dimensionalityFiled .withSelect .radio").click(function(){
+	    						// 			if (!$(this).hasClass("active")) {
+	      					// 				$(this).siblings(".radio").removeClass("active");
+	      					// 				$(this).addClass("active");
+	   							// 		 }
+	 								//  })
 
 
 
@@ -1914,6 +1925,7 @@
 			// 默认显示一个月的时间
 			function sizeWrapModuleDateHandleFunction(){
 					var theSelect = $("#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .custom-select").eq(0);
+					currentSetTableDateFieldName = theSelect.val();
 					dataHandleWork("dashBoard",current_cube_name,theSelect.val(),"dateType",function(data){
 						var backgroundMinDate = new Date(data.min);
 						var backgroundMaxDate = new Date(data.max);
@@ -1959,7 +1971,17 @@
 								 showOn: "both",
 								 buttonImageOnly: true
 						});
-
+						currentSetTableDateMinDate = $("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val();
+						currentSetTableDateMaxDate = $("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val();
+						// 监测日期发生变化的时候
+						$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input,#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").unbind("change");
+						$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input,#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").change(function(){
+							// var dateValueArr = $(this).val().split("/");
+							// $("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).dateRangeSlider("min",new Date( dateValueArr[0], Number(dateValueArr[1]) - 1, dateValueArr[2]));
+							// emptySetTableDateSelectRecordFunction
+	 					  currentSetTableDateMinDate = $("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val().replace(/\//g,"-");
+	 					  currentSetTableDateMaxDate = $("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val().replace(/\//g,"-");
+						});
 					});
 			}
 
