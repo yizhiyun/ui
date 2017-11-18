@@ -59,7 +59,7 @@ function one_de_one_me_handle (chart_type_need) {
 				{
 					  	text: "单位: "+valueUnitValue,
 					  	show:true,
-					  	bottom:30,
+					  	bottom:0,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -70,6 +70,8 @@ function one_de_one_me_handle (chart_type_need) {
 			   	 	data:[drag_measureCalculateStyle[need_handle_measureName]],
 			   	 	left:"center",
 			   	 	bottom:0,
+			   	 	width:"60%",
+
 			    },
 			    color:allColorsDict[currentColorGroupName],
 			 	tooltip : {
@@ -197,7 +199,7 @@ function one_de_one_me_handle (chart_type_need) {
 			            stack: '总量',
 			            label: {
 			                normal: {
-			                    show:dimensionality_need_show.length < 25,
+			                    show:dimensionality_need_show.length < 25 ,
 			                    position: 'top',
 			                    formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -216,6 +218,7 @@ function one_de_one_me_handle (chart_type_need) {
 				mycharts.clear();
 
 				mycharts.setOption(option);
+				spinner.stop();
 		});
 	}
 
@@ -238,7 +241,7 @@ function one_de_one_me_handle (chart_type_need) {
 					},
 					  {
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -295,7 +298,8 @@ function one_de_one_me_handle (chart_type_need) {
 						type: 'scroll',
 						left: 'center',
 						bottom:0,
-						data: dimensionality_need_show
+						data: dimensionality_need_show,
+						width:"60%",
 					},
 					color:allColorsDict[currentColorGroupName],
 					series: [{
@@ -330,6 +334,8 @@ function one_de_one_me_handle (chart_type_need) {
 
 				mycharts.setOption(option);
 
+				spinner.stop();
+
 		});
 
 	}
@@ -352,7 +358,7 @@ function one_de_one_me_handle (chart_type_need) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -395,6 +401,7 @@ function one_de_one_me_handle (chart_type_need) {
 					data:[drag_measureCalculateStyle[need_handle_measureName]],
 					left: 'center',
 					bottom:0,
+					width:"60%",
 				},
 				toolbox: {
 			        show: true,
@@ -490,6 +497,7 @@ function one_de_one_me_handle (chart_type_need) {
 			mycharts.clear();
 
 			mycharts.setOption(option);
+			spinner.stop();
 		});
 
 
@@ -523,7 +531,7 @@ function one_de_one_me_handle (chart_type_need) {
 				    },
 				    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -534,7 +542,8 @@ function one_de_one_me_handle (chart_type_need) {
 				    legend:{
 				    		data:[drag_measureCalculateStyle[need_handle_measureName]],
 				    		left:"center",
-				    		bottom:0
+				    		bottom:0,
+				    		width:"60%",
 				    },
 				    color:allColorsDict[currentColorGroupName],
 					toolbox: {
@@ -686,6 +695,7 @@ function one_de_one_me_handle (chart_type_need) {
 					mycharts.clear();
 
 			 		mycharts.setOption(option);
+			 		spinner.stop();
 		});
 
  }
@@ -795,7 +805,7 @@ function many_de_many_me_handle(chart_type_need){
 					},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -856,7 +866,8 @@ function many_de_many_me_handle(chart_type_need){
 	    			legend: {
 	       		 	data:commonLegend,
 	       		 	left:"center",
-	       		 	bottom:0
+	       		 	bottom:0,
+	       		 	width:"60%",
 	    			},
 	    			grid: [],
 			    color:allColorsDict[currentColorGroupName],
@@ -948,7 +959,7 @@ function many_de_many_me_handle(chart_type_need){
 					var measure = measure_show_data_arr[i];
            			var obj = {name:drag_measureCalculateStyle[all_measure[i]],type:"line",smooth:true,data:measure,label:{
            				normal:{
-           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25,
+           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25 && measure_show_data_arr.length < 3,
            					position:"top",
            					offset:[10,0],
            					formatter:function(params){
@@ -999,7 +1010,10 @@ function many_de_many_me_handle(chart_type_need){
 				//清除上一个图例
 				mycharts.clear();
 
+
 				mycharts.setOption(option);
+				spinner.stop();
+
 			});
 
 	}
@@ -1029,7 +1043,7 @@ function comparisonStrip_generate_fun(){
 					},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1041,6 +1055,7 @@ function comparisonStrip_generate_fun(){
 						data: commonLegend,
 						left:"center",
 						bottom:0,
+						width:"60%",
 						textStyle: {
 							color: '#00000',
 						},
@@ -1318,7 +1333,10 @@ function comparisonStrip_generate_fun(){
 				mycharts.clear();
 
 				mycharts.setOption(option);
+
+				spinner.stop();
 			});
+
 }
 
 
@@ -1392,7 +1410,7 @@ function comparisonStrip_generate_fun(){
 					},
 						{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1403,7 +1421,8 @@ function comparisonStrip_generate_fun(){
 					legend:{
 						data:[drag_measureCalculateStyle[measureName]],
 						left:'center',
-						bottom:0
+						bottom:0,
+						width:"60%",
 					},
 					 grid: [],
 					toolbox: {
@@ -1721,8 +1740,10 @@ function comparisonStrip_generate_fun(){
 			}
 
 				//清除上一个图例
+
 				mycharts.clear();
 				mycharts.setOption(option);
+				spinner.stop();
 
 			});
 
@@ -1811,7 +1832,7 @@ function comparisonStrip_generate_fun(){
 				},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1824,6 +1845,7 @@ function comparisonStrip_generate_fun(){
 					left:"center",
 					bottom:0,
 					type:'scroll',
+					width:"60%",
 				}],
 				toolbox: {
 			        show: true,
@@ -1909,6 +1931,7 @@ function comparisonStrip_generate_fun(){
 			mycharts.clear();
 
 			mycharts.setOption(option);
+			spinner.stop();
 		}
 	}
 
@@ -1951,14 +1974,19 @@ function comparisonStrip_generate_fun(){
 							"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]}],
 							label:{
 								normal:{
-									show:all_dimensionality.length < 25,
+									show:all_dimensionality.length < 25 && all_measure.length < 3,
 									position:"top",
 									formatter:function(params){
 				                    		if(normalUnitValue != -1){
 				                    			return params.value.toFixed(normalUnitValue);
 				                    		}else{
+				                    			// if(params.value > 9999){
+				                    			// 	return params.value/10000 + "万";
+				                    			// }
 				                    			return params.value;
+
 				                    		}
+
 			                   		},
 								}
 							},
@@ -2062,7 +2090,7 @@ function comparisonStrip_generate_fun(){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2116,7 +2144,8 @@ function comparisonStrip_generate_fun(){
 			   legend: {
 			        data: commonLegend,
 					left:"center",
-					bottom:0
+					bottom:0,
+					width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName],
 			    dataZoom:[
@@ -2170,6 +2199,8 @@ function comparisonStrip_generate_fun(){
 			mycharts.clear();
 			mycharts.setOption(option);
 
+			spinner.stop();
+
 		});
 	}
 	var maxLength = 0;
@@ -2217,14 +2248,21 @@ function comparisonStrip_generate_fun(){
 							z:3,
 							label:{
 								normal:{
-									show:dimensionality_show_data.length < 25,
+									show:dimensionality_show_data.length < 25 && all_measure.length < 3,
 									position:"right",
 									formatter:function(params){
 				                    		if(normalUnitValue != -1){
 				                    			return params.value.toFixed(normalUnitValue);
 				                    		}else{
+				                    			// console.log(params.name);
+				                    			// console.log(params.value);
 				                    			return params.value;
 				                    		}
+				                    		// var relVal = params.value;
+				                    		// if(relVal > 9999){
+				                    		// 	return relVal/10000 + "万";
+				                    		// }
+
 			                  		 },
 								}
 							},
@@ -2270,7 +2308,15 @@ function comparisonStrip_generate_fun(){
 						color:"black",
 						rotate:15,
 						fontSize:10,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						// formatter: function (value, index) {
+						//     if (value>=10000){
+						//         return value/10000 + '万';
+						//     }
+						//     else{
+						//         return value ;
+						//     }
+						// }
 					},
 					"data":dimensionality_show_data[i],
 					gridIndex:i
@@ -2328,7 +2374,7 @@ function comparisonStrip_generate_fun(){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2382,7 +2428,8 @@ function comparisonStrip_generate_fun(){
 			    legend: {
 			        data: commonLegend,
 			        left:"center",
-			        bottom:0
+			        bottom:0,
+			        width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName],
 				toolbox: {
@@ -2440,6 +2487,7 @@ function comparisonStrip_generate_fun(){
 
 				//使用刚指定的配置项和数据显示图标
 				mycharts.setOption(option);
+				spinner.stop();
 		});
 	}
 	//  雷达图
@@ -2477,7 +2525,7 @@ function comparisonStrip_generate_fun(){
 		    },
 		    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:30,
+					  	bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2520,7 +2568,8 @@ function comparisonStrip_generate_fun(){
 		    legend: {
 		        data: commonLegend,
 		        left:"center",
-		        bottom:0
+		        bottom:0,
+		        width:"60%",
 		    },
 		    	color:allColorsDict[currentColorGroupName],
 			toolbox: {
@@ -2550,6 +2599,8 @@ function comparisonStrip_generate_fun(){
 		mycharts.clear();
 
 		mycharts.setOption(option);
+
+		spinner.stop();
 
 		});
 	}
@@ -2614,7 +2665,7 @@ function colorsPanelDidSelectedColor(){
 	var op = mycharts.getOption();
 	op.title[1] = {
 		text: "单位: "+valueUnitValue,
-		bottom:30,
+		bottom:0,
 		show:true,
 		textStyle:{
 			fontSize:14,
@@ -2648,15 +2699,8 @@ function normalUnitDidChangeValue(){
 function valueUnitDidChangedValue(){
 	var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
 	var op = mycharts.getOption();
-	op.title[1] = {
-		text: "单位: "+valueUnitValue,
-		bottom:30,
-		show:true,
-		textStyle:{
-			fontSize:14,
-			color:allColorsDict[currentColorGroupName][0]
-		}
-	}
+	op.title[1].text = "单位: "+valueUnitValue;
+
 	if(currentChatType != "percentage_bar" && currentChatType != "percentage_liner"){
 		if(currentChatType == "radarChart"){
 

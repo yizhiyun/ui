@@ -33,7 +33,7 @@ function switch_chart_handle_fun(edit_view){
 
 
 function beginDrawChart(edit_view){
-	console.log(drag_row_column_data)
+
 	var target =  $("#view_show_wrap").get(0);
     spinner.spin(target);
 	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
@@ -306,14 +306,13 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 								$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").hide();
 							}
+						spinner.spin(target);
 //						console.log(save_now_show_view_text)
 						eval(save_now_show_view_text.data("show_view_fun"));
 						var target =  $("#view_show_wrap").get(0);
-    					spinner.spin(target);
+    					
 						view_name = save_now_show_view_text.data("show_view_fun");
-							setTimeout(function(){
-		 						spinner.stop();
-							},200)
+
 						return;
 					}
 				}
@@ -338,9 +337,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 			}
 		}
 
-	setTimeout(function(){
-		 spinner.stop();
-	},200)
+
 
 		return;
 	}else{
@@ -362,9 +359,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 		view_name = save_now_show_view_text.data("show_view_fun");
 		save_now_show_view_text.data("if_show","true");
 		show_btn_change.not(save_now_show_view_text).data("if_show","");
-		setTimeout(function(){
-			 spinner.stop();
-		},200)
+
 	}
 
 
