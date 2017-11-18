@@ -44,7 +44,7 @@ function one_de_one_me_handle (chart_type_need) {
 				var aData = data[i];
 				var value = aData[drag_measureCalculateStyle[need_handle_measureName]];
 				dimensionality_need_show.push(aData[need_handle_dimensionalityName]);
-				measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"tongbi":"同比"+aData[drag_measureCalculateStyle[need_handle_measureName]],"huanbi":"环比"+aData[drag_measureCalculateStyle[need_handle_measureName]]});
+				measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"tongbi":aData["同比"+drag_measureCalculateStyle[need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle[need_handle_measureName]]});
 				measure_help_show.push({"value":count_help / allValueUnitDict[valueUnitValue],"originValue":count_help});
 				count_help += value;
 			}
@@ -845,8 +845,8 @@ function many_de_many_me_handle(chart_type_need){
 									rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
        					}
 								for(var i = 0;i < params.length;i++){
-									var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
-									var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+									var leftTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[i].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+"同比"+":</span></p>";
+									var leftHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[i].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+"环比"+":</span></p>";
 									var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.tongbi)*100).toFixed(2)+"%</p>";
 									var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.huanbi)*100).toFixed(2)+"%</p>";
 									if(isNeedShowTongBiOption){
@@ -1796,8 +1796,8 @@ function comparisonStrip_generate_fun(){
 							"draggable":true,
 							"category":categorys.hasObject("name",aData[need_dimensionality[0]]),
 							"dirllInfo":{"currentField":all_dimensionality[index],"currentValue":aData[all_dimensionality[index]]},
-							"tongbi":aData["同比"+aData[drag_measureCalculateStyle[all_measure[0]]]],
-							"huanbi":aData["环比"+aData[drag_measureCalculateStyle[all_measure[0]]]],
+							"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],
+							"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]],
 							label:{
 								normal:
 								{
