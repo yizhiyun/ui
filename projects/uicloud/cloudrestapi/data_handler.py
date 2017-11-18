@@ -560,7 +560,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
         logger.debug("outputDict length: {0}".format(len(outputDict)))
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     ''' + '''
-    print(getTableInfo('{0}', '{1}', '{2}', {3}))
+    print(getTableInfo('{0}', '{1}', """{2}""", {3}))
     '''.format(userUrl, mode, filterJson, maxRowCount)
 
     return sparkCode
