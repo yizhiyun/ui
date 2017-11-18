@@ -265,6 +265,16 @@ $(function(){
 			finishCallBackFun(false);
 		}
 
+		$("#user-filter-select .common-filer-footer .confirmBtn").click(function(event){
+			event.stopPropagation();
+			// console.log(23423);
+			$("#user-filter-select").hide();
+			$(this).parents(".screeningWasher").eq(0).hide();
+			$(".maskLayer").hide();	
+			
+		})
+		
+
 	});
 	// 编辑--取消的时候
 	$("#filter-model #user-filter-select .close").click(function(event){
@@ -320,10 +330,6 @@ $(function(){
 			// 取出所有条件 处理数据
 		screeningWasher_did_finish_filter_handle_data_fun(filterID);
 	});
-	//
-	//
-	//
-
 
 
 	// 全选按钮
@@ -1505,7 +1511,7 @@ function localStorageSaveData(tableInfo,type,column,state,savedIndex){
 		filterDataArr = [new_obj_filter];
 	}
 	window.localStorage.setItem(tableInfo,JSON.stringify(filterDataArr));
-	console.log(conditionFilter_record);
+	// console.log(conditionFilter_record);
 }
 function localStorageGetData(tableInfo){
 	var arr =  JSON.parse(window.localStorage.getItem(tableInfo));

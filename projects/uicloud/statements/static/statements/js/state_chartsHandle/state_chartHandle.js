@@ -889,7 +889,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 					var measure = measure_show_data_arr[i];
            			var obj = {name:drag_measureCalculateStyle_arr[storeNum_toview][all_measure[i]],type:"line",smooth:true,data:measure,label:{
            				normal:{
-           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25,
+           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25 && all_measure.length < 3,
            					position:"top",
            					offset:[10,0],
            					formatter:function(params){
@@ -1874,7 +1874,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							"data":[{"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
 							label:{
 								normal:{
-									show:all_dimensionality.length < 25,
+									show:all_dimensionality.length < 25 && all_measure.length < 3,
 									position:"top",
 									formatter:function(params){
 				                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -2126,7 +2126,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							z:3,
 							label:{
 								normal:{
-									show:dimensionality_show_data.length < 25,
+									show:dimensionality_show_data.length < 25 && all_measure.length < 3,
 									position:"right",
 									formatter:function(params){
 				                    		if(normalUnitValue_arr[storeNum_toview] != -1){

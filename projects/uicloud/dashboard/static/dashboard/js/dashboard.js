@@ -2047,7 +2047,6 @@
 							"height":$(this).parents(".mdContent").height() - 22 - 32 + "px",
 						},300);
 					}
-
 				})
 				inputSearch($("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search_input"),"dimensionality_list_text_left",$("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality #dimensionality_show ul"),"md");
 				inputSearch($("#pageDashboardModule #dashboard_content #lateral_bar #measurement .dimensionality_search_input"),"measure_list_text_left",$("#pageDashboardModule #dashboard_content #lateral_bar #measurement #measure_show ul"),"md");
@@ -2068,8 +2067,6 @@
 
 			}
 			mdHandleFun();
-
-
 
 
 			/*视图大小调整  select 下拉框*/
