@@ -54,6 +54,8 @@
 
       //记录视图数据是否删除
       var saveViewTableDataDelete = true;
+
+      var flag = 0;
         /**
        * description : 得到字符串的字节长度;
        * @version 0.2;
@@ -1348,9 +1350,21 @@
        // 构建数据传递的参数
        var postData = null;
        var outName_of_check = null;
+   
+      $("#constructData").click(function(){
+          //console.log($(".connectionImg").length);
+          if($(".boxDiv").length != 0){
+            if($(".connectionImg").length == $(".boxDiv").length - 1){
+                constructFn();
+            }
+          }
+      })
+         
+     
 
+       function constructFn(){
        // 构建数据点击事件
-        $("#constructData").click(function(event){
+       // $("#constructData").click(function(event){
           init_clear();
           // console.log(count);
           var tables = [];
@@ -1453,7 +1467,6 @@
             }
           }
             tables.push(aTable);
-
           }
 
 
@@ -1491,13 +1504,6 @@
             "relationships":relationships,
           };
 
-        // var tempSavePostData = $.extend({},postData);
-
-        // for(var i = 0 ; i < tempSavePostData["tables"].length;i++){
-        //   delete tempSavePostData["tables"][i]["handleColList"];
-        //   delete tempSavePostData["tables"][i]["SchemaList"];
-        // }
-
 
               //重构之后的操作
           if(preBuildDataName!=null){
@@ -1517,7 +1523,11 @@
 
           
           
-        });
+        //});
+    }
+
+
+
       // 数据集弹框功能按钮
       $("#buildDataPanelView .build-body .cube-name-radio .radio").click(function(){
         if (!$(this).hasClass("active")) {
@@ -1571,6 +1581,7 @@
               enter();
             }
           });
+
 
 
        // 初始化清空内容函数

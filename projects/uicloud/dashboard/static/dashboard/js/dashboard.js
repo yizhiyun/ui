@@ -1931,12 +1931,9 @@
 					}else{
 						$(this).parent().find(".viewTableShow").height($(this).parent().height() - 32);
 					}
-
 				})
 			}
 			mdHandleFun();
-
-
 
 
 			/*视图大小调整  select 下拉框*/

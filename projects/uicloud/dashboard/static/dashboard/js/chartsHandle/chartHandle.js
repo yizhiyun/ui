@@ -179,7 +179,7 @@ function one_de_one_me_handle (chart_type_need) {
 			            stack: '总量',
 			            label: {
 			                normal: {
-			                    show:dimensionality_need_show.length < 25,
+			                    show:dimensionality_need_show.length < 25 ,
 			                    position: 'top',
 			                    formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -874,7 +874,7 @@ function many_de_many_me_handle(chart_type_need){
 					var measure = measure_show_data_arr[i];
            			var obj = {name:drag_measureCalculateStyle[all_measure[i]],type:"line",smooth:true,data:measure,label:{
            				normal:{
-           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25,
+           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25 && measure_show_data_arr.length < 3,
            					position:"top",
            					offset:[10,0],
            					formatter:function(params){
@@ -1843,14 +1843,19 @@ function comparisonStrip_generate_fun(){
 							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
 							label:{
 								normal:{
-									show:all_dimensionality.length < 25,
+									show:all_dimensionality.length < 25 && all_measure.length < 3,
 									position:"top",
 									formatter:function(params){
 				                    		if(normalUnitValue != -1){
 				                    			return params.value.toFixed(normalUnitValue);
 				                    		}else{
+				                    			// if(params.value > 9999){
+				                    			// 	return params.value/10000 + "万";
+				                    			// }
 				                    			return params.value;
+				                    			
 				                    		}
+
 			                   		},
 								}
 							},
@@ -2096,14 +2101,21 @@ function comparisonStrip_generate_fun(){
 							z:3,
 							label:{
 								normal:{
-									show:dimensionality_show_data.length < 25,
+									show:dimensionality_show_data.length < 25 && all_measure.length < 3,
 									position:"right",
 									formatter:function(params){
 				                    		if(normalUnitValue != -1){
 				                    			return params.value.toFixed(normalUnitValue);
 				                    		}else{
+				                    			// console.log(params.name);
+				                    			// console.log(params.value);
 				                    			return params.value;
 				                    		}
+				                    		// var relVal = params.value;  
+				                    		// if(relVal > 9999){
+				                    		// 	return relVal/10000 + "万";
+				                    		// }
+				 
 			                  		 },
 								}
 							},
@@ -2148,7 +2160,15 @@ function comparisonStrip_generate_fun(){
 						color:"black",
 						rotate:15,
 						fontSize:10,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						// formatter: function (value, index) {  
+						//     if (value>=10000){  
+						//         return value/10000 + '万';  
+						//     }  
+						//     else{  
+						//         return value ; 
+						//     }  
+						// }  
 					},
 					"data":dimensionality_show_data[i],
 					gridIndex:i

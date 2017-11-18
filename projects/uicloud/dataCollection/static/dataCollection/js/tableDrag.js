@@ -218,12 +218,20 @@ function connectDetailSelect(conInfo,originalEvent){
 	
 
 // 内联、外联等按钮点击事件
-$("#connectModalprompt .btnSelects div").click(function(){
-	$(this).siblings("div").removeClass("active");
-	$(this).addClass("active");	
-})
-	
+	$("#connectModalprompt .btnSelects div").click(function(){
+		$(this).siblings("div").removeClass("active");
+		$(this).addClass("active");	
+	})
+
+
+         
+    $("#mainDragArea .selectInfoDiv .selectFooter #confirmRelationBtn").click(function(){
+      flag = 1;
+     // console.log(flag);
+    })
+
 }
+
 
 
 // 表格之间连线弹框 点击-----“取消”----按钮之后
