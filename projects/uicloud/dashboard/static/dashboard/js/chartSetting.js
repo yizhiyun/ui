@@ -40,6 +40,7 @@ function dahboardSetting_function(){
 	
 	
 	// 点击查看更多颜色的时候
+	$("#project_style .module_style .color_control .defaultColors .moreColorBtn").unbind("click");
 	$("#project_style .module_style .color_control .defaultColors .moreColorBtn").click(function(event){
 		event.stopPropagation();
 		var otherColorModule = $("#project_style .module_style .color_control .otherColorsModule");

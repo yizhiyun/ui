@@ -2203,7 +2203,7 @@ function comparisonStrip_generate_fun(){
 
 		});
 	}
-	var maxLength = 0;
+	
 	// 条形图
 	function barChart_generate_fun(){
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
@@ -2230,9 +2230,7 @@ function comparisonStrip_generate_fun(){
 				for(var k = 0;k < all_dimensionality.length;k++){
 					theDimeInfo.push(aData[all_dimensionality[k]]);
 					// console.log(typeof(String(aData[all_dimensionality[k]])),String(aData[all_dimensionality[k]]))
-					if(aData[all_dimensionality[k]].toString().getLength() > maxLength){
-						maxLength = aData[all_dimensionality[k]].toString().getLength();
-					}
+	
 				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
@@ -2328,7 +2326,7 @@ function comparisonStrip_generate_fun(){
 					show:false,
 
 				}
-				aGrid["left"] = 60 + i * (60 + maxLength);
+				aGrid["left"] = 60 + i * (60 + i);
 				aGrid["bottom"] = 60;
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
@@ -2663,15 +2661,16 @@ function comparisonStrip_generate_fun(){
 function colorsPanelDidSelectedColor(){
 	var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
 	var op = mycharts.getOption();
-	op.title[1] = {
-		text: "单位: "+valueUnitValue,
-		bottom:0,
-		show:true,
-		textStyle:{
-			fontSize:14,
-			color:allColorsDict[currentColorGroupName][0]
-		}
-	}
+	op.title[1].textStyle.color = allColorsDict[currentColorGroupName][0];
+	// op.title[1] = {
+	// 	text: "单位: "+valueUnitValue,
+	// 	bottom:0,
+	// 	show:true,
+	// 	textStyle:{
+	// 		fontSize:14,
+	// 		color:allColorsDict[currentColorGroupName][0]
+	// 	}
+	// }
 	mycharts.setOption({
 		color:allColorsDict[currentColorGroupName],
 		title:op.title
