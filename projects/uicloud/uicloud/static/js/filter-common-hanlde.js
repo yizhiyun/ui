@@ -1064,9 +1064,6 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 				$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").val(formatDate(data.values.min));
 				$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").val(formatDate(data.values.max));
 
-//					$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(formatDate(data.values.min));
-//					$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(formatDate(data.values.max));
-
 				$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.mindate").datepicker("setDate",data.values.min);
 				$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").datepicker("setDate",data.values.max);
 

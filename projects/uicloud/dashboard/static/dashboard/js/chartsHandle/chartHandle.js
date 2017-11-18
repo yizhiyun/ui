@@ -1,6 +1,8 @@
 var dirllConditions = [];
 var currentChatType = "none";
 var radarDiemension = "none";
+var isNeedShowTongBiOption = false;
+var isNeedShowHuanBiOption = false;
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function one_de_one_me_handle (chart_type_need) {
@@ -11,14 +13,14 @@ function one_de_one_me_handle (chart_type_need) {
 	if(!mycharts){
 	mycharts = 	echarts.init($("#main").get(0));
 	}
-	
+
 	mycharts.off("click");
 	mycharts.on("click",function(params){
 		chartAPartDidClickedFunction(params);
 	});
  	var need_handle_measureName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]))[0];
  	var need_handle_dimensionalityName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]))[0];
- 	
+
  	if(currentChatType == chart_type_need && dirllConditions && dirllConditions.length > 0){
 		need_handle_dimensionalityName = dirllConditions[dirllConditions.length - 1].drillField;
 	}else if(currentChatType != chart_type_need && dirllConditions && dirllConditions.length > 0){
@@ -29,10 +31,10 @@ function one_de_one_me_handle (chart_type_need) {
 			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
 		}
 	}
- 	
+
 	 // 一个维度一个度量
 	function waterWall_generate_fun(){
-		
+
 		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			var dimensionality_need_show = [];
 			var measure_need_show = [];
@@ -42,12 +44,12 @@ function one_de_one_me_handle (chart_type_need) {
 				var aData = data[i];
 				var value = aData[drag_measureCalculateStyle[need_handle_measureName]];
 				dimensionality_need_show.push(aData[need_handle_dimensionalityName]);
-				measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]}});
+				measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"tongbi":"同比"+aData[drag_measureCalculateStyle[need_handle_measureName]],"huanbi":"环比"+aData[drag_measureCalculateStyle[need_handle_measureName]]});
 				measure_help_show.push({"value":count_help / allValueUnitDict[valueUnitValue],"originValue":count_help});
 				count_help += value;
 			}
 			dimensionality_need_show.push("全部");
-			measure_need_show.push({"value":count_help / allValueUnitDict[valueUnitValue],"originValue":count_help,"dirllInfo":{"currentField":"全部","currentValue":"全部"}});
+			measure_need_show.push({"value":count_help / allValueUnitDict[valueUnitValue],"originValue":count_help,"dirllInfo":{"currentField":"全部","currentValue":"全部"},"tongbi":0,"huanbi":0});
 			measure_help_show.push({"value":0,"originValue":0});
 			var option = {
 				title: [{
@@ -79,7 +81,7 @@ function one_de_one_me_handle (chart_type_need) {
 			     },
 			     backgroundColor:'rgba(255,255,255,0.8)',
 			     extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
-			     formatter: function (params) {			     	
+			     formatter: function (params) {
 			         var tar;
 			         if (params[1].value != '-') {
 			             tar = params[1];
@@ -87,15 +89,31 @@ function one_de_one_me_handle (chart_type_need) {
 			         else {
 			             tar = params[0];
 			         }
-					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p></div>";
+					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p>";
 			         var needValue = tar.value;
 			         if(normalUnitValue != -1){
 			         	needValue = needValue.toFixed(normalUnitValue);
 			         }
-			         var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
+			         var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+
+							 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+							 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+							 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.tongbi)*100).toFixed(2)+"%</p>";
+							 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.huanbi)*100).toFixed(2)+"%</p>";
+							 if(isNeedShowTongBiOption){
+								 leftDiv += leftTongbi;
+								 rightDiv += rightTongbi;
+							 }
+							 if(isNeedShowHuanBiOption){
+								 leftDiv += leftHuanbi;
+								 rightDiv += rightHuanbi;
+							 }
+							 leftDiv += "</div>";
+							 rightDiv += "</div>";
+
 			         return leftDiv + rightDiv;
-					 
-					
+
+
 			     }
 			 	},
 			    grid: {
@@ -116,7 +134,7 @@ function one_de_one_me_handle (chart_type_need) {
 			        itemSize:20,
 			        itemGap:30
    				},
-   				
+
 			    xAxis: {
 			        type : 'category',
 			        splitLine: {show:false},
@@ -139,7 +157,7 @@ function one_de_one_me_handle (chart_type_need) {
 			            xAxisIndex: [0],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            startValue:0,
 			            endValue:15,
@@ -194,11 +212,11 @@ function one_de_one_me_handle (chart_type_need) {
 						data:measure_need_show
 			        },
 			    ]
-		
+
 				};
 				//清除上一个图例
 				mycharts.clear();
-				
+
 				mycharts.setOption(option);
 				spinner.stop();
 		});
@@ -206,15 +224,15 @@ function one_de_one_me_handle (chart_type_need) {
 
 	//  饼图
 	function  cake_generate_fun () {
-			
-		
+
+
 		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 			var dimensionality_need_show = [];
 			var measure_need_show = [];
 			for (var i = 0; i < data.length;i++) {
 				var aData = data[i];
 				dimensionality_need_show.push(aData[need_handle_dimensionalityName]);
-				measure_need_show.push({"name":aData[need_handle_dimensionalityName],"value":aData[drag_measureCalculateStyle[need_handle_measureName]] / allValueUnitDict[valueUnitValue],"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"originValue":aData[drag_measureCalculateStyle[need_handle_measureName]]});
+				measure_need_show.push({"name":aData[need_handle_dimensionalityName],"value":aData[drag_measureCalculateStyle[need_handle_measureName]] / allValueUnitDict[valueUnitValue],"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"originValue":aData[drag_measureCalculateStyle[need_handle_measureName]],"tongbi":aData["同比"+drag_measureCalculateStyle[need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle[need_handle_measureName]]});
 			}
 				var option = {
 					title: [{
@@ -232,19 +250,32 @@ function one_de_one_me_handle (chart_type_need) {
 					  }
 					],
 					tooltip: {
+						show:true,
 						trigger: 'item',
 						backgroundColor:'rgba(255,255,255,0.8)',
-			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
+			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 						formatter:function (params){
-						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>占比:</p></div>";
-						  
+						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>占比:</p>";
 						  var needValue = params.value;
 						  if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  }
-						 var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>"+"<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.percent+"%</p></div>";
-						 
-			        		 return leftDiv + rightDiv;
+						 var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>"+"<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.percent+"%</p>";
+						 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+						 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+						 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+						 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+						 if(isNeedShowTongBiOption){
+							 leftDiv += leftTongbi;
+							 rightDiv += rightTongbi;
+						 }
+						 if(isNeedShowHuanBiOption){
+							 leftDiv += leftHuanbi;
+							 rightDiv += rightHuanbi;
+						 }
+						 leftDiv += "</div>";
+						 rightDiv += "</div>";
+			       return leftDiv + rightDiv;
 						}
 					},
 					toolbox: {
@@ -262,7 +293,7 @@ function one_de_one_me_handle (chart_type_need) {
 				        itemSize:20,
 				        itemGap:30
    					},
-   					
+
 					legend: {
 						type: 'scroll',
 						left: 'center',
@@ -300,14 +331,15 @@ function one_de_one_me_handle (chart_type_need) {
 					};
 				//清除上一个图例
 				mycharts.clear();
-		
+
 				mycharts.setOption(option);
+
 				spinner.stop();
-				
+
 		});
-	
+
 	}
-	
+
 	// 4、面积图
 	function area_generate_fun (argument) {
 
@@ -317,7 +349,7 @@ function one_de_one_me_handle (chart_type_need) {
 			for(var i = 0;i < data.length;i++){
 				var aData = data[i];
 				dimensionality_need_show.push(aData[need_handle_dimensionalityName]);
-				measure_need_show.push({"value":aData[drag_measureCalculateStyle[need_handle_measureName]] / allValueUnitDict[valueUnitValue],"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"originValue":aData[drag_measureCalculateStyle[need_handle_measureName]]});
+				measure_need_show.push({"value":aData[drag_measureCalculateStyle[need_handle_measureName]] / allValueUnitDict[valueUnitValue],"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"originValue":aData[drag_measureCalculateStyle[need_handle_measureName]],"tongbi":aData["同比"+drag_measureCalculateStyle[need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle[need_handle_measureName]]});
 			}
 			var option = {
 				title:[{
@@ -339,13 +371,28 @@ function one_de_one_me_handle (chart_type_need) {
 					backgroundColor:'rgba(255,255,255,0.8)',
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					formatter:function(params){
-					
+
 						  var needValue = params[0].value;
 						  if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  }
-						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[0].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params[0].seriesName+":</span></p></div>";
-						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params[0].name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
+						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[0].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params[0].seriesName+":</span></p>";
+						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params[0].name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+						var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+						var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+						var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[0].data.tongbi)*100).toFixed(2)+"%</p>";
+						var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[0].data.huanbi)*100).toFixed(2)+"%</p>";
+						if(isNeedShowTongBiOption){
+							leftDiv += leftTongbi;
+							rightDiv += rightTongbi;
+						}
+						if(isNeedShowHuanBiOption){
+							leftDiv += leftHuanbi;
+							rightDiv += rightHuanbi;
+						}
+						leftDiv += "</div>";
+						rightDiv += "</div>";
+
 			        		 return leftDiv + rightDiv;
 					}
 				},
@@ -398,14 +445,14 @@ function one_de_one_me_handle (chart_type_need) {
 			            xAxisIndex: [0],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            startValue:0,
 			            endValue:15,
 			            handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
-			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",			            
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
 			    			type: 'slider',
@@ -444,23 +491,23 @@ function one_de_one_me_handle (chart_type_need) {
 						},
 						data:measure_need_show
 					},
-				]		
+				]
 			}
 			//清除上一个图例
 			mycharts.clear();
-	
+
 			mycharts.setOption(option);
 			spinner.stop();
 		});
-		
-		
+
+
 	}
-	
+
 	// area_generate_fun();
 
 	// 甘特图
  function gantt_generate_fun(){
- 	
+
 		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
 				var dimensionality_need_show = [];
 				var measure_need_show = [];
@@ -470,12 +517,12 @@ function one_de_one_me_handle (chart_type_need) {
 					var aData = data[i];
 					var value = aData[drag_measureCalculateStyle[need_handle_measureName]];
 					dimensionality_need_show.push(aData[need_handle_dimensionalityName]);
-					measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]}});
+					measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"tongbi":aData["同比"+drag_measureCalculateStyle[need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle[need_handle_measureName]]});
 					measure_help_show.push({"value":count_help/allValueUnitDict[valueUnitValue],"originValue":count_help});
 					count_help += value;
 				}
 				measure_help_show.unshift({"value":0,"originValue":0});
-				measure_need_show.unshift({"value":count_help/allValueUnitDict[valueUnitValue],"originValue":count_help,"dirllInfo":{"currentField":"全部","currentValue":"全部"}});
+				measure_need_show.unshift({"value":count_help/allValueUnitDict[valueUnitValue],"originValue":count_help,"dirllInfo":{"currentField":"全部","currentValue":"全部"},"tongbi":0,"huanbi":0});
 				dimensionality_need_show.unshift("全部");
 				var option = {
 				    title: [{
@@ -521,7 +568,7 @@ function one_de_one_me_handle (chart_type_need) {
 				     },
 				     backgroundColor:'rgba(255,255,255,0.8)',
 			    		 extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
-					 formatter: function (params) {			     	
+					 formatter: function (params) {
 			         var tar;
 			         if (params[1].value != '-') {
 			             tar = params[1];
@@ -533,10 +580,24 @@ function one_de_one_me_handle (chart_type_need) {
 					 if(normalUnitValue != -1){
 						 needValue = needValue.toFixed(normalUnitValue);
 					}
-			          var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p></div>";
-						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
-						
-			         
+			          var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p>";
+						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+
+						var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+						var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+						var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.tongbi)*100).toFixed(2)+"%</p>";
+						var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.huanbi)*100).toFixed(2)+"%</p>";
+						if(isNeedShowTongBiOption){
+							leftDiv += leftTongbi;
+							rightDiv += rightTongbi;
+						}
+						if(isNeedShowHuanBiOption){
+							leftDiv += leftHuanbi;
+							rightDiv += rightHuanbi;
+						}
+						leftDiv += "</div>";
+						rightDiv += "</div>";
+
 			         return leftDiv + rightDiv;
 			    		 }
 				 	},
@@ -573,7 +634,7 @@ function one_de_one_me_handle (chart_type_need) {
 				            yAxisIndex: [0],
 				            height:10,
 				            handleStyle:{
-				            		color:"#ff7e00"	
+				            		color:"#ff7e00"
 				            },
 				            startValue:0,
 				            endValue:15,
@@ -582,7 +643,7 @@ function one_de_one_me_handle (chart_type_need) {
 			            	handleSize:12,
 			            	maxValueSpan:15,
 			            	throttle:100,
-			            	handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",				            
+			            	handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
 			    			type: 'slider',
@@ -628,15 +689,15 @@ function one_de_one_me_handle (chart_type_need) {
 							data:measure_need_show
 				        },
 				    ]
-			
+
 					};
 			 	//清除上一个图例
 					mycharts.clear();
-			
+
 			 		mycharts.setOption(option);
 			 		spinner.stop();
 		});
-		
+
  }
  // gantt_generate_fun();
 
@@ -686,14 +747,14 @@ function many_de_many_me_handle(chart_type_need){
 	});
 
 	//释放图表实例
-	
+
 	var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
 	if(!mycharts){
 		mycharts = 	echarts.init($("#main").get(0));
 	}
 	mycharts.off("click");
 	mycharts.on("click",function(params){
-		
+
 		if(currentChatType == "radarChart"){
 			if(params.componentType == "radar"){
 				chartAPartDidClickedFunction(params);
@@ -706,37 +767,37 @@ function many_de_many_me_handle(chart_type_need){
 			chartAPartDidClickedFunction(params);
 		}
 	});
-	
+
 	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));
 	var all_measure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
-	
+
 	var commonLegend = [];
 	for (var k = 0;k <  all_measure.length;k++) {
 		commonLegend.push(drag_measureCalculateStyle[all_measure[k]])
 	}
-	
+
 	if(currentChatType == chart_type_need && dirllConditions && dirllConditions.length > 0){
-		
+
 		all_dimensionality.splice(all_dimensionality.length-1,1,dirllConditions[dirllConditions.length - 1].drillField);
-		
+
 	}else if(currentChatType != chart_type_need && dirllConditions && dirllConditions.length > 0){
 		dirllConditions = [];
-		
+
 	}
-	
+
 	if(currentChatType != chart_type_need){
 		if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
 			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
 		}
 	}
-	
-	
+
+
 	var last_dimensionaity = all_dimensionality[all_dimensionality.length - 1];
-	
+
 	// 1、折线图
 	function polyLine_generate_fun(){
 			measure_Hanlde(all_dimensionality,all_measure,null,function(data){
-				
+
 				var option = {
 					title:[{
 					text:"折线图",
@@ -769,25 +830,39 @@ function many_de_many_me_handle(chart_type_need){
 							var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
 							leftDiv+=aP;
 						}
-//						
+//
        					for(var i = 0;i < params.length;i++){
        						var needValue = params[i].value;
        						if(normalUnitValue != -1){
 					  	 		needValue = needValue.toFixed(normalUnitValue);
 					 		 }
        						leftDiv += "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[i].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params[i].seriesName+":</span></p>";
-							if(i == 0){
-								for(var k = 0;k < params[i].data.theDimeInfo.length;k++){
-									rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params[i].data.theDimeInfo[k]+"</p>";
-								}
-							}
-							rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+									if(i == 0){
+										for(var k = 0;k < params[i].data.theDimeInfo.length;k++){
+											rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params[i].data.theDimeInfo[k]+"</p>";
+										}
+									}
+									rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
        					}
+								for(var i = 0;i < params.length;i++){
+									var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+									var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+									var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.tongbi)*100).toFixed(2)+"%</p>";
+									var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.huanbi)*100).toFixed(2)+"%</p>";
+									if(isNeedShowTongBiOption){
+										leftDiv += leftTongbi;
+										rightDiv += rightTongbi;
+									}
+									if(isNeedShowHuanBiOption){
+										leftDiv += leftHuanbi;
+										rightDiv += rightHuanbi;
+									}
+								}
        					leftDiv+= "</div>";
        					rightDiv+= "</div>";
-			        			 return leftDiv + rightDiv;
+			        	return leftDiv + rightDiv;
 					}
-	    			 }, 	
+	    			 },
 	    			legend: {
 	       		 	data:commonLegend,
 	       		 	left:"center",
@@ -796,7 +871,7 @@ function many_de_many_me_handle(chart_type_need){
 	    			},
 	    			grid: [],
 			    color:allColorsDict[currentColorGroupName],
-			    
+
 				toolbox: {
 			        show: true,
 			        feature: {
@@ -824,7 +899,7 @@ function many_de_many_me_handle(chart_type_need){
 				var dimensionality_show_data_arr = [];
 				var  valueMax = data[0][drag_measureCalculateStyle[all_measure[0]]];
 				for(var i = 0; i < data.length;i++){
-					
+
 					var aData = data[i];
 					var theDimeInfo = [];
 					for(var k = 0;k < all_dimensionality.length;k++){
@@ -836,9 +911,9 @@ function many_de_many_me_handle(chart_type_need){
 							valueMax = aData[drag_measureCalculateStyle[aMeasure]];
 						}
 						if(!measure_show_data_arr[measure_i]){
-							measure_show_data_arr[measure_i] = [{"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo}];
+							measure_show_data_arr[measure_i] = [{"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo,"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]]}];
 						}else{
-							measure_show_data_arr[measure_i].push({"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo});
+							measure_show_data_arr[measure_i].push({"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo,"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]]});
 						}
 					}
 					for(var dimensionality_i = 0;dimensionality_i < all_dimensionality.length;dimensionality_i++){
@@ -895,11 +970,11 @@ function many_de_many_me_handle(chart_type_need){
 		                    		}
 			                },
            				}
-           				
+
            			}}
            			option["series"].push(obj);
 				}
-				
+
 				option["dataZoom"] = [
 					{
 			    		type: 'slider',
@@ -911,7 +986,7 @@ function many_de_many_me_handle(chart_type_need){
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            // orient:"horizontal",
 			            startValue:0,
@@ -929,16 +1004,18 @@ function many_de_many_me_handle(chart_type_need){
 			            yAxisIndex: [0],
 			    			}
 				]
-				
-				
-				
+
+
+
 				//清除上一个图例
 				mycharts.clear();
-				
-				mycharts.setOption(option);	
+
+
+				mycharts.setOption(option);
 				spinner.stop();
+
 			});
-					
+
 	}
 
 //2、对比条形图
@@ -953,9 +1030,9 @@ function comparisonStrip_generate_fun(){
 					for (var j = 0;j < all_measure.length;j++) {
 						var aMeasure = all_measure[j];
 						if(!measure_show_data[j]){
-							measure_show_data[j] = [{"value":aData[drag_measureCalculateStyle[aMeasure]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}];
+							measure_show_data[j] = [{"value":aData[drag_measureCalculateStyle[aMeasure]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]]}];
 						}else{
-							measure_show_data[j].push({"value":aData[drag_measureCalculateStyle[aMeasure]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
+							measure_show_data[j].push({"value":aData[drag_measureCalculateStyle[aMeasure]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]]});
 						}
 					}
 				}
@@ -1008,10 +1085,23 @@ function comparisonStrip_generate_fun(){
 							var needValue = params.value;
 							  if(normalUnitValue != -1){
 							  	 needValue = needValue.toFixed(normalUnitValue);
-							  }			       		  	
-			       		  	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[0]+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p></div>";
-						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
-			       		  	
+							  }
+			       		  	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[0]+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+										var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+										var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+										var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+										var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.tongbi)*100).toFixed(2)+"%</p>";
+										var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.huanbi)*100).toFixed(2)+"%</p>";
+										if(isNeedShowTongBiOption){
+											leftDiv += leftTongbi;
+											rightDiv += rightTongbi;
+										}
+										if(isNeedShowHuanBiOption){
+											leftDiv += leftHuanbi;
+											rightDiv += rightHuanbi;
+										}
+										leftDiv+= "</div>";
+		       					rightDiv+= "</div>";
 			        			 return leftDiv + rightDiv;
 						}
 					},
@@ -1076,7 +1166,7 @@ function comparisonStrip_generate_fun(){
 							},
 						},
 					}, ],
-				
+
 					yAxis: [{
 							gridIndex: 0,
 							type: 'category',
@@ -1095,7 +1185,7 @@ function comparisonStrip_generate_fun(){
 									color: '#9D9EA0',
 									fontSize: 12,
 								},
-				
+
 							},
 							data: dimensionality_show_data,
 						}, {
@@ -1115,7 +1205,7 @@ function comparisonStrip_generate_fun(){
 									color: '#9D9EA0',
 									fontSize: 12,
 								},
-				
+
 							},
 							data: dimensionality_show_data.map(function(value) {
 								return {
@@ -1142,11 +1232,11 @@ function comparisonStrip_generate_fun(){
 									color: '#9D9EA0',
 									fontSize: 12,
 								},
-				
+
 							},
 							data: dimensionality_show_data,
 						},
-				
+
 					],
 					dataZoom:[
 					{
@@ -1159,7 +1249,7 @@ function comparisonStrip_generate_fun(){
 			            yAxisIndex: [0,1,2],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            startValue:0,
 			            endValue:15,
@@ -1241,10 +1331,12 @@ function comparisonStrip_generate_fun(){
 				};
 				//清除上一个图例
 				mycharts.clear();
-		
+
 				mycharts.setOption(option);
+
 				spinner.stop();
-			});	
+			});
+
 }
 
 
@@ -1258,14 +1350,14 @@ function comparisonStrip_generate_fun(){
  	function stackedBar_generate_fun(bar_type){
 
  		var  chartTile = {"number_bar":"堆积柱状图","number_liner":"堆积条形图","percentage_bar":"百分比堆积柱","percentage_liner":"百分比堆积条形"}
- 					
+
 			measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 				var measureName = all_measure[0];
 				var needMeasureData = data;
 				var dimensionality_arr= []; // 各个维度的数组,绘制图形需要使用
 				var need_show_dimensionality_arr = [];
 				var need_show_dime_name_arr = all_dimensionality.slice(0,all_dimensionality.length-1);
-				
+
 				var confir_max_obj = {};
 				var max = 1;
 				var groupArr = [];
@@ -1273,7 +1365,7 @@ function comparisonStrip_generate_fun(){
 				var valueMax = 0;
 				for(var i =0; i <  data.length;i++){
 					var aData = data[i];
-					for(var j = 0;j < all_dimensionality.length - 1;j++){				
+					for(var j = 0;j < all_dimensionality.length - 1;j++){
 						if(!need_show_dimensionality_arr[j]){
 							need_show_dimensionality_arr[j] = [{"value":aData[all_dimensionality[j]],"count":1}];
 						}else{
@@ -1289,10 +1381,10 @@ function comparisonStrip_generate_fun(){
 							}
 						}
 					}
-					
+
 					var dime = aData[all_dimensionality[all_dimensionality.length - 2]];
 					var nowdime = aData[all_dimensionality[all_dimensionality.length - 1]];
-					if(i > 0){	
+					if(i > 0){
 						var predime = data[i-1][all_dimensionality[all_dimensionality.length - 1]];
 					}
 					if (!confir_max_obj[dime]){
@@ -1310,7 +1402,7 @@ function comparisonStrip_generate_fun(){
 						}
 					}
 				}
-								
+
 				var option = {
 					title:[{
 						text:chartTile[bar_type],
@@ -1357,7 +1449,7 @@ function comparisonStrip_generate_fun(){
 	        					var val = params.value;
 	        					if (bar_type == "percentage_liner" || bar_type == "percentage_bar") {
 	        						val = (Number(val) * 100).toFixed(2) + "%";
-	        						
+
 	        					}else{
 	        						if(normalUnitValue != -1){
 						  	 		val = val.toFixed(normalUnitValue);
@@ -1380,7 +1472,7 @@ function comparisonStrip_generate_fun(){
 	        				}
 				  	},
 	    				 xAxis:[
-	    				 	
+
 	    				 ],
 	    				 yAxis:[
 	    				 ],
@@ -1398,7 +1490,7 @@ function comparisonStrip_generate_fun(){
 					}else{
 						return 0;
 					}
-					
+
 				}
 			}
 			if (bar_type == "number_bar" || bar_type == "percentage_bar") {
@@ -1406,7 +1498,7 @@ function comparisonStrip_generate_fun(){
 			}else{
 				option["xAxis"].push(axisLabelSetteing);
 			}
-			
+
 				// 造多少行数据(几个去堆叠)
 			for (var i = 0;i < max;i++) {
 				var name;
@@ -1424,7 +1516,7 @@ function comparisonStrip_generate_fun(){
 								valueMax = eval(measure_Data_arr[j].join("+"));
 							}
 						}
-						var theDimeInfo = [];				
+						var theDimeInfo = [];
 						for(var k =0;k < all_dimensionality.length;k++){
 							var index = i;
 							if(j > 0){
@@ -1434,11 +1526,11 @@ function comparisonStrip_generate_fun(){
 							}
 							if(data[index]){
 								theDimeInfo.push(data[index][all_dimensionality[k]]);
-							}	
+							}
 						}
 						seriesdata.push({value:val / allValueUnitDict[valueUnitValue],"originValue":val,name:groupArr[j][i],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":groupArr[j][i]},"theDimeInfo":theDimeInfo});
 				}
-				
+
 				var obj = {
 					name:name,
 					type:"bar",
@@ -1468,7 +1560,7 @@ function comparisonStrip_generate_fun(){
 				}
 				option["series"].push(obj);
 			}
-			
+
 //  坐标轴设置值
 			for (var k = need_show_dimensionality_arr.length - 1;k >= 0;k--){
 				var obj = {
@@ -1490,12 +1582,12 @@ function comparisonStrip_generate_fun(){
 					data:need_show_dimensionality_arr[k],
 					gridIndex:need_show_dimensionality_arr.length - 1 - k,
 				}
-				
+
 				var aGrid = {
 					show:false,
 					containLabel:true,
-				}		
-				
+				}
+
 				if (bar_type == "number_bar" || bar_type == "percentage_bar") {
 					obj["position"] = "bottom";
 					option["xAxis"].push(obj);
@@ -1509,13 +1601,13 @@ function comparisonStrip_generate_fun(){
 										}else{
 											return 0;
 										}
-										
+
 									}}
 						}
 						valueHelpAxis["max"] = valueMax;
 						option["yAxis"].push(valueHelpAxis);
-						
-						
+
+
 						var aSeriesData = {
 							name:"help",
 							type:"bar",
@@ -1530,12 +1622,12 @@ function comparisonStrip_generate_fun(){
 							cursor:"default"
 						}
 						option["series"].push(aSeriesData);
-						
+
 					}
 					aGrid["left"] = "10%";
 					aGrid["bottom"] = 60 + 40*k;
-					
-					
+
+
 				}else{
 					obj["position"] = "left";
 					option["yAxis"].push(obj);
@@ -1549,7 +1641,7 @@ function comparisonStrip_generate_fun(){
 										}else{
 											return 0;
 										}
-										
+
 									}}
 						}
 						valueHelpAxis["max"] = valueMax;
@@ -1569,25 +1661,25 @@ function comparisonStrip_generate_fun(){
 							cursor:"default"
 						}
 						option["series"].push(aSeriesData);
-					}	
+					}
 					aGrid["containLabel"] = false;
 					aGrid["left"] =  60 + 70*k;
 					aGrid["bottom"] = 60;
-					
+
 				}
 				if(k != need_show_dimensionality_arr.length - 1){
 					aGrid["tooltip"] = {show:false}
 				}
 				option["grid"].push(aGrid);
 			}
-			
+
 				var dataZoomXindexArray = [];
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
 				for(var k = 0; k < dimension_length -1;k++){
 					dataZoomXindexArray.push(k);
 				}
 			if (bar_type == "number_bar" || bar_type == "percentage_bar"){
-				
+
 				option["dataZoom"] = [
 					{
 			    		type: 'slider',
@@ -1599,14 +1691,14 @@ function comparisonStrip_generate_fun(){
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            startValue:0,
 			            endValue:10,
 						handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
-			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",			            
+			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
 			    			},
 			    			{
 			    			type: 'slider',
@@ -1627,7 +1719,7 @@ function comparisonStrip_generate_fun(){
 			            yAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            startValue:0,
 			            endValue:10,
@@ -1646,21 +1738,22 @@ function comparisonStrip_generate_fun(){
 			    			}
 				]
 			}
-			
+
 				//清除上一个图例
-				mycharts.clear();		
-				mycharts.setOption(option);	
+
+				mycharts.clear();
+				mycharts.setOption(option);
 				spinner.stop();
-				
+
 			});
-			
- 			
+
+
  }
 
 
 // 关系图
 	function reliationTree_generate_fun(){
-		
+
 		var categorys = [];// 分类，主要用作图例
 		var need_all_nodes = []; // 所需要的所有节点
 		var need_all_link = [];
@@ -1673,27 +1766,27 @@ function comparisonStrip_generate_fun(){
 						var aData = data[j];
 						var name = "";
 						for(var k =0;k < need_dimensionality.length;k++){
-							name += aData[need_dimensionality[k]] +"_YZYPD_"; 
+							name += aData[need_dimensionality[k]] +"_YZYPD_";
 						}
 						if(categorys.hasObject("name",aData[need_dimensionality[0]]) == -1){
 							categorys.push({"name":aData[need_dimensionality[0]]});
 						}
 						if(index == all_dimensionality.length - 1){
-							
+
 							for(var m = 1;m < all_dimensionality.length;m++){
 								var source = "";
 								var target = "";
 								for(var n = 0; n < m;n++){
-									source+= aData[all_dimensionality[n]] +"_YZYPD_"; 
+									source+= aData[all_dimensionality[n]] +"_YZYPD_";
 								}
-								
+
 								for(var n = 0;n <= m;n++){
-									target+= aData[all_dimensionality[n]] +"_YZYPD_"; 
+									target+= aData[all_dimensionality[n]] +"_YZYPD_";
 								}
 								var obj = {"source":source,"target":target};
 								need_all_link.push(obj);
 							}
-							
+
 						}
 						var aNode = {
 							"value":aData[drag_measureCalculateStyle[all_measure[0]]]/allValueUnitDict[valueUnitValue],
@@ -1703,6 +1796,8 @@ function comparisonStrip_generate_fun(){
 							"draggable":true,
 							"category":categorys.hasObject("name",aData[need_dimensionality[0]]),
 							"dirllInfo":{"currentField":all_dimensionality[index],"currentValue":aData[all_dimensionality[index]]},
+							"tongbi":aData["同比"+aData[drag_measureCalculateStyle[all_measure[0]]]],
+							"huanbi":aData["环比"+aData[drag_measureCalculateStyle[all_measure[0]]]],
 							label:{
 								normal:
 								{
@@ -1717,7 +1812,7 @@ function comparisonStrip_generate_fun(){
 									}
 								}
 							}
-							
+
 						}
 						need_all_nodes.push(aNode);
 					}
@@ -1726,9 +1821,9 @@ function comparisonStrip_generate_fun(){
 						 draw();
 					}
 				});
-			})(i);	
+			})(i);
 		}
-		
+
 		function draw(){
 			var option = {
 				title:[{
@@ -1783,19 +1878,36 @@ function comparisonStrip_generate_fun(){
 							if(normalUnitValue != -1){
 						  	 needValue = needValue.toFixed(normalUnitValue);
 						  	}
-							var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+params.data.dirllInfo.currentField+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p></div>";
-							
-							var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.dirllInfo.currentValue+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p></div>";
+							var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+params.data.dirllInfo.currentField+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+
+							var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.dirllInfo.currentValue+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+
+
+							var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+							var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+							var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+							var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+							if(isNeedShowTongBiOption){
+								leftDiv += leftTongbi;
+								rightDiv += rightTongbi;
+							}
+							if(isNeedShowHuanBiOption){
+								leftDiv += leftHuanbi;
+								rightDiv += rightHuanbi;
+							}
+							leftDiv+= "</div>";
+							rightDiv+= "</div>";
+
 							return leftDiv + rightDiv;
-								
+
 						}
-						
+
 					},
 					textStyle:{
 						fontSize:12
 					}
 				},
-		
+
 				series:[
 					{
 						name:drag_measureCalculateStyle[all_measure[0]],
@@ -1814,10 +1926,10 @@ function comparisonStrip_generate_fun(){
 							return [rs.visualLength(12)+15,20]
 						},
 					}
-				]	
+				]
 			}
 			mycharts.clear();
-	
+
 			mycharts.setOption(option);
 			spinner.stop();
 		}
@@ -1825,7 +1937,7 @@ function comparisonStrip_generate_fun(){
 
 // 柱状图
 	function histogram_generate_fun(){
-		
+
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			var series = [];
 			var dimensionality_show_data = [];
@@ -1839,7 +1951,7 @@ function comparisonStrip_generate_fun(){
 			        nameGap:60,
 			        gridIndex:0,
 			        z:1
-					
+
 			    }];
 			 var valueMax = 0;
 			for(var i = 0;i < data.length;i++){
@@ -1851,14 +1963,15 @@ function comparisonStrip_generate_fun(){
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
 						valueMax = aData[drag_measureCalculateStyle[all_measure[j]]];
-					}		
+					}
 					if(!series[j]){
 						series[j] = {
 							"name":drag_measureCalculateStyle[all_measure[j]],
 							"type":"bar",
 							"xAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
 							"yAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
+							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],
+							"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]}],
 							label:{
 								normal:{
 									show:all_dimensionality.length < 25 && all_measure.length < 3,
@@ -1871,7 +1984,7 @@ function comparisonStrip_generate_fun(){
 				                    			// 	return params.value/10000 + "万";
 				                    			// }
 				                    			return params.value;
-				                    			
+
 				                    		}
 
 			                   		},
@@ -1880,7 +1993,8 @@ function comparisonStrip_generate_fun(){
 							z:3
 						};
 					}else{
-						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
+						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],
+						"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]});
 					}
 				}
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
@@ -1893,20 +2007,20 @@ function comparisonStrip_generate_fun(){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
 							dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-						}	
+						}
 					}
 				}
 			}
-			
+
 			for(var i = 0;i < dimensionality_show_data.length;i++){
 				var aX = {
 					"show":true,
 					"name":all_dimensionality[i],
 					"nameGap":30,
 					"nameLocation":"start",
-					
+
 					"type":"category",
-					
+
 					axisTick:{
 						inside:false,
 						interval:function(index,value){return !/^YZYPD/.test(value)}
@@ -1962,13 +2076,13 @@ function comparisonStrip_generate_fun(){
 				gridArr.push(aGrid);
 				needXais.push(aX);
 			}
-			
+
 			var dataZoomXindexArray = [];
 			var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
 			for(var k = dimension_length - 1; k >= 0;k--){
 				dataZoomXindexArray.push(k);
 			}
-			
+
 			var option = {
 			    title: [{
 			        text: "柱状图",
@@ -2007,8 +2121,20 @@ function comparisonStrip_generate_fun(){
                              rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
                         }
                          rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-                         leftDiv+="</div>";
-                         rightDiv+= "</div>";
+												 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+		 										var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+		 										var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+		 										var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+		 										if(isNeedShowTongBiOption){
+		 											leftDiv += leftTongbi;
+		 											rightDiv += rightTongbi;
+		 										}
+		 										if(isNeedShowHuanBiOption){
+		 											leftDiv += leftHuanbi;
+		 											rightDiv += rightHuanbi;
+		 										}
+		 										leftDiv+= "</div>";
+		 		       					rightDiv+= "</div>";
                          return leftDiv+rightDiv;
 			        },
 			        textStyle:{
@@ -2033,7 +2159,7 @@ function comparisonStrip_generate_fun(){
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            startValue:0,
 			            endValue:15,
@@ -2069,15 +2195,16 @@ function comparisonStrip_generate_fun(){
 			    yAxis:needYais,
 			    series:series
 			};
-				
+
 			mycharts.clear();
 			mycharts.setOption(option);
+
 			spinner.stop();
-			
+
 		});
 	}
 	var maxLength = 0;
-	// 条形图 
+	// 条形图
 	function barChart_generate_fun(){
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			var series = [];
@@ -2096,7 +2223,7 @@ function comparisonStrip_generate_fun(){
 			];
 			var gridArr = [];
 			var valueMax = 0;
-			
+
 			for(var i = 0;i < data.length;i++){
 				var aData = data[i];
 				var theDimeInfo = [];
@@ -2110,14 +2237,14 @@ function comparisonStrip_generate_fun(){
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
 						valueMax = aData[drag_measureCalculateStyle[all_measure[j]]];
-					}					
+					}
 					if(!series[j]){
 						series[j] = {
 							"name":drag_measureCalculateStyle[all_measure[j]],
 							"type":"bar",
 							"yAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
 							"xAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}}],
+							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]}],
 							z:3,
 							label:{
 								normal:{
@@ -2131,17 +2258,18 @@ function comparisonStrip_generate_fun(){
 				                    			// console.log(params.value);
 				                    			return params.value;
 				                    		}
-				                    		// var relVal = params.value;  
+				                    		// var relVal = params.value;
 				                    		// if(relVal > 9999){
 				                    		// 	return relVal/10000 + "万";
 				                    		// }
-				 
+
 			                  		 },
 								}
 							},
 						};
 					}else{
-						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]}});
+						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],
+						"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]});
 					}
 				}
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
@@ -2154,13 +2282,13 @@ function comparisonStrip_generate_fun(){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
 							dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-						}	
+						}
 					}
 				}
 			}
-			
-			
-			
+
+
+
 			for(var i = 0;i < dimensionality_show_data.length;i++){
 				var aY = {
 					"show":true,
@@ -2181,27 +2309,27 @@ function comparisonStrip_generate_fun(){
 						rotate:15,
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
-						// formatter: function (value, index) {  
-						//     if (value>=10000){  
-						//         return value/10000 + '万';  
-						//     }  
-						//     else{  
-						//         return value ; 
-						//     }  
-						// }  
+						// formatter: function (value, index) {
+						//     if (value>=10000){
+						//         return value/10000 + '万';
+						//     }
+						//     else{
+						//         return value ;
+						//     }
+						// }
 					},
 					"data":dimensionality_show_data[i],
 					gridIndex:i
 				}
 				needYais.push(aY);
-				
+
 				var aGrid = {
 					containLabel:false,
 					show:false,
-					
+
 				}
 				aGrid["left"] = 60 + i * (60 + maxLength);
-				aGrid["bottom"] = 60;	
+				aGrid["bottom"] = 60;
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
 				}
@@ -2214,7 +2342,7 @@ function comparisonStrip_generate_fun(){
 				        max:valueMax,
 					}
 					needXais.unshift(obj);
-					
+
 					var aSeriesData = {
 						name:"help",
 						type:"bar",
@@ -2230,9 +2358,9 @@ function comparisonStrip_generate_fun(){
 					}
 					series.push(aSeriesData);
 				}
-				
+
 				gridArr.push(aGrid);
-				
+
 			}
 			var dataZoomXindexArray = [];
 			var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
@@ -2277,8 +2405,20 @@ function comparisonStrip_generate_fun(){
                              rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
                         }
                          rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-                         leftDiv+="</div>";
-                         rightDiv+= "</div>";
+												 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+											 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+											 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+											 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+											 if(isNeedShowTongBiOption){
+												 leftDiv += leftTongbi;
+												 rightDiv += rightTongbi;
+											 }
+											 if(isNeedShowHuanBiOption){
+												 leftDiv += leftHuanbi;
+												 rightDiv += rightHuanbi;
+											 }
+											 leftDiv+= "</div>";
+											 rightDiv+= "</div>";
                          return leftDiv+rightDiv;
 			        },
 			        textStyle:{
@@ -2318,7 +2458,7 @@ function comparisonStrip_generate_fun(){
 				            yAxisIndex: dataZoomXindexArray,
 				            height:10,
 				            handleStyle:{
-				            		color:"#ff7e00"	
+				            		color:"#ff7e00"
 				            },
 				            startValue:0,
 				            endValue:15,
@@ -2360,7 +2500,7 @@ function comparisonStrip_generate_fun(){
 			for(var i =0;i < data.length;i++){
 				var aData = data[i];
 				var max = aData[drag_measureCalculateStyle[all_measure[0]]] / allValueUnitDict[valueUnitValue];
-				for(var j = 0;j <  all_measure.length;j++){					
+				for(var j = 0;j <  all_measure.length;j++){
 					if(!series[0]["data"][j]){
 						series[0]["data"][j] = {
 							"name":drag_measureCalculateStyle[all_measure[j]],
@@ -2377,7 +2517,7 @@ function comparisonStrip_generate_fun(){
 				}
 				indicator.push({"name":aData[all_dimensionality[0]],"max":(max/allValueUnitDict[valueUnitValue])*1.2,"originalMax":max});
 			}
-			
+
 		var option = {
 		    title: [{
 		        text: "雷达图",
@@ -2396,7 +2536,7 @@ function comparisonStrip_generate_fun(){
 		    tooltip: {
 		    		trigger:"item",
 		    		textStyle:{
-		    			fontSize:12	
+		    			fontSize:12
 		    		},
 		    		backgroundColor:'rgba(255,255,255,0.8)',
 			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
@@ -2409,7 +2549,7 @@ function comparisonStrip_generate_fun(){
 						var aStyle = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+drag_measureCalculateStyle[all_measure[i]]+"</p>";
 						rightDiv+=aStyle;
 					}
-					
+
    					for(var i = 0;i < params.value.length;i++){
    						var needValue = params.value[i];
    						if(normalUnitValue != -1){
@@ -2421,9 +2561,9 @@ function comparisonStrip_generate_fun(){
    					leftDiv+="</div>";
                      rightDiv+= "</div>";
 	        			 return leftDiv + rightDiv;
-					
+
 		    		}
-		    		
+
 		    },
 		    legend: {
 		        data: commonLegend,
@@ -2457,10 +2597,11 @@ function comparisonStrip_generate_fun(){
 		};
 		//清除上一个图例
 		mycharts.clear();
-	
+
 		mycharts.setOption(option);
+
 		spinner.stop();
-			
+
 		});
 	}
 
@@ -2562,7 +2703,7 @@ function valueUnitDidChangedValue(){
 
 	if(currentChatType != "percentage_bar" && currentChatType != "percentage_liner"){
 		if(currentChatType == "radarChart"){
-			
+
 			var allValueData = op.series[0].data;
 			for(var i = 0;i < allValueData.length;i++){
 				var theValues = allValueData[i].value;
@@ -2584,10 +2725,10 @@ function valueUnitDidChangedValue(){
 			}
 		}
 	}
-	
-	
+
+
 	mycharts.setOption(op);
-	
+
 }
 
 
@@ -2610,14 +2751,14 @@ function valueUnitDidChangedValue(){
 //	}else{
 //		if(i + 1 < keys.length){
 //			arr1[i].push(" " + keys[i].split("_equal_")[1]);
-//		}	
+//		}
 //	}
 //	i++;
 //	if(i == keys.length){
 //	   return;
 //	}
 //	obj = handle(obj[keys[i - 1]]);
-//	
+//
 //}
 // handle(needobj);
 //}
@@ -2639,14 +2780,14 @@ function chartAPartDidClickedFunction(params){
 	}else{
 		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillUp").removeClass("active");
 	}
-	
+
 	if(currentChatType == "radarChart" && params.componentType == "radar"){
 		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .levelTitle").html(params.name);
 	}else{
 		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .levelTitle").html(params.data.dirllInfo.currentField);
 	}
-	
-	
+
+
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection").show();
 	// 下钻按钮点击的时候
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillDown").unbind("click");
@@ -2667,11 +2808,11 @@ function chartAPartDidClickedFunction(params){
 		}else{
 			aDrillcondtion = {"currentField":params.data.dirllInfo.currentField,"currentValue":params.data.dirllInfo.currentValue,"drillField":$(this).text()};
 		}
-		
+
 		dirllConditions.push(aDrillcondtion);
-		
+
 		switch_chart_handle_fun();
-		
+
 	});
 	// 上钻按钮点击的时候
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillUp").unbind("click");
@@ -2690,7 +2831,7 @@ function chartAPartDidClickedFunction(params){
 
 // 下钻功能，需要记录当前的条件
 function saveDrillConditions(key,drillCondictions){
-	
+
 	window.localStorage.setItem(key,JSON.stringify(drillCondictions));
 }
 // 获取下钻的条件
