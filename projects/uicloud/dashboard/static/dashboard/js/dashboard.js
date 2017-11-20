@@ -1752,6 +1752,7 @@
 								out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).unbind("click");
 								out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).click(function(event){
 									event.stopPropagation();
+									$("#text_table_need_show .content_body #data_list_for_body .measureDiv p").show();
 									var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
 									if($(this).hasClass("linkBack")){
 										// isNeedShowHuanBiOption = true;
@@ -1766,6 +1767,7 @@
 											showTongbiMeasureArray.push(measureInfo);
 										}
 									}
+									showOrHidenSomeMeasureCompareOrLink();
 									$(".me_out_content").remove();
 									$(".me_out_content li").unbind("mouseenter mouseleave");
 									open_or_close = true;
@@ -1784,6 +1786,7 @@
 									if(index2 != -1){
 										showTongbiMeasureArray.splice(index2,1);
 									}
+									showOrHidenSomeMeasureCompareOrLink();
 									// isNeedShowHuanBiOption = false;
 									// isNeedShowTongBiOption = false;
 									$(".me_out_content").remove();
@@ -1803,6 +1806,7 @@
 												if(index2 != -1){
 													showTongbiMeasureArray.splice(index2,1);
 												}
+												showOrHidenSomeMeasureCompareOrLink();
 											}
 											if($(this).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
@@ -3072,6 +3076,7 @@
 												showTongbiMeasureArray.splice(index2,1);
 											}
 										}
+										showOrHidenSomeMeasureCompareOrLink();
 											if($(ui.sender).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
 											}else{
@@ -3462,6 +3467,7 @@
 								showTongbiMeasureArray.splice(index2,1);
 							}
 						}
+						showOrHidenSomeMeasureCompareOrLink();
 						$(".annotation_text").eq(index).find(".list_wrap").remove();
 						$(".annotation_text").eq(index).find("li").remove();
 
