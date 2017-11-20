@@ -210,6 +210,12 @@ function showTable_by_dragData(){
 				topHelpTr.css("height",measureDiv.outerHeight());
 				topValue = topHelpTr.outerHeight() * topHelpTr.index();
 				measureDiv.data("topIndex",topHelpTr.index());
+				if(topHelpTr.index() < 0){
+					measureDiv.data("topIndex",0);
+					topValue = 0;
+				}
+			}else{
+				measureDiv.data("topIndex",0);
 			}
 			if(columnClass !=""){
 				var leftHelpTd = $("#text_table_need_show .top_column_container .column_data_list tbody tr td."+columnClass).eq(0);
@@ -226,7 +232,7 @@ function showTable_by_dragData(){
 				$("#text_table_need_show .top_column_container .column_data_list").css("width",theWidth*tableWidth+"px");
 				if(tableWidth < 1 && $("#text_table_need_show #data_list_for_body")[0].offsetWidth < theWidth){
 					$("#text_table_need_show #data_list_for_body").css("width",theWidth+5+"px");
-				}else{
+				}else if(tableWidth > 0){
 					$("#text_table_need_show #data_list_for_body").css("width","");
 				}
 				unitFinalWidth = theWidth;
