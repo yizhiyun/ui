@@ -422,8 +422,9 @@ function col_card(){
 		$("#card .right_module .content_body #data_list_for_body .measureDiv").remove();
 		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 		var needAllData = data;
+		console.log(data);
 		for(var i = 0;i < needAllData.length;i++){
-			//console.log(needAllData);
+			// console.log(needAllData);
 			var aData = needAllData[i];
 			//console.log(aData);
 			var measureDiv = $("<div class='measureDiv'></div>");
