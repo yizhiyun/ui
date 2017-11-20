@@ -82,6 +82,7 @@ function one_de_one_me_handle (chart_type_need) {
 			     backgroundColor:'rgba(255,255,255,0.8)',
 			     extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			     formatter: function (params) {
+
 			         var tar;
 			         if (params[1].value != '-') {
 			             tar = params[1];
@@ -369,7 +370,7 @@ function one_de_one_me_handle (chart_type_need) {
 				tooltip:{
 					trigger:"axis",
 					backgroundColor:'rgba(255,255,255,0.8)',
-			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
+			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					formatter:function(params){
 
 						  var needValue = params[0].value;

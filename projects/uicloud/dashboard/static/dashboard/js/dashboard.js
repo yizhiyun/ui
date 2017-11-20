@@ -488,6 +488,12 @@
 
 				drag_row_column_data["column"] = JSON.parse(now_title_handle_view["column"]);
 
+				//同比环比显示
+				var tempGetData = JSON.parse(now_title_handle_view["sequential"]);
+
+				showTongbiMeasureArray = tempGetData[0];
+				
+				showHuanbiMeasureArray = tempGetData[1];
 
 				current_cube_name = now_title_handle_view["tablename"];
 

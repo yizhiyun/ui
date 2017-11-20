@@ -24,7 +24,7 @@ class DashboardViewByUser(models.Model):
     status = models.CharField(max_length=255, null=True)
     viewstyle = models.CharField(max_length=255)
     customcalculate = models.CharField(max_length=255)
-
+    sequential = models.CharField(max_length=255)
 
 class DashboardIndexByUser(models.Model):
     username = models.CharField(max_length=32)
