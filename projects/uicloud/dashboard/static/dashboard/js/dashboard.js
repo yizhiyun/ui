@@ -1651,7 +1651,7 @@
 								}
 
 								if(out_wrap_click.hasClass("dimensionalityWrap")){
-										out_wrap_click.find(".me_out_content_li").eq(0).add(out_wrap_click.find(".me_out_content_li").eq(1)).add(out_wrap_click.find(".me_out_content_li").eq(2)).add(out_wrap_click.find(".me_out_content_li").eq(3)).add(out_wrap_click.find(".me_out_content_li").eq(4)).remove();
+										out_wrap_click.find(".me_out_content_li").not(".deleting").remove();
 								}
 
 								// 点击事件-------------

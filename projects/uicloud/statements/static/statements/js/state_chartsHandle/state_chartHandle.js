@@ -1,6 +1,7 @@
 var dirllConditions = [];
 var currentChatType = "none";
 var radarDiemension = "none";
+isNeedShowTongBiOption = true;
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
@@ -81,7 +82,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			         type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
 			  
 			     },
-			     formatter: function (params) {			     	
+			     backgroundColor:'rgba(255,255,255,0.8)',
+			     extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
+			     formatter: function (params) {
 			         var tar;
 			         if (params[1].value != '-') {
 			             tar = params[1];
@@ -89,13 +92,31 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			         else {
 			             tar = params[0];
 			         }
-			         var dimeNames = "<p style='font-size:12px;height:12px;padding:3px 0 3px 2px'>" + tar.name + "</p>";
+					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p>";
 			         var needValue = tar.value;
-			         if(normalUnitValue_arr[storeNum_toview] != -1){
-			         	needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
+			         if(normalUnitValue != -1){
+			         	needValue = needValue.toFixed(normalUnitValue);
 			         }
-			         var measureNames = "<p style='font-size:10px;height:12px;padding:3px 0 3px 0;margin-top:6px'><span style=width:8px;height:8px;border-radius:50%;float:left;margin-top:2./spx;line-height:12px;background:"+tar.color + ">"+ "</span>" + "<span style='float:left;margin-left:5px;height:12px;line-height:12px'>" +tar.seriesName+":  " + needValue+"</span></p>";
-			         return dimeNames + measureNames;
+			         var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+
+							 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+							 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+							 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.tongbi)*100).toFixed(2)+"%</p>";
+							 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.huanbi)*100).toFixed(2)+"%</p>";
+							 if(isNeedShowTongBiOption){
+								 leftDiv += leftTongbi;
+								 rightDiv += rightTongbi;
+							 }
+							 if(isNeedShowHuanBiOption){
+								 leftDiv += leftHuanbi;
+								 rightDiv += rightHuanbi;
+							 }
+							 leftDiv += "</div>";
+							 rightDiv += "</div>";
+
+			         return leftDiv + rightDiv;
+
+
 			     }
 			 	},
 			    grid: {
