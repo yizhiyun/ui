@@ -315,6 +315,7 @@ $(function(){
 			saveNowWallDict["calculation"] = JSON.stringify(drag_measureCalculateStyle);
 			saveNowWallDict["customcalculate"] = JSON.stringify(customCalculate);
 			var contactTH = [];
+			console.log(showTongbiMeasureArray,showHuanbiMeasureArray)
 			contactTH.push(showTongbiMeasureArray);
 			contactTH.push(showHuanbiMeasureArray);
 			saveNowWallDict["sequential"] = JSON.stringify(contactTH);

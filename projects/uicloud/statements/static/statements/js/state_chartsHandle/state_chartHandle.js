@@ -825,6 +825,8 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]));
 	var all_measure = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]));
 	
+	console.log(drag_row_column_data_arr[storeNum_toview])
+
 	var commonLegend = [];
 	for (var k = 0;k <  all_measure.length;k++) {
 		commonLegend.push(drag_measureCalculateStyle_arr[storeNum_toview][all_measure[k]])
@@ -966,6 +968,10 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 				
 				for(var i = 0; i < data.length;i++){
 					var aData = data[i];
+					var theDimeInfo = [];
+					for(var k = 0;k < all_dimensionality.length;k++){
+						theDimeInfo.push(aData[all_dimensionality[k]]);
+					}
 					for(var measure_i = 0;measure_i < all_measure.length;measure_i++){
 						var aMeasure = all_measure[measure_i];
 						if(!measure_show_data_arr[measure_i]){
@@ -1410,13 +1416,13 @@ function comparisonStrip_generate_fun(storeNum_toview){
  // 3、堆积柱状图 2-3个维度，1个度量
  //	type：number_bar、number_liner、percentage_bar、percentage_liner
  	function stackedBar_generate_fun(bar_type,storeNum_toview){
-
+ 		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+		showTongbiMeasureArray = tempThData[0];
+		showHuanbiMeasureArray = tempThData[1];
+ 		var tempSaveClassName = viewshow_class;
  		var  chartTile = {"number_bar":"堆积柱状图","number_liner":"堆积条形图","percentage_bar":"百分比堆积柱","percentage_liner":"百分比堆积条形"}
-			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-			showTongbiMeasureArray = tempThData[0];
-			showHuanbiMeasureArray = tempThData[1];
- 			var tempSaveClassName = viewshow_class;
-			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+
+		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -1429,7 +1435,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				var dimensionality_arr= []; // 各个维度的数组,绘制图形需要使用
 				var need_show_dimensionality_arr = [];
 				var need_show_dime_name_arr = all_dimensionality.slice(0,all_dimensionality.length-1);
-				
+
 				var confir_max_obj = {};
 				var max = 1;
 				var groupArr = [];
@@ -1437,7 +1443,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				var valueMax = 0;
 				for(var i =0; i <  data.length;i++){
 					var aData = data[i];
-					for(var j = 0;j < all_dimensionality.length - 1;j++){				
+					for(var j = 0;j < all_dimensionality.length - 1;j++){
 						if(!need_show_dimensionality_arr[j]){
 							need_show_dimensionality_arr[j] = [{"value":aData[all_dimensionality[j]],"count":1}];
 						}else{
@@ -1453,10 +1459,10 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							}
 						}
 					}
-					
+
 					var dime = aData[all_dimensionality[all_dimensionality.length - 2]];
 					var nowdime = aData[all_dimensionality[all_dimensionality.length - 1]];
-					if(i > 0){	
+					if(i > 0){
 						var predime = data[i-1][all_dimensionality[all_dimensionality.length - 1]];
 					}
 					if (!confir_max_obj[dime]){
@@ -1474,7 +1480,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						}
 					}
 				}
-								
+
 				var option = {
 					title:[{
 						text:chartTile[bar_type],
@@ -1523,8 +1529,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 	        						val = (Number(val) * 100).toFixed(2) + "%";
 
 	        					}else{
-	        						if(normalUnitValue != -1){
-						  	 		val = val.toFixed(normalUnitValue);
+	        						if(normalUnitValue_arr[storeNum_toview] != -1){
+						  	 		val = val.toFixed(normalUnitValue_arr[storeNum_toview]);
 						 		 }
 	        					}
 	        		var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
@@ -1556,7 +1562,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 	        			}
 				  	},
 	    				 xAxis:[
-	    				 	
+
 	    				 ],
 	    				 yAxis:[
 	    				 ],
@@ -1574,7 +1580,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					}else{
 						return 0;
 					}
-					
+
 				}
 			}
 			if (bar_type == "number_bar" || bar_type == "percentage_bar") {
@@ -1582,27 +1588,47 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			}else{
 				option["xAxis"].push(axisLabelSetteing);
 			}
-			
-				// 造多少行数据(几个去堆叠)
+
+			// 造多少行数据(几个去堆叠)
 			for (var i = 0;i < max;i++) {
 				var name;
 				var stack;
-				var data = [];
+				var seriesdata = [];
 				var helpSum = 0;
 				name = drag_measureCalculateStyle_arr[storeNum_toview][measureName];
 				stack = "use";
 				for (var j =0;j < groupArr.length;j++) {
-						var val = measure_Data_arr[j][i]
+						var val = null;
+						var tongbiVal = null;
+						var huanbiVal = null;
+						if(measure_Data_arr[j][i]){
+							val = measure_Data_arr[j][i].value;
+							tongbiVal = measure_Data_arr[j][i].tongbi;
+							huanbiVal = measure_Data_arr[j][i].huanbi;
+						}
+						var valueSum = calculateArraySpecialFieldSum(measure_Data_arr[j],"value");
 						if (bar_type == "percentage_liner" || bar_type == "percentage_bar") {
-							val = (val / eval(measure_Data_arr[j].join("+"))).toFixed(4);
+							val = (val / valueSum.toFixed(4));
 						}else{
-							if(valueMax < eval(measure_Data_arr[j].join("+"))){
-								valueMax = eval(measure_Data_arr[j].join("+"));
+							if(valueMax < valueSum){
+								valueMax = valueSum;
 							}
 						}
-						data.push({value:val / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":val,name:groupArr[j][i],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":groupArr[j][i]}});
+						var theDimeInfo = [];
+						for(var k =0;k < all_dimensionality.length;k++){
+							var index = i;
+							if(j > 0){
+								for(var kk = 0;kk < j;kk ++){
+									index +=  groupArr[kk].length;
+								}
+							}
+							if(data[index]){
+								theDimeInfo.push(data[index][all_dimensionality[k]]);
+							}
+						}
+						seriesdata.push({value:val / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":val,name:groupArr[j][i],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":groupArr[j][i]},"theDimeInfo":theDimeInfo,"tongbi":tongbiVal,"huanbi":huanbiVal});
 				}
-				
+
 				var obj = {
 					name:name,
 					type:"bar",
@@ -1627,12 +1653,12 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			                 },
 						}
 					},
-					data:data,
+					"data":seriesdata,
 					z:3
 				}
 				option["series"].push(obj);
 			}
-			
+
 //  坐标轴设置值
 			for (var k = need_show_dimensionality_arr.length - 1;k >= 0;k--){
 				var obj = {
@@ -1654,12 +1680,12 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					data:need_show_dimensionality_arr[k],
 					gridIndex:need_show_dimensionality_arr.length - 1 - k,
 				}
-				
+
 				var aGrid = {
 					show:false,
 					containLabel:true,
-				}		
-				
+				}
+
 				if (bar_type == "number_bar" || bar_type == "percentage_bar") {
 					obj["position"] = "bottom";
 					option["xAxis"].push(obj);
@@ -1673,19 +1699,18 @@ function comparisonStrip_generate_fun(storeNum_toview){
 										}else{
 											return 0;
 										}
-										
+
 									}}
 						}
 						valueHelpAxis["max"] = valueMax;
 						option["yAxis"].push(valueHelpAxis);
-						
-						
+
+
 						var aSeriesData = {
 							name:"help",
 							type:"bar",
 							xAxisIndex:k,
 							yAxisIndex:k,
-//							"barCategoryGap":5,
 							"data":[{"value":valueMax / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":valueMax}],
 							itemStyle:{
 								normal:{
@@ -1695,12 +1720,12 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							cursor:"default"
 						}
 						option["series"].push(aSeriesData);
-						
+
 					}
 					aGrid["left"] = "10%";
 					aGrid["bottom"] = 60 + 40*k;
-					
-					
+
+
 				}else{
 					obj["position"] = "left";
 					option["yAxis"].push(obj);
@@ -1714,7 +1739,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 										}else{
 											return 0;
 										}
-										
+
 									}}
 						}
 						valueHelpAxis["max"] = valueMax;
@@ -1734,25 +1759,25 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							cursor:"default"
 						}
 						option["series"].push(aSeriesData);
-					}	
+					}
 					aGrid["containLabel"] = false;
 					aGrid["left"] =  60 + 70*k;
 					aGrid["bottom"] = 60;
-					
+
 				}
 				if(k != need_show_dimensionality_arr.length - 1){
 					aGrid["tooltip"] = {show:false}
 				}
 				option["grid"].push(aGrid);
 			}
-			
+
 				var dataZoomXindexArray = [];
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
 				for(var k = 0; k < dimension_length -1;k++){
 					dataZoomXindexArray.push(k);
 				}
 			if (bar_type == "number_bar" || bar_type == "percentage_bar"){
-				console.log(need_show_dimensionality_arr);
+
 				option["dataZoom"] = [
 					{
 			    		type: 'slider',
@@ -1764,11 +1789,11 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            startValue:0,
-			            endValue:15,
-			          	handleSize:12,
+			            endValue:10,
+						handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
 			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
@@ -1792,17 +1817,16 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			            yAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#ff7e00"
 			            },
 			            startValue:0,
-			            endValue:15,
+			            endValue:10,
 			            orient:"horizontal",
 				        bottom:25,
 			          	handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
 			            handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
-			            
 			    			},
 			    			{
 			    			type: 'slider',
@@ -2058,6 +2082,10 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			 var valueMax = 0;
 			for(var i = 0;i < data.length;i++){
 				var aData = data[i];
+				var theDimeInfo = [];
+				for(var k = 0;k < all_dimensionality.length;k++){
+					theDimeInfo.push(aData[all_dimensionality[k]]);
+				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]]){
 						valueMax = aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]];
@@ -2068,7 +2096,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							"type":"bar",
 							"xAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
 							"yAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-							"data":[{"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],
+							"data":[{"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],
 							"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"measureName":all_measure[j]}],
 							label:{
 								normal:{
@@ -2086,7 +2114,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							z:3
 						};
 					}else{
-						series[j]["data"].push({"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],
+						series[j]["data"].push({"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]]/allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],
 						"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"measureName":all_measure[j]});
 					}
 				}

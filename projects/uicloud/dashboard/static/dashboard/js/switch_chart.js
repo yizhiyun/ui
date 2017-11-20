@@ -36,6 +36,7 @@ function beginDrawChart(edit_view){
 
 	var target =  $("#view_show_wrap").get(0);
     spinner.spin(target);
+    $(".maskLayer").show();
 	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
 			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
 		}
@@ -78,6 +79,7 @@ function beginDrawChart(edit_view){
 			save_now_show_view_text =  null;
 			click_view_icon =false;
 			spinner.stop();
+			$(".maskLayer").hide();
 			return;
 		}
 	
@@ -307,6 +309,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").hide();
 							}
 						spinner.spin(target);
+						$(".maskLayer").show();
 //						console.log(save_now_show_view_text)
 						eval(save_now_show_view_text.data("show_view_fun"));
 						var target =  $("#view_show_wrap").get(0);

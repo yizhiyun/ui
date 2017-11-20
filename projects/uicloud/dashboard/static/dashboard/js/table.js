@@ -269,6 +269,7 @@ function showTable_by_dragData(){
 						function_draw_column_line();
 						layout_table_size();
 						spinner.stop();
+						$(".maskLayer").hide();
 						if(finish){
 							finish();
 
@@ -280,6 +281,7 @@ function showTable_by_dragData(){
 				$("#text_table_need_show #data_list_for_body div.vertical_line").remove();
 				$("#text_table_need_show #data_list_for_body li").remove();
 				spinner.stop();
+				$(".maskLayer").hide();
 			}
 
 		}
@@ -290,6 +292,7 @@ function showTable_by_dragData(){
 			 	function_draw_row_data(data);
 			 	layout_table_size();
 				spinner.stop();
+				$(".maskLayer").hide();
 			 	 if(finish){
 			 	 	finish();
 			 	 }
@@ -312,6 +315,7 @@ function showTable_by_dragData(){
 		 	 	function_draw_column_data(data);
 		 	 	layout_table_size();
 				spinner.stop();
+				$(".maskLayer").hide();
 		 	 	 if(finish){
 		 	 	 	finish();
 		 	 	 }
@@ -345,6 +349,7 @@ function showTable_by_dragData(){
 			if(isRowDemiEqual && isColumnDemiEqual&&isMeasureEqual&&isCalculateMeasureEqual&&isCustomCalculateStyleEqual){
 				// 直接显示
 				spinner.stop();
+				$(".maskLayer").hide();
 			}else if(isRowDemiEqual && isColumnDemiEqual){
 				measureNeedDraw();
 
@@ -445,6 +450,7 @@ function col_card(){
 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
 		}
 		spinner.stop();
+		$(".maskLayer").hide();
 	})
 }
 

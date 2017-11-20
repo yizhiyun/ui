@@ -1129,7 +1129,7 @@
 							 $("#pageDashboardModule #view_save_up #show_excel_name").html("");
 							 $("#pageDashboardModule #body_content_shadow").hide();
 							 clickViewTo($(nowDeleteElement).attr("title"));
-							 console.log(saveViewShowArr)
+							 
 						}else{
 							alert("保存失败");
 						}
@@ -1178,7 +1178,7 @@
 				if(obj2 == null && obj1["viewtype"] != null){
 					return false;
 				}
-				if(obj1["viewtype"] == null || (obj1["row"] == obj2["row"] && obj1["column"] == obj2["column"]  && obj1["tablename"] == obj2["tablename"] && obj1["viewtype"] == obj2["viewtype"] && obj1["calculation"] == obj2["calculation"] && obj1["customcalculate"] == obj2["customcalculate"] && obj1["viewstyle"] == obj2["viewstyle"])){
+				if(obj1["viewtype"] == null || (obj1["row"] == obj2["row"] && obj1["column"] == obj2["column"]  && obj1["tablename"] == obj2["tablename"] && obj1["viewtype"] == obj2["viewtype"] && obj1["calculation"] == obj2["calculation"] && obj1["customcalculate"] == obj2["customcalculate"] && obj1["viewstyle"] == obj2["viewstyle"] && obj1["sequential"] == obj2["sequential"])){
 					return true;
 				}else{
 					return false;
@@ -3540,6 +3540,9 @@
 
 		 	var nowIndexName = folder_name_sum("新指标",getIndexName);
 		 	event.stopPropagation();
+		 	var indexTH = [];
+			indexTH.push(showTongbiMeasureArray);
+			indexTH.push(showHuanbiMeasureArray);
 		   	var postIndexDic = {
 		   		"row":JSON.stringify(drag_row_column_data["row"]),
 		   		"column":JSON.stringify(drag_row_column_data["column"]),
@@ -3548,7 +3551,8 @@
 		   		"indexname":nowIndexName,
 		   		"calculation":JSON.stringify(drag_measureCalculateStyle),
 		   		"indexstyle":currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue,
-		   		"customcalculate":JSON.stringify(customCalculate)
+		   		"customcalculate":JSON.stringify(customCalculate),
+		   		"sequential":JSON.stringify(indexTH),
 		   	};
 		   	// 请求保存指标
 		   	$.ajax({
