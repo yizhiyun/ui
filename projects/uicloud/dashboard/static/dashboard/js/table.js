@@ -133,7 +133,7 @@ function showTable_by_dragData(){
 		});
 		if($("#text_table_need_show .left_row_container table tbody tr").length < 1 && columnInfo > 0){
 			var ali = $("<li></li>");
-			ali.css("height","25px");
+			ali.css("minHeight","25px");
 			$("#text_table_need_show #data_list_for_body").append(ali);
 		}
 
@@ -143,7 +143,10 @@ function showTable_by_dragData(){
 		$("#text_table_need_show .top_column_container .column_data_list tbody tr:last td").each(function(index,ele){
 
 			var vertical_line = $("<div class='vertical_line'></div>");
-			vertical_line.css("left",(index+1)*$(ele).outerWidth());
+			vertical_line.css("left",(index+1)*$(ele)[0].offsetWidth - 1);
+			if(index == 0){
+				vertical_line.css("left",(index+1)*$(ele)[0].offsetWidth);
+			}
 			$("#text_table_need_show #data_list_for_body").append(vertical_line);
 
 		});
@@ -160,11 +163,8 @@ function showTable_by_dragData(){
 			var measureDiv = $("<div class='measureDiv'></div>");
 			for(var j = 0;j < allMeasure.length;j++){
 				var aMeasure = allMeasure[j];
-				var span = $("<span>"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
-				measureDiv.append(span);
-				if(j != allMeasure.length - 1){
-					measureDiv.append("<span class='seperate'>/</span>");
-				}
+				var ap = $("<p>"+drag_measureCalculateStyle[aMeasure]+":"+aData[drag_measureCalculateStyle[aMeasure]]+"</p>");
+				measureDiv.append(ap);
 			}
 			$("#text_table_need_show .content_body #data_list_for_body").append(measureDiv);
 			var rowClass = "";
@@ -183,11 +183,23 @@ function showTable_by_dragData(){
 			var leftValue = 0;
 			if(rowClass!=""){
 				var topHelpTr = $("#text_table_need_show .left_row_container table tbody tr td."+rowClass).parent("tr").eq(0);
+				topHelpTr.css("height",measureDiv.outerHeight());
 				topValue = topHelpTr.outerHeight() * topHelpTr.index();
 			}
 			if(columnClass !=""){
 				var leftHelpTd = $("#text_table_need_show .top_column_container .column_data_list tbody tr td."+columnClass).eq(0);
-				leftValue = leftHelpTd.outerWidth() * leftHelpTd.index();
+				var theWidth = measureDiv[0].offsetWidth;
+				if(leftHelpTd[0] && leftHelpTd[0].offsetWidth > theWidth && leftHelpTd.index() > 0){
+					theWidth = leftHelpTd[0].offsetWidth;
+					leftValue = theWidth * leftHelpTd.index();
+				}
+				var tableWidth = $("#text_table_need_show .top_column_container .column_data_list tbody tr:last td").length;
+				$("#text_table_need_show .top_column_container .column_data_list tbody tr td").css("width",theWidth);
+				$("#text_table_need_show .top_column_container .column_data_list").css("width",theWidth*tableWidth);
+				if(tableWidth < 1){
+					$("#text_table_need_show #data_list_for_body").css("width",theWidth+10+"px");
+				}
+
 			}
 			measureDiv.css({
 				"top":topValue,
@@ -219,9 +231,9 @@ function showTable_by_dragData(){
 			if(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])).length >= 0 && specialRemoveDataTypeHandle(current_all_measure).length >0){
 					recordData();
 					measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
+						function_draw_measure_data(data);
 						function_draw_row_line();
 						function_draw_column_line();
-						function_draw_measure_data(data);
 						layout_table_size();
 						if(finish){
 							finish();
