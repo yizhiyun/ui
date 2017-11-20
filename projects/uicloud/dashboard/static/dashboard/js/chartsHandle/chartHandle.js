@@ -1,8 +1,8 @@
 var dirllConditions = [];
 var currentChatType = "none";
 var radarDiemension = "none";
-var isNeedShowTongBiOption = false;
-var isNeedShowHuanBiOption = false;
+var showTongbiMeasureArray = [];
+var showHuanbiMeasureArray = [];
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function one_de_one_me_handle (chart_type_need) {
@@ -100,11 +100,11 @@ function one_de_one_me_handle (chart_type_need) {
 							 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
 							 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.tongbi)*100).toFixed(2)+"%</p>";
 							 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.huanbi)*100).toFixed(2)+"%</p>";
-							 if(isNeedShowTongBiOption){
+							 if(showTongbiMeasureArray.indexOf(need_handle_measureName)!=-1){
 								 leftDiv += leftTongbi;
 								 rightDiv += rightTongbi;
 							 }
-							 if(isNeedShowHuanBiOption){
+							 if(showHuanbiMeasureArray.indexOf(need_handle_measureName)!=-1){
 								 leftDiv += leftHuanbi;
 								 rightDiv += rightHuanbi;
 							 }
@@ -265,11 +265,11 @@ function one_de_one_me_handle (chart_type_need) {
 						 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
 						 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
 						 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
-						 if(isNeedShowTongBiOption){
+						 if(showTongbiMeasureArray.indexOf(need_handle_measureName)!=-1){
 							 leftDiv += leftTongbi;
 							 rightDiv += rightTongbi;
 						 }
-						 if(isNeedShowHuanBiOption){
+						 if(showHuanbiMeasureArray.indexOf(need_handle_measureName)!=-1){
 							 leftDiv += leftHuanbi;
 							 rightDiv += rightHuanbi;
 						 }
@@ -382,11 +382,11 @@ function one_de_one_me_handle (chart_type_need) {
 						var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
 						var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[0].data.tongbi)*100).toFixed(2)+"%</p>";
 						var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[0].data.huanbi)*100).toFixed(2)+"%</p>";
-						if(isNeedShowTongBiOption){
+						if(showTongbiMeasureArray.indexOf(need_handle_measureName)!=-1){
 							leftDiv += leftTongbi;
 							rightDiv += rightTongbi;
 						}
-						if(isNeedShowHuanBiOption){
+						if(showHuanbiMeasureArray.indexOf(need_handle_measureName)!=-1){
 							leftDiv += leftHuanbi;
 							rightDiv += rightHuanbi;
 						}
@@ -587,11 +587,11 @@ function one_de_one_me_handle (chart_type_need) {
 						var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
 						var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.tongbi)*100).toFixed(2)+"%</p>";
 						var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.huanbi)*100).toFixed(2)+"%</p>";
-						if(isNeedShowTongBiOption){
+						if(showTongbiMeasureArray.indexOf(need_handle_measureName)!=-1){
 							leftDiv += leftTongbi;
 							rightDiv += rightTongbi;
 						}
-						if(isNeedShowHuanBiOption){
+						if(showHuanbiMeasureArray.indexOf(need_handle_measureName)!=-1){
 							leftDiv += leftHuanbi;
 							rightDiv += rightHuanbi;
 						}
@@ -830,12 +830,11 @@ function many_de_many_me_handle(chart_type_need){
 							var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
 							leftDiv+=aP;
 						}
-//
        					for(var i = 0;i < params.length;i++){
        						var needValue = params[i].value;
        						if(normalUnitValue != -1){
-					  	 		needValue = needValue.toFixed(normalUnitValue);
-					 		 }
+					  	 			needValue = needValue.toFixed(normalUnitValue);
+					 		 		}
        						leftDiv += "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[i].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params[i].seriesName+":</span></p>";
 									if(i == 0){
 										for(var k = 0;k < params[i].data.theDimeInfo.length;k++){
@@ -843,21 +842,22 @@ function many_de_many_me_handle(chart_type_need){
 										}
 									}
 									rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-       					}
-								for(var i = 0;i < params.length;i++){
 									var leftTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[i].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+"同比"+":</span></p>";
 									var leftHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[i].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+"环比"+":</span></p>";
 									var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.tongbi)*100).toFixed(2)+"%</p>";
 									var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.huanbi)*100).toFixed(2)+"%</p>";
-									if(isNeedShowTongBiOption){
+									if(showTongbiMeasureArray.indexOf(params[i].data.measureName) != -1){
 										leftDiv += leftTongbi;
 										rightDiv += rightTongbi;
 									}
-									if(isNeedShowHuanBiOption){
+									if(showHuanbiMeasureArray.indexOf(params[i].data.measureName) != -1){
 										leftDiv += leftHuanbi;
 										rightDiv += rightHuanbi;
 									}
-								}
+       					}
+								// for(var i = 0;i < params.length;i++){
+                //
+								// }
        					leftDiv+= "</div>";
        					rightDiv+= "</div>";
 			        	return leftDiv + rightDiv;
@@ -911,9 +911,9 @@ function many_de_many_me_handle(chart_type_need){
 							valueMax = aData[drag_measureCalculateStyle[aMeasure]];
 						}
 						if(!measure_show_data_arr[measure_i]){
-							measure_show_data_arr[measure_i] = [{"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo,"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]]}];
+							measure_show_data_arr[measure_i] = [{"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo,"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]],"measureName":aMeasure}];
 						}else{
-							measure_show_data_arr[measure_i].push({"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo,"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]]});
+							measure_show_data_arr[measure_i].push({"value":aData[drag_measureCalculateStyle[aMeasure]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo,"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]],"measureName":aMeasure});
 						}
 					}
 					for(var dimensionality_i = 0;dimensionality_i < all_dimensionality.length;dimensionality_i++){
@@ -1030,9 +1030,9 @@ function comparisonStrip_generate_fun(){
 					for (var j = 0;j < all_measure.length;j++) {
 						var aMeasure = all_measure[j];
 						if(!measure_show_data[j]){
-							measure_show_data[j] = [{"value":aData[drag_measureCalculateStyle[aMeasure]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]]}];
+							measure_show_data[j] = [{"value":aData[drag_measureCalculateStyle[aMeasure]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]],"measureName":aMeasure}];
 						}else{
-							measure_show_data[j].push({"value":aData[drag_measureCalculateStyle[aMeasure]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]]});
+							measure_show_data[j].push({"value":aData[drag_measureCalculateStyle[aMeasure]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle[aMeasure]],"measureName":aMeasure});
 						}
 					}
 				}
@@ -1090,13 +1090,13 @@ function comparisonStrip_generate_fun(){
 										var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
 										var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
 										var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
-										var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.tongbi)*100).toFixed(2)+"%</p>";
-										var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params[i].data.huanbi)*100).toFixed(2)+"%</p>";
-										if(isNeedShowTongBiOption){
+										var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+										var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+										if(showTongbiMeasureArray.indexOf(params.data.measureName) != -1){
 											leftDiv += leftTongbi;
 											rightDiv += rightTongbi;
 										}
-										if(isNeedShowHuanBiOption){
+										if(showHuanbiMeasureArray.indexOf(params.data.measureName) != -1){
 											leftDiv += leftHuanbi;
 											rightDiv += rightHuanbi;
 										}
@@ -1390,13 +1390,13 @@ function comparisonStrip_generate_fun(){
 					if (!confir_max_obj[dime]){
 						confir_max_obj[dime] = 1;
 						groupArr.push([nowdime]);
-						measure_Data_arr.push([aData[drag_measureCalculateStyle[all_measure[0]]]]);
+						measure_Data_arr.push([{"value":aData[drag_measureCalculateStyle[all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]]}]);
 					}else{
 						if(i > 0){
 							if(predime != nowdime){
 								confir_max_obj[dime] ++;
 								groupArr[groupArr.length - 1].push(nowdime);
-								measure_Data_arr[measure_Data_arr.length - 1].push(aData[drag_measureCalculateStyle[all_measure[0]]]);
+								measure_Data_arr[measure_Data_arr.length - 1].push({"value":aData[drag_measureCalculateStyle[all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]]});
 								max = max > confir_max_obj[dime] ? max:confir_max_obj[dime];
 							}
 						}
@@ -1455,21 +1455,33 @@ function comparisonStrip_generate_fun(){
 						  	 		val = val.toFixed(normalUnitValue);
 						 		 }
 	        					}
-	        					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+	        		var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
 							var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
 							for(var i = 0;i < all_dimensionality.length;i++){
 								var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
 								leftDiv+=aP;
 							}
-	        					leftDiv += "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
-	        					for(var k = 0;k < params.data.theDimeInfo.length;k++){
+      					leftDiv += "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+      					for(var k = 0;k < params.data.theDimeInfo.length;k++){
 									rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
-							}
-							rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+val+"</p>";
-							leftDiv+= "</div>";
-       						rightDiv+= "</div>";
+								}
+								rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+val+"</p>";
+								var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+ 							 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+ 							 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+ 							 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+ 							 if(showTongbiMeasureArray.indexOf(all_measure[0]) != -1){
+ 								 leftDiv += leftTongbi;
+ 								 rightDiv += rightTongbi;
+ 							 }
+ 							 if(showHuanbiMeasureArray.indexOf(all_measure[0]) != -1){
+ 								 leftDiv += leftHuanbi;
+ 								 rightDiv += rightHuanbi;
+ 							 }
+								leftDiv+= "</div>";
+       					rightDiv+= "</div>";
 			        			 return leftDiv + rightDiv;
-	        				}
+	        			}
 				  	},
 	    				 xAxis:[
 
@@ -1508,12 +1520,20 @@ function comparisonStrip_generate_fun(){
 				name = drag_measureCalculateStyle[measureName];
 				stack = "use";
 				for (var j =0;j < groupArr.length;j++) {
-						var val = measure_Data_arr[j][i];
+						var val = null;
+						var tongbiVal = null;
+						var huanbiVal = null;
+						if(measure_Data_arr[j][i]){
+							val = measure_Data_arr[j][i].value;
+							tongbiVal = measure_Data_arr[j][i].tongbi;
+							huanbiVal = measure_Data_arr[j][i].huanbi;
+						}
+						var valueSum = calculateArraySpecialFieldSum(measure_Data_arr[j],"value");
 						if (bar_type == "percentage_liner" || bar_type == "percentage_bar") {
-							val = (val / eval(measure_Data_arr[j].join("+"))).toFixed(4);
+							val = (val / valueSum.toFixed(4));
 						}else{
-							if(valueMax < eval(measure_Data_arr[j].join("+"))){
-								valueMax = eval(measure_Data_arr[j].join("+"));
+							if(valueMax < valueSum){
+								valueMax = valueSum;
 							}
 						}
 						var theDimeInfo = [];
@@ -1528,7 +1548,7 @@ function comparisonStrip_generate_fun(){
 								theDimeInfo.push(data[index][all_dimensionality[k]]);
 							}
 						}
-						seriesdata.push({value:val / allValueUnitDict[valueUnitValue],"originValue":val,name:groupArr[j][i],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":groupArr[j][i]},"theDimeInfo":theDimeInfo});
+						seriesdata.push({value:val / allValueUnitDict[valueUnitValue],"originValue":val,name:groupArr[j][i],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":groupArr[j][i]},"theDimeInfo":theDimeInfo,"tongbi":tongbiVal,"huanbi":huanbiVal});
 				}
 
 				var obj = {
@@ -1887,11 +1907,11 @@ function comparisonStrip_generate_fun(){
 							var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
 							var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
 							var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
-							if(isNeedShowTongBiOption){
+							if(showTongbiMeasureArray.indexOf(all_measure[0]) != -1){
 								leftDiv += leftTongbi;
 								rightDiv += rightTongbi;
 							}
-							if(isNeedShowHuanBiOption){
+							if(showHuanbiMeasureArray.indexOf(all_measure[0]) != -1){
 								leftDiv += leftHuanbi;
 								rightDiv += rightHuanbi;
 							}
@@ -1971,7 +1991,7 @@ function comparisonStrip_generate_fun(){
 							"xAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
 							"yAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
 							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]] / allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],
-							"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]}],
+							"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]],"measureName":all_measure[j]}],
 							label:{
 								normal:{
 									show:all_dimensionality.length < 25 && all_measure.length < 3,
@@ -1994,7 +2014,7 @@ function comparisonStrip_generate_fun(){
 						};
 					}else{
 						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],
-						"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]});
+						"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]],"measureName":all_measure[j]});
 					}
 				}
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
@@ -2107,35 +2127,35 @@ function comparisonStrip_generate_fun(){
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			        formatter:function(params){
 			        		var needValue = params.value;
-						  if(normalUnitValue != -1){
-						  	 needValue = needValue.toFixed(normalUnitValue);
-						  }
-						var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
-						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
-						for(var i = 0;i < all_dimensionality.length;i++){
-							var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
-							leftDiv+=aP;
-						}
-						leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
-						for(var k = 0;k < params.data.theDimeInfo.length;k++){
-                             rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
-                        }
-                         rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-												 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
-		 										var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
-		 										var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
-		 										var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
-		 										if(isNeedShowTongBiOption){
-		 											leftDiv += leftTongbi;
-		 											rightDiv += rightTongbi;
-		 										}
-		 										if(isNeedShowHuanBiOption){
-		 											leftDiv += leftHuanbi;
-		 											rightDiv += rightHuanbi;
-		 										}
-		 										leftDiv+= "</div>";
-		 		       					rightDiv+= "</div>";
-                         return leftDiv+rightDiv;
+								  if(normalUnitValue != -1){
+								  	 needValue = needValue.toFixed(normalUnitValue);
+								  }
+									var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+									var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+									for(var i = 0;i < all_dimensionality.length;i++){
+										var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
+										leftDiv+=aP;
+									}
+									leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+									for(var k = 0;k < params.data.theDimeInfo.length;k++){
+                     rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
+                  }
+                  rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+									var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+									var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+									var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+									var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+									if(showTongbiMeasureArray.indexOf(params.data.measureName) != -1){
+										leftDiv += leftTongbi;
+										rightDiv += rightTongbi;
+									}
+									if(showHuanbiMeasureArray.indexOf(params.data.measureName) != -1){
+										leftDiv += leftHuanbi;
+										rightDiv += rightHuanbi;
+									}
+									leftDiv+= "</div>";
+	       					rightDiv+= "</div>";
+                 return leftDiv+rightDiv;
 			        },
 			        textStyle:{
 			        		fontSize:12
@@ -2203,7 +2223,7 @@ function comparisonStrip_generate_fun(){
 
 		});
 	}
-	
+
 	// 条形图
 	function barChart_generate_fun(){
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
@@ -2230,7 +2250,7 @@ function comparisonStrip_generate_fun(){
 				for(var k = 0;k < all_dimensionality.length;k++){
 					theDimeInfo.push(aData[all_dimensionality[k]]);
 					// console.log(typeof(String(aData[all_dimensionality[k]])),String(aData[all_dimensionality[k]]))
-	
+
 				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
@@ -2242,7 +2262,7 @@ function comparisonStrip_generate_fun(){
 							"type":"bar",
 							"yAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
 							"xAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]}],
+							"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]],"measureName":all_measure[j]}],
 							z:3,
 							label:{
 								normal:{
@@ -2267,7 +2287,7 @@ function comparisonStrip_generate_fun(){
 						};
 					}else{
 						series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],
-						"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]]});
+						"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]],"measureName":all_measure[j]});
 					}
 				}
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
@@ -2389,35 +2409,35 @@ function comparisonStrip_generate_fun(){
 			    	   extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			       formatter:function(params){
 			        		var needValue = params.value;
-						  if(normalUnitValue != -1){
-						  	 needValue = needValue.toFixed(normalUnitValue);
-						  }
-			       	 	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
-						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
-						for(var i = 0;i < all_dimensionality.length;i++){
-							var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
-							leftDiv+=aP;
-						}
-						leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
-						for(var k = 0;k < params.data.theDimeInfo.length;k++){
-                             rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
-                        }
-                         rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-												 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
-											 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
-											 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
-											 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
-											 if(isNeedShowTongBiOption){
-												 leftDiv += leftTongbi;
-												 rightDiv += rightTongbi;
-											 }
-											 if(isNeedShowHuanBiOption){
-												 leftDiv += leftHuanbi;
-												 rightDiv += rightHuanbi;
-											 }
-											 leftDiv+= "</div>";
-											 rightDiv+= "</div>";
-                         return leftDiv+rightDiv;
+								  if(normalUnitValue != -1){
+								  	 needValue = needValue.toFixed(normalUnitValue);
+								  }
+				       	 	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+									var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+									for(var i = 0;i < all_dimensionality.length;i++){
+										var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
+										leftDiv+=aP;
+									}
+									leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+									for(var k = 0;k < params.data.theDimeInfo.length;k++){
+	                   rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
+	                }
+                  rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+									var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+									 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+									 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+									 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+									 if(showTongbiMeasureArray.indexOf(params.data.measureName) != -1){
+										 leftDiv += leftTongbi;
+										 rightDiv += rightTongbi;
+									 }
+									 if(showHuanbiMeasureArray.indexOf(params.data.measureName) != -1){
+										 leftDiv += leftHuanbi;
+										 rightDiv += rightHuanbi;
+									 }
+									 leftDiv+= "</div>";
+									 rightDiv+= "</div>";
+	                 return leftDiv+rightDiv;
 			        },
 			        textStyle:{
 			        		fontSize:12
@@ -2761,7 +2781,14 @@ function valueUnitDidChangedValue(){
 //}
 // handle(needobj);
 //}
-
+//计算一个数组中对应字段的和
+function calculateArraySpecialFieldSum(arr,field){
+	var sum = 0;
+	for(var i = 0; i < arr.length;i++){
+		sum += arr[i][field];
+	}
+	return sum;
+}
 
 
 // 图形下钻功能
