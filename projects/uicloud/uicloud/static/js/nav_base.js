@@ -305,6 +305,8 @@ $(function(){
 			}else{
 				saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue+"_YZY_"+ $("#view_show_area #view_show_area_content .tableView_name h4").text();
 			}
+			//记录同环比
+
 			saveNowWallDict["row"]= JSON.stringify(drag_row_column_data["row"]);
 			saveNowWallDict["column"]= JSON.stringify(drag_row_column_data["column"]);
 			saveNowWallDict["tablename"] = current_cube_name;
@@ -312,6 +314,10 @@ $(function(){
 			saveNowWallDict["defaultparent"] = "default";
 			saveNowWallDict["calculation"] = JSON.stringify(drag_measureCalculateStyle);
 			saveNowWallDict["customcalculate"] = JSON.stringify(customCalculate);
+			var contactTH = [];
+			contactTH.push(showTongbiMeasureArray);
+			contactTH.push(showHuanbiMeasureArray);
+			saveNowWallDict["sequential"] = JSON.stringify(contactTH);
 
 			return saveNowWallDict;
 	}

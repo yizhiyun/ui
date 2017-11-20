@@ -488,6 +488,12 @@
 
 				drag_row_column_data["column"] = JSON.parse(now_title_handle_view["column"]);
 
+				//同比环比显示
+				var tempGetData = JSON.parse(now_title_handle_view["sequential"]);
+
+				showTongbiMeasureArray = tempGetData[0];
+				
+				showHuanbiMeasureArray = tempGetData[1];
 
 				current_cube_name = now_title_handle_view["tablename"];
 
@@ -1386,7 +1392,7 @@
 					success:function(data){
 						if(data.status == "success"){
 							filterNeedAllData = data.results.data[0];
-							
+
 						}
 					}
 				})
@@ -1465,6 +1471,8 @@
 				$("#dimensionality #dimensionality_show ul").html("");
 				$("#measurement #measure_show ul").html("");
 					emptySetTableDateSelectRecordFunction();
+					showTongbiMeasureArray = [];
+					showHuanbiMeasureArray = [];
 					for (var i = 0; i < schema.length;i++) {
 						var column_name_info = schema[i];
 						var  _name = column_name_info["field"]; // 字段名
@@ -1530,6 +1538,8 @@
 
 			 	//移除函数
 			function remove_viewHandle(type,sortable){
+				// isNeedShowHuanBiOption = false;
+				// isNeedShowTongBiOption = false;
 				if(type == "column"){
 					drag_row_column_data["column"]["measure"]= [];
 					drag_row_column_data["column"]["dimensionality"] =[];
@@ -1651,7 +1661,7 @@
 								}
 
 								if(out_wrap_click.hasClass("dimensionalityWrap")){
-										out_wrap_click.find(".me_out_content_li").eq(0).add(out_wrap_click.find(".me_out_content_li").eq(1)).add(out_wrap_click.find(".me_out_content_li").eq(2)).add(out_wrap_click.find(".me_out_content_li").eq(3)).add(out_wrap_click.find(".me_out_content_li").eq(4)).remove();
+										out_wrap_click.find(".me_out_content_li").not(".deleting").remove();
 								}
 
 								// 点击事件-------------
@@ -1742,55 +1752,62 @@
 								out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).unbind("click");
 								out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).click(function(event){
 									event.stopPropagation();
-									 isNeedShowTongBiOption = true;
-									 isNeedShowHuanBiOption = true;
-									// $(".me_out_content").remove();
-									// open_or_close = true;
-									// $("#editMeasureCalculateView .dimensionalityFiled").show();
-									// $("#editMeasureCalculateView .edit_measure_body").hide();
-									// // 添加日期选项
-									// $("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").empty();
-									// for (var i =0;i < currentSetTableDateFieldArray.length;i++) {
-									// 	var op = $("<option>"+currentSetTableDateFieldArray[i]+"</option>");
-									// 	$("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").append(op);
-									// }
-									// $("#editMeasureCalculateView .dimensionalityFiled .timeDimensionality").comboSelect();
-									// $("#editMeasureCalculateView .dimensionalityFiled .combo-select").eq(0).width(200);
-									// event.stopPropagation();
-									// $("#editMeasureCalculateView").show(0,function(){
-									// 	$(".maskLayer").show();
-									// })
-                  //
-									// //取消点击事件
-									// $("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").unbind("click");
-									// $("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").click(function(event){
-									// 	event.stopPropagation();
-									// 	$("#editMeasureCalculateView").hide();
-									// 	$(".maskLayer").hide();
-									// });
-                  //
-									// //确定点击事件,出现同比
-									// $("#editMeasureCalculateView .common-filer-footer .confirmBtn").unbind("click");
-									// $("#editMeasureCalculateView .common-filer-footer .confirmBtn").click(function(event){
-									// 	event.stopPropagation();
-									// 	var dateField = $(this).parents("#editMeasureCalculateView").eq(0).find("div select.timeDimensionality").eq(0).val();
-									// 	var dateRange = $(this).parents("#editMeasureCalculateView").eq(0).find("div div.withSelect p.active").eq(0)
-									// })
-                  //
-                  //
-									// //选择类型切换
-									//   $("#editMeasureCalculateView .dimensionalityFiled .withSelect .radio").click(function(){
-	    						// 			if (!$(this).hasClass("active")) {
-	      					// 				$(this).siblings(".radio").removeClass("active");
-	      					// 				$(this).addClass("active");
-	   							// 		 }
-	 								//  })
-
-
-
-								})
+									$("#text_table_need_show .content_body #data_list_for_body .measureDiv p").show();
+									var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
+									if($(this).hasClass("linkBack")){
+										// isNeedShowHuanBiOption = true;
+										var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+										if(index1 == -1){
+											showHuanbiMeasureArray.push(measureInfo);
+										}
+									}else{
+										// isNeedShowTongBiOption = true;
+										var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+										if(index2 == -1){
+											showTongbiMeasureArray.push(measureInfo);
+										}
+									}
+									showOrHidenSomeMeasureCompareOrLink();
+									$(".me_out_content").remove();
+									$(".me_out_content li").unbind("mouseenter mouseleave");
+									open_or_close = true;
+								});
+								// 移除对比
+								out_wrap_click.find(".deleteCompared").unbind("click");
+								out_wrap_click.find(".deleteCompared").click(function(event){
+									// console.log($(this).parents());
+									event.stopPropagation();
+									var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
+									var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+									if(index1 != -1){
+										showHuanbiMeasureArray.splice(index1,1);
+									}
+									var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+									if(index2 != -1){
+										showTongbiMeasureArray.splice(index2,1);
+									}
+									showOrHidenSomeMeasureCompareOrLink();
+									// isNeedShowHuanBiOption = false;
+									// isNeedShowTongBiOption = false;
+									$(".me_out_content").remove();
+									$(".me_out_content li").unbind("mouseenter mouseleave");
+									open_or_close = true;
+								});
 								//移除
 								out_wrap_click.find(".deleting").on("click",function(){
+											var deleteInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":");
+											if(deleteInfo[0] == "measure"){
+												var measureInfo = deleteInfo[1];
+												var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+												if(index1 != -1){
+													showHuanbiMeasureArray.splice(index1,1);
+												}
+												var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+												if(index2 != -1){
+													showTongbiMeasureArray.splice(index2,1);
+												}
+												showOrHidenSomeMeasureCompareOrLink();
+											}
 											if($(this).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
 											}else{
@@ -1841,6 +1858,9 @@
 									drag_measureCalculateStyle[measureName] = "求和("+measureName+")";
 									measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("求和("+measureName+")");
 									switch_chart_handle_fun();
+									$(".me_out_content").remove();
+									$(".me_out_content li").unbind("mouseenter mouseleave");
+									open_or_close = true;
 								});
 								//平均值
 								out_wrap_click.find(".pop_mean").on("click",function(){
@@ -1853,6 +1873,9 @@
 									drag_measureCalculateStyle[measureName] = "平均值("+measureName+")";
 									measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("平均值("+measureName+")");
 									switch_chart_handle_fun();
+									$(".me_out_content").remove();
+									$(".me_out_content li").unbind("mouseenter mouseleave");
+									open_or_close = true;
 								});
 								//最大值
 								out_wrap_click.find(".pop_max").on("click",function(){
@@ -1866,6 +1889,9 @@
 									drag_measureCalculateStyle[measureName] = "最大值("+measureName+")";
 									measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("最大值("+measureName+")");
 									switch_chart_handle_fun();
+									$(".me_out_content").remove();
+									$(".me_out_content li").unbind("mouseenter mouseleave");
+									open_or_close = true;
 								});
 								//最小值
 								out_wrap_click.find(".pop_min").on("click",function(){
@@ -1880,6 +1906,9 @@
 									drag_measureCalculateStyle[measureName] = "最小值("+measureName+")";
 									measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("最小值("+measureName+")");
 									switch_chart_handle_fun();
+									$(".me_out_content").remove();
+									$(".me_out_content li").unbind("mouseenter mouseleave");
+									open_or_close = true;
 								});
 								// -------------------
 								// -------------------
@@ -1973,9 +2002,6 @@
 						// 监测日期发生变化的时候
 						$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input,#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").unbind("change");
 						$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input,#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").change(function(){
-							// var dateValueArr = $(this).val().split("/");
-							// $("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).dateRangeSlider("min",new Date( dateValueArr[0], Number(dateValueArr[1]) - 1, dateValueArr[2]));
-							// emptySetTableDateSelectRecordFunction
 	 					  currentSetTableDateMinDate = $("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val().replace(/\//g,"-");
 	 					  currentSetTableDateMaxDate = $("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val().replace(/\//g,"-");
 						});
@@ -2061,7 +2087,7 @@
 						$(this).parents(".mdContent").find(".viewTableShow").animate({
 							"height":$(this).parents(".mdContent").height() - 32 + "px",
 						},300);
-					
+
 					}else{
 						$(this).parents(".mdContent").find(".dimensionality_search_input").focus();
 						$(this).parents(".mdContent").find(".dimensionality_search").show(300);
@@ -2072,7 +2098,7 @@
 				})
 				inputSearch($("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search_input"),"dimensionality_list_text_left",$("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality #dimensionality_show ul"),"md");
 				inputSearch($("#pageDashboardModule #dashboard_content #lateral_bar #measurement .dimensionality_search_input"),"measure_list_text_left",$("#pageDashboardModule #dashboard_content #lateral_bar #measurement #measure_show ul"),"md");
-				
+
 
 				// $("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search_input").on("focusout",function(event){
 				// 	$("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search").hide(300,function(){
@@ -3038,7 +3064,19 @@
 										//拖拽区域外消失
 
 										case "view_show_area_content":
-
+										var deleteInfo = ui.item.attr("id").split(":");
+										if(deleteInfo[0] == "measure"){
+											var measureInfo = deleteInfo[1];
+											var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+											if(index1 != -1){
+												showHuanbiMeasureArray.splice(index1,1);
+											}
+											var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+											if(index2 != -1){
+												showTongbiMeasureArray.splice(index2,1);
+											}
+										}
+										showOrHidenSomeMeasureCompareOrLink();
 											if($(ui.sender).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
 											}else{
@@ -3410,11 +3448,26 @@
 			$(".drag_main_icon_second").not($("#drag_zb .drag_main_icon_second")).each(function(index, ele) {
 				$(ele).on("click", function() {
 					if($(ele).parents(".drag_main").find(".annotation_text .drog_row_list").length != 0){
+						var needDeleteCompareMeasue = null;
 						if($(this).parents(".drag_main").attr("id") == "drag_col"){
 							var clickAreaType = "column";
+							needDeleteCompareMeasue = specialRemoveDataTypeHandle(drag_row_column_data["column"]["measure"]);
 						}else{
 							var clickAreaType = "row";
+							needDeleteCompareMeasue = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"]);
 						}
+						for(var i = 0;i < needDeleteCompareMeasue.length;i++){
+							var measureInfo = needDeleteCompareMeasue[i];
+							var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+							if(index1 != -1){
+								showHuanbiMeasureArray.splice(index1,1);
+							}
+							var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+							if(index2 != -1){
+								showTongbiMeasureArray.splice(index2,1);
+							}
+						}
+						showOrHidenSomeMeasureCompareOrLink();
 						$(".annotation_text").eq(index).find(".list_wrap").remove();
 						$(".annotation_text").eq(index).find("li").remove();
 

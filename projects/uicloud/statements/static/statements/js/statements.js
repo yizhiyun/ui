@@ -35,6 +35,9 @@
 
 		statements_current_cube_name_arr = [],
 
+		//记录同环比信息
+		statements_tonghuanbi_arr = [],
+
 		//每个视图对应的颜色
 		currentColorGroupName_arr = [],
 
@@ -209,6 +212,8 @@
 		//存取视图展示区域视图对应的id
 		view_show_id_arr = [];
 
+		statements_tonghuanbi_arr = [];
+
 		function statementsinit(){
 
 		//侧边栏收起按钮top
@@ -222,6 +227,7 @@
 		if(isOnlyLaod == false || onlyRunOne){
 			//拿到构建报表的数据
 			$.post("/dashboard/getAllData",function(result){
+			console.log(result);
 			ajax_data_post = result;
 			toIfChangeSecond = true;
 			view_out_handle_init(result);
@@ -1127,6 +1133,8 @@
 								drag_row_column_data_arr.push(free_drag_row_column_data);
 							
 								statements_current_cube_name_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["tablename"]);
+
+								statements_tonghuanbi_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["sequential"]);
 
 								if(data_result[now_view_folder][view_in_folder][right_view_show]["viewtype"] == "showTable_by_dragData()"){
 									save_allTable.push("bbv"+view_count_save+"view_show_class" + tableNum);

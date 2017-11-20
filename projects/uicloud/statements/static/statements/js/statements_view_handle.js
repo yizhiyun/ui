@@ -7,9 +7,6 @@ var isagainDrawTable = null;
 //显示对应视图展示的图形
 function view_handle_switch_statements(viewshow_class,show_if_or,state_view_show_type,lodingNum,save_allTable,saveIndexPage){
 
-	
-
-
 
 	if(echarts.getInstanceByDom($("."+viewshow_class+"").get(0))){
 		echarts.getInstanceByDom($("."+viewshow_class+"").get(0)).clear();

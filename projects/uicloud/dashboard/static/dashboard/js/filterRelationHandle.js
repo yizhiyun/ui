@@ -84,7 +84,7 @@ function rightFilterListDraw(){
 	}
 	$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list>li").each(function(index,ele){
 		if(pureDemiArray.indexOf($(ele).data("fieldInfo").split(":")[0]) == -1){
-			$(ele).hide("blind",200,function(){		
+			$(ele).hide("blind",200,function(){
 				checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 				delete checkSelectConditionDict[$(ele).data("fieldInfo").split(":")[0]];
 				saveSelectionCondtion(current_cube_name,checkSelectConditionDict);

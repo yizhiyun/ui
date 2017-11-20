@@ -51,7 +51,8 @@ def getAllDataFunction(username, datatype=None):
                         'calculation': tablelist[i].calculation,
                         'status': tablelist[i].status,
                         'viewstyle': tablelist[i].viewstyle,
-                        'customcalculate': tablelist[i].customcalculate
+                        'customcalculate': tablelist[i].customcalculate,
+                        'sequential':tablelist[i].sequential
                     }
         return context
 
@@ -136,7 +137,8 @@ def dashboardTableAdd(request):
                     calculation=jsonData['calculation'],
                     folder=folder,
                     viewstyle=jsonData['viewstyle'],
-                    customcalculate=jsonData['customcalculate']
+                    customcalculate=jsonData['customcalculate'],
+                    sequential = jsonData['sequential']
                 )
                 table.save()
 
