@@ -43,7 +43,7 @@ function manyTable(storeClass){
 
 	var target =  $("."+storeClass+"").get(0);
 
-    spinner.spin(target);
+  spinner.spin(target);
 
 	// 绘制行数据
 	function function_draw_row_data(needAllData){
@@ -79,7 +79,7 @@ function manyTable(storeClass){
 							td.addClass("firstRow");
 						}
 						tr.append(td);
-					}	
+					}
 				}
 				if($(tr).children().length < 1){
 					$(tr).remove();
@@ -100,11 +100,11 @@ function manyTable(storeClass){
 						var tr = $("<tr class="+aColumnName+"></tr>");
 						$("."+storeClass+" .top_column_container .column_data_list tbody").eq(0).append(tr);
 					}
-					
-					
+
+
 					var className = "";
 					for (var class_i = 0;class_i <=column_i; class_i++) {
-						var oneColumnName = need_Handle_drag_column_dimensionality[class_i].split(":")[0];	
+						var oneColumnName = need_Handle_drag_column_dimensionality[class_i].split(":")[0];
 						className += aData[oneColumnName]+"_YZYPD_";
 					}
 					className = md5(className);
@@ -116,8 +116,8 @@ function manyTable(storeClass){
 						td.addClass(className);
 						$("."+storeClass+" .top_column_container .column_data_list tbody tr."+aColumnName).eq(0).append(td);
 					}
-					
-					
+
+
 				}
 				if(i == 0){
 					topTitle = topTitle.slice(0,-1);
@@ -125,7 +125,7 @@ function manyTable(storeClass){
 				}
 		}
 	}
-	
+
 	function function_draw_row_line(){
 		$("."+storeClass+" #data_list_for_body li").remove();
 		// 创建 li
@@ -143,55 +143,76 @@ function manyTable(storeClass){
 					aLi.css({
 					"border-right":"1px solid #dedede"
 					});
-				}	
+				}
 			}
 			$("."+storeClass+" #data_list_for_body").append(aLi);
 		});
-		
+
 		if($("."+storeClass+" .left_row_container table tbody tr").length < 1 && columnInfo > 0){
 			var ali = $("<li></li>");
-			ali.css("height","25px");
+			ali.css("minHeight","25px");
+			ali.css("height",$("."+storeClass+" #data_list_for_body .measureDiv").eq(0)[0].offsetHeight);
 			$("."+storeClass+" #data_list_for_body").append(ali);
 		}
-		
+
 	}
 	function function_draw_column_line(){
 		$("."+storeClass+" #data_list_for_body div.vertical_line").remove();
 		$("."+storeClass+" .top_column_container .column_data_list tbody tr:last td").each(function(index,ele){
-			
+
 			var vertical_line = $("<div class='vertical_line'></div>");
 			vertical_line.css("left",(index+1)*$(ele).outerWidth());
 			$("."+storeClass+" #data_list_for_body").append(vertical_line);
-			
+
 		});
 	}
-	
+
 	// 处理度量，进行绘制
 	function function_draw_measure_data(needAllData){
 		$("."+storeClass+" .content_body #data_list_for_body .measureDiv").remove();
 		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]));
 		var allRowDemi = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"]);
 		var allColumnDemi = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]);
+		var unitFinalWidth = 0;
 		for(var i = 0;i < needAllData.length;i++){
 			var aData = needAllData[i];
 			var measureDiv = $("<div class='measureDiv'></div>");
+			var theWidth = 0;
 			for(var j = 0;j < allMeasure.length;j++){
 				var aMeasure = allMeasure[j];
-				var span = $("<span>"+aData[drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]]+"</span>");
-				measureDiv.append(span);
-				if(j != allMeasure.length - 1){
-					measureDiv.append("<span class='seperate'>/</span>");
-				}	
+				var aP = $("<p>"+drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]+":"+aData[drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]]+"</p>");
+				measureDiv.append(aP);
+				var tongbiShowNum = 0;
+				var huanbiShowNum = 0;
+				if(aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]]){
+					tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]]) * 100).toFixed(2);
+				}
+				if(aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]]){
+					huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]]) * 100).toFixed(2);
+				}
+				var tongbiAp = $("<p style='display:none' class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
+				var huanbiAp = $("<p style='display:none' class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
+				tongbiAp.addClass(aMeasure);
+				huanbiAp.addClass(aMeasure);
+				if(eval(statements_tonghuanbi_arr[storeNum_toview])[0].indexOf(aMeasure) != -1){
+					tongbiAp.show();
+				}
+				if(eval(statements_tonghuanbi_arr[storeNum_toview])[1].indexOf(aMeasure) != -1){
+					huanbiAp.show();
+				}
+				measureDiv.append(tongbiAp);
+				measureDiv.append(huanbiAp);
+				theWidth = threeMaxOfNumber($(aP).text().visualLength(12)+10,$(tongbiAp).text().visualLength(12)+10,$(huanbiAp).text().visualLength(12)+10);
 			}
 			$("."+storeClass+" .content_body #data_list_for_body").append(measureDiv);
 			var rowClass = "";
 			for(var row_i = 0;row_i < allRowDemi.length;row_i++){
-				
+
 				rowClass += aData[allRowDemi[row_i]]+"_YZYPD_";
 			}
 			var columnClass = "";
 			for(var column_i = 0;column_i < allColumnDemi.length;column_i++){
-				
+
 				columnClass += aData[allColumnDemi[column_i]]+"_YZYPD_";
 			}
 			rowClass = md5(rowClass);
@@ -200,20 +221,47 @@ function manyTable(storeClass){
 			var leftValue = 0;
 			if(rowClass!=""){
 				var topHelpTr = $("."+storeClass+" .left_row_container table tbody tr td."+rowClass).parent("tr").eq(0);
+				topHelpTr.css("height",measureDiv.outerHeight());
 				topValue = topHelpTr.outerHeight() * topHelpTr.index();
+				measureDiv.data("topIndex",topHelpTr.index());
+				if(topHelpTr.index() < 0){
+					measureDiv.data("topIndex",0);
+					topValue = 0;
+				}
+
+			}else{
+				measureDiv.data("topIndex",0);
 			}
 			if(columnClass !=""){
 				var leftHelpTd = $("."+storeClass+" .top_column_container .column_data_list tbody tr td."+columnClass).eq(0);
-				leftValue = leftHelpTd.outerWidth() * leftHelpTd.index();
+				if(leftHelpTd[0] && leftHelpTd[0].offsetWidth > theWidth){
+					theWidth = leftHelpTd[0].offsetWidth;
+				}
+				if(leftHelpTd.index() >= 0){
+					// leftValue = theWidth * leftHelpTd.index();
+					measureDiv.data("leftIndex",leftHelpTd.index());
+				}
+				var tableWidth = $("."+storeClass+" .top_column_container .column_data_list tbody tr:last td").length;
+				$("."+storeClass+" .top_column_container .column_data_list tbody tr td").css("width",theWidth);
+				$("."+storeClass+" .top_column_container .column_data_list").css("width",theWidth*tableWidth+"px");
+				if(tableWidth < 1 && $("."+storeClass+" #data_list_for_body")[0].offsetWidth < theWidth){
+					$("."+storeClass+" #data_list_for_body").css("width",theWidth+5+"px");
+				}else if(tableWidth > 0){
+					$("."+storeClass+" #data_list_for_body").css("width","");
+				}
+				unitFinalWidth = theWidth;
+			}else{
+				measureDiv.data("leftIndex",0);
 			}
 			measureDiv.css({
 				"top":topValue,
-				"left":leftValue
 			})
 		}
-		
+		$("."+storeClass+" .content_body #data_list_for_body .measureDiv").each(function(index,ele){
+			$(ele).css("left",$(ele).data("leftIndex") *unitFinalWidth-1);
+		});
 	}
-	
+
 	function init(needData){
 		//1、处理维度
 		 var current_all_measure = drag_row_column_data_arr[storeNum_toview]["column"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["row"]["measure"]);
@@ -222,7 +270,7 @@ function manyTable(storeClass){
 		var isMeasureEqual = equalCompare(record_table_measure,drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]));
 		var isCalculateMeasureEqual = equalCompare(record_table_calculate_measure,drag_measureCalculateStyle_arr[storeNum_toview]);
 		var isCustomCalculateStyleEqual = equalCompare(record_table_custom_calculate,customCalculate);
-		
+
 		function recordData(){
 			record_table_now_row_dimensionaluty = objectDeepCopy(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"]);
 			record_table_now_column_dimensionaluty = objectDeepCopy(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]);
@@ -231,16 +279,16 @@ function manyTable(storeClass){
 			record_table_custom_calculate = objectDeepCopy(customCalculate);
 			isagainDrawTable = false;
 		}
-		
+
 		function measureNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"])).length > 0 && specialRemoveDataTypeHandle(current_all_measure).length >0){
-				
+					recordData();
 					reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
+						function_draw_measure_data(data);
 						function_draw_row_line();
 						function_draw_column_line();
-						function_draw_measure_data(data);
 						layout_table_size();
-						recordData();
+						spinner.stop();
 						if(finish){
 							finish();
 						}
@@ -249,10 +297,11 @@ function manyTable(storeClass){
 		}
 		function rowNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"]).length > 0){
+				recordData();
 				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"]),[],null,function(data){
 			 	function_draw_row_data(data);
 			 	layout_table_size();
-			 	recordData();
+				spinner.stop();
 			 	 if(finish){
 			 	 	finish();
 			 	 }
@@ -265,15 +314,16 @@ function manyTable(storeClass){
 					finish("noNeed");
 				}
 			}
-			
+
 		}
-		
+
 		function columnNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]).length > 0){
+				recordData();
 				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]),[],null,function(data){
 		 	 	function_draw_column_data(data);
 		 	 	layout_table_size();
-		 	 	recordData();
+				spinner.stop();
 		 	 	 if(finish){
 		 	 	 	finish();
 		 	 	 }
@@ -301,7 +351,7 @@ function manyTable(storeClass){
 					measureNeedDraw();
 				}
 			});
-			
+
 		}else{
 			if(isRowDemiEqual && isColumnDemiEqual&&isMeasureEqual&&isCalculateMeasureEqual&&isCustomCalculateStyleEqual){
 				// 直接显示
@@ -311,12 +361,12 @@ function manyTable(storeClass){
 				rowNeedDraw(function(){
 					measureNeedDraw();
 				});
-				
+
 			}else if(isRowDemiEqual && !isColumnDemiEqual){
 				columnNeedDraw(function(){
 					measureNeedDraw();
 				});
-				
+
 			}else{
 				isRowFinished = false;
 				isColumnFinished = false;
@@ -333,10 +383,10 @@ function manyTable(storeClass){
 					}
 				});
 			}
-			
+
 		}
-		
-		
+
+
 	}
 	init();
 
@@ -353,14 +403,13 @@ function manyTable(storeClass){
 	function layout_table_size(){
 		// 为了让浮动不换行，动态计算左侧模块的宽度
 		// 1、计算左侧行的宽度
-	
+
 		var left_row_width = $("."+storeClass+" .left_row_container").eq(0).outerWidth();
 		$("."+storeClass+" .right_module").css("margin-left",left_row_width + 30 + "px").css("margin-top","30px");
 		// 左侧行设置 th 的高度
 		var top_height = $("."+storeClass+" .right_module .top_column_container").eq(0).height();
 		$("."+storeClass+" .left_row_container table th").css("height",top_height -1);
 		 spinner.stop();
-		 $("."+storeClass+" .content_body #data_list_for_body").css("width","auto");
 		  $("."+storeClass+" .content_body #data_list_for_body li").css("width","100%");
 		 $("."+storeClass+" .edit_table").width(200).height(200).css("background","white");
 }
@@ -423,18 +472,16 @@ function reporting_col_card(saveIndexPage){
 								var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
 								measureDiv.append(p);
 								measureDiv.append(span);
-							} 
+							}
 							if(j != allMeasure.length - 1){
 								// measureDiv.append("<span class='seperate'>/</span>");
 								measureDiv.append("<br>");
-							}	
+							}
 						}
 						$("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body").append(measureDiv);
 						spinner.stop();
 					}
 				});
 	}
-	
+
 }
-
-

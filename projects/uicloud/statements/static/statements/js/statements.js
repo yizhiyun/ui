@@ -1051,6 +1051,27 @@
 				tablelist_location = {};
 				view_show_id_arr = [];
 
+				drag_row_column_data_arr = [];
+
+				statements_current_cube_name_arr = [];
+
+				//每个视图对应的颜色
+				currentColorGroupName_arr = [];
+
+				//每个视图对应的小数点
+				normalUnitValue_arr = [];
+
+				//每个视图对应的值单位
+				valueUnitValue_arr = [];
+
+				drag_measureCalculateStyle_arr = [];
+
+				//存取视图展示区域视图对应的id
+				view_show_id_arr = [];
+
+				statements_tonghuanbi_arr = [];
+
+
 				//存取所有表格的信息
 				var save_allTable = [];
 
