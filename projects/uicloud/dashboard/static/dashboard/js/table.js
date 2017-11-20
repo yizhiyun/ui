@@ -134,6 +134,7 @@ function showTable_by_dragData(){
 		if($("#text_table_need_show .left_row_container table tbody tr").length < 1 && columnInfo > 0){
 			var ali = $("<li></li>");
 			ali.css("minHeight","25px");
+			ali.css("height",$("#text_table_need_show .content_body #data_list_for_body .measureDiv").eq(0)[0].offsetHeight);
 			$("#text_table_need_show #data_list_for_body").append(ali);
 		}
 
@@ -158,13 +159,36 @@ function showTable_by_dragData(){
 		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 		var allRowDemi = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"]);
 		var allColumnDemi = specialRemoveDataTypeHandle(drag_row_column_data["column"]["dimensionality"]);
+		var unitFinalWidth = 0;
 		for(var i = 0;i < needAllData.length;i++){
 			var aData = needAllData[i];
 			var measureDiv = $("<div class='measureDiv'></div>");
+			var theWidth = 0;
 			for(var j = 0;j < allMeasure.length;j++){
 				var aMeasure = allMeasure[j];
 				var ap = $("<p>"+drag_measureCalculateStyle[aMeasure]+":"+aData[drag_measureCalculateStyle[aMeasure]]+"</p>");
 				measureDiv.append(ap);
+				var tongbiShowNum = 0;
+				var huanbiShowNum = 0;
+				if(aData["同比"+drag_measureCalculateStyle[aMeasure]]){
+					tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+				}
+				if(aData["环比"+drag_measureCalculateStyle[aMeasure]]){
+					huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+				}
+				var tongbiAp = $("<p style='display:none' class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
+				var huanbiAp = $("<p style='display:none' class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
+				tongbiAp.addClass(aMeasure);
+				huanbiAp.addClass(aMeasure);
+				measureDiv.append(tongbiAp);
+				measureDiv.append(huanbiAp);
+				if(showTongbiMeasureArray.indexOf(aMeasure) != -1){
+					tongbiAp.show();
+				}
+				if(showHuanbiMeasureArray.indexOf(aMeasure) != -1){
+					huanbiAp.show();
+				}
+				theWidth = threeMaxOfNumber($(ap).text().visualLength(12)+10,$(tongbiAp).text().visualLength(12)+10,$(huanbiAp).text().visualLength(12)+10);
 			}
 			$("#text_table_need_show .content_body #data_list_for_body").append(measureDiv);
 			var rowClass = "";
@@ -185,28 +209,37 @@ function showTable_by_dragData(){
 				var topHelpTr = $("#text_table_need_show .left_row_container table tbody tr td."+rowClass).parent("tr").eq(0);
 				topHelpTr.css("height",measureDiv.outerHeight());
 				topValue = topHelpTr.outerHeight() * topHelpTr.index();
+				measureDiv.data("topIndex",topHelpTr.index());
 			}
 			if(columnClass !=""){
 				var leftHelpTd = $("#text_table_need_show .top_column_container .column_data_list tbody tr td."+columnClass).eq(0);
-				var theWidth = measureDiv[0].offsetWidth;
-				if(leftHelpTd[0] && leftHelpTd[0].offsetWidth > theWidth && leftHelpTd.index() > 0){
+				// var theWidth = measureDiv[0].offsetWidth;
+				if(leftHelpTd[0] && leftHelpTd[0].offsetWidth > theWidth){
 					theWidth = leftHelpTd[0].offsetWidth;
-					leftValue = theWidth * leftHelpTd.index();
+				}
+				if(leftHelpTd.index() >= 0){
+					// leftValue = theWidth * leftHelpTd.index();
+					measureDiv.data("leftIndex",leftHelpTd.index());
 				}
 				var tableWidth = $("#text_table_need_show .top_column_container .column_data_list tbody tr:last td").length;
 				$("#text_table_need_show .top_column_container .column_data_list tbody tr td").css("width",theWidth);
-				$("#text_table_need_show .top_column_container .column_data_list").css("width",theWidth*tableWidth);
-				if(tableWidth < 1){
-					$("#text_table_need_show #data_list_for_body").css("width",theWidth+10+"px");
+				$("#text_table_need_show .top_column_container .column_data_list").css("width",theWidth*tableWidth+"px");
+				if(tableWidth < 1 && $("#text_table_need_show #data_list_for_body")[0].offsetWidth < theWidth){
+					$("#text_table_need_show #data_list_for_body").css("width",theWidth+5+"px");
+				}else{
+					$("#text_table_need_show #data_list_for_body").css("width","");
 				}
-
+				unitFinalWidth = theWidth;
+			}else{
+				measureDiv.data("leftIndex",0);
 			}
 			measureDiv.css({
 				"top":topValue,
-				"left":leftValue
-			})
+			});
 		}
-
+		$("#text_table_need_show .content_body #data_list_for_body .measureDiv").each(function(index,ele){
+			$(ele).css("left",$(ele).data("leftIndex") *unitFinalWidth-1);
+		});
 	}
 
 	function init(needData){
@@ -235,6 +268,7 @@ function showTable_by_dragData(){
 						function_draw_row_line();
 						function_draw_column_line();
 						layout_table_size();
+						spinner.stop();
 						if(finish){
 							finish();
 
@@ -245,6 +279,7 @@ function showTable_by_dragData(){
 				$("#text_table_need_show .content_body #data_list_for_body .measureDiv").remove();
 				$("#text_table_need_show #data_list_for_body div.vertical_line").remove();
 				$("#text_table_need_show #data_list_for_body li").remove();
+				spinner.stop();
 			}
 
 		}
@@ -254,6 +289,7 @@ function showTable_by_dragData(){
 				measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"]),[],null,function(data){
 			 	function_draw_row_data(data);
 			 	layout_table_size();
+				spinner.stop();
 			 	 if(finish){
 			 	 	finish();
 			 	 }
@@ -275,6 +311,7 @@ function showTable_by_dragData(){
 				measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["column"]["dimensionality"]),[],null,function(data){
 		 	 	function_draw_column_data(data);
 		 	 	layout_table_size();
+				spinner.stop();
 		 	 	 if(finish){
 		 	 	 	finish();
 		 	 	 }
@@ -307,6 +344,7 @@ function showTable_by_dragData(){
 		}else{
 			if(isRowDemiEqual && isColumnDemiEqual&&isMeasureEqual&&isCalculateMeasureEqual&&isCustomCalculateStyleEqual){
 				// 直接显示
+				spinner.stop();
 			}else if(isRowDemiEqual && isColumnDemiEqual){
 				measureNeedDraw();
 
@@ -357,9 +395,6 @@ function layout_table_size(){
 		// 左侧行设置 th 的高度
 		var top_height = $("#text_table_need_show .right_module .top_column_container").eq(0).height();
 		$("#text_table_need_show .left_row_container table th").css("height",top_height -1);
-		setTimeout(function(){
-			 spinner.stop();
-		},100)
 }
 
 
@@ -409,9 +444,28 @@ function col_card(){
 			}
 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
 		}
+		spinner.stop();
 	})
+}
 
-		setTimeout(function(){
-			 spinner.stop();
-		},100)
+// 求取三个数的最大值
+function threeMaxOfNumber(num1,num2,num3){
+	var temp = num1 > num2 ? num1 : num2;
+	return  temp > num3 ? temp : num3;
+}
+// 展示或者隐藏某个度量同比或者环比
+function showOrHidenSomeMeasureCompareOrLink(){
+	$("#text_table_need_show .content_body #data_list_for_body .measureDiv p.compareP,#text_table_need_show .content_body #data_list_for_body .measureDiv p.linkP").hide();
+	for(var i = 0;i <  showTongbiMeasureArray.length;i++){
+		$("#text_table_need_show .content_body #data_list_for_body .measureDiv p.compareP."+showTongbiMeasureArray[i]).show();
+	}
+	for(var i = 0;i <  showHuanbiMeasureArray.length;i++){
+		$("#text_table_need_show .content_body #data_list_for_body .measureDiv p.linkP."+showHuanbiMeasureArray[i]).show();
+	}
+	var aMeasureDivHeight = $("#text_table_need_show .content_body #data_list_for_body .measureDiv").eq(0).outerHeight()
+	$("#text_table_need_show .left_row_container table tbody tr").css("height",aMeasureDivHeight);
+	$("#text_table_need_show .content_body #data_list_for_body li").css("height",aMeasureDivHeight-1);
+	$("#text_table_need_show .content_body #data_list_for_body .measureDiv").each(function(index,ele){
+		$(ele).css("top",aMeasureDivHeight*$(ele).data("topIndex"));
+	})
 }
