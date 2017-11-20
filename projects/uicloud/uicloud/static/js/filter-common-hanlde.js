@@ -249,8 +249,6 @@ $(function(){
 			event.stopPropagation();
 			$("input").val("");
 			$("select").val("");
-			// $(".ui-slider-range").val("");
-			// $(".ui-rangeSlider-handle").val("");
 		})
 
 	});
@@ -313,13 +311,13 @@ $(function(){
 	$("#filter-model .screeningWasher .common-head .close").click(function(event){
 		event.stopPropagation();
 		$(this).parents(".screeningWasher").eq(0).hide();
-		// $(".maskLayer").hide();
+		$(".maskLayer").hide();
 	});
 	// 点击每个筛选器上的取消按钮的时候
 	$("#filter-model .screeningWasher .common-filer-footer .cancleBtn").click(function(event){
 		event.stopPropagation();
 		$(this).parents(".screeningWasher").eq(0).hide();
-		// $(".maskLayer").hide();
+		$(".maskLayer").hide();
 	});
 
 	//点击每个筛选器上的确定按钮的时候
@@ -331,7 +329,7 @@ $(function(){
 		screeningWasher_did_finish_filter_handle_data_fun(filterID);
 	});
 
-
+	
 	// 全选按钮
 	$("#filter-model #contentChooser #common #selectAllInCommon").change(function(event){
 		event.stopPropagation();
@@ -386,6 +384,78 @@ $(function(){
 		});
 
 	});
+
+	
+	//点击重置按钮
+	$("#filter-model .screeningWasher .common-filer-footer .resetBtn").click(function(event){
+		event.stopPropagation();
+		var inpVal1 = $("#filter-model #number-filter .number-filter-body .combo-select .text-input").val();
+		var inpVal2 = $("#filter-model #number-filter .number-filter-body .radiosBtns .relationvalue").val();
+		var inpVal3 = $("#filter-model #number-filter .number-filter-body .radiosBtns .userSelect_div .combo-select .text-input").val();
+		console.log(inpVal1,inpVal2,inpVal3);
+		$("input").val("");
+		$("select").val("");
+		$("#filter-model #contentChooser #common .detailSearchData input").prop("checked",false);
+
+		// 点击完重置之后再次打开下面的筛选弹框
+		$(".filter_body_div .fieldWholeDiv .filterSelectImgDiv").click(function(event){
+			event.stopPropagation();
+			$("#filter-model #contentChooser #common .detailSearchData input").prop("checked",true);
+		})
+
+		//点击重置按钮之后打开上面的筛选弹框
+		$(".filter_header_div .filter_content_btn").click(function(event){
+			event.stopPropagation();
+			$("#filter-model #contentChooser #common .detailSearchData input").prop("checked",true);
+			$("#filter-model #number-filter .number-filter-body .combo-select .text-input").val(inpVal1);
+			$("#filter-model #number-filter .number-filter-body .radiosBtns .relationvalue").val(inpVal2);
+			$("#filter-model #number-filter .number-filter-body .radiosBtns .userSelect_div .combo-select .text-input").val(inpVal3);
+			var type = $("#filter-model #fileds-content-select .fileds-list .active").eq(0).data("type");
+
+			if(type == "contentChooser"){
+				content_screeningWasher_fun(true,filterInfo,activeLi.index());
+			}else if(type == "number-filter"){
+				number_screeningWasher_fun(true,filterInfo,activeLi.index());
+			}else if(type == "date-filter"){
+				date_screeningWasher_fun(true,filterInfo,activeLi.index());
+			}
+
+			//点击编辑按钮
+			$("#user-filter-select .common-filer-footer .editBtn").click(function(event){
+				event.stopPropagation();
+				$("#user-filter-select .common-filer-footer .confirmBtn").click(function(event){
+					if(inpVal1 != '' || inpVal2 != '' || inpVal3 != ''){
+						$("#filter-model #number-filter .number-filter-body .combo-select .text-input").val(inpVal1);
+						$("#filter-model #number-filter .number-filter-body .radiosBtns .relationvalue").val(inpVal2);
+						$("#filter-model #number-filter .number-filter-body .radiosBtns .userSelect_div .combo-select .text-input").val(inpVal3);
+					}else{
+						$("input").val("");
+						$("select").val("");
+					}
+				})
+			})
+
+		})
+
+		//点击添加按钮
+		$("#user-filter-select .common-filer-footer .addBtn").click(function(event){
+			event.stopPropagation();
+			$("#filter-model #contentChooser #common .detailSearchData input").prop("checked",true);
+			$("#filter-model #number-filter .number-filter-body .combo-select .text-input").val(inpVal1);
+			$("#filter-model #number-filter .number-filter-body .radiosBtns .relationvalue").val(inpVal2);
+			$("#filter-model #number-filter .number-filter-body .radiosBtns .userSelect_div .combo-select .text-input").val(inpVal3);
+			var type = $("#filter-model #fileds-content-select .fileds-list .active").eq(0).data("type");
+
+			if(type == "contentChooser"){
+				content_screeningWasher_fun(true,filterInfo,activeLi.index());
+			}else if(type == "number-filter"){
+				number_screeningWasher_fun(true,filterInfo,activeLi.index());
+			}else if(type == "date-filter"){
+				date_screeningWasher_fun(true,filterInfo,activeLi.index());
+			}
+		})
+
+	})
 
 	lineCondition_closeBtnDidClicked_fun();
 
@@ -810,7 +880,7 @@ function contidon_value_change_fun(){
 				if(repeat_record.indexOf(filterNeedAllData[i][field]) == -1){
 					repeat_record.push(filterNeedAllData[i][field]);
 
-					var li = $("<li><label><input type='checkbox' checked='checked'/><span>"+filterNeedAllData[i][field]+"</span></label></li>");
+					var li = $("<li><label><input type='checkbox' checked='checked'/><span class='val'>"+filterNeedAllData[i][field]+"</span></label></li>");
 					li.find("input").attr("value",filterNeedAllData[i][field]);
 					$("#filter-model #contentChooser #common .detailSearchData .dataList").append(li);
 					// 每个复选框绑定事件
@@ -873,6 +943,41 @@ function contidon_value_change_fun(){
 			content_select_max = filterNeedAllData[field].length;
 		}
 
+
+		//搜索
+		Search($("#filter-model #contentChooser .contentChooser_body #common .outer input"),"val",$("#filter-model #contentChooser .common-fold-module #common .detailSearchData .dataList"),"filter");
+		function Search(ele,activeClass,showContent){
+		    //报表弹窗筛选功能
+		  $(ele).on("input",function(){
+		    //搜索里输入的值
+		    var search_input_data  = $(ele).val();
+
+		    if(search_input_data != ""){
+      			$(showContent).children().css("display","none");
+
+		      	var reg_str = "/"+search_input_data+"/gi";
+
+		      	var list_p=$(showContent).find("."+activeClass+"");
+
+			    for(var i = 0 ; i < list_p.length;i++){
+
+			    	var reg = eval(reg_str);
+
+			      (function(index){
+			        var list_li_text = list_p.eq(index).text();
+			        if(reg.test(list_li_text) == true){
+			          	list_p.eq(index).parent().parent().css("display","block");
+			        }
+			      })(i);
+
+			    }
+		    }else{
+      			$(showContent).children().css("display","block");
+		    }
+		  })
+		}
+
+		
 		if(isEdit){
 			content_select_count = filterConditions.commonSelected.length;
 		}else{

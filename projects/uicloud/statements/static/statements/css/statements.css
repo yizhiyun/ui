@@ -138,6 +138,8 @@ html,body{-webkit-user-select:none;}
 .new_view_table .content_body #data_list_for_body li:nth-of-type(even),.edit_table .content_body #data_list_for_body li:nth-of-type(even){background: white;}
 .new_view_table .content_body #data_list_for_body  .measureDiv,.edit_table .content_body #data_list_for_body  .measureDiv{position: absolute;}
 
+.new_view_table .content_body #data_list_for_body  .measureDiv p,.edit_table .content_body #data_list_for_body  .measureDiv p{height: 22px;line-height: 22px;padding-left: 5px;padding-right: 5px;color: #808080;font-size: 12px}
+
 /*指标样式*/
 
 .new_view_indexPage{min-width: 100%;font-size: 12px;position: absolute;left: 0;display: none;background: white}
