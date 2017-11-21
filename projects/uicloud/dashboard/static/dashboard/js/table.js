@@ -476,8 +476,8 @@ function col_card(){
 					if(aData["环比"+drag_measureCalculateStyle[aMeasure]]){
 						huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
 					}
-					var tongbiAp = $("<p  class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
- 					var huanbiAp = $("<p  class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
+					var tongbiAp = $("<p style='display:none' class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
+ 					var huanbiAp = $("<p style='display:none' class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
  					tongbiAp.addClass(aMeasure);
  					huanbiAp.addClass(aMeasure);
 
@@ -530,13 +530,13 @@ function showOrHide(){
 	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
 	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").show();
 	for(var i = 0;i <  showTongbiMeasureArray.length;i++){
-		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
-		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
 		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").show();
 	}
 	for(var i = 0;i <  showHuanbiMeasureArray.length;i++){
-		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
-		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
 		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").show();
 	}
 }

@@ -1797,11 +1797,13 @@
 									}
 									showOrHidenSomeMeasureCompareOrLink();
 									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseenter');
-									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseenter(function(){
+									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseenter(function(event){
+										event.stopPropagation();
 										showOrHide();
 									})
 									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseleave');
-									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseleave(function(){
+									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseleave(function(event){
+										event.stopPropagation();
 										$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();		
 									})
 									
@@ -1825,7 +1827,8 @@
 										showTongbiMeasureArray.splice(index2,1);
 									}
 									showOrHidenSomeMeasureCompareOrLink();
-									
+									$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+									$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
 									// showOrHide();
 									// isNeedShowHuanBiOption = false;
 									// isNeedShowTongBiOption = false;
@@ -1847,7 +1850,7 @@
 													showTongbiMeasureArray.splice(index2,1);
 												}
 												showOrHidenSomeMeasureCompareOrLink();
-												// showOrHide();
+												showOrHide();
 											}
 											if($(this).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
@@ -3121,7 +3124,7 @@
 											}
 										}
 										showOrHidenSomeMeasureCompareOrLink();
-										// showOrHide();
+										showOrHide();
 											if($(ui.sender).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
 											}else{
@@ -3513,7 +3516,7 @@
 							}
 						}
 						showOrHidenSomeMeasureCompareOrLink();
-						// showOrHide();
+						showOrHide();
 						$(".annotation_text").eq(index).find(".list_wrap").remove();
 						$(".annotation_text").eq(index).find("li").remove();
 
