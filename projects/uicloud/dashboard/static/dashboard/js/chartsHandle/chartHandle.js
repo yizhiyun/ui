@@ -2034,7 +2034,8 @@ function comparisonStrip_generate_fun(){
 						if(index == -1){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
-							dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}
 					}
 				}
@@ -2308,7 +2309,8 @@ function comparisonStrip_generate_fun(){
 						if(index == -1){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
-							dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							//dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}
 					}
 				}

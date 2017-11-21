@@ -60,7 +60,8 @@ def getDataFrameFromSourceSparkCode():
     """
 
     return filterDataFrameSparkCode() + aggDataFrameSparkCode() + splitColumnSparkCode() + '''
-    def getDataFrameFromSource(jsonData, userTableUrl=None, removedColsDict={}, maxRowCount=10000):
+    def getDataFrameFromSource(jsonData, hdfsHost="spark-master0", hdfsPort="9000",
+                               rootFolder="/users", removedColsDict={}, maxRowCount=10000):
         """
         get spark DataFrame once the input data source is valid.
         userTableUrl, it's just used for hdfs customized url.
@@ -69,10 +70,15 @@ def getDataFrameFromSourceSparkCode():
         from pyspark.sql.utils import AnalysisException
 
         if ("sourcetype" in jsonData.keys()) and (jsonData["sourcetype"] in ["hdfs", "tmptables"]):
-            if ("hdfsurl" in jsonData.keys()) and jsonData["hdfsurl"].startswith("hdfs:"):
+            if ("hdfsurl" in jsonData.keys()) and jsonData["hdfsurl"].startswith("hdfs://"):
                 url = jsonData["hdfsurl"]
-            else:
-                url = userTableUrl
+            elif ("hdfsUrl" not in jsonData.keys() or not jsonData["hdfsUrl"].startswith("hdfs://")):
+                hHost = jsonData["hhost"] if "hhost" in jsonData.keys() else hdfsHost
+                hPort = jsonData["hport"] if "hport" in jsonData.keys() else hdfsPort
+                rFolder = jsonData["rfolder"] if "rfolder" in jsonData.keys() else rootFolder
+                userName = jsonData["database"]
+                tableName = jsonData["tableName"]
+                url = "hdfs://{0}:{1}{2}/{3}/{4}".format(hHost, hPort, rFolder, userName, tableName)
             logger.debug(u"url:{0}".format(url))
             if url is None:
                 errmsg = "The url hasn't been given. Please provide it."

@@ -18,6 +18,10 @@ The RESTful API Details of Verify those table relationships
             "tableName": <tableName>,
             "source": <sourceString>,   # Optional. DB source string. If sourcetype is db, it's required. Or else it's unnecessary.
             "sourcetype": <sourceType>  # Optional. "db","hdfs" or "tmptables". By default, it's db if this item doesn't exist.
+            "hdfsurl": <hdfsUrlString>  # Optional. It's useless if sourcetype is db.
+            "hhost": <hdfsHost>,        # Optional. It's useless if sourcetype is db or hdfsurl starts with "hdfs://". By default it's spark-master0.
+            "hport": <hdfsPort>,        # Optional. It's useless if sourcetype is db or hdfsurl starts with "hdfs://". By default it's 9000.
+            "rfolder": <rootFolder>,    # Optional. It's useless if sourcetype is db or hdfsurl starts with "hdfs://". By default it's /users/myfolder.
             "columns": {
                 <columnName1>: {
                     "type": <columnType>,
@@ -155,6 +159,10 @@ The RESTful API Details of Generating New Table
             "tableName": <tableName>,
             "source": <sourceString>,   # Optional. DB source string. If sourcetype is db, it's required. Or else it's unnecessary.
             "sourcetype": <sourceType>  # Optional. "db" or "hdfs". By default, it's db if this item doesn't exist.
+            "hdfsurl": <hdfsUrlString>  # Optional. It's useless if sourcetype is db.
+            "hhost": <hdfsHost>,        # Optional. It's useless if sourcetype is db or hdfsurl starts with "hdfs://". By default it's spark-master0.
+            "hport": <hdfsPort>,        # Optional. It's useless if sourcetype is db or hdfsurl starts with "hdfs://". By default it's 9000.
+            "rfolder": <rootFolder>,    # Optional. It's useless if sourcetype is db or hdfsurl starts with "hdfs://". By default it's /users/myfolder.
             "columns": {
                 <columnName1>: {
                     "columnType": <columnType>,
