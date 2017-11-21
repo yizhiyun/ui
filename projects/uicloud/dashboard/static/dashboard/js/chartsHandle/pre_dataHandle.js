@@ -56,7 +56,7 @@ function strMatch(str, startStr, item) {
                 arguments.callee(end + 1);
             }
         } else {
-            console.warn('输入的配对符号有误');
+            // console.warn('输入的配对符号有误');
         }
     }
 
@@ -144,6 +144,9 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		for (var i = 0;i < measure_name_arr.length;i++) {
 			if(measure_name_arr[i] == "记录数"){
 				var exprstr = "count("+dimensionality_array[dimensionality_array.length - 1]+")";
+				if(!dimensionality_array[dimensionality_array.length - 1]){
+					exprstr = "count(1)";
+				}
 				var exprstr1 = generateMeasureExpression(exprstr,currentSetTableDateFieldName,currentSetTableDateMinDate,currentSetTableDateMaxDate);
 				var obj = {"alias":"计数("+measure_name_arr[i]+")","exprstr":exprstr1};
 				if(expressions["exprlist"]){
