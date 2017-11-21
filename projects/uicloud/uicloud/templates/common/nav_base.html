@@ -21,7 +21,7 @@
 			<img  id="logo" src={% static "images/logo.png" %}/ >
 			<div id="loginInfo">
 				<div class="userHead child"></div>
-				<span class="userName child">郭晓敏</span>
+				<span class="userName child">医智云</span>
                 <div class="child sepreate"></div>
 				<img src={% static "images/nav_icon_06.png" %} class="message child"/>
 				<img src={%static "images/nav_icon_08.png" %} alt="" class="question child" />
@@ -31,10 +31,10 @@
 		</div>
 		<div class="main">
 			<div class="leftNav">
-				<div class="ableFlag functionBtn" id="navDataBaseAndPanleFileConnectionViewBtn" ><div class="active"></div><img src={% static "images/icon_nor_03.png" %} alt="" /></div>
-				<div class="disableFlag functionBtn" id="navBuildDataViewBtn"><div></div><img src={% static "images/icon_disable_06.png" %} alt="" /></div>
-				<div class="disableFlag functionBtn" id="navDashBoardViewBtn"><div></div><img src={% static "images/icon_disable_08.png" %} alt="" /></div>
-				<div class="disableFlag functionBtn" id="navReporttingViewBtn"><div></div><img src={% static "images/icon_disable_10.png" %} alt="" /></div>
+				<div class="ableFlag functionBtn" id="navDataBaseAndPanleFileConnectionViewBtn" ><div class="active"></div><img src={% static "images/connect-select.png" %} alt="" /></div>
+				<div class="disableFlag functionBtn" id="navBuildDataViewBtn"><div></div><img src={% static "images/buildData-disable.png" %} alt="" /></div>
+				<div class="disableFlag functionBtn" id="navDashBoardViewBtn"><div></div><img src={% static "images/dashboard-disable.png" %} alt="" /></div>
+				<div class="disableFlag functionBtn" id="navReporttingViewBtn"><div></div><img src={% static "images/statements-disable.png" %} alt="" /></div>
 			</div>
 			<div class="rightConent">
                {% include "dataCollection/dataSourceSelect.html" %}
@@ -45,17 +45,17 @@
 		</div>
 		<div class="clear"></div>
 	</div>
-	
+
 	<div class="maskLayer" style="display: none;"> </div>
 	<div id="connectDataBaseInfo" style="display: none;">
     	<div class="topline"></div>
 		<div class="common-head">
-			<span class="logo"></span>
+			<img class="logo"></img>
 			<span class="flag"></span>
 			<div class="close">
 				<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
 			</div>
-	
+
 		</div>
 		<form method="post" id="dataBaseConnectForm">
 			{% csrf_token %}
@@ -71,7 +71,7 @@
 				<label class="userName">用户名: <input type="text" name="dbuserName" class="usernameinput" placeholder="输入数据库用户名" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)" /></label>
 				<label class="userPwd">密码: <input type="password" name="dbuserPwd" class="userpwdinput" placeholder="请输入数据库密码"  onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/></label>
 			</div>
-			
+
 			<div class="otherSetting">
 				<label><input type="checkbox" name="needSSL" id="needSSL" value="1" />需要SSL</label>
 			</div>
@@ -82,15 +82,15 @@
 		</form>
     </div>
 
-    
+
  <div id="filter-model">
     	<!--筛选器选择-->
     	{% include "common/filter/filter-select.html" %}
-    	
+
     <!--内容选择器-->
   	{% include "common/filter/filer-content-base.html" %}
-    
-    
+
+
     <!--数值筛选器--->
    {% include "common/filter/filter-number-base.html" %}
 

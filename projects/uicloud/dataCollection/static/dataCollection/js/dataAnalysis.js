@@ -109,7 +109,7 @@
       }
       // 删除数据库已经不存在的连接,flagKey为删除的标识
       function deleteDBConnection(flagKey){
-        
+
         $("#analysisContainer .leftSlide #connectDirector ul.paltFormList li.dbtype[dbIndex="+flagKey+"]").remove();
         $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .dbDataShow[dbIndex="+flagKey+"]").remove();
         // 删除已经拖拽的表格
@@ -119,7 +119,7 @@
             deleteTableHandleFunction(idInfo);
           }
         })
-        
+
       }
       // 删除 文件已经不需要的连接
       function deleteFileConnection(fileName){
@@ -132,7 +132,7 @@
               deleteTableHandleFunction(idInfo);
           }
         });
-        
+
       }
 
       //删除 已构建数据表
@@ -152,7 +152,7 @@
             $("#dataSet .detailDataSetList li .didBuildTables").find(".didBuildImg").css("visibility","hidden");
          }
       }
-        
+
 
       // 检测当前所有的 db 连接是否需要删除
       function checkCurrentDBConnectionNeedDelete(backgroundExitsConnections){
@@ -234,7 +234,7 @@
                 sessionStorage.removeItem("edit_view_now");
             }
           }
-         
+
         }
       }
 
@@ -328,17 +328,17 @@
                 $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .waringFalse").remove();
                 postMaxHeightHandle();
 
-               
+
              }else{
                 $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").children(".datebaseLise_input").focus();
-                
+
                 if($("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").parent(".tablesList").children(".waringFalse").length == 0){
                     $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").after($("<p class='waringFalse'>名称已存在 !</p>"));
                 }
                 postMaxHeightHandle();
 
              }
-           
+
           }
       }
       }
@@ -434,7 +434,7 @@
                           }
                         alert(data.status);
                       }
-                      });   
+                      });
                     }else if($(this).hasClass("editConnect")){
                       connectDataBaseViewShowFunction(connectInfo.data("dbType"),true,connectInfoDbIndex);
                     }else if($(this).hasClass("rename")){
@@ -442,7 +442,7 @@
                     }
                     $(this).parent("#connectMoreHanlde").remove();
                  });
-                }); 
+                });
                 $("#analysisContainer .leftSlide #connectDirector ul.paltFormList").append(li);
                 li.data("dbIndex",key);
                 li.attr("dbIndex",key);
@@ -464,10 +464,10 @@
                 });
                 getTablesOfaDataBase($(dbselect));
               }
-              
+
               decideDataSourceNeedShowFunction();
               checkCurrentDBConnectionNeedDelete(allKeys(dbPaltList));
-              
+
               bindEventToPerTable();
             }else{
       //      alert("获取数据库信息失败");
@@ -574,12 +574,12 @@
       //给定侧边栏的高度
       function getLeftNavHeight(){
           // if(leftNavCount == 2){
-            if($("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData").length > 0){
+            if($("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData:visible").length > 0){
                 $("#analysisContainer .leftSlide #dataSet .detailDataSetList .nowConnectedTables .tablesList .tablesOfaData:visible").get(0).style.maxHeight = $("#analysisContainer .leftSlide").height() - ($("#analysisContainer .leftSlide #connectDirector").height() + 16) - $("#analysisContainer .leftSlide #dataSet .dataSetTitle").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .didBuildTables").height() - $("#analysisContainer .leftSlide #dataSet .detailDataSetList #baseSetTemplate .nowConnectedTables .title").height() - 35  + "px";
                 // leftNavCount = 0 ;
             }
-             
-            
+
+
           // }
       }
 
@@ -660,7 +660,7 @@
                        var moreHandleElement = $("<ul class='connectMoreHanldeList'><li class='rename'>重命名</li><li class='removeConnect'>移除</li></ul>");
                        $(this).append(moreHandleElement);
                        moreHandleElement.css("left",$(this).offset().left + $(this).width() + 5 + "px").css("top",$(this).offset().top + ($(this).height()/2) + "px");
-                 
+
                       //重命名点击事件
                       moreHandleElement.find(".rename").unbind("click");
                       moreHandleElement.find(".rename").click(function(event){
@@ -710,7 +710,7 @@
                               }
                           });
 
-                         
+
 
                          //tableRemoveChangeName($(this).parents())
                       })
@@ -721,10 +721,10 @@
                 if(data["results"].length != 0){
                   $("#dataSet .detailDataSetList li .didBuildTables").find(".didBuildImg").css("visibility","visible");
                 }
-        
+
                 bindEventToPerTable();
-               
-              } 
+
+              }
               // getLeftNavHeight();
             },
 
@@ -743,7 +743,7 @@
             setTheDataSetActiveFunction(ele,"database");
           }else{
             setTheDataSetActiveFunction(ele,"panelFile");
-          } 
+          }
         }
       }
 
@@ -786,14 +786,14 @@
         }
 
 
-        
+
 
         //构建数据进度条
       function loading_bar(){
           var speed_handle;
           //清除定时器
           clearInterval(loading_inter);
-          
+
           //隐藏构建数据输入框
           $("#buildDataPanelView").css("display","none");
           //点击出现进度条
@@ -818,8 +818,8 @@
               $("#loading_percentage").css("right","-16px");
               $("#loading_circle").css("marginRight","1.5px");
             }
-            
-            
+
+
           },600)
         }
 
@@ -851,7 +851,7 @@
                       spinner.stop();
             }
                 }
-              }); 
+              });
         }
 
         //集合表添加功能的点击事件
@@ -872,7 +872,7 @@
             //创建相对应的已构建的数据表
 
             $("<li>"+preBuildDataName+"</li>").data("sourcetype","hdfs").appendTo($("#analysisContainer .leftSlide #dataSet .detailDataSetList li .theDataSetContent .dataSetDetail .didBuildTables ul.tablesList"));
-            
+
             // 数据的移除
             delete didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
             delete free_didShowDragAreaTableInfo["hdfs_YZYPD_myfolder_YZYPD_"+preBuildDataName+""];
@@ -915,7 +915,7 @@
             var expression_other_handle = $("<div id='top_expression'>"+preBuildDataName+"</div><div id='data_reconstruction'><a>重构数据</a></div><div id='table_export_excel'><img src='/../../../static/dataCollection/images/tableDataDetail/export_excel.png' title='导出excel'></div><div id='table_add_field'><img src='/../../../static/dataCollection/images/tableDataDetail/add_field_ico.png' title='添加字段'></div><div id='merge_table'><img src='/../../../static/dataCollection/images/tableDataDetail/Merge_field_ico.png' title='合并'></div>");
 
             expression_other_handle.prependTo($(".rightConent #analysisContainer #tableDataDetailListPanel .topInfo"));
-            
+
             //集合表添加功能的点击事件
             expression_click_handle();
 
@@ -949,13 +949,13 @@
             //构建成功显示集合表
             element_chanage_success();
           });
-          
+
         }
         // end---------------------
-        
+
         function ElementAutoSize(){
-          $("#analysisContainer .leftSlide").css("height",(document.offsetHeight | document.body.offsetHeight) - 70 + "px");
-          $("#analysisContainer .mainDragArea").css({"margin-left":$("#analysisContainer .leftSlide").width() + "px","height":(document.offsetHeight | document.body.offsetHeight) - 70 + "px"});
+          $("#analysisContainer .leftSlide").css("height",(document.offsetHeight | document.body.offsetHeight) - 50 + "px");
+          $("#analysisContainer .mainDragArea").css({"margin-left":$("#analysisContainer .leftSlide").width() + "px","height":(document.offsetHeight | document.body.offsetHeight) - 50 + "px"});
           $("#foldSideBtn").css("top",($("#analysisContainer .leftSlide").height() - 38) / 2 + "px");
           // $("#tableDataDetailListPanel").css({"width":"100%","overflow":"auto"});
         }
@@ -964,11 +964,11 @@
         $(window).resize(function(){
           ElementAutoSize();
         })
-        
+
         // 左侧边栏拖拽缩小和放大
         $("#analysisContainer .leftSlide").resizable({
-              maxWidth:300,
-              minWidth:200,
+              maxWidth:320,
+              minWidth:220,
             handles:"e" , // 只能作用在右边栏
             resize:function(event,ui){
               // 动态调整右边可拖拽区域的大小
@@ -977,13 +977,18 @@
                 left:ui.size.width - 7 + "px",
               });
               $("#analysis_dataList").css("width",ui.size.width);
+
+              $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .dbDataShow .tablesOfaData p,.detailDataSetList li .panelDataShow .panelFileSheetData p").css("width",(ui.size.width-58)+"px");
+              $("#dataSet .detailDataSetList  li .didBuildTables .base_search_img").css("margin-left",(ui.size.width-125)+"px");
+              $("#analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow .combo-select").css("width",(ui.size.width-60)+"px")
+              $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise").css("width",(ui.size.width-48)+"px")
             }
           })
-        
+
         // 左侧边栏隐藏和显示
         $("#foldSideBtn").click(function(event){
           $("#analysisContainer .leftSlide").toggle("fold",{horizFirst:true},50,function(){
-            
+
             if ($("#analysisContainer .leftSlide").is(":visible")) {
               $("#foldSideBtn").children("img").attr("src","/../../../static/dataCollection/images/nr_47.png")
               $("#foldSideBtn").css("left",  $("#analysisContainer .leftSlide").width() - 7 + "px");
@@ -994,9 +999,9 @@
               $("#analysisContainer .mainDragArea").css("margin-left","0px");
             }
             //看具体情况。。。。。要不要处理
-           
+
             //autoSizetableDataDetailListPanel();
-            
+
           });
         })
 
@@ -1008,7 +1013,7 @@
       // window.onresize = adjust;
       // adjust();
       // function adjust(){
-         
+
       //    // alert(1)
       //  $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").css("overflow-x","auto");
 
@@ -1018,7 +1023,7 @@
       // window.onresize = autoSizetableDataDetailListPanel;
       // autoSizetableDataDetailListPanel();
       // function autoSizetableDataDetailListPanel(){
-         
+
       //    alert(1)
       // }
 
@@ -1039,10 +1044,10 @@
 
       // 展示某个数据库下方的数据表格
       function getTablesOfaDataBase(theSelect){
-        
+
         if (!theSelect.length || theSelect.length < 1) {
           return;
-        } 
+        }
         $.ajax({
           url: "/dataCollection/tablesOfaDB",
           type: "post",
@@ -1063,7 +1068,7 @@
           }
         })
       }
-       
+
       // 处理表格的拖拽和点击事件
       //dbPaltIndexForBack 主要记录了这个数据库表格在后台属于哪个数据连接平台下的，是一个下标，后台通过这个索引值去寻找
         function bindEventToPerTable(){
@@ -1082,7 +1087,7 @@
               dbPaltIndexForBack = $(ui.draggable).parents(".dbDataShow").find(".custom-select").attr("dbindex");
               dataUrl = "/dataCollection/filterTable/schema";
               postData = {"tableName":tableName,"source":dbPaltIndexForBack,"database":dataBaseName,"columns":{},"conditions":[]};
-              
+
             }else if(sourceType == "hdfs"){
               dataBaseName = "myfolder"; // 当前用户名
               dbPaltIndexForBack = "hdfs";
@@ -1090,14 +1095,14 @@
 
 
 
-              
+
             }else if(sourceType == "tmptables"){
               var fileName = $(ui.draggable).data("filename");
               dataUrl = "/cloudapi/v1/uploadedcsv/"+fileName+"/"+tableName+"/schema";
               dbPaltIndexForBack = "tmptables";
               dataBaseName = fileName;
             }
-            
+
             targetEle = this;
             // 已近存在的表格
             if (allKeys(didShowDragAreaTableInfo).indexOf(dbPaltIndexForBack + "_YZYPD_"+ dataBaseName + "_YZYPD_" + tableName) != -1) {
@@ -1126,7 +1131,7 @@
                 $(ele).css("background","#EEEEEE");
                 $(ele).children("#dataSet .detailDataSetList li .didBuildTables .tablesList .moreHandleDb").show();
             }
-            
+
           })
 
 
@@ -1140,7 +1145,7 @@
 
         })
         }
-        
+
         var fixedSPlit_data =null;
         var tempSaveDataField = [];
 
@@ -1161,9 +1166,9 @@
                 boxDiv.get(0).setAttribute("tableType","hdfgTable");
               }
               boxDiv.append($("<div class='tableTitle'>" + "<img src=" + "/static/dataCollection/images/left_40.png"+"/>"+"<p title="+tableName+">"+tableName+"</p>"+ "</div>"));
-              
+
               boxDiv.append("<div class='clear'></div>")
-              
+
               var tableList = $("<ul class='fields'></ul>");
               boxDiv.append(tableList);
               for (var i = 0;i < data.length;i++) {
@@ -1178,7 +1183,7 @@
               }
               saveTableScame[tableName]  = tempSaveDataField;
             }
-            
+
               $(targetEle).append(boxDiv);
               // 可拖拽
               $(".boxDiv").draggable({ containment: "#analysisContainer  .mainDragArea", scroll: true,
@@ -1191,7 +1196,7 @@
                   instance.repaintEverything();
                   $("#analysisContainer .mainDragArea #dragTableDetailInfo").css({
                   left:this.offsetLeft + "px",
-                  top:this.offsetTop - 40 + "px" 
+                  top:this.offsetTop - 40 + "px"
                    });
                   $("#analysisContainer .mainDragArea #dragTableDetailInfo").show();
 
@@ -1199,37 +1204,37 @@
 
                   dragTable[2] =  this.offsetLeft + 260;
 
-                  dragTable[3] =  this.offsetTop + 70;
+                  dragTable[3] =  this.offsetTop + 50;
                   // console.log($(ui.helper).data("split_record"),dragTable.join("_YZY_"))
                   $(ui.helper).data("split_record",dragTable.join("_YZY_"));
 
               }
-            });       
-          
-              
-               
+            });
+
+
+
 
                if(if_or != "if_or"){
                  // 记录已经拖拽的表格数据
                  didShowDragAreaTableInfo[boxDiv[0].id] = data;
-               
+
                  free_didShowDragAreaTableInfo[boxDiv[0].id] = data;
                  tableDrag(allKeys(didShowDragAreaTableInfo));
                }else{
                  instance.repaintEverything();
                }
-          
-                
+
+
                // 选择框绑定事件
                bindEventToBoxDivFiledsCheckBox();
-              
+
               // 鼠标移入移出绑定事件
               dragBoxBindMosueOver()
-              
+
           }
-          
-          
-       //---- 点击数据集收回列表   
+
+
+       //---- 点击数据集收回列表
         $("#dataSet .detailDataSetList  li .didBuildTables,#dataSet .detailDataSetList  li .nowConnectedTables").click(function(event){
           event.stopPropagation();
           if($(event.target).hasClass("custom-select-img")){
@@ -1252,7 +1257,7 @@
                    postMaxHeightHandle();
                   }
                 }
-                
+
               });
               inputSearch( $("#dataSet .detailDataSetList  li .didBuildTables .sqlSearch .sqlSearch-input:visible"),"datebaseLise",$("#dataSet .detailDataSetList  li .didBuildTables .tablesList:visible"));
               return;
@@ -1261,13 +1266,13 @@
               if (this.getAttribute("openFlag") == "on") {
                 hideDataSetList(this);
                 if($(this).hasClass("didBuildTables")){
-                    $("#dataSet .detailDataSetList  li .didBuildTables .sqlSearch").hide(300);  
+                    $("#dataSet .detailDataSetList  li .didBuildTables .sqlSearch").hide(300);
                 }
               }else{
                 showDataSetList(this);
               }
           }
-          
+
         });
 
         // 显示数据集列表
@@ -1288,7 +1293,7 @@
               }
           });
           // $(ele).children("span.title").css("color","#005eca");
-          
+
         }
         //隐藏数据集列表
         function hideDataSetList(ele){
@@ -1304,8 +1309,8 @@
           });
           $(ele).children("span.title").css("color","#202020");
         }
-       
-       
+
+
         function bindEventToBoxDivFiledsCheckBox(){
            // 拖拽区域每个表格中的复选框进行选择时候触发的方法
         $("#mainDragArea .boxDiv .fields input[type='checkbox']").unbind("change");
@@ -1317,40 +1322,40 @@
             }else if (!this.checked && filed["isable"] == "yes") {
               filed["isable"] = "no";
               // 如果当前底部显示的正是操作的这个表格
-              if ($("#tableDataDetailListPanel").attr("nowShowTable") == $(this).parents(".boxDiv").eq(0)[0].id && currentTableAllData) {   
+              if ($("#tableDataDetailListPanel").attr("nowShowTable") == $(this).parents(".boxDiv").eq(0)[0].id && currentTableAllData) {
                 setshowHiddenEles_btn_notSelected();
-              }         
+              }
             }
-            
+
             // 如果当前底部显示的正是操作的这个表格
             if ($("#tableDataDetailListPanel").attr("nowShowTable") == $(this).parents(".boxDiv").eq(0)[0].id && currentTableAllData) {
       //      console.log(currentTableAllData)
               createTableDetailView($("#tableDataDetailListPanel").attr("nowShowTable"),currentTableAllData);
-                      
+
             }
-                  
+
            });
-           
+
       }
 
       function newName(){
           var ele = $("#buildDataPanelView .build-body .cube-name-radio .new-cube");
           ele.show();
-          ele.addClass("active"); 
+          ele.addClass("active");
           ele.css("margin-left","20px");
 
           $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
           $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
           $(".msg").hide();
           $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube").hide();
-          
+
       }
-       
-       
+
+
        // 构建数据传递的参数
        var postData = null;
        var outName_of_check = null;
-   
+
       $("#constructData").click(function(){
           //console.log($(".connectionImg").length);
           if($(".boxDiv").length != 0){
@@ -1359,8 +1364,8 @@
             }
           }
       })
-         
-     
+
+
 
        function constructFn(){
        // 构建数据点击事件
@@ -1385,7 +1390,7 @@
                 //如果有已经构建的数据表，执行这部分
                 var len = $('div[id^="hdfs"]').length;
                 // alert(len);
-              
+
                 // 弹窗提示覆盖和新建
                 if(len != 0){
                   var e1 = $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube");
@@ -1396,23 +1401,23 @@
                   $("#buildDataPanelView .build-body .cube-name-radio .new-cube").addClass("active");
                   $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("margin-left","20px");
                   $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("float","left");
-               
+
                   $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
                   $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
                   $(".msg").hide();
 
 
                   var listselect = $(".lists").find(".custom-select");
-                  
+
                   if($(".lists .combo-select .custom-select option[value="+end+"]").length == 0){
                     var selectoption = $("<option value="+end+">"+end+"</option>");
                     listselect.append(selectoption);
                     listselect.comboSelect();
                   }
-                 
+
 
               }
-               
+
 
             }else if(source == "tmptables"){
               aTable["sourcetype"] = source;
@@ -1482,10 +1487,10 @@
             var aRelation = {};
             var sourceInfo = linePa["relation"]["sourceInfo"].split("_YZYPD_");
             aRelation["fromTable"] = sourceInfo[1] + "." + sourceInfo[2];
-            
+
             var targetInfo = linePa["relation"]["targetInfo"].split("_YZYPD_");
             aRelation["toTable"] = targetInfo[1] + "." + targetInfo[2];
-            
+
             aRelation["joinType"] = linePa["type"];
             aRelation["columnMap"] = [];
             for(var j  = 0;j < linePa["relation"]["connections"].length;j ++){
@@ -1497,7 +1502,7 @@
             }
             relationships.push(aRelation);
             }
-          } 
+          }
             // 需要传递的数据
           postData = {
             "tables":tables,
@@ -1511,7 +1516,7 @@
             $("#buildDataPanelView .build-body .cube-name-radio .new-cube").eq(0).css("margin-left","20px");
             $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
           }
-          
+
           $(".maskLayer").show();
           $("#buildDataPanelView").css({
             left:($("body").width() - $("#buildDataPanelView").width()) / 2,
@@ -1521,8 +1526,8 @@
           $("#buildDataPanelView").show("shake",200);
 
 
-          
-          
+
+
         //});
     }
 
@@ -1677,7 +1682,7 @@
           // 记录
           preBuildDataName = postData["outputs"]["outputTableName"];
 
-          
+
           if ($("#buildDataPanelView .build-body .build-options .more-content-div .check-label input").eq(0).is(':checked') && $("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val() && $("#buildDataPanelView .build-body .build-options .more-content-div").eq(0).is(":visible")) {
             var value = Number($("#buildDataPanelView .build-body .build-options .more-content-div .text-label input").eq(0).val());
         //    console.log("--------",value);
@@ -1714,9 +1719,9 @@
           });
           $("#newSetPrompt").show();
         })
-        
+
         // 创建数据集弹框内部的事件处理
-        
+
         // 关闭按钮
         $("#newSetPrompt #closeNewSetPrompt").click(function(event){
           event.stopPropagation();
@@ -1737,19 +1742,19 @@
             hideDataSetList(ele);
           });
           showDataSetList(theNewSet.children(".dataSetItemTitle").eq(0).get(0));
-            
+
         })
-        
+
         // 增加数据源按钮
         $("#analysisContainer .leftSlide #addDataSourceBtn").click(function(event){
           event.stopPropagation();
           $("#connectDirector #addSourceSelects").show();
         });
-        
+
         // 数据源选择按钮点击事件
         $("#analysisContainer .leftSlide #addSourceSelects p.addDataBase").click(function(event){
           event.stopPropagation();
-          
+
             $("#analysisContainer .leftSlide #addSourceSelects").hide();
             $("#analysis_dataList").show("explode",500,BindProgressToDetailBase);
             $(".maskLayer").show();
@@ -1758,31 +1763,31 @@
               $(".maskLayer").hide();
             });
         });
-        
+
         $("#analysisContainer .leftSlide #addSourceSelects #addPanelFileInput").change(function(){
           var fileInfo = $(this).get(0).files[0];
           panelFileUploadBtnDidTrickFunction(fileInfo);
         });
         function panelFileUploadBtnDidTrickFunction(fileInfo,isEditUploadFile,preFileName){
-          
-          $(".maskLayer").show();  
+
+          $(".maskLayer").show();
           if (fileInfo.name.substring(fileInfo.name.indexOf(".")).toLowerCase() == ".csv"){
             $("#panelFileSettingOption").data("isEditUploadFile",isEditUploadFile);
             $("#panelFileSettingOption").data("preFileName",preFileName);
-            $("#panelFileSettingOption").show();  
+            $("#panelFileSettingOption").show();
           }else{
             var formData = new FormData();
             formData.append("file",fileInfo);
             analysis_uploadCSVFileFun(formData,isEditUploadFile,preFileName);
           }
         }
-        
+
         $("#panelFileSettingOption .common-head .close,#panelFileSettingOption a.cancleBtn").click(function(event){
             $("#panelFileSettingOption").hide();
             $(".maskLayer").hide();
             $("#analysisContainer .leftSlide #addSourceSelects #addPanelFileInput").val("");
         });
-          
+
         function analysis_uploadCSVFileFun(formData,isEditUploadFile,preFileName){
           if(isEditUploadFile){
             deleteFileConnection(preFileName);
@@ -1797,7 +1802,7 @@
                   startUploadTheFileFunction(formData);
                 }
               }
-            }); 
+            });
           }else{
             startUploadTheFileFunction(formData);
           }
@@ -1825,9 +1830,9 @@
                     }
            });
           }
-         
+
         }
-          
+
           $("#panelFileSettingOption a.confirmBtn").click(function(event){
           var delimiter = $("#panelFileSettingOption .fileSettingBody .topOption .delimiterOption input").val();
           var quote = $("#panelFileSettingOption .fileSettingBody .topOption .quoteOption input").val();
@@ -1842,18 +1847,18 @@
           formData.append("quote",   quote);
           formData.append("header",header);
           analysis_uploadCSVFileFun(formData,$("#panelFileSettingOption").data("isEditUploadFile"),$("#panelFileSettingOption").data("preFileName"));
-              
+
            });
-        
-        
+
+
          // 给具体的数据库平台按钮绑定事件函数
           function BindProgressToDetailBase(){
               $("#analysis_dataList .baseDetail li").click(function(){
-               var dataBaseName = $(this).html();
+               var dataBaseName = $(this).find("span").eq(0).html();
                 connectDataBaseViewShowFunction(dataBaseName)
               })
           }
-        
+
         function connectDataBaseViewShowFunction(dataBaseName,isEditConnect,preDBInfo){
           if(dataBaseName == "ORACLE"){
             $("#connectDataBaseInfo").height(320);
@@ -1869,7 +1874,8 @@
           if(!$(".maskLayer").is(":visible")){
             $(".maskLayer").show();
           }
-          $("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);
+          $("#connectDataBaseInfo .common-head img.logo").attr("src",dataBaseName.dataBaseImgSrc());
+          $("#connectDataBaseInfo").show('shake',500,analysisbBaseInfoShowCallBack);
         }
 
 
@@ -1910,9 +1916,9 @@
           $("#connectDataBaseInfo").hide();
           $(".maskLayer").hide();
         }
-        
+
         //  连接数据库的弹框显示之后，处理里面的点击事件
-          function baseInfoShowCallBack(){
+          function analysisbBaseInfoShowCallBack(){
             var dataBaseName =  $("#connectDataBaseInfo").data("dataBaseName");
             $("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
             $("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
@@ -1933,36 +1939,36 @@
             });
 
 
-        
-        
-        
+
+
+
         // 给拖拽区域的表格绑定鼠标移入事件
         function dragBoxBindMosueOver(){
           $("#analysisContainer .mainDragArea .boxDiv").unbind("mouseenter");
           $("#analysisContainer .mainDragArea .boxDiv").mouseenter(function(event){
             $("#analysisContainer .mainDragArea #dragTableDetailInfo").css({
               left:this.offsetLeft + "px",
-              top:this.offsetTop - 40 + "px" 
+              top:this.offsetTop - 40 + "px"
             })
             // 记录一下当前的详情是哪个表格的
             if ($("#analysisContainer .mainDragArea #dragTableDetailInfo").attr("record") != this.id) {
-              
+
               $("#analysisContainer .mainDragArea #dragTableDetailInfo").attr("record",this.id);
             }
             // 详情显示
             $("#analysisContainer .mainDragArea #dragTableDetailInfo").show();
-          }); 
+          });
         }
         // 移除其中一个表格
         function deleteTableHandleFunction(dbInfo){
            // 移除线
-              instance.detachAllConnections($(".mainDragArea #"+dbInfo)); 
+              instance.detachAllConnections($(".mainDragArea #"+dbInfo));
               // 移除点
               var endPonints = instance.getEndpoints($(".mainDragArea #"+dbInfo));
               for (var i = 0; i < endPonints.length;i++) {
                 instance.deleteEndpoint(endPonints[i]);
               }
-              
+
             // 移除元素这个
             $(".mainDragArea #"+dbInfo).remove();
             // 移除详情按钮等
@@ -2017,11 +2023,11 @@
                 $("#tableDataDetailListPanel .mainContent table tbody").html("");
                 $("#tableDataDetailListPanel").attr("nowshowtable","");
               }
-              
+
 
             }
         }
-        
+
         // 表格详情按钮的点击
         $("#analysisContainer .mainDragArea #dragTableDetailInfo .imgBox").click(function(){
           //判断弹窗是否展示
@@ -2033,35 +2039,35 @@
           $(this).siblings(".imgBox").removeClass("active");
           $(this).addClass("active");
           var dbInfo = $(this).parent("#dragTableDetailInfo").attr("record");
-          if ($(this).attr("flag") == "detail") { 
+          if ($(this).attr("flag") == "detail") {
             // 再次点击之前点击过的表格
             if ($("#tableDataDetailListPanel").attr("nowShowTable") == dbInfo) {
               // 如果当前正在显示,不作出处理
               if ($("#tableDataDetailListPanel").is(":visible")) {
-                return; 
+                return;
               }else{
                 $("#tableDataDetailListPanel").show("blind",{"direction":"down"},200);
                 return;
               }
             }
-            
+
       //      // 记录当前是展示的哪个表格的数据
               $("#tableDataDetailListPanel").attr("nowShowTable",dbInfo);
               // 获取相应的表格数据数据
               dataAnaLysisFilterSuccessFun(true);
-            
+
           }else if($(this).attr("flag") == "deleteTable"){
-            
+
            deleteTableHandleFunction(dbInfo);
-          
+
           }else if($(this).attr("flag") == "deleteCon"){
             // 移除线
               instance.detachAllConnections($(".mainDragArea #"+dbInfo));
-              
+
           }
         });
-        
-        
+
+
           //移除或刷新关闭页面删除拆分数据
           function remove_splitData(now_click_delete){
             var post_splitData_arr = {
@@ -2082,7 +2088,7 @@
             }
         });
           }
-        
+
         // 创建下方展示的表格详情视图
         function createTableDetailView(dbInfo,rs,isAllFields){
           // 需要---dbInfo
@@ -2098,11 +2104,11 @@
                 }
               }
             }
-          
+
           // 清空
                   $("#tableDataDetailListPanel .mainContent table thead tr").html("");
                   $("#tableDataDetailListPanel .mainContent table tbody").html("");
-                  
+
                 for (var i= 0;i <  bottom_panel_fileds.length;i++) {
                   var img = $("<img/>");
                   var th = $("<th title='单击选中列'><span>" + bottom_panel_fileds[i]["field"]+"</span></th>");
@@ -2124,14 +2130,14 @@
                   var lineData = rs[i];
                   for (var j = 0;j < bottom_panel_fileds.length;j++) {
                     var theFiled = bottom_panel_fileds[j]["field"];
-                    
+
                     var td = $("<td>" + lineData[theFiled] + "</td>");
                     td.addClass(bottom_panel_fileds[j]["field"]);
                     tr.append(td);
                   }
                   $("#tableDataDetailListPanel .mainContent table tbody").append(tr);
                 }
-          
+
           // 自动调整弹出窗口的大小
                 autoSizetableDataDetailListPanel(bottom_panel_fileds.length);
                 if (!$("#tableDataDetailListPanel").is(":visible")){
@@ -2139,15 +2145,15 @@
                 }
                 //绑定按钮功能操作事件
                 bindHandlefunctionTotableDataDetailListPanel();
-          
+
         }
-        
-        
+
+
         // 数据详情关闭按钮的点击
         $("#tableDataDetailListPanel #closeableDataDetailListPanel").click(function(){
           $("#tableDataDetailListPanel").hide("blind",{"direction":"down"},200);
         })
-        
+
         // 调整下面展示的表格数据弹框视图的大小
         function autoSizetableDataDetailListPanel(filedNumber){
           if($("#analysisContainer .leftSlide").eq(0).is(":visible")){
@@ -2155,7 +2161,7 @@
           }else{
             var  w = $(document).width() - $(".container .main .leftNav").eq(0).width();
           }
-          
+
           $("#tableDataDetailListPanel").css({
             width:w
           });
@@ -2166,7 +2172,7 @@
             width:w / filedNumber
           });
         }
-        
+
        //绘制固定宽度的标尺
        function drag_fixedWidth(){
         var scaleplate_num = 340;
@@ -2189,7 +2195,7 @@
           $(ele).dblclick(function(){
             $(ele).remove();
           })
-          
+
           //拖动
           $(ele).draggable({
             // appendTo:"body",
@@ -2222,7 +2228,7 @@
           splitWidth_line.css("left",Math.round((e.clientX-$(this).offset().left)/6)*6 -1 + "px").height($(this).find("ul").height());
           scaleLine_drag_dbl();
         })
-      } 
+      }
 
       // 判断当前拆分选择的类型
       function table_if_type(){
@@ -2234,7 +2240,7 @@
         //判断如果类型为默认分隔符号
         if($(".splitFileds_handle_area .split_manner label[name='splitWay_separ'][class='checked']").attr("id") == "label_separ"){
           if($(".splitFileds_handle_area .split_manner label[name='label_check'][class='checked']").get(0).hasAttribute("splitSymbol")){
-            save_table_temporary = $(".splitFileds_handle_area .split_manner label[name='label_check'][class='checked']").attr("splitSymbol").split("_YZY_")[1];  
+            save_table_temporary = $(".splitFileds_handle_area .split_manner label[name='label_check'][class='checked']").attr("splitSymbol").split("_YZY_")[1];
           }else{
             save_table_temporary = $("#label_input_textarea").val();
           }
@@ -2251,7 +2257,7 @@
             textNum = 6;
           }
           $(".splitWidth_line_only").each(function(index,ele){
-       
+
             if(Math.floor(($(ele).position().left+1)/textNum) < storeArr_maxlength){
               fixedWIdth_savearr.push(Math.floor(($(ele).position().left+1)/textNum));
             }
@@ -2260,8 +2266,8 @@
           return fixedWIdth_savearr;
         }
 
-        
-        
+
+
       }
 
 
@@ -2288,7 +2294,7 @@
 
       //拆分后展示scame变化
       function split_change_schame(split_table_name,data,now_click_table_name){
-        
+
         $("#analysisContainer .mainDragArea .boxDiv .tableTitle p").each(function(index,ele){
           if($(ele).text() == split_table_name){
             var fixedSPlit_data = $(ele).parent().parent().data("split_record").split("_YZY_");
@@ -2300,7 +2306,7 @@
               gather_table_schema_split[i]["isable"] = "yes";
             }
             didShowDragAreaTableInfo[now_click_table_name] = gather_table_schema_split;
-            
+
             showDataTables(fixedSPlit_data[0],fixedSPlit_data[1],data["results"]["schema"],fixedSPlit_data[2],fixedSPlit_data[3],$(".mainDragArea"),fixedSPlit_data[4],"if_or");
 
             // console.log($(ele).parent().parent().children(),$(ele).parent().parent().position().left)
@@ -2320,12 +2326,12 @@
        var if_chtext = false;
        //拆分按钮点击事件
        function splitFileds_handle_table(save_col_text,col_name_click){
-       
+
         //获取当前操作的文件名
         var now_click_table_name = $("#tableDataDetailListPanel").attr("nowshowtable");
 
         getCurrentTableFilterData(now_click_table_name);
-        
+
         //获取当前表的筛选结果
         var now_table_filter_dict = conditionFilter_record[now_click_table_name];
 
@@ -2425,15 +2431,26 @@
       beforeSend:function(){
         var target =  $("body").get(0);
         spinner.spin(target);
-        console.log(postChangeUrl,postFilterCondition_split)
+        
       },
       success:function(data){
-        console.log(data)
         $(".split_error").remove();
         spinner.stop();
 
         //拆分弹窗初始化
         splitWall_init();
+
+        if($("#tableDataDetailListPanel").hasClass("expression_show")){
+             var gather_table_schema_hdfs = data["results"]["schema"];
+             filterNeedAllData = data["results"]["data"];
+              for(var i = 0 ; i < gather_table_schema_hdfs.length;i++){
+                  gather_table_schema_hdfs[i]["isable"] = "yes";
+             }
+             didShowDragAreaTableInfo[now_click_table_name] = gather_table_schema_hdfs;
+           createTableDetailView(now_click_table_name,data["results"]["data"]);
+          return;
+        }
+
         //拆分后改变schame
         split_change_schame(dbArr_split[2],data,now_click_table_name);
 
@@ -2449,7 +2466,7 @@
 
           store_split_tableName_free.push(dbArr_split[2]);
         // }
-        
+
 
 
       },
@@ -2458,7 +2475,7 @@
         if($(".split_fileds .splitFileds_footer").find(".split_error").length == 0){
             $("<p class='split_error'>拆分失败</p>").appendTo($(".split_fileds .splitFileds_footer"));
         }
-        
+
       }
       });
         })
@@ -2480,9 +2497,9 @@
             }
 
             if($(this).attr("id") == "label_separ" && !$(this).hasClass("checked")){
-              $(".split_fileds .splitFileds_handle_area .split_manner .fixedWidth_content .splitPreview_area").html("");  
+              $(".split_fileds .splitFileds_handle_area .split_manner .fixedWidth_content .splitPreview_area").html("");
             }
-            
+
             var radioId = $(this).attr('name');
             if(radioId  == "splitWay_separ"){
               $('label[name="splitWay_separ"]').removeAttr('class') && $(this).attr('class', 'checked');
@@ -2502,7 +2519,7 @@
           $('.split_fileds .splitFileds_handle_area .split_manner #label_fixed').removeClass("checked");
             $('.split_fileds .splitFileds_handle_area .split_manner #label_separ').addClass("checked");
           })
-            
+
               $('.split_fileds .splitFileds_handle_area .split_manner #label_fixed').removeClass("checked");
             $('.split_fileds .splitFileds_handle_area .split_manner #label_separ').addClass("checked");
 
@@ -2545,7 +2562,7 @@
        }
        // 用来记录当前正在表详细中操作的列或者行元素
         currentHandleColOrRowEles = null;
-       
+
        //  底层弹出的表格详细信息视图中的选中功能
       function bindHandlefunctionTotableDataDetailListPanel(){
        // 隐藏列功能
@@ -2553,7 +2570,7 @@
           event.stopPropagation();
           $("#tableDataDetailListPanel .topInfo #splitFileds_btn").css("opacity","1");
           var isSelected = $(this).attr("isSelect");
-          
+
           if (isSelected == "true") {
             currentHandleColOrRowEles.css("background","");
             $(this).attr("isSelect","false");
@@ -2568,16 +2585,16 @@
                 currentHandleColOrRowEles.eq(0).attr("isSelect","false");
               currentHandleColOrRowEles = null;
             }
-            
+
             currentHandleColOrRowEles = $(this).add("#tableDataDetailListPanel .mainContent table tbody tr ." + $(this).children("span").eq(0).html());
-            
+
             currentHandleColOrRowEles.css("background","#ffeac6");
             $(this).attr("isSelect","true");
 
           }
-          
+
        });
-       
+
       }
        //拆分按钮点击显示
       $("#tableDataDetailListPanel #splitFileds_btn").click(function(){
@@ -2604,25 +2621,25 @@
       $("#tableDataDetailListPanel #hiddenEle").mousedown(function(event){
         event.stopPropagation();
         $(this).children("img").eq(0).attr("src","/../../../static/dataCollection/images/tableDataDetail/handle_35.png");
-        
+
       });
       $("#tableDataDetailListPanel #hiddenEle").mouseup(function(event){
         $(this).children("img").eq(0).attr("src","/../../../static/dataCollection/images/tableDataDetail/handle_33.png");
         event.stopPropagation();
-        
+
         if (currentHandleColOrRowEles) {
         // 当前正在操作的表格---
         var dbInfo =  $("#tableDataDetailListPanel").attr("nowShowTable");
         // 当前正在操作的字段
         var field = currentHandleColOrRowEles.eq(0).children("span").html();
-        $(".mainDragArea #" +dbInfo + " .fields li span:contains(" + field+")").prev("input").trigger("click"); 
-        
+        $(".mainDragArea #" +dbInfo + " .fields li span:contains(" + field+")").prev("input").trigger("click");
+
         // 显示“隐藏内容的按钮” 可以进行点击了
         setshowHiddenEles_btn_notSelected();
         // 隐藏
         currentHandleColOrRowEles.hide("blind",{"direction":"left"},300);
         }
-        
+
       });
 
       // 显示隐藏按钮的功能
@@ -2633,9 +2650,9 @@
         if($("#tableDataDetailListPanel .topInfo #showHiddenEles").attr("isSelected") == "did"){
           return;
         };
-        
+
         if ($("#tableDataDetailListPanel").is(":visible")) {
-          
+
           var  fileds = didShowDragAreaTableInfo[dbInfo];
           for (var i = 0;i < fileds.length;i++){
               if (fileds[i]["isable"] == "no"){
@@ -2697,7 +2714,7 @@
             "conditions":conditions,
           }
         }
-        
+
         $.ajax({
             url:postURL,
             type:"post",
@@ -2715,21 +2732,21 @@
               if(isNeedAllData){
                 if(conditions.length < 1){
                   filterNeedAllData = data.results.data;
-                  createTableDetailView(dbInfo,currentTableAllData);  
-                  
+                  createTableDetailView(dbInfo,currentTableAllData);
+
                 }else{
                   getFilterNeedAllData_fun(dbInfo);
                 }
               }else{
-              
-                createTableDetailView(dbInfo,currentTableAllData);  
+
+                createTableDetailView(dbInfo,currentTableAllData);
               }
             }
         });
       }
 
       function getFilterNeedAllData_fun(dbInfo){
-            var dbArr = dbInfo.split("_YZYPD_");  
+            var dbArr = dbInfo.split("_YZYPD_");
             if(dbArr[0] == "hdfs"){
               $.ajax({
                 url:"/cloudapi/v1/tables/"+dbArr[2]+"/data",
@@ -2744,11 +2761,11 @@
                 success:function(data){
                   spinner.stop();
                   filterNeedAllData = data.results.data;
-                  
+
                     createTableDetailView(dbInfo,currentTableAllData);
                 }
               })
-              
+
             }else if(dbArr[0] == "tmptables"){
               var postdata = {"filename":dbArr[2],"username":dbArr[1]}
               $.ajax({
@@ -2764,13 +2781,13 @@
                 success:function(data){
                   spinner.stop();
                   filterNeedAllData = data.results.data;
-                
-                    createTableDetailView(dbInfo,currentTableAllData);  
+
+                    createTableDetailView(dbInfo,currentTableAllData);
                 }
               })
-              
+
             }else{
-              
+
              var tablesSelect = {"source":dbArr[0],"database":dbArr[1],"tableName":dbArr[2],"columns":{},"conditions":[]};
       //      console.log(tablesSelect);
               $.ajax({
@@ -2789,11 +2806,11 @@
                     spinner.stop();
                     filterNeedAllData = data.results.data;
       //            console.log(currentTableAllData)
-                      createTableDetailView(dbInfo,currentTableAllData);  
+                      createTableDetailView(dbInfo,currentTableAllData);
                   }
                 }
-              }); 
-            }   
+              });
+            }
         }
 
         //页面刷新时清除拆分保存的数据
@@ -2816,4 +2833,3 @@
         }
 
       }
-
