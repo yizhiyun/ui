@@ -150,6 +150,8 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 .annotation_text .drog_row_list .me_out_content,.annotation_text .drog_row_list .me_out_content li .second_menu{width:100px;border:1px solid #DEDEDE;border-bottom: none;background: white;position: absolute;z-index: 999}
 .annotation_text .drog_row_list .me_out_content li,#drag_row .annotation_text .drog_row_list .me_out_content li .second_menu li{width:100%;height:23px;border-bottom: 1px solid #DEDEDE;box-sizing:border-box;}
 .annotation_text .drog_row_list .me_out_content li p{width: 100%;height: 100%;line-height: 23px;text-align: center;cursor: pointer;color: #000;}
+.annotation_text .drog_row_list .me_out_content li .tonghuanClass{text-align: left;text-indent: 13px;}
+.annotation_text .drog_row_list .me_out_content li .tonghuanClass span{float: left;width: 25px;height: 22px;background: url(../img/selected.png) no-repeat center center;visibility: hidden;}
 .annotation_text .drog_row_list .me_out_content li .second_menu{position: absolute;top: 22px;right: -102px;display: none;color: #000}
 /*视图展示区域*/
 #view_show_area{height:auto;background:#F1F2F4;float:left;margin-top: 0.75rem;position: relative;}

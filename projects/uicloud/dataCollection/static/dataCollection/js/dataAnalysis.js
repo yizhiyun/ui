@@ -2425,15 +2425,26 @@
       beforeSend:function(){
         var target =  $("body").get(0);
         spinner.spin(target);
-        console.log(postChangeUrl,postFilterCondition_split)
+        
       },
       success:function(data){
-        console.log(data)
         $(".split_error").remove();
         spinner.stop();
 
         //拆分弹窗初始化
         splitWall_init();
+
+        if($("#tableDataDetailListPanel").hasClass("expression_show")){
+             var gather_table_schema_hdfs = data["results"]["schema"];
+             filterNeedAllData = data["results"]["data"];
+              for(var i = 0 ; i < gather_table_schema_hdfs.length;i++){
+                  gather_table_schema_hdfs[i]["isable"] = "yes";
+             }
+             didShowDragAreaTableInfo[now_click_table_name] = gather_table_schema_hdfs;
+           createTableDetailView(now_click_table_name,data["results"]["data"]);
+          return;
+        }
+
         //拆分后改变schame
         split_change_schame(dbArr_split[2],data,now_click_table_name);
 
