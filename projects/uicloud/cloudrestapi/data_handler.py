@@ -339,7 +339,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                     rFolder = u"/tmp{0}/{1}/parquet".format(rootFolder, userName)
 
                 dfDict[dbTable] = getDataFrameFromSource(
-                    tables[seq], rootFolder=rFolder, removedColsDict, maxRowCount)
+                    tables[seq], rootFolder=rFolder, removedColsDict=removedColsDict, maxRowCount=maxRowCount)
                 if not dfDict[dbTable]:
                     logger.error(u"The data cannot be gotten from source. dbTable: {0}".format(dbTable))
                     return False
