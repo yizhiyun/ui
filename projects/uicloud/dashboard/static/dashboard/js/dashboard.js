@@ -1754,11 +1754,12 @@
 									event.stopPropagation();
 									$("#text_table_need_show .content_body #data_list_for_body .measureDiv p").show();
 									var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
+
 									if($(this).hasClass("linkBack")){
 										// isNeedShowHuanBiOption = true;
 										var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
 										if(index1 == -1){
-											showHuanbiMeasureArray.push(measureInfo);
+											showHuanbiMeasureArray.push(measureInfo);	
 										}
 									}else{
 										// isNeedShowTongBiOption = true;
@@ -1768,6 +1769,15 @@
 										}
 									}
 									showOrHidenSomeMeasureCompareOrLink();
+									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseenter');
+									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseenter(function(){
+										showOrHide();
+									})
+									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseleave');
+									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseleave(function(){
+										$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();		
+									})
+									
 									$(".me_out_content").remove();
 									$(".me_out_content li").unbind("mouseenter mouseleave");
 									open_or_close = true;
@@ -1787,6 +1797,8 @@
 										showTongbiMeasureArray.splice(index2,1);
 									}
 									showOrHidenSomeMeasureCompareOrLink();
+									
+									// showOrHide();
 									// isNeedShowHuanBiOption = false;
 									// isNeedShowTongBiOption = false;
 									$(".me_out_content").remove();
@@ -1807,6 +1819,7 @@
 													showTongbiMeasureArray.splice(index2,1);
 												}
 												showOrHidenSomeMeasureCompareOrLink();
+												// showOrHide();
 											}
 											if($(this).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
@@ -2294,10 +2307,10 @@
 										contentType: "application/json; charset=utf-8",
 										async: true,
 										data:JSON.stringify({"column":needChangeEle.find(".drop_list_main .drop_main>span").text(),"coltype":needChangeType}),
-										success:function(data){}
+										success:function(data){console.log(data);}
 									});
 
-
+					
 									delete _cube_all_data[$('#lateral_title .custom-select').val()];
 
 								});
@@ -3077,6 +3090,7 @@
 											}
 										}
 										showOrHidenSomeMeasureCompareOrLink();
+										// showOrHide();
 											if($(ui.sender).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
 											}else{
@@ -3468,6 +3482,7 @@
 							}
 						}
 						showOrHidenSomeMeasureCompareOrLink();
+						// showOrHide();
 						$(".annotation_text").eq(index).find(".list_wrap").remove();
 						$(".annotation_text").eq(index).find("li").remove();
 

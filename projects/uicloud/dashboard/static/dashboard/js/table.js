@@ -421,6 +421,76 @@ function emptyAllTable(){
 
 
 
+// function col_card(){
+// 	$("#view_show_area #view_show_area_content #view_show_wrap #card").show();
+// 	$("#card").find(".right_module .content_body #data_list_for_body").html("");
+// 	var current_all_measure = drag_row_column_data["column"]["measure"].concat(drag_row_column_data["row"]["measure"]);
+
+// 	measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
+
+// 		$("#text_table_need_show").hide();
+// 		$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
+// 		$("#card .right_module .content_body #data_list_for_body .measureDiv").remove();
+// 		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
+// 		var needAllData = data;
+// 		for(var i = 0;i < needAllData.length;i++){
+// 			// console.log(needAllData);
+// 			var aData = needAllData[i];
+// 			console.log(aData);
+// 			var measureDiv = $("<div class='measureDiv'></div>");
+// 			//console.log(allMeasure.length);
+// 			for(var j = 0;j < allMeasure.length;j++){
+// 				var aMeasure = allMeasure[j];
+// 				var tit = $(".list_wrap .measure_list_text_left").eq(j).html();
+// 				console.log(aMeasure);
+// 				//console.log(aData[drag_measureCalculateStyle[measureName]]);
+// 				if(allMeasure.length < 3){
+					
+// 					var tongbiShowNum = 0;
+// 					var huanbiShowNum = 0;
+// 					if(aData["同比"+drag_measureCalculateStyle[aMeasure]]){
+// 						tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+// 					}
+// 					if(aData["环比"+drag_measureCalculateStyle[aMeasure]]){
+// 						huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+// 					}
+// 					var p = $("<p class=p"+j+">" + tit +"</p>");
+// 					var div = $("<div class=sps"+j+"></div>");
+// 					var ap = $("<div class=ap"+j+"></div>");
+// 					var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
+// 					var tongbiAp = $("<p style='display:none' class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
+// 					var huanbiAp = $("<p style='display:none' class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
+// 					tongbiAp.addClass(aMeasure);
+// 					huanbiAp.addClass(aMeasure);
+// 					measureDiv.append(p);
+// 					// measureDiv.append(span);
+// 					measureDiv.append(div);
+// 					// measureDiv.append(tongbiAp);
+// 					// measureDiv.append(huanbiAp);
+// 					div.append(span);
+// 					div.append(ap);
+// 					ap.append(tongbiAp);
+// 					ap.append(huanbiAp);
+// 					if(showTongbiMeasureArray.indexOf(aMeasure) != -1){
+// 						tongbiAp.show();
+// 					}
+// 					if(showHuanbiMeasureArray.indexOf(aMeasure) != -1){
+// 						huanbiAp.show();
+// 					}
+					
+// 				}
+// 				if(j != allMeasure.length - 1){
+// 					// measureDiv.append("<span class='seperate'>/</span>");
+// 					measureDiv.append("<div></div>");
+// 				}
+// 			}
+// 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
+// 		}
+// 		spinner.stop();
+// 		$(".maskLayer").hide();
+// 	})
+// }
+
 function col_card(){
 	$("#view_show_area #view_show_area_content #view_show_wrap #card").show();
 	$("#card").find(".right_module .content_body #data_list_for_body").html("");
@@ -433,25 +503,51 @@ function col_card(){
 		$("#card .right_module .content_body #data_list_for_body .measureDiv").remove();
 		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 		var needAllData = data;
-		console.log(data);
 		for(var i = 0;i < needAllData.length;i++){
 			// console.log(needAllData);
 			var aData = needAllData[i];
-			//console.log(aData);
+			console.log(aData);
 			var measureDiv = $("<div class='measureDiv'></div>");
 			//console.log(allMeasure.length);
 			for(var j = 0;j < allMeasure.length;j++){
 				var aMeasure = allMeasure[j];
-				//console.log(aMeasure);
+				var tit = $(".list_wrap .measure_list_text_left").eq(j).html();
+				console.log(aMeasure);
+				//console.log(aData[drag_measureCalculateStyle[measureName]]);
 				if(allMeasure.length < 3){
-					var p = $("<p class=p"+j+">" + aMeasure +"</p>");
+					
+					var p = $("<p class=p"+j+">" + tit +"</p>");
 					var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
 					measureDiv.append(p);
 					measureDiv.append(span);
-				}
-				if(j != allMeasure.length - 1){
-					// measureDiv.append("<span class='seperate'>/</span>");
-					measureDiv.append("<br>");
+
+
+					var div = $("<div class='cardInfo' style='display:none'></div>");
+					measureDiv.append(div);
+  					var tongbiShowNum = 0;
+					var huanbiShowNum = 0;
+					if(aData["同比"+drag_measureCalculateStyle[aMeasure]]){
+						tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+					}
+					if(aData["环比"+drag_measureCalculateStyle[aMeasure]]){
+						huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+					}
+					var tongbiAp = $("<p  class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
+ 					var huanbiAp = $("<p  class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
+ 					tongbiAp.addClass(aMeasure);
+ 					huanbiAp.addClass(aMeasure);
+
+					div.append(tongbiAp);
+					div.append(huanbiAp);
+					
+				
+					if(showTongbiMeasureArray.indexOf(aMeasure) != -1){
+						tongbiAp.show();
+					}
+					if(showHuanbiMeasureArray.indexOf(aMeasure) != -1){
+						huanbiAp.show();
+					}
+					
 				}
 			}
 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
@@ -461,11 +557,14 @@ function col_card(){
 	})
 }
 
+
+
 // 求取三个数的最大值
 function threeMaxOfNumber(num1,num2,num3){
 	var temp = num1 > num2 ? num1 : num2;
 	return  temp > num3 ? temp : num3;
 }
+
 // 展示或者隐藏某个度量同比或者环比
 function showOrHidenSomeMeasureCompareOrLink(){
 	$("#text_table_need_show .content_body #data_list_for_body .measureDiv p.compareP,#text_table_need_show .content_body #data_list_for_body .measureDiv p.linkP").hide();
@@ -481,4 +580,19 @@ function showOrHidenSomeMeasureCompareOrLink(){
 	$("#text_table_need_show .content_body #data_list_for_body .measureDiv").each(function(index,ele){
 		$(ele).css("top",aMeasureDivHeight*$(ele).data("topIndex"));
 	})
+}
+
+function showOrHide(){
+	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
+	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").show();
+	for(var i = 0;i <  showTongbiMeasureArray.length;i++){
+		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").show();
+	}
+	for(var i = 0;i <  showHuanbiMeasureArray.length;i++){
+		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").show();
+	}
 }
