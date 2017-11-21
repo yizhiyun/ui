@@ -26,7 +26,7 @@ function showTable_by_dragData(){
 	$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 	// console.log(drag_row_column_data)
 	//清除列数据
-	if(drag_row_column_data["column"]["dimensionality"].length == 0 && drag_row_column_data["column"]["measure"].length == 0){
+	if(drag_row_column_data["column"]["dimensionality"].length == 0){
 		$("#text_table_need_show .right_module .top_column_container .top_column_name").eq(0).text("");
 	}
 	// 绘制行数据
@@ -274,11 +274,9 @@ function showTable_by_dragData(){
 						function_draw_row_line();
 						function_draw_column_line();
 						layout_table_size();
-						spinner.stop();
 						$(".maskLayer").hide();
 						if(finish){
-							finish();
-
+							finish("notNeed");
 						}
 				});
 			}else{
@@ -286,8 +284,10 @@ function showTable_by_dragData(){
 				$("#text_table_need_show .content_body #data_list_for_body .measureDiv").remove();
 				$("#text_table_need_show #data_list_for_body div.vertical_line").remove();
 				$("#text_table_need_show #data_list_for_body li").remove();
-				spinner.stop();
 				$(".maskLayer").hide();
+				if(finish){
+					finish();
+				}
 			}
 
 		}
@@ -297,8 +297,6 @@ function showTable_by_dragData(){
 				measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"]),[],null,function(data){
 			 	function_draw_row_data(data);
 			 	layout_table_size();
-				spinner.stop();
-				$(".maskLayer").hide();
 			 	 if(finish){
 			 	 	finish();
 			 	 }
@@ -320,8 +318,6 @@ function showTable_by_dragData(){
 				measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["column"]["dimensionality"]),[],null,function(data){
 		 	 	function_draw_column_data(data);
 		 	 	layout_table_size();
-				spinner.stop();
-				$(".maskLayer").hide();
 		 	 	 if(finish){
 		 	 	 	finish();
 		 	 	 }
@@ -334,6 +330,12 @@ function showTable_by_dragData(){
 			}
 
 		}
+		function spinnerIsNeedStopFunction(){
+			if(isRowFinished && isColumnFinished){
+				spinner.stop();
+				$(".maskLayer").hide();
+			}
+		}
 		$("#text_table_need_show").show();
 		if(isagainDrawTable){
 			isRowFinished = false;
@@ -341,13 +343,13 @@ function showTable_by_dragData(){
 			rowNeedDraw(function(){
 				isRowFinished = true;
 				if(isRowFinished&&isColumnFinished){
-					measureNeedDraw();
+					measureNeedDraw(spinnerIsNeedStopFunction);
 				}
 			});
 			columnNeedDraw(function(){
 				isColumnFinished = true;
 				if(isRowFinished&&isColumnFinished){
-					measureNeedDraw();
+					measureNeedDraw(spinnerIsNeedStopFunction);
 				}
 			});
 
@@ -357,16 +359,25 @@ function showTable_by_dragData(){
 				spinner.stop();
 				$(".maskLayer").hide();
 			}else if(isRowDemiEqual && isColumnDemiEqual){
-				measureNeedDraw();
+				measureNeedDraw(function(){
+					spinner.stop();
+					$(".maskLayer").hide();
+				});
 
 			}else if(!isRowDemiEqual && isColumnDemiEqual){
 				rowNeedDraw(function(){
-					measureNeedDraw();
+					measureNeedDraw(function(){
+						spinner.stop();
+						$(".maskLayer").hide();
+					});
 				});
 
 			}else if(isRowDemiEqual && !isColumnDemiEqual){
 				columnNeedDraw(function(){
-					measureNeedDraw();
+					measureNeedDraw(function(){
+						spinner.stop();
+						$(".maskLayer").hide();
+					});
 				});
 
 			}else{
@@ -375,13 +386,13 @@ function showTable_by_dragData(){
 				rowNeedDraw(function(){
 					isRowFinished = true;
 					if(isRowFinished&&isColumnFinished){
-						measureNeedDraw();
+						measureNeedDraw(spinnerIsNeedStopFunction);
 					}
 				});
 				columnNeedDraw(function(){
 					isColumnFinished = true;
 					if(isRowFinished&&isColumnFinished){
-						measureNeedDraw();
+						measureNeedDraw(spinnerIsNeedStopFunction);
 					}
 				});
 			}
@@ -433,7 +444,7 @@ function col_card(){
 		$("#card .right_module .content_body #data_list_for_body .measureDiv").remove();
 		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 		var needAllData = data;
-		console.log(data);
+		// console.log(data);
 		for(var i = 0;i < needAllData.length;i++){
 			// console.log(needAllData);
 			var aData = needAllData[i];

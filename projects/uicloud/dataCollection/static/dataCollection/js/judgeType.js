@@ -116,7 +116,7 @@ String.prototype.dataBaseImgSrc = function(){
 		case "ORACLE":
 				return "/static/dataCollection/images/oracle.png";
 		case "MYSQL":
-				return "/static/dataCollection/images/msyql.png";
+				return "/static/dataCollection/images/mysql.png";
 		case "SQLSERVER":
 				return "/static/dataCollection/images/sqlserver.png";
 		case"北京儿童医院辅助决策平台":

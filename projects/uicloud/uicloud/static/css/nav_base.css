@@ -26,8 +26,8 @@ input::-webkit-input-placeholder{
 .topInfo #loginInfo .child{float: left;margin-right: 20px;}
 .topInfo #loginInfo .message,.question{margin-top: 15px}
 .topInfo #loginInfo .changeUser{color: #0d53a4;font-size: 12px; cursor: pointer;height: 50px;line-height: 50px}
-.topInfo #loginInfo .userName{font-size: 16px;float: left;margin-top: 17px;height:16px;line-height: 16px;}
-.topInfo #loginInfo .userHead{width:30px;height: 30px;border-radius: 50%;background: #f8eaa8;float: left;margin-right:10px; margin-top: 10px;}
+.topInfo #loginInfo .userName{font-size: 12px;float: left;margin-top: 17px;height:16px;line-height: 16px;}
+.topInfo #loginInfo .userHead{width:24px;height: 24px;float: left;margin-right:10px; margin-top: 13px;}
 .topInfo #loginInfo .sepreate{width: 1px;height: 10px;margin-top: 20px;background: #b0b0b0;}
 .main .leftNav{float: left;width: 60px;background: #1e242b;min-height: 100%;height: 100%;position: relative;z-index: 9999}
 .leftNav .functionBtn{width: 100%;height: 60px; position: relative;margin-top: 20px;cursor: pointer}

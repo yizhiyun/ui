@@ -2162,14 +2162,14 @@
             var  w = $(document).width() - $(".container .main .leftNav").eq(0).width();
           }
 
-          $("#tableDataDetailListPanel").css({
+          $("#tableDataDetailListPanel .mainContent").css({
             width:w
           });
           $("#tableDataDetailListPanel .mainContent table thead tr th").css({
-            width:w / filedNumber
+            width:parseInt(w / filedNumber)
           });
           $("#tableDataDetailListPanel .mainContent table tbody tr td").css({
-            width:w / filedNumber
+            width:parseInt(w / filedNumber)
           });
         }
 
@@ -2431,7 +2431,7 @@
       beforeSend:function(){
         var target =  $("body").get(0);
         spinner.spin(target);
-        
+
       },
       success:function(data){
         $(".split_error").remove();

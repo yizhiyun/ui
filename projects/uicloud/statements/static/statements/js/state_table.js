@@ -288,7 +288,6 @@ function manyTable(storeClass){
 						function_draw_row_line();
 						function_draw_column_line();
 						layout_table_size();
-						spinner.stop(target);
 						if(finish){
 							finish();
 						}
@@ -335,6 +334,11 @@ function manyTable(storeClass){
 				}
 			}
 		}
+		function spinnerIsNeedStopFunction(){
+			if(isRowFinished && isColumnFinished){
+				spinner.stop();
+			}
+		}
 		$("."+storeClass+"").show();
 		if(isagainDrawTable){
 			isRowFinished = false;
@@ -342,13 +346,13 @@ function manyTable(storeClass){
 			rowNeedDraw(function(){
 				isRowFinished = true;
 				if(isRowFinished&&isColumnFinished){
-					measureNeedDraw();
+					measureNeedDraw(spinnerIsNeedStopFunction);
 				}
 			});
 			columnNeedDraw(function(){
 				isColumnFinished = true;
 				if(isRowFinished&&isColumnFinished){
-					measureNeedDraw();
+					measureNeedDraw(spinnerIsNeedStopFunction);
 				}
 			});
 
@@ -357,15 +361,21 @@ function manyTable(storeClass){
 				// 直接显示
 				spinner.stop(target);
 			}else if(isRowDemiEqual && isColumnDemiEqual){
-				measureNeedDraw();
+				measureNeedDraw(function(){
+					spinner.stop();
+				});
 			}else if(!isRowDemiEqual && isColumnDemiEqual){
 				rowNeedDraw(function(){
-					measureNeedDraw();
+					measureNeedDraw(function(){
+						spinner.stop();
+					});
 				});
 
 			}else if(isRowDemiEqual && !isColumnDemiEqual){
 				columnNeedDraw(function(){
-					measureNeedDraw();
+					measureNeedDraw(function(){
+						spinner.stop();
+					});
 				});
 
 			}else{
@@ -374,13 +384,13 @@ function manyTable(storeClass){
 				rowNeedDraw(function(){
 					isRowFinished = true;
 					if(isRowFinished&&isColumnFinished){
-						measureNeedDraw();
+						measureNeedDraw(spinnerIsNeedStopFunction);
 					}
 				});
 				columnNeedDraw(function(){
 					isColumnFinished = true;
 					if(isRowFinished&&isColumnFinished){
-						measureNeedDraw();
+						measureNeedDraw(spinnerIsNeedStopFunction);
 					}
 				});
 			}
@@ -410,7 +420,6 @@ function manyTable(storeClass){
 		// 左侧行设置 th 的高度
 		var top_height = $("."+storeClass+" .right_module .top_column_container").eq(0).height();
 		$("."+storeClass+" .left_row_container table th").css("height",top_height -1);
-		 spinner.stop();
 		  $("."+storeClass+" .content_body #data_list_for_body li").css("width","100%");
 		 $("."+storeClass+" .edit_table").width(200).height(200).css("background","white");
 }
