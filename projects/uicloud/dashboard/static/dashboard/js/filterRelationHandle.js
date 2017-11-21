@@ -83,6 +83,7 @@ function rightFilterListDraw(){
 		}	
 	}
 	$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list>li").each(function(index,ele){
+		if(pureDemiArray != undefined){return false}
 		if(pureDemiArray.indexOf($(ele).data("fieldInfo").split(":")[0]) == -1){
 			$(ele).hide("blind",200,function(){
 				checkSelectConditionDict = getSelectionCondtion(current_cube_name);
