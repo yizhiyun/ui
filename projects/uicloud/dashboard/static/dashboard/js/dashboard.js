@@ -492,7 +492,7 @@
 				var tempGetData = JSON.parse(now_title_handle_view["sequential"]);
 
 				showTongbiMeasureArray = tempGetData[0];
-				
+
 				showHuanbiMeasureArray = tempGetData[1];
 
 				current_cube_name = now_title_handle_view["tablename"];
@@ -2397,7 +2397,7 @@
 										//					console.log($(ele).parent().data("data-show"))
 										//样式
 										$(labelIcon).find(".label_icon_wrap").css({
-											top: $(ele).parent().offset().top - 70 + 22 + "px",
+											top: $(ele).parent().offset().top - 50 + 22 + "px",
 										});
 
 

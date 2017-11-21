@@ -32,7 +32,7 @@
 					</div>
 				</div>
 				<ul class="paltFormList">
-                    
+
 				</ul>
 				<div class="line"></div>
 			</div>
@@ -62,17 +62,17 @@
 							<span class="title">数据表</span>
 							<div class="tablesList"></div>
 						</div>
-						
+
 						<!--<div class="theDataSetContent">
 								<div class="dataSetDetail">
 									<div class="didBuildTables">
 										<p class="buildTableTitle">已构建数据表</p>
 										<ul class="tablesList"></ul>
-									</div>	
+									</div>
 								</div>
-								
+
 						</div>-->
-						
+
 					</li>
 				</ul>
 			</div>
@@ -81,26 +81,27 @@
 		        <div class="top">
 		        		<div id="analysiscloseDataList">
 		        			<img src={%  static "images/X_11.png" %} alt="" >
-		        		</div>   
+		        		</div>
 		        </div>
 		        <div class="commonDataDiv">
 		            <p class="commonDataTitle">常用数据平台</p>
 		            <ul class="baseDetail">
-		           	 	<li>朝阳医院平台</li>
-		                <li>MYSQL</li>
-		                <li>ORACLE</li>
-		                <li>SQLSERVER</li>
+									<li class="first"><img src={%static "dataCollection/images/childHospital.png" %} alt=""><span>北京儿童医院辅助决策平台</span></li>
+									<li><img src={%static "dataCollection/images/chaoyangHospital.png" %} alt=""><span>朝阳医院精细化管理平台</span></li>
+									<li><img src={%static "dataCollection/images/mysql.png" %} alt=""><span>MYSQL</span></li>
+									<li><img src={%static "dataCollection/images/oracle.png" %} alt=""><span>ORACLE</span></li>
+									<li><img src={%static "dataCollection/images/sqlserver.png" %} alt=""><span>SQLSERVER</span></li>
 		            </ul>
-		            <div class="line"></div>
+		            <!-- <div class="line"></div> -->
 		      	 </div>
-		      	 <div class="moreData">
+		      	 <!-- <div class="moreData">
 		      	 	<p id="moreDataBtn">更多数据平台</p>
-		      	 </div>
+		      	 </div> -->
 	   		 </div>
-			
+
 		</div>
 		<div class="mainDragArea" id="mainDragArea">
-			
+
 			<div id="dragTableDetailInfo" style="display: none;">
 				<div class="imgBox" title="详情" flag = "detail">
 					<img src={%static "dataCollection/images/sheet_50.png"  %} alt="" />
@@ -113,10 +114,10 @@
 				<div  class="imgBox lastImgBox" title="删除连接" flag = "deleteCon">
 					<img src={%static "dataCollection/images/sheet_47.png"  %} alt=""  />
 				</div>
-				
+
 			</div>
-			
-			
+
+
 			<div id="connectModalprompt" style="display: none;">
 				<div class="topline"></div>
 				<div class="common-head">
@@ -147,23 +148,23 @@
 							</select></div>
 							<div class="selectContainer"><select name="" class="select_targetList custom-select"></select></div>
 						</div>
-						
+
 					</div>
 					<div class="selectFooter">
 						<span id="confirmRelationBtn">确定</span>
 						<span id="cancleRelationBtn">取消</span>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
 		<div class="clear"></div>
-	
+
 	<div id="passway">
 		<span id="constructData" class="active">构建数据</span>
 <!-- 		<span id="dashBoardWay">仪表盘</span> -->
 	</div>
-	
+
 	<!--新增数据集弹框-->
 	<div id="newSetPrompt">
 		<img src={%static "dataCollection/images/exit_33.png" %} alt="" title="关闭" id="closeNewSetPrompt"/>
@@ -172,16 +173,16 @@
 			<p>创建数据集</p>
 		</div>
 		<div class="bottomInfo">
-				<label>数据集名称:<input type="text"placeholder="请在此输入数据集名称" id="setNameInput" /></label>		
+				<label>数据集名称:<input type="text"placeholder="请在此输入数据集名称" id="setNameInput" /></label>
 		</div>
 		<div class="btnDivHelp">
 			<a id="newSetConfirmBtn">确定</a>
 		</div>
 	</div>
-	
-	
-	
-	
+
+
+
+
 		<!-- 数据详情-点击弹框详情按钮展示-->
 	<div id="tableDataDetailListPanel" style="display: none;">
 		<img src={% static "dataCollection/images/tableDataDetail/Drop-down.png" %} alt="" id="closeableDataDetailListPanel"/>
@@ -208,5 +209,5 @@
 			</table>
 		</div>
 	</div>
-	
+
 </div>

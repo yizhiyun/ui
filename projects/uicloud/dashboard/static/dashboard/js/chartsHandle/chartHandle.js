@@ -16,6 +16,7 @@ function one_de_one_me_handle (chart_type_need) {
 
 	mycharts.off("click");
 	mycharts.on("click",function(params){
+		params.event.event.stopPropagation();
 		chartAPartDidClickedFunction(params);
 	});
  	var need_handle_measureName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]))[0];
@@ -755,7 +756,7 @@ function many_de_many_me_handle(chart_type_need){
 	}
 	mycharts.off("click");
 	mycharts.on("click",function(params){
-
+		params.event.event.stopPropagation();
 		if(currentChatType == "radarChart"){
 			if(params.componentType == "radar"){
 				chartAPartDidClickedFunction(params);
@@ -2849,6 +2850,12 @@ function chartAPartDidClickedFunction(params){
 			dirllConditions.pop();
 			switch_chart_handle_fun();
 		}
+	});
+	$(document).click(function(event){
+		event.stopPropagation();
+		console.log(event.target);
+		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList").hide();
+		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection").hide();
 	});
 }
 

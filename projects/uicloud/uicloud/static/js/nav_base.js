@@ -7,24 +7,24 @@
 		initWindowSize(doc,win);
 	}
 	initWindowSize(doc,win);
-	
+
 	}
-	
+
 })(document,window);
 
 function initWindowSize(doc,win,paHeight){
 		var main = doc.getElementsByClassName("main")[0];
 		var leftNav = doc.getElementsByClassName("leftNav")[0];
-		
-		main.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";
-		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 70 + "px";
+
+		main.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 50 + "px";
+		leftNav.style.height = (doc.offsetHeight | doc.body.offsetHeight) - 50 + "px";
 
 }
 
 function inputSearch(ele,activeClass,showContent,md){
     //报表弹窗筛选功能
   $(ele).on("input",function(){
-  
+
     //搜索里输入的值
     var search_input_data  = $(ele).val();
 
@@ -54,7 +54,7 @@ function inputSearch(ele,activeClass,showContent,md){
           }else{
           	list_p.eq(index).css("display","block");
           }
-          
+
         }
       })(i);
 
@@ -80,65 +80,65 @@ function deleteCookie(){
 	});
 }
 deleteCookie();
-//获取指定form中的所有的<input>对象  
+//获取指定form中的所有的<input>对象
 function getElements(formId) {
-  var form = document.getElementById(formId);  
-  var elements = new Array();  
-  var tagElements = form.getElementsByTagName('input');  
-  for (var j = 0; j < tagElements.length; j++){ 
-     elements.push(tagElements[j]); 
-  
-  } 
-  return elements;  
-}  
-  
-//获取单个input中的【name,value】数组 
-function inputSelector(element) {  
- if (element.checked)  
-   return [element.name, element.value];  
-}  
-    
+  var form = document.getElementById(formId);
+  var elements = new Array();
+  var tagElements = form.getElementsByTagName('input');
+  for (var j = 0; j < tagElements.length; j++){
+     elements.push(tagElements[j]);
+
+  }
+  return elements;
+}
+
+//获取单个input中的【name,value】数组
+function inputSelector(element) {
+ if (element.checked)
+   return [element.name, element.value];
+}
+
 function input(element) {
-  switch (element.type.toLowerCase()) {  
-   case 'submit':  
-   case 'hidden':  
-   case 'password':  
-   case 'text':  
-    return [element.name, element.value];  
-   case 'checkbox':  
-   case 'radio':  
-    return inputSelector(element);  
-  }  
-  return false;  
-}  
-  
-//组合URL 
-function serializeElement(element) { 
-  var method = element.tagName.toLowerCase();  
-  var parameter = input(element);  
-   
-  if (parameter) {  
-   var key = parameter[0];  
-   if (key.length == 0) return;  
+  switch (element.type.toLowerCase()) {
+   case 'submit':
+   case 'hidden':
+   case 'password':
+   case 'text':
+    return [element.name, element.value];
+   case 'checkbox':
+   case 'radio':
+    return inputSelector(element);
+  }
+  return false;
+}
+
+//组合URL
+function serializeElement(element) {
+  var method = element.tagName.toLowerCase();
+  var parameter = input(element);
+
+  if (parameter) {
+   var key = parameter[0];
+   if (key.length == 0) return;
    var values = parameter[1];
    var results = [key,values];
    return results;
-  } 
- }  
-  
-//调用方法   
-function serializeForm(formId) {  
-  var elements = getElements(formId);  
-  var queryComponents = {};  
-   
-  for (var i = 0; i < elements.length; i++) {  
-   var queryComponent = serializeElement(elements[i]);  
-   if (queryComponent)  
+  }
+ }
+
+//调用方法
+function serializeForm(formId) {
+  var elements = getElements(formId);
+  var queryComponents = {};
+
+  for (var i = 0; i < elements.length; i++) {
+   var queryComponent = serializeElement(elements[i]);
+   if (queryComponent)
 	queryComponents[queryComponent[0]] = queryComponent[1];
-  }  
-   
-  return queryComponents; 
-} 
+  }
+
+  return queryComponents;
+}
 
 
 // 获取一个对象的所有属性
@@ -171,7 +171,7 @@ Array.prototype.hasObject = function(key,value){
 
 Array.prototype.isHasObjects = function(keys,values){
 	for(var i = 0;i < this.length;i++){
-		
+
 		for (var k = 0;k < keys.length;k++) {
 			if(this[i][keys[k]] != values[k]){
 				break;
@@ -180,14 +180,14 @@ Array.prototype.isHasObjects = function(keys,values){
 		if (k == keys.length) {
 			return i;
 		}
-		
+
 	}
 	return -1;
 }
 
 // 对象的深度拷贝
-function objectDeepCopy(source) { 
-	return  JSON.parse(JSON.stringify(source)); 
+function objectDeepCopy(source) {
+	return  JSON.parse(JSON.stringify(source));
 }
 // 判断俩个对象是否相等,非对象也可以判断，这里会比较类型，1 和“1”比较会返回 false
 function equalCompare(objA, objB)
@@ -201,7 +201,7 @@ function equalCompare(objA, objB)
     {
         if (arguments[0].length != arguments[1].length)
             return false;
-        
+
         var allElementsEqual = true;
         for (var i = 0; i < arguments[0].length; ++i)
         {
@@ -211,11 +211,11 @@ function equalCompare(objA, objB)
             if (typeof arguments[0][i] == 'number' && typeof arguments[1][i] == 'number')
                 allElementsEqual = (arguments[0][i] == arguments[1][i]);
             else
-                allElementsEqual = arguments.callee(arguments[0][i], arguments[1][i]);            //递归判断对象是否相等                
+                allElementsEqual = arguments.callee(arguments[0][i], arguments[1][i]);            //递归判断对象是否相等
         }
         return allElementsEqual;
     }
-    
+
     //对象
     if (arguments[0] instanceof Object && arguments[1] instanceof Object)
     {
@@ -240,11 +240,11 @@ function equalCompare(objA, objB)
             }
             ++attributeLengthA;
         }
-        
+
         for (var o in arguments[1]) {
             ++attributeLengthB;
         }
-        
+
         //如果两个对象的属性数目不等，则两个对象也不等
         if (attributeLengthA != attributeLengthB)
             result = false;
@@ -260,7 +260,7 @@ $(function(){
 		$(ele).data("isFirstInto",true);
 	});
 	pallasdaraFunctionNavBtnHandle();
-	
+
 	// 连接数据库关闭按钮
 	$("#connectDataBaseInfo .common-head .close").unbind("click");
 	$("#connectDataBaseInfo .common-head .close").click(function(event){
@@ -268,7 +268,7 @@ $(function(){
 		$("#connectDataBaseInfo").hide();
 		$(".maskLayer").hide();
 	});
-	
+
 	doProhibit();
 });
 	function doProhibit() {
@@ -291,8 +291,8 @@ $(function(){
 				return false;
 			}
 		}
-		document.oncontextmenu = nocontextmenu; // for IE5+ 
-		document.onmousedown = norightclick; // 
+		document.oncontextmenu = nocontextmenu; // for IE5+
+		document.onmousedown = norightclick; //
 	}
 
 	//实时保存修改标签页对应的数据
@@ -341,13 +341,13 @@ function pallasdaraFunctionNavBtnHandle(){
 				if(res.dashboardview == 1) {
 					dashBoradFunction_able();
 				}else{
-					$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/icon_disable_08.png");
+					$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/dashboard-disable.png");
 					$(".container .main .leftNav #navDashBoardViewBtn").removeClass("ableFlag").addClass("disableFlag");
 				}
 				if(res.statementview == 1) {
 					reporttingFunction_abale();
 				}else{
-					$(".container .main .leftNav #navReporttingViewBtn").find("img").attr("src","/static/images/icon_disable_10.png");
+					$(".container .main .leftNav #navReporttingViewBtn").find("img").attr("src","/static/images/statements-disable.png");
 					$(".container .main .leftNav #navReporttingViewBtn").removeClass("ableFlag").addClass("disableFlag");
 				}
 				$(".container .main .leftNav .functionBtn").unbind("click");
@@ -365,7 +365,7 @@ function pallasdaraFunctionNavBtnHandle(){
 							preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] = realSaveData();
 
 					}
-			
+
 					switch ($(this).attr("id")){
 						case"navDataBaseAndPanleFileConnectionViewBtn":
 							changePageTo_DataBaseAndPanleFileConnectionView();
@@ -387,24 +387,24 @@ function pallasdaraFunctionNavBtnHandle(){
        		}
           }
 	});
-	
-	
-	
+
+
+
 }
 
 function buildDataFunction_able(){
-	$(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/icon_nor_06.png");
+	$(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/buildData-able.png");
 	$(".container .main .leftNav #navBuildDataViewBtn").removeClass("disableFlag");
 	$(".container .main .leftNav #navBuildDataViewBtn").addClass("ableFlag");
 }
 function dashBoradFunction_able(){
-	$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/icon_nor_08.png");
+	$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/dashboard-able.png");
 	$(".container .main .leftNav #navDashBoardViewBtn").removeClass("disableFlag");
 	$(".container .main .leftNav #navDashBoardViewBtn").addClass("ableFlag");
 
 }
 function reporttingFunction_abale(){
-	$(".container .main .leftNav #navReporttingViewBtn").find("img").attr("src","/static/images/icon_nor_10.png");
+	$(".container .main .leftNav #navReporttingViewBtn").find("img").attr("src","/static/images/statements-able.png");
 	$(".container .main .leftNav #navReporttingViewBtn").removeClass("disableFlag");
 	$(".container .main .leftNav #navReporttingViewBtn").addClass("ableFlag");
 }
@@ -412,8 +412,15 @@ function reporttingFunction_abale(){
 // 切换页面
 function changePageTo_DataBaseAndPanleFileConnectionView(){
 	hidenSomeElementsWhenChangePage();
+
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").addClass("active");
+	$(".container .main .leftNav .functionBtn.ableFlag").each(function(index,ele){
+		var imgSrc = $(ele).children("img").eq(0).attr("src");
+		imgSrc = imgSrc.replace("-select.png", "-able.png");
+		$(ele).children("img").eq(0).attr("src",imgSrc);
+	});
+	$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").find("img").attr("src","/static/images/connect-select.png");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #dataSourceConnectSelectDiv").show();
 
@@ -426,6 +433,12 @@ function changePageTo_navBuildDataView(){
 	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navBuildDataViewBtn").children("div").addClass("active");
+	$(".container .main .leftNav .functionBtn.ableFlag").each(function(index,ele){
+		var imgSrc = $(ele).children("img").eq(0).attr("src");
+		imgSrc = imgSrc.replace("-select.png", "-able.png");
+		$(ele).children("img").eq(0).attr("src",imgSrc);
+	});
+	$(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/buildData-select.png");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #analysisContainer").show();
 
@@ -433,17 +446,23 @@ function changePageTo_navBuildDataView(){
 		dataAnalysisFunction();
 //		navBtnAbleAndDisablesaveHandle("navBuildDataViewBtn");
 		$(".main .rightConent #analysisContainer").data("isFirstInto",false);
-	}else{	
+	}else{
 		if(currentPageId == "navDataBaseAndPanleFileConnectionViewBtn"){
 			dataAnalysisFunction(true);
 		}
-	}	
+	}
 }
 function changePageTo_navDashBoardView(){
 	hidenSomeElementsWhenChangePage();
 	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navDashBoardViewBtn").children("div").addClass("active");
+	$(".container .main .leftNav .functionBtn.ableFlag").each(function(index,ele){
+		var imgSrc = $(ele).children("img").eq(0).attr("src");
+		imgSrc = imgSrc.replace("-select.png", "-able.png");
+		$(ele).children("img").eq(0).attr("src",imgSrc);
+	});
+	$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/dashboard-select.png");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #pageDashboardModule").show();
 
@@ -452,7 +471,7 @@ function changePageTo_navDashBoardView(){
 		dashboardReadySumFunction();
 //		navBtnAbleAndDisablesaveHandle("navDashBoardViewBtn");
 		$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
-	}else{		
+	}else{
 		if(currentPageId == "navBuildDataViewBtn" || currentPageId == "navReporttingViewBtn"){
 			dashboardReadySumFunction(true);
 		}
@@ -465,6 +484,12 @@ function changePageTo_navReporttingView(unloadPage){
 	var currentPageId = $(".container .main .leftNav .functionBtn").children("div.active").eq(0).parent().attr("id");
 	$(".container .main .leftNav .functionBtn").children("div.active").removeClass("active");
 	$(".container .main .leftNav #navReporttingViewBtn").children("div").addClass("active");
+	$(".container .main .leftNav .functionBtn.ableFlag").each(function(index,ele){
+		var imgSrc = $(ele).children("img").eq(0).attr("src");
+		imgSrc = imgSrc.replace("-select.png", "-able.png");
+		$(ele).children("img").eq(0).attr("src",imgSrc);
+	});
+	$(".container .main .leftNav #navReporttingViewBtn").find("img").attr("src","/static/images/statements-select.png");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #pageStatementsModule").show();
 
@@ -472,7 +497,7 @@ function changePageTo_navReporttingView(unloadPage){
 		satetementsReadySumFunction(unloadPage);
 //		navBtnAbleAndDisablesaveHandle("navReporttingViewBtn");
 		$(".main .rightConent #pageStatementsModule").data("isFirstInto",false);
-	}else{		
+	}else{
 		if(currentPageId == "navDashBoardViewBtn"){
 			satetementsReadySumFunction(true);
 		}
@@ -515,18 +540,18 @@ function hidenSomeElementsWhenChangePage(){
 //function navBtnAbleAndDisablegetHandle(){
 //	var res =  JSON.parse(window.localStorage.getItem("navAbleAndDisable"));
 //	if(!res){res= []};
-//	return res; 
+//	return res;
 //}
 
 function dbAndPanelInfoSaveHandle(info){
-	
+
 	window.localStorage.setItem("dbandPanelInfo",JSON.stringify(info));
-	
+
 }
 function dbAndPanelInfoGetHandle(){
 	var res =  JSON.parse(window.localStorage.getItem("dbandPanelInfo"));
 	if(!res){res= ""};
-	return res; 
+	return res;
 }
 
 function dbAndPanelInfoDeleteHandle(){
@@ -544,7 +569,7 @@ window.getAbsCoordinates=function(e){
     }
     return pos;
 };
- var opts = {            
+ var opts = {
     lines: 13, // 花瓣数目
     length: 10, // 花瓣长度
     width: 5, // 花瓣宽度
@@ -556,7 +581,7 @@ window.getAbsCoordinates=function(e){
     speed: 1, // 花瓣旋转速度
     trail: 60, // 花瓣旋转时的拖影(百分比)
     shadow: false, // 花瓣是否显示阴影
-    hwaccel: false, //spinner 是否启用硬件加速及高速旋转            
+    hwaccel: false, //spinner 是否启用硬件加速及高速旋转
     className: 'spinner', // spinner css 样式名称
     zIndex: 2e9, // spinner的z轴 (默认是2000000000)
 };
@@ -575,7 +600,7 @@ function specialRemoveDataTypeHandle(obj){
 
 //input  onfoucs 事件
 function toInputStyle(ele){
-	$(ele).css("borderColor","#505050");
+	$(ele).css("borderColor","#0d53a4");
 }
 
 function toInputStyleBlur(ele){
