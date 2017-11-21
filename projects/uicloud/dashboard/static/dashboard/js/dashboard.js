@@ -680,7 +680,7 @@
 					async: true,
 					data:JSON.stringify({"tablename":current_cube_name,"indexname":originalVal,"newname":newValue}),
 					success:function(data){
-						console.log("changeName:",data);
+						// console.log("changeName:",data);
 						getIndexName[$.inArray(originalVal,getIndexName)] = newValue;
 					}
 		 		});
@@ -803,6 +803,7 @@
 							event.stopPropagation();
 							//判断拖入视图展示区域移除指标
 							if($("#view_show_area_content").find(".index_row_list").length > 0){
+								$("#view_show_area_content").find(".index_row_list").remove();
 								empty_viem_init();
 								$(".handleAll_wrap #operational_view #drag_zb .annotation_text,#view_show_area_content").css("background","").css("border","none");
 								$("#drag_zb .annotation_text").droppable("option", "disabled", false);
@@ -1603,6 +1604,7 @@
 								if(currentSetTableDateFieldArray.length < 1){
 									delete data_dict["同比_YZY_compared"];
 									delete data_dict["环比_YZY_linkBack"];
+									delete data_dict["移除对比_YZY_deleteCompared"];
 								}
 								if(open_or_close){
 									open_or_close = false;
@@ -2060,9 +2062,8 @@
 			}
 		 //仪表板功能操作初始化
 		 function navDashboardEventInit(autoDrag){
-		 	if(autoDrag){
+		 	if(autoDrag && $("#pageDashboardModule").hasClass("handleTrue")){
 		 		drag();
-		 		small_handle_btn();
 		 		return;
 		 	}
 		 	//.........................仪表板工具栏操作
@@ -2099,12 +2100,12 @@
 				$("#action_box .action_delect_view").on("click",function(){
 					empty_viem_init("change");
 					delete preClickView[$(".auto_show").find("span").text()];
-					console.log(preClickView);
+					// console.log(preClickView);
 				})
 			}
 			small_handle_btn();
 			closeViewSave();
-
+			$("#pageDashboardModule").addClass("handleTrue");
 			//维度度量操作功能部分
 			function mdHandleFun(){
 				//搜索功能

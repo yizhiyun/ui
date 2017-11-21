@@ -982,6 +982,7 @@
               $("#dataSet .detailDataSetList  li .didBuildTables .base_search_img").css("margin-left",(ui.size.width-125)+"px");
               $("#analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow .combo-select").css("width",(ui.size.width-60)+"px")
               $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise").css("width",(ui.size.width-48)+"px")
+               $("#analysisContainer .leftSlide #dataSet .sqlSearch").css("width",(ui.size.width-60)+"px");
             }
           })
 
