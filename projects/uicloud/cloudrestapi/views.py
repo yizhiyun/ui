@@ -147,7 +147,7 @@ def getTableViaSpark(request, tableName, modeName):
         duration = 0.1 if "checkduration" not in jsonData.keys() else jsonData["checkduration"]
         output = executeSpark(sparkCode, maxCheckCount=maxCheck, reqCheckDuration=duration)
         logger.info("Getting the {0} table finished.".format(tableName))
-
+        logger.debug("output: {0}".format(output))
         if not output:
             failObj = {"status": "failed",
                        "reason": "Please see the logs for details."}
@@ -315,7 +315,6 @@ def uploadCsv(request):
     """
 
     jsonData = request.POST.dict()
-    file = request.FILES.get("file")
     if request.method == "POST":
 
         nnPort = jsonData["nnport"] if "nnport" in jsonData else "50070"
@@ -324,17 +323,27 @@ def uploadCsv(request):
         rootFolder = jsonData["rootfolder"] if "rootfolder" in jsonData else "/tmp/users"
         port = jsonData["port"] if "port" in jsonData else "9000"
 
+        file = request.FILES['file']
+
         # pre-process. If csv, save it into csv files for each worksheet.
         fileDict = preUploadFile(file, userName, jsonData)
-        if not fileDict["tables"]:
-            return JsonResponse({"status": "failed", "reason": "Only 'csv','xls' and 'xlsx' are supported."})
+        if not fileDict:
+            return JsonResponse(
+                {"status": "failed", "reason": "Parsing the upload file failed."},
+                status=400)
+        elif not fileDict["tables"]:
+            return JsonResponse(
+                {"status": "failed", "reason": "Only 'csv','xls' and 'xlsx' are supported."},
+                status=400)
 
         # upload csv to hdfs server
         uploadedCsvList = []
         logger.debug("fileDict:{0}".format(fileDict))
         uploadedCsvList = uploadToHdfs(fileDict, hdfsHost, nnPort, rootFolder, userName)
         if not uploadedCsvList:
-            return JsonResponse({"status": "failed", "reason": "Please see the logs for details."})
+            return JsonResponse(
+                {"status": "failed", "reason": "Please see the logs for details."},
+                status=400)
 
         # process the csv to generate the related parquet table in use.
         sparkCode = convertCsvToParquetSparkCode(uploadedCsvList, jsonData, hdfsHost, port)

@@ -304,7 +304,12 @@ $(function(){
 		$("#filter-model #user-filter-select").css("opacity",1);
 	});
 
-
+	//确定按钮
+	$("#filter-model #user-filter-select .common-filer-footer .confirmBtn").click(function(){
+		$("#filter-model #user-filter-select").hide();
+		$(".maskLayer").hide();
+		
+	})
 
 
 	// 点击每个筛选器上的关闭按钮的时候

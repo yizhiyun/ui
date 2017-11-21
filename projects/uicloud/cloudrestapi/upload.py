@@ -20,6 +20,7 @@ def preUploadFile(fileStream, userName="myfolder", csvOpts={}):
     pre-process the uploaded csv, xls or xlsx file to csv.
     """
     fileName = fileStream.name
+    logger.debug("uploading file. fileName: {0}, csvOpts: {1}, ".format(fileName, csvOpts))
     abbrFileName = os.path.splitext(fileName)[0]
     fileDict = {}
 
@@ -29,18 +30,23 @@ def preUploadFile(fileStream, userName="myfolder", csvOpts={}):
     os.makedirs(tmpFolder)
     fileDict["path"] = tmpFolder
     fileDict["tables"] = []
-
-    logger.debug("csvOpts:{0}".format(csvOpts))
     hasHeader = True
     if "header" in csvOpts.keys():
         hasHeader = convertBool(csvOpts["header"])
 
     if fileName.endswith("xls") or fileName.endswith("xlsx"):
+
         xls = pd.ExcelFile(fileStream)
-        for shName in xls.sheet_names:
-            df = xls.parse(sheetname=shName)
-            csvFileName = "{0}/{1}".format(tmpFolder, shName)
-            df.to_csv(csvFileName, header=True, index=False, encoding='utf-8', escapechar='\\')
+        for i in range(len(xls.sheet_names)):
+            shName = xls.sheet_names[i]
+            logger.debug(u"parsing the sheet, shName: {0}".format(shName))
+            try:
+                df = xls.parse(i)
+                csvFileName = "{0}/{1}".format(tmpFolder, shName)
+                df.to_csv(csvFileName, header=True, index=False, encoding='utf-8', escapechar='\\')
+            except Exception:
+                logger.error("Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
+                return False
             fileDict["tables"].append(shName)
     elif fileName.endswith("csv"):
         csvFileName = "{0}/{1}".format(tmpFolder, abbrFileName)

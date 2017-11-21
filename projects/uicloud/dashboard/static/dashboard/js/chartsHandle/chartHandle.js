@@ -221,6 +221,7 @@ function one_de_one_me_handle (chart_type_need) {
 
 				mycharts.setOption(option);
 				spinner.stop();
+				$(".maskLayer").hide();
 		});
 	}
 
@@ -337,7 +338,7 @@ function one_de_one_me_handle (chart_type_need) {
 				mycharts.setOption(option);
 
 				spinner.stop();
-
+				$(".maskLayer").hide();
 		});
 
 	}
@@ -500,6 +501,7 @@ function one_de_one_me_handle (chart_type_need) {
 
 			mycharts.setOption(option);
 			spinner.stop();
+			$(".maskLayer").hide();
 		});
 
 
@@ -698,6 +700,7 @@ function one_de_one_me_handle (chart_type_need) {
 
 			 		mycharts.setOption(option);
 			 		spinner.stop();
+			 		$(".maskLayer").hide();
 		});
 
  }
@@ -1015,6 +1018,7 @@ function many_de_many_me_handle(chart_type_need){
 
 				mycharts.setOption(option);
 				spinner.stop();
+				$(".maskLayer").hide();
 
 			});
 
@@ -1337,6 +1341,7 @@ function comparisonStrip_generate_fun(){
 				mycharts.setOption(option);
 
 				spinner.stop();
+				$(".maskLayer").hide();
 			});
 
 }
@@ -1513,7 +1518,7 @@ function comparisonStrip_generate_fun(){
 				option["xAxis"].push(axisLabelSetteing);
 			}
 
-				// 造多少行数据(几个去堆叠)
+			// 造多少行数据(几个去堆叠)
 			for (var i = 0;i < max;i++) {
 				var name;
 				var stack;
@@ -1766,6 +1771,7 @@ function comparisonStrip_generate_fun(){
 				mycharts.clear();
 				mycharts.setOption(option);
 				spinner.stop();
+				$(".maskLayer").hide();
 
 			});
 
@@ -1954,6 +1960,7 @@ function comparisonStrip_generate_fun(){
 
 			mycharts.setOption(option);
 			spinner.stop();
+			$(".maskLayer").hide();
 		}
 	}
 
@@ -2028,7 +2035,8 @@ function comparisonStrip_generate_fun(){
 						if(index == -1){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
-							dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}
 					}
 				}
@@ -2222,6 +2230,7 @@ function comparisonStrip_generate_fun(){
 			mycharts.setOption(option);
 
 			spinner.stop();
+			$(".maskLayer").hide();
 
 		});
 	}
@@ -2301,7 +2310,8 @@ function comparisonStrip_generate_fun(){
 						if(index == -1){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
-							dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							//dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}
 					}
 				}
@@ -2508,6 +2518,7 @@ function comparisonStrip_generate_fun(){
 				//使用刚指定的配置项和数据显示图标
 				mycharts.setOption(option);
 				spinner.stop();
+				$(".maskLayer").hide();
 		});
 	}
 	//  雷达图
@@ -2621,6 +2632,7 @@ function comparisonStrip_generate_fun(){
 		mycharts.setOption(option);
 
 		spinner.stop();
+		$(".maskLayer").hide();
 
 		});
 	}

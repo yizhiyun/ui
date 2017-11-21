@@ -288,7 +288,7 @@ function manyTable(storeClass){
 						function_draw_row_line();
 						function_draw_column_line();
 						layout_table_size();
-						spinner.stop();
+						spinner.stop(target);
 						if(finish){
 							finish();
 						}
@@ -301,7 +301,7 @@ function manyTable(storeClass){
 				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"]),[],null,function(data){
 			 	function_draw_row_data(data);
 			 	layout_table_size();
-				spinner.stop();
+				// spinner.stop(target);
 			 	 if(finish){
 			 	 	finish();
 			 	 }
@@ -323,7 +323,7 @@ function manyTable(storeClass){
 				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]),[],null,function(data){
 		 	 	function_draw_column_data(data);
 		 	 	layout_table_size();
-				spinner.stop();
+				// spinner.stop(target);
 		 	 	 if(finish){
 		 	 	 	finish();
 		 	 	 }
@@ -355,6 +355,7 @@ function manyTable(storeClass){
 		}else{
 			if(isRowDemiEqual && isColumnDemiEqual&&isMeasureEqual&&isCalculateMeasureEqual&&isCustomCalculateStyleEqual){
 				// 直接显示
+				spinner.stop(target);
 			}else if(isRowDemiEqual && isColumnDemiEqual){
 				measureNeedDraw();
 			}else if(!isRowDemiEqual && isColumnDemiEqual){
@@ -479,7 +480,7 @@ function reporting_col_card(saveIndexPage){
 							}
 						}
 						$("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body").append(measureDiv);
-						spinner.stop();
+						spinner.stop(target);
 					}
 				});
 	}

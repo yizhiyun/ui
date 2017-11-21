@@ -52,7 +52,7 @@ def getAllDataFunction(username, datatype=None):
                         'status': tablelist[i].status,
                         'viewstyle': tablelist[i].viewstyle,
                         'customcalculate': tablelist[i].customcalculate,
-                        'sequential':tablelist[i].sequential
+                        'sequential': tablelist[i].sequential
                     }
         return context
 
@@ -101,6 +101,7 @@ def dashboardTableAdd(request):
                 table.viewstyle = jsonData['viewstyle']
                 table.customcalculate = jsonData['customcalculate']
                 table.tablename = jsonData['tablename']
+                table.sequential = jsonData['sequential']
                 table.save()
             else:
                 foldername = jsonData['foldername']
@@ -138,7 +139,7 @@ def dashboardTableAdd(request):
                     folder=folder,
                     viewstyle=jsonData['viewstyle'],
                     customcalculate=jsonData['customcalculate'],
-                    sequential = jsonData['sequential']
+                    sequential=jsonData['sequential']
                 )
                 table.save()
 
@@ -424,7 +425,9 @@ def indexAdd(request):
             indexname=jsonData['indexname'],
             calculation=jsonData['calculation'],
             indexstyle=jsonData['indexstyle'],
-            customcalculate=jsonData['customcalculate']
+            customcalculate=jsonData['customcalculate'],
+            sequential=jsonData['sequential'],
+
         )
         index.save()
         context = {'status': 'success'}
@@ -488,7 +491,8 @@ def indexGet(request):
                             'indexname': index.indexname,
                             'indexstyle': index.indexstyle,
                             'calculation': index.calculation,
-                            'customcalculate': index.customcalculate
+                            'customcalculate': index.customcalculate,
+                            'sequential':index.sequential,
                         }
                     }
             except Exception:
