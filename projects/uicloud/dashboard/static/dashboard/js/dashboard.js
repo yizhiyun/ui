@@ -1141,7 +1141,7 @@
 							 $("#pageDashboardModule #view_save_up #show_excel_name").html("");
 							 $("#pageDashboardModule #body_content_shadow").hide();
 							 preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] = realSaveData();
-							 
+
 						}else{
 							alert("保存失败");
 						}
@@ -1784,7 +1784,7 @@
 										var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
 										if(index1 == -1){
 
-											showHuanbiMeasureArray.push(measureInfo);	
+											showHuanbiMeasureArray.push(measureInfo);
 
 										}
 									}else{
@@ -1792,21 +1792,21 @@
 										var index2 = showTongbiMeasureArray.indexOf(measureInfo);
 										if(index2 == -1){
 											showTongbiMeasureArray.push(measureInfo);
-											
+
 										}
 									}
-									showOrHidenSomeMeasureCompareOrLink();
-									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseenter');
-									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseenter(function(event){
-										event.stopPropagation();
-										showOrHide();
-									})
-									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseleave');
-									$("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseleave(function(event){
-										event.stopPropagation();
-										$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();		
-									})
-									
+									// showOrHidenSomeMeasureCompareOrLink();
+									// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseenter');
+									// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseenter(function(event){
+									// 	event.stopPropagation();
+									// 	showOrHide();
+									// })
+									// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseleave');
+									// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseleave(function(event){
+									// 	event.stopPropagation();
+									// 	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
+									// })
+
 									$(".me_out_content").remove();
 									$(".me_out_content li").unbind("mouseenter mouseleave");
 									open_or_close = true;
@@ -1818,7 +1818,7 @@
 									event.stopPropagation();
 									var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
 									var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
-								
+
 									if(index1 != -1){
 										showHuanbiMeasureArray.splice(index1,1);
 									}
@@ -1827,8 +1827,8 @@
 										showTongbiMeasureArray.splice(index2,1);
 									}
 									showOrHidenSomeMeasureCompareOrLink();
-									$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
-									$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+									// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+									// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
 									// showOrHide();
 									// isNeedShowHuanBiOption = false;
 									// isNeedShowTongBiOption = false;
@@ -1850,7 +1850,7 @@
 													showTongbiMeasureArray.splice(index2,1);
 												}
 												showOrHidenSomeMeasureCompareOrLink();
-												showOrHide();
+												// showOrHide();
 											}
 											if($(this).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
@@ -2087,7 +2087,7 @@
 		 	isDisaed = false;
 			//小部件操作栏事件
 			function small_handle_btn(){
-				
+
 				if("新建视图" in preClickView == false){
 					preClickView["新建视图"] = null;
 					folder_view_add_show("新建视图","old");
@@ -2105,7 +2105,7 @@
 					}else{
 						preClickView["新建视图"+add_view_count+""] = saveNowWallAllNew;
 					}
-					
+
 					add_view_count++;
 					folder_view_add_show("新建视图"+add_view_count+"","old");
 					preClickView["新建视图"+add_view_count+""] = null;
@@ -2344,7 +2344,7 @@
 										success:function(data){console.log(data);}
 									});
 
-					
+
 									delete _cube_all_data[$('#lateral_title .custom-select').val()];
 
 								});
@@ -3124,7 +3124,7 @@
 											}
 										}
 										showOrHidenSomeMeasureCompareOrLink();
-										showOrHide();
+										// showOrHide();
 											if($(ui.sender).parents(".drag_main").attr("id") == "drag_col"){
 												var clickAreaType = "column";
 											}else{
@@ -3516,7 +3516,7 @@
 							}
 						}
 						showOrHidenSomeMeasureCompareOrLink();
-						showOrHide();
+						// showOrHide();
 						$(".annotation_text").eq(index).find(".list_wrap").remove();
 						$(".annotation_text").eq(index).find("li").remove();
 

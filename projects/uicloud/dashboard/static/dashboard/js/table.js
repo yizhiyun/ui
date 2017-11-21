@@ -452,23 +452,41 @@ function col_card(){
 			var aData = needAllData[i];
 			console.log(aData);
 			var measureDiv = $("<div class='measureDiv'></div>");
+			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
 			//console.log(allMeasure.length);
+			if(allMeasure.length < 3){
 			for(var j = 0;j < allMeasure.length;j++){
 				var aMeasure = allMeasure[j];
-				var tit = $(".list_wrap .measure_list_text_left").eq(j).html();
-				console.log(aMeasure);
-				//console.log(aData[drag_measureCalculateStyle[measureName]]);
-				if(allMeasure.length < 3){
-					
+				var tit = drag_measureCalculateStyle[aMeasure];
 					var p = $("<p class=p"+j+">" + tit +"</p>");
 					var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
 					measureDiv.append(p);
 					measureDiv.append(span);
-
-
-					var div = $("<div class='cardInfo' style='display:none'></div>");
+					$(p).data("measureInfo",aMeasure);
+					var div = $("<div class='cardInfo'></div>");
+					div.addClass(aMeasure);
 					measureDiv.append(div);
-  					var tongbiShowNum = 0;
+					$(p).unbind("mouseover");
+					$(p).mouseover(function(event){
+						event.stopPropagation();
+						var MeasureInfo = $(this).data("measureInfo");
+						var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0)
+						if(showTongbiMeasureArray.indexOf(MeasureInfo) != -1){
+								compareDiv.find("p.compareP").show();
+						}
+						if(showHuanbiMeasureArray.indexOf(MeasureInfo) != -1){
+							compareDiv.find("p.linkP").show();
+						}
+					});
+					$(p).unbind("mouseleave");
+					$(p).mouseleave(function(event){
+						event.stopPropagation();
+						var MeasureInfo = $(this).data("measureInfo");
+						var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0);
+						compareDiv.find("p").hide();
+					});
+
+  				var tongbiShowNum = 0;
 					var huanbiShowNum = 0;
 					if(aData["同比"+drag_measureCalculateStyle[aMeasure]]){
 						tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
@@ -483,18 +501,18 @@ function col_card(){
 
 					div.append(tongbiAp);
 					div.append(huanbiAp);
-					
-				
+
+
 					if(showTongbiMeasureArray.indexOf(aMeasure) != -1){
 						tongbiAp.show();
 					}
 					if(showHuanbiMeasureArray.indexOf(aMeasure) != -1){
 						huanbiAp.show();
 					}
-					
+
 				}
 			}
-			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
+
 		}
 		spinner.stop();
 		$(".maskLayer").hide();

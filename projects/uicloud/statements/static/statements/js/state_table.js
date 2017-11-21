@@ -474,19 +474,66 @@ function reporting_col_card(saveIndexPage){
 						//console.log(aData);
 						var measureDiv = $("<div class='measureDiv'></div>");
 						//console.log(allMeasure.length);
+						if(allMeasure.length < 3){
 						for(var j = 0;j < allMeasure.length;j++){
 							var aMeasure = allMeasure[j];
 							//console.log(aMeasure);
-							if(allMeasure.length < 3){
 								var p = $("<p class=p"+j+">" + aMeasure +"</p>");
 								var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
 								measureDiv.append(p);
 								measureDiv.append(span);
-							}
+								var div = $("<div class='cardInfo'></div>");
+								div.addClass(aMeasure);
+								measureDiv.append(div);
+								$(p).data("measureInfo",aMeasure);
+								var tongbiShowNum = 0;
+								var huanbiShowNum = 0;
+								if(aData["同比"+drag_measureCalculateStyle[aMeasure]]){
+									tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+								}
+								if(aData["环比"+drag_measureCalculateStyle[aMeasure]]){
+									huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+								}
+								var tongbiAp = $("<p style='display:none' class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
+			 					var huanbiAp = $("<p style='display:none' class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
+			 					tongbiAp.addClass(aMeasure);
+			 					huanbiAp.addClass(aMeasure);
+
+								div.append(tongbiAp);
+								div.append(huanbiAp);
+
+
+								if(eval(statements_tonghuanbi_arr[indexNum_toview])[0].indexOf(aMeasure) != -1){
+									tongbiAp.show();
+								}
+								if(eval(statements_tonghuanbi_arr[indexNum_toview])[1].indexOf(aMeasure) != -1){
+									huanbiAp.show();
+								}
+
+							$(p).unbind("mouseover");
+							$(p).mouseover(function(event){
+								event.stopPropagation();
+								var MeasureInfo = $(this).data("measureInfo");
+								var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0)
+								if(eval(statements_tonghuanbi_arr[indexNum_toview])[0].indexOf(MeasureInfo) != -1){
+										compareDiv.find("p.compareP").show();
+								}
+								if(eval(statements_tonghuanbi_arr[indexNum_toview])[1].indexOf(MeasureInfo) != -1){
+									compareDiv.find("p.linkP").show();
+								}
+							});
+							$(p).unbind("mouseleave");
+							$(p).mouseleave(function(event){
+								event.stopPropagation();
+								var MeasureInfo = $(this).data("measureInfo");
+								var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0);
+								compareDiv.find("p").hide();
+							});
 							if(j != allMeasure.length - 1){
 								// measureDiv.append("<span class='seperate'>/</span>");
 								measureDiv.append("<br>");
 							}
+						}
 						}
 						$("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body").append(measureDiv);
 						spinner.stop(target);
