@@ -235,14 +235,15 @@ The RESTful API Details of Getting the regression information.
   "sourcetype": <sourceType>,  # "db" or "hdfs"
   "inputparams": {
     "rtype": <rTestType>,     # "linearreg"
-    "col_x": <columnName>,    # Existed column name. Note, it's category data for "ttest_ind" and "ttest_rel".
-    "col_y": <columnName>,    # Optional. It's required if ttype is ttest_ind, ttest_rel or chiSqtest.
-    "polynomial": <num>       # Optional. Range from 1 to 6. It's 1 by default.
+    "col_x": <col> or <list>, # Existed column name or list. Note, the polynomial and lineartype are invalid if it's list.
+    "col_y": <columnName>,    # Optional.
+    "polynomial": <num>,      # Optional. Range from 1 to 6. It's 1 by default.
     "lineartype": <linearType># Optional. "normal", "exponential", "logarithm", "power". It's "normal" by default.
   },
   "outputparams": {           # Optional.
-    "maxiter": <num>          # It's 10 by default
-    "pointsnum": <num>        # It's 100 by default
+    "maxiter": <num>,         # It's 10 by default
+    "predicttable": { ... },  # Please refer to the getTableInfoFromCurrentUserInterfaces.md for the details.
+    "pointsnum": <num>,       # It's 100 by default
   },
   "database": <databaseName>, # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
   "tableName": <tableName>,   # Optional. If sourcetype is db, it's required. Or else it's unnecessary.
