@@ -26,7 +26,7 @@ function showTable_by_dragData(){
 	$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 	// console.log(drag_row_column_data)
 	//清除列数据
-	if(drag_row_column_data["column"]["dimensionality"].length == 0 && drag_row_column_data["column"]["measure"].length == 0){
+	if(drag_row_column_data["column"]["dimensionality"].length == 0){
 		$("#text_table_need_show .right_module .top_column_container .top_column_name").eq(0).text("");
 	}
 	// 绘制行数据
@@ -274,11 +274,9 @@ function showTable_by_dragData(){
 						function_draw_row_line();
 						function_draw_column_line();
 						layout_table_size();
-						spinner.stop();
 						$(".maskLayer").hide();
 						if(finish){
-							finish();
-
+							finish("notNeed");
 						}
 				});
 			}else{
@@ -286,8 +284,10 @@ function showTable_by_dragData(){
 				$("#text_table_need_show .content_body #data_list_for_body .measureDiv").remove();
 				$("#text_table_need_show #data_list_for_body div.vertical_line").remove();
 				$("#text_table_need_show #data_list_for_body li").remove();
-				spinner.stop();
 				$(".maskLayer").hide();
+				if(finish){
+					finish();
+				}
 			}
 
 		}
@@ -297,8 +297,6 @@ function showTable_by_dragData(){
 				measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"]),[],null,function(data){
 			 	function_draw_row_data(data);
 			 	layout_table_size();
-				spinner.stop();
-				$(".maskLayer").hide();
 			 	 if(finish){
 			 	 	finish();
 			 	 }
@@ -320,8 +318,6 @@ function showTable_by_dragData(){
 				measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["column"]["dimensionality"]),[],null,function(data){
 		 	 	function_draw_column_data(data);
 		 	 	layout_table_size();
-				spinner.stop();
-				$(".maskLayer").hide();
 		 	 	 if(finish){
 		 	 	 	finish();
 		 	 	 }
@@ -334,6 +330,12 @@ function showTable_by_dragData(){
 			}
 
 		}
+		function spinnerIsNeedStopFunction(){
+			if(isRowFinished && isColumnFinished){
+				spinner.stop();
+				$(".maskLayer").hide();
+			}
+		}
 		$("#text_table_need_show").show();
 		if(isagainDrawTable){
 			isRowFinished = false;
@@ -341,13 +343,13 @@ function showTable_by_dragData(){
 			rowNeedDraw(function(){
 				isRowFinished = true;
 				if(isRowFinished&&isColumnFinished){
-					measureNeedDraw();
+					measureNeedDraw(spinnerIsNeedStopFunction);
 				}
 			});
 			columnNeedDraw(function(){
 				isColumnFinished = true;
 				if(isRowFinished&&isColumnFinished){
-					measureNeedDraw();
+					measureNeedDraw(spinnerIsNeedStopFunction);
 				}
 			});
 
@@ -357,16 +359,25 @@ function showTable_by_dragData(){
 				spinner.stop();
 				$(".maskLayer").hide();
 			}else if(isRowDemiEqual && isColumnDemiEqual){
-				measureNeedDraw();
+				measureNeedDraw(function(){
+					spinner.stop();
+					$(".maskLayer").hide();
+				});
 
 			}else if(!isRowDemiEqual && isColumnDemiEqual){
 				rowNeedDraw(function(){
-					measureNeedDraw();
+					measureNeedDraw(function(){
+						spinner.stop();
+						$(".maskLayer").hide();
+					});
 				});
 
 			}else if(isRowDemiEqual && !isColumnDemiEqual){
 				columnNeedDraw(function(){
-					measureNeedDraw();
+					measureNeedDraw(function(){
+						spinner.stop();
+						$(".maskLayer").hide();
+					});
 				});
 
 			}else{
@@ -375,13 +386,13 @@ function showTable_by_dragData(){
 				rowNeedDraw(function(){
 					isRowFinished = true;
 					if(isRowFinished&&isColumnFinished){
-						measureNeedDraw();
+						measureNeedDraw(spinnerIsNeedStopFunction);
 					}
 				});
 				columnNeedDraw(function(){
 					isColumnFinished = true;
 					if(isRowFinished&&isColumnFinished){
-						measureNeedDraw();
+						measureNeedDraw(spinnerIsNeedStopFunction);
 					}
 				});
 			}
@@ -421,75 +432,7 @@ function emptyAllTable(){
 
 
 
-// function col_card(){
-// 	$("#view_show_area #view_show_area_content #view_show_wrap #card").show();
-// 	$("#card").find(".right_module .content_body #data_list_for_body").html("");
-// 	var current_all_measure = drag_row_column_data["column"]["measure"].concat(drag_row_column_data["row"]["measure"]);
 
-// 	measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
-
-// 		$("#text_table_need_show").hide();
-// 		$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
-// 		$("#card .right_module .content_body #data_list_for_body .measureDiv").remove();
-// 		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
-// 		var needAllData = data;
-// 		for(var i = 0;i < needAllData.length;i++){
-// 			// console.log(needAllData);
-// 			var aData = needAllData[i];
-// 			console.log(aData);
-// 			var measureDiv = $("<div class='measureDiv'></div>");
-// 			//console.log(allMeasure.length);
-// 			for(var j = 0;j < allMeasure.length;j++){
-// 				var aMeasure = allMeasure[j];
-// 				var tit = $(".list_wrap .measure_list_text_left").eq(j).html();
-// 				console.log(aMeasure);
-// 				//console.log(aData[drag_measureCalculateStyle[measureName]]);
-// 				if(allMeasure.length < 3){
-					
-// 					var tongbiShowNum = 0;
-// 					var huanbiShowNum = 0;
-// 					if(aData["同比"+drag_measureCalculateStyle[aMeasure]]){
-// 						tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
-// 					}
-// 					if(aData["环比"+drag_measureCalculateStyle[aMeasure]]){
-// 						huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
-// 					}
-// 					var p = $("<p class=p"+j+">" + tit +"</p>");
-// 					var div = $("<div class=sps"+j+"></div>");
-// 					var ap = $("<div class=ap"+j+"></div>");
-// 					var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
-// 					var tongbiAp = $("<p style='display:none' class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
-// 					var huanbiAp = $("<p style='display:none' class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
-// 					tongbiAp.addClass(aMeasure);
-// 					huanbiAp.addClass(aMeasure);
-// 					measureDiv.append(p);
-// 					// measureDiv.append(span);
-// 					measureDiv.append(div);
-// 					// measureDiv.append(tongbiAp);
-// 					// measureDiv.append(huanbiAp);
-// 					div.append(span);
-// 					div.append(ap);
-// 					ap.append(tongbiAp);
-// 					ap.append(huanbiAp);
-// 					if(showTongbiMeasureArray.indexOf(aMeasure) != -1){
-// 						tongbiAp.show();
-// 					}
-// 					if(showHuanbiMeasureArray.indexOf(aMeasure) != -1){
-// 						huanbiAp.show();
-// 					}
-					
-// 				}
-// 				if(j != allMeasure.length - 1){
-// 					// measureDiv.append("<span class='seperate'>/</span>");
-// 					measureDiv.append("<div></div>");
-// 				}
-// 			}
-// 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
-// 		}
-// 		spinner.stop();
-// 		$(".maskLayer").hide();
-// 	})
-// }
 
 function col_card(){
 	$("#view_show_area #view_show_area_content #view_show_wrap #card").show();
@@ -503,6 +446,7 @@ function col_card(){
 		$("#card .right_module .content_body #data_list_for_body .measureDiv").remove();
 		var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
 		var needAllData = data;
+
 		for(var i = 0;i < needAllData.length;i++){
 			// console.log(needAllData);
 			var aData = needAllData[i];

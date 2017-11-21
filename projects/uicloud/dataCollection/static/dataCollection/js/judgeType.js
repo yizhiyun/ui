@@ -53,7 +53,7 @@ String.prototype.image_Name_Find = function(measureOrDime){
 			return "/static/dataCollection/images/tableDataDetail/integer_weidu.png";
 		}
 		return "/static/dataCollection/images/tableDataDetail/integer_duliang.png";
-		
+
 	}else if (value.isTypeString()) {
 		if(measureOrDime == "measure"){
 			return "/static/dataCollection/images/tableDataDetail/string_duliang.png";
@@ -68,45 +68,62 @@ String.prototype.image_Name_Find = function(measureOrDime){
 // 检测输入的算法是否正确，有待完善，目前只是简单的检测
 function  measureCalculateVertify (formula) {
 	//1、剔除空白符号
-	formula = formula.replace(/\s/g, ''); 
+	formula = formula.replace(/\s/g, '');
 	//2、字符长度小于1
 	if(formula.length < 1){
 		return false;
 	}
 	//3、运算符连续
-	if( /[\+\-\*\/]{2,}/.test(formula) ){  
-            return false;  
-    }  
+	if( /[\+\-\*\/]{2,}/.test(formula) ){
+            return false;
+    }
     //4、括号不匹配
      var leftbrackets = [];
      var rightbrackets = [];
-    for(var i = 0; i < formula.length; i++){  
-        var item = formula.charAt(i);  
-        if('(' == item){  
-            leftbrackets.push('(');  
-        }else if(')' == item){  
-            rightbrackets.push(')');  
-        }  
-    } 
+    for(var i = 0; i < formula.length; i++){
+        var item = formula.charAt(i);
+        if('(' == item){
+            leftbrackets.push('(');
+        }else if(')' == item){
+            rightbrackets.push(')');
+        }
+    }
     if(leftbrackets.length != rightbrackets.length){
     	return false;
     }
     //5、左小括号后面不能直接跟运算符号
-	if(/\([\+\-\*\/]/.test(formula)){  
-	    return false;  
-	} 
-     //6、)前面是运算符 
-    if(/[\+\-\*\/]\)/.test(formula)){  
-        return false;  
-    }  
+	if(/\([\+\-\*\/]/.test(formula)){
+	    return false;
+	}
+     //6、)前面是运算符
+    if(/[\+\-\*\/]\)/.test(formula)){
+        return false;
+    }
     return true;
 }
-String.prototype.visualLength = function(fontSize) 
-{ 
-	var ruler = $("#calculateTextWidth"); 
+String.prototype.visualLength = function(fontSize)
+{
+	var ruler = $("#calculateTextWidth");
 	ruler.css("font-size",fontSize);
-	ruler.text(this); 
-	return ruler[0].offsetWidth; 
-} 
+	ruler.text(this);
+	return ruler[0].offsetWidth;
+}
 
+// 根据数据库名字获得图片地址
+String.prototype.dataBaseImgSrc = function(){
+	var value = this.toString();
+	switch (value) {
+		case "ORACLE":
+				return "/static/dataCollection/images/oracle.png";
+		case "MYSQL":
+				return "/static/dataCollection/images/mysql.png";
+		case "SQLSERVER":
+				return "/static/dataCollection/images/sqlserver.png";
+		case"北京儿童医院辅助决策平台":
+				return "/static/dataCollection/images/childHospital.png";
+		case "朝阳医院精细化管理平台":
+				return "/static/dataCollection/images/chaoyangHospital.png";
+		default:
 
+	}
+}

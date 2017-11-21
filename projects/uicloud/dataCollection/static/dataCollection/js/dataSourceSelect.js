@@ -15,11 +15,12 @@ $(function () {
    			$(this).css("border","1px solid #dedede");
    		}
    })
-    var dataBaseName = null;
+
     // 给具体的数据库平台按钮绑定事件函数
     function BindProgressToDetailBase(){
     		$("#dataList .baseDetail li").click(function(){
-    			dataBaseName = $(this).html();
+    			var dataBaseName = $(this).find("span").eq(0).html();
+          var dataBaseImgSrc = $(this).find("img").eq(0).attr("src");
     			$("#dataList").hide();
     			if(dataBaseName == "ORACLE"){
     				$("#connectDataBaseInfo").height(320);
@@ -28,13 +29,17 @@ $(function () {
     				$("#connectDataBaseInfo").height(300);
     				$("#connectDataBaseInfo #dataBaseConnectForm .locationDiv label.dbSid").hide();
     			}
+          $("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
+      		$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
+          $("#connectDataBaseInfo").data("dataBaseName",dataBaseName);
+          $("#connectDataBaseInfo .common-head img.logo").attr("src",dataBaseImgSrc);
     			$("#connectDataBaseInfo").show('shake',500,baseInfoShowCallBack);
     		})
     }
 
 
    //封装界面函数
-   function detail(){
+   function detail(dataBaseName){
    		if(!$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
     				return;
     			}
@@ -55,7 +60,7 @@ $(function () {
 				$("#dataBaseConnectForm .dbsidinput").css("border","1px solid red");
 				return;
 			}
-			
+
 			$.ajax({
 				url:"/dataCollection/connectDataBaseHandle",
 				type:"POST",
@@ -77,44 +82,42 @@ $(function () {
 						}else{
 							alert("请检查数据库是否开启");
 						}
-						
+
 					}
 	            }
 			});
-    			
+
     		$("#connectDataBaseInfo").hide();
     		$("#dataList").hide();
    }
 
     //  连接数据库的弹框显示之后，处理里面的点击事件
     function baseInfoShowCallBack(){
-		$("#connectDataBaseInfo .common-head span.flag").html(dataBaseName);
-  		$("#connectDataBaseInfo #formPostDataBaseName").val(dataBaseName);
-
+      var dataBaseName = $("#connectDataBaseInfo").data("dataBaseName");
   		$("#loginBtn").unbind("click");
     	$("#loginBtn").click(function(event){
-    		detail();
+    		detail(dataBaseName);
     		});
 
     	$("#connectDataBaseInfo").keydown(function(event){
 	    	if(event.keyCode == 13){
-	    		detail();
+	    		detail(dataBaseName);
 	    	}
     	});
-    		
+
 
     }
 
 
-   
 
-    
-   
+
+
+
    $("#panelFileSettingOption .close,#panelFileSettingOption a.cancleBtn").click(function(){
    		$(".maskLayer").hide();
   		$("#panelFileSettingOption").hide();
    });
-   
+
    $("#panelFileSettingOption a.confirmBtn").click(function(event){
    		event.stopPropagation();
    		if($(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").children("div").hasClass("active")){
@@ -128,23 +131,23 @@ $(function () {
 			formData.append("quote",	 quote);
 			formData.append("header",header);
 			uploadCSVFIleFunction(formData);
-		}	
+		}
    });
-   
+
   // 点击选择平面文件，选中一个或者多个文件后
 	  $("#selectedPanelFile").change(function(){
 	  	var fileInfo = $("#selectedPanelFile").get(0).files[0];
 		if (fileInfo.name.substring(fileInfo.name.indexOf(".")).toLowerCase() == ".csv") {
 			$(".maskLayer").show();
-			$("#panelFileSettingOption").show();	
+			$("#panelFileSettingOption").show();
 		}else{
 			var formData = new FormData();
 			formData.append("file",fileInfo);
 			uploadCSVFIleFunction(formData);
 		}
-		
+
 	  });
-	  
+
 	  function uploadCSVFIleFunction(formData){
 	  	$.ajax({
 				url:"/cloudapi/v1/uploadcsv",
@@ -159,8 +162,8 @@ $(function () {
 	            },
 	            success:function(data){
 	            		if(data.status == "success"){
-	            			spinner.stop();						
-						$(".maskLayer").hide();		
+	            			spinner.stop();
+						$(".maskLayer").hide();
 						theRecordConnectionShouldShow = "panelFile";
 						dbOrFileTablesRefreshRecord["fileNeedRefresh"] = true;
 						buildDataFunction_able();
@@ -171,11 +174,11 @@ $(function () {
 	            }
 			});
 	  }
-	  
+
 	$("#panelFileSettingOption .common-head .close,#panelFileSettingOption a.cancleBtn").click(function(event){
 			$("#panelFileSettingOption").hide();
 			$(".maskLayer").hide();
 			$("#selectedPanelFile").val("");
 	});
-  
+
 })

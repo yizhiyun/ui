@@ -227,7 +227,7 @@
 		if(isOnlyLaod == false || onlyRunOne){
 			//拿到构建报表的数据
 			$.post("/dashboard/getAllData",function(result){
-			console.log(result);
+			// console.log(result);
 			ajax_data_post = result;
 			toIfChangeSecond = true;
 			view_out_handle_init(result);
@@ -321,14 +321,18 @@
 													if(!$(ele).hasClass("new_view_table") && !$(ele).hasClass("new_view_indexPage")){
 															var now_view_img=echarts.getInstanceByDom($(ele).get(0));
 			 												now_view_img.resize();
+
 											}
 										})
 
-		                         		//判断视图区域过小隐藏小部件
-		                         		
-		                         		elementContent($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main"),null);
+		                        		if($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main").hasClass("new_view_table") == false && $(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main").hasClass("new_view_indexPage") == false){
 
-		                         		successShowView($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main"));
+		                         			//判断视图区域过小隐藏小部件
+		                         		
+		                         			elementContent($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main"),null);
+
+		                         			successShowView($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main"));
+		                         		}
 
 		                         	},
 		                         	
@@ -818,16 +822,20 @@
 		                         					if(!$("."+viewshow_class_arr[i]+"").hasClass("new_view_table") && !$("."+viewshow_class_arr[i]+"").hasClass("new_view_indexPage") ){
 		                         						var now_view_img=echarts.getInstanceByDom($("."+viewshow_class_arr[i]+"").get(0));
 								 						now_view_img.resize();
+
 		                         					}
 		                         				}
 
+		                         		if($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main").hasClass("new_view_table") == false && $(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main").hasClass("new_view_indexPage") == false){
 
-
-		                        		//判断视图区域过小隐藏小部件
+		                         			//判断视图区域过小隐藏小部件
 		                         		
-		                         		elementContent($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main"),null);
+		                         			elementContent($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main"),null);
 
-		                         		successShowView($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main"));
+		                         			successShowView($(".new_view_content[data-value="+ui.$player.parent().attr("data-value")+"]").find(".new_view_main"));
+		                         		}
+
+
 
 		                         	},
 		                         	
@@ -1433,6 +1441,7 @@
 						//视图编辑功能
 						$(ele).find(".new_view_edit").unbind("click");
 						$(ele).find(".new_view_edit").on("click",function(){
+							// console.log(preClickView[$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_name_save").text()+"-"+$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").text()])
 							if($(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("setopen") == false){
 								$.post("/dashboard/setSwitch",{"switch":"isopen","id":$(".statement_li").eq(show_table_arr[0]-1).find(".view_show_handle").eq(show_table_arr[1]).find(".small_view_text").data("table_id")},function(result){
 									if(result["status"] == "ok"){

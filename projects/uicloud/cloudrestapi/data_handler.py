@@ -279,8 +279,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             newDF.write.parquet(savedPathUrl, mode=mode)
         return True
 
-    def generateNewDataFrame(jsonData, maxRowCount=10000, userName="myfolder",
-                             hdfsHost="spark-master0", hdfsPort="9000", rootFolder="users"):
+    def generateNewDataFrame(jsonData, maxRowCount=10000, userName="myfolder", rootFolder="/users"):
 
         # check the json format
         if (("tables" not in jsonData.keys()) or ("outputs" not in jsonData.keys())):
@@ -303,17 +302,13 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 # get the table connection information
                 dbName = tables[0]["database"]
                 tableName = tables[0]["tableName"]
-                userTableUrl = False
+                rFolder = rootFolder
                 if "sourcetype" not in tables[0].keys() or tables[0]["sourcetype"] == "db":
                     tables[0]["dbsource"] = jsonData["dbsources"][tables[0]["source"]]
                 elif tables[0]["sourcetype"] == "tmptables":
-                    userTableUrl = u"hdfs://{0}:{1}/tmp/{2}/{3}/parquet/{4}/{5}".format(
-                        hdfsHost, hdfsPort, rootFolder, userName, dbName, tableName)
-                else:
-                    userTableUrl = u"hdfs://{0}:{1}/{2}/{3}/{4}".format(
-                        hdfsHost, hdfsPort, rootFolder, dbName, tableName)
+                    rFolder = u"/tmp{0}/{1}/parquet".format(rootFolder, userName)
 
-                df0 = getDataFrameFromSource(tables[0], userTableUrl, maxRowCount=maxRowCount)
+                df0 = getDataFrameFromSource(tables[0], rootFolder=rFolder, maxRowCount=maxRowCount)
                 if not df0:
                     logger.error(u"The data cannot be gotten from source. dbName: {0}, tableName: {1}"
                                  .format(dbName, tableName))
@@ -337,18 +332,14 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
                 dbTable = u"{0}.{1}".format(dbName, tableName)
-                userTableUrl = False
+                rFolder = u"/{0}/{1}".format(rootFolder, userName)
                 if "sourcetype" not in tables[seq].keys() or tables[seq]["sourcetype"] == "db":
                     tables[seq]["dbsource"] = jsonData["dbsources"][tables[seq]["source"]]
                 elif tables[seq]["sourcetype"] == "tmptables":
-                    userTableUrl = u"hdfs://{0}:{1}/tmp/{2}/{3}/parquet/{4}/{5}".format(
-                        hdfsHost, hdfsPort, rootFolder, userName, dbName, tableName)
-                    logger.debug(u"userTableUrl: {0}".format(userTableUrl))
-                else:
-                    userTableUrl = u"hdfs://{0}:{1}/{2}/{3}/{4}".format(
-                        hdfsHost, hdfsPort, rootFolder, dbName, tableName)
+                    rFolder = u"/tmp{0}/{1}/parquet".format(rootFolder, userName)
 
-                dfDict[dbTable] = getDataFrameFromSource(tables[seq], userTableUrl, removedColsDict, maxRowCount)
+                dfDict[dbTable] = getDataFrameFromSource(
+                    tables[seq], rootFolder=rFolder, removedColsDict=removedColsDict, maxRowCount=maxRowCount)
                 if not dfDict[dbTable]:
                     logger.error(u"The data cannot be gotten from source. dbTable: {0}".format(dbTable))
                     return False
