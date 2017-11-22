@@ -450,20 +450,23 @@ function col_card(){
 		for(var i = 0;i < needAllData.length;i++){
 			// console.log(needAllData);
 			var aData = needAllData[i];
-			console.log(aData);
+			//console.log(aData);
 			var measureDiv = $("<div class='measureDiv'></div>");
 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
+
+			// measureDiv.css({"left":$("#view_show_wrap").width()/2-measureDiv.width()+'px',"top":$("#view_show_wrap").height()/2-measureDiv.height()+'px'})
 			//console.log(allMeasure.length);
 			if(allMeasure.length < 3){
 			for(var j = 0;j < allMeasure.length;j++){
 				var aMeasure = allMeasure[j];
 				var tit = drag_measureCalculateStyle[aMeasure];
 					var p = $("<p class=p"+j+">" + tit +"</p>");
+
 					var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
 					measureDiv.append(p);
 					measureDiv.append(span);
 					$(p).data("measureInfo",aMeasure);
-					var div = $("<div class='cardInfo'></div>");
+					var div = $("<div class='cardInfo' style='display:none'></div>");
 					div.addClass(aMeasure);
 					measureDiv.append(div);
 					$(p).unbind("mouseover");
@@ -472,10 +475,26 @@ function col_card(){
 						var MeasureInfo = $(this).data("measureInfo");
 						var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0)
 						if(showTongbiMeasureArray.indexOf(MeasureInfo) != -1){
+								$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
+								$(compareDiv).show();
 								compareDiv.find("p.compareP").show();
+								if($(this).hasClass('p0')){
+									$(compareDiv).css({"left":$(this).position().left + 'px',"top":$(this).position().top - 70 + 'px'});
+								}else{
+									$(compareDiv).css({"left":$(this).position().left + 'px',"top":$(this).position().top + 50 + 'px'});
+								}
+
 						}
 						if(showHuanbiMeasureArray.indexOf(MeasureInfo) != -1){
+							$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
+							$(compareDiv).show();
 							compareDiv.find("p.linkP").show();
+							if($(this).hasClass('p0')){
+								$(compareDiv).css({"left":$(this).position().left + 'px',"top":$(this).position().top - 70 + 'px'});
+							}else{
+								$(compareDiv).css({"left":$(this).position().left + 'px',"top":$(this).position().top + 50 + 'px'});
+							}
+
 						}
 					});
 					$(p).unbind("mouseleave");
@@ -483,6 +502,7 @@ function col_card(){
 						event.stopPropagation();
 						var MeasureInfo = $(this).data("measureInfo");
 						var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0);
+						$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
 						compareDiv.find("p").hide();
 					});
 
@@ -502,6 +522,7 @@ function col_card(){
 					div.append(tongbiAp);
 					div.append(huanbiAp);
 
+			measureDiv.css({"marginLeft":$("#view_show_wrap").width()/2-measureDiv.width()/2+'px',"marginTop":$("#view_show_wrap").height()/2-measureDiv.height()/2+'px'})
 
 					if(showTongbiMeasureArray.indexOf(aMeasure) != -1){
 						tongbiAp.show();
@@ -544,17 +565,3 @@ function showOrHidenSomeMeasureCompareOrLink(){
 	})
 }
 
-function showOrHide(){
-	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
-	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").show();
-	for(var i = 0;i <  showTongbiMeasureArray.length;i++){
-		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
-		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
-		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").show();
-	}
-	for(var i = 0;i <  showHuanbiMeasureArray.length;i++){
-		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
-		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
-		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").show();
-	}
-}
