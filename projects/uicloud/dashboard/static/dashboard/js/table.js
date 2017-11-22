@@ -450,7 +450,7 @@ function col_card(){
 		for(var i = 0;i < needAllData.length;i++){
 			// console.log(needAllData);
 			var aData = needAllData[i];
-			console.log(aData);
+			// console.log(aData);
 			var measureDiv = $("<div class='measureDiv'></div>");
 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
 			//console.log(allMeasure.length);
@@ -544,17 +544,17 @@ function showOrHidenSomeMeasureCompareOrLink(){
 	})
 }
 
-function showOrHide(){
-	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
-	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").show();
-	for(var i = 0;i <  showTongbiMeasureArray.length;i++){
-		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
-		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
-		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").show();
-	}
-	for(var i = 0;i <  showHuanbiMeasureArray.length;i++){
-		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
-		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
-		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").show();
-	}
-}
+// function showOrHide(){
+// 	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
+// 	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").show();
+// 	for(var i = 0;i <  showTongbiMeasureArray.length;i++){
+// 		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+// 		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+// 		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").show();
+// 	}
+// 	for(var i = 0;i <  showHuanbiMeasureArray.length;i++){
+// 		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+// 		// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+// 		$("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").show();
+// 	}
+// }

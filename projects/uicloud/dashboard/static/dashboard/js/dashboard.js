@@ -2341,7 +2341,7 @@
 										contentType: "application/json; charset=utf-8",
 										async: true,
 										data:JSON.stringify({"column":needChangeEle.find(".drop_list_main .drop_main>span").text(),"coltype":needChangeType}),
-										success:function(data){console.log(data);}
+										success:function(data){}
 									});
 
 

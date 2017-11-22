@@ -268,10 +268,10 @@ $(function(){
 			// console.log(23423);
 			$("#user-filter-select").hide();
 			$(this).parents(".screeningWasher").eq(0).hide();
-			$(".maskLayer").hide();	
-			
+			$(".maskLayer").hide();
+
 		})
-		
+
 
 	});
 	// 编辑--取消的时候
@@ -308,7 +308,7 @@ $(function(){
 	$("#filter-model #user-filter-select .common-filer-footer .confirmBtn").click(function(){
 		$("#filter-model #user-filter-select").hide();
 		$(".maskLayer").hide();
-		
+
 	})
 
 
@@ -334,7 +334,7 @@ $(function(){
 		screeningWasher_did_finish_filter_handle_data_fun(filterID);
 	});
 
-	
+
 	// 全选按钮
 	$("#filter-model #contentChooser #common #selectAllInCommon").change(function(event){
 		event.stopPropagation();
@@ -390,14 +390,14 @@ $(function(){
 
 	});
 
-	
+
 	//点击重置按钮
 	$("#filter-model .screeningWasher .common-filer-footer .resetBtn").click(function(event){
 		event.stopPropagation();
 		var inpVal1 = $("#filter-model #number-filter .number-filter-body .combo-select .text-input").val();
 		var inpVal2 = $("#filter-model #number-filter .number-filter-body .radiosBtns .relationvalue").val();
 		var inpVal3 = $("#filter-model #number-filter .number-filter-body .radiosBtns .userSelect_div .combo-select .text-input").val();
-		console.log(inpVal1,inpVal2,inpVal3);
+		// console.log(inpVal1,inpVal2,inpVal3);
 		$("input").val("");
 		$("select").val("");
 		$("#filter-model #contentChooser #common .detailSearchData input").prop("checked",false);
@@ -982,7 +982,7 @@ function contidon_value_change_fun(){
 		  })
 		}
 
-		
+
 		if(isEdit){
 			content_select_count = filterConditions.commonSelected.length;
 		}else{
