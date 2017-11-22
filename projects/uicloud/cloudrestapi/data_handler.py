@@ -36,10 +36,13 @@ def executeSpark(sparkCode,
     noValidSession = True
     if (curSessionsReqJson['total'] > 0):
         for sItem in curSessionsReqJson['sessions']:
+            sessionUrl = "{0}/{1}".format(rootSessionsUrl, sItem['id'])
+            logger.debug("sItem: {0}, sessionUrl: {1}".format(sItem, sessionUrl))
             if (sItem['kind'] == 'pyspark') and (sItem['state'] == 'idle'):
-                sessionUrl = "{0}/{1}".format(rootSessionsUrl, sItem['id'])
                 noValidSession = False
                 break
+            elif (sItem['kind'] == 'pyspark') and (sItem['state'] in ['dead', 'error']):
+                requests.delete(sessionUrl)
     if noValidSession:
         newSessionReqJson = requests.post(
             rootSessionsUrl, data=json.dumps(sessionData), headers=headers).json()
@@ -92,7 +95,7 @@ def getReqFromDesiredReqState(reqUrl, headers={'Content-Type': 'application/json
             logger.error(
                 "There is an error in Step-{0}, see the details for the response:{1}".format(reqCount, reqJson))
             return {"state": "error"}
-        if reqJson['state'] in ['cancelled', 'cancelling']:
+        elif reqJson['state'] in ['cancelled', 'cancelling']:
             logger.error(
                 "The job has been cancelled in Step-{0}, see the details for the response:{1}"
                 .format(reqCount, reqJson))
@@ -332,7 +335,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 dbName = tables[seq]["database"]
                 tableName = tables[seq]["tableName"]
                 dbTable = u"{0}.{1}".format(dbName, tableName)
-                rFolder = u"/{0}/{1}".format(rootFolder, userName)
+                rFolder = rootFolder
                 if "sourcetype" not in tables[seq].keys() or tables[seq]["sourcetype"] == "db":
                     tables[seq]["dbsource"] = jsonData["dbsources"][tables[seq]["source"]]
                 elif tables[seq]["sourcetype"] == "tmptables":

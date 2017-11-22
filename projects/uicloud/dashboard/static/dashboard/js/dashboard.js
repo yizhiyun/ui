@@ -1795,7 +1795,7 @@
 
 										}
 									}
-									// showOrHidenSomeMeasureCompareOrLink();
+									showOrHidenSomeMeasureCompareOrLink();
 									// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseenter');
 									// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseenter(function(event){
 									// 	event.stopPropagation();
