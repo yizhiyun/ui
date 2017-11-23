@@ -268,10 +268,10 @@ $(function(){
 			// console.log(23423);
 			$("#user-filter-select").hide();
 			$(this).parents(".screeningWasher").eq(0).hide();
-			$(".maskLayer").hide();	
-			
+			$(".maskLayer").hide();
+
 		})
-		
+
 
 	});
 	// 编辑--取消的时候
@@ -308,7 +308,7 @@ $(function(){
 	$("#filter-model #user-filter-select .common-filer-footer .confirmBtn").click(function(){
 		$("#filter-model #user-filter-select").hide();
 		$(".maskLayer").hide();
-		
+
 	})
 
 
@@ -334,7 +334,7 @@ $(function(){
 		screeningWasher_did_finish_filter_handle_data_fun(filterID);
 	});
 
-	
+
 	// 全选按钮
 	$("#filter-model #contentChooser #common #selectAllInCommon").change(function(event){
 		event.stopPropagation();
@@ -390,7 +390,7 @@ $(function(){
 
 	});
 
-	
+
 	//点击重置按钮
 	$("#filter-model .screeningWasher .common-filer-footer .resetBtn").click(function(event){
 		event.stopPropagation();
@@ -984,7 +984,7 @@ function contidon_value_change_fun(){
 		  })
 		}
 
-		
+
 		if(isEdit){
 			content_select_count = filterConditions.commonSelected.length;
 		}else{

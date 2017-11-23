@@ -1691,7 +1691,7 @@
 								// 点击事件-------------
 								//编辑计算
 								out_wrap_click.find(".edit_calculation").on("click",function(){
-	;
+	
 									if($(this).parent(".me_out_content").hasClass("dimensionalityWrap")) return;
 		//							$("#editMeasureCalculateView").data("userCustomTile",false);
 
@@ -2341,9 +2341,9 @@
 										contentType: "application/json; charset=utf-8",
 										async: true,
 										data:JSON.stringify({"column":needChangeEle.find(".drop_list_main .drop_main>span").text(),"coltype":needChangeType}),
-										success:function(data){
-											//console.log(data);
-										}
+
+										success:function(data){}
+
 									});
 
 

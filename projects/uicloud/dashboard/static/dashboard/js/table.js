@@ -450,7 +450,6 @@ function col_card(){
 		for(var i = 0;i < needAllData.length;i++){
 			// console.log(needAllData);
 			var aData = needAllData[i];
-			//console.log(aData);
 			var measureDiv = $("<div class='measureDiv'></div>");
 			$("#card").find(".right_module .content_body #data_list_for_body").append(measureDiv);
 
@@ -566,4 +565,3 @@ function showOrHidenSomeMeasureCompareOrLink(){
 		$(ele).css("top",aMeasureDivHeight*$(ele).data("topIndex"));
 	})
 }
-
