@@ -195,7 +195,7 @@
             //拿到构建报表的数据
             $.post("/dashboard/getAllData",function(result){
                 ajax_data_post = result;
-                console.log(ajax_data_post)
+                // console.log(ajax_data_post)
             })
         }
 
@@ -240,7 +240,7 @@
 
       //判断删除相应的指标
       if($("#dashboard_content #lateral_bar #indicator #index_show ul li").length > 0){
-          console.log( $("#dashboard_content #lateral_bar #indicator #index_show ul li[tablename="+type+"]"))
+          // console.log( $("#dashboard_content #lateral_bar #indicator #index_show ul li[tablename="+type+"]"))
           $("#dashboard_content #lateral_bar #indicator #index_show ul li[tablename="+type+"]").remove();
       }
 
@@ -680,7 +680,7 @@
                               dataType:"json",
                               contentType: "application/json; charset=utf-8",
                               success:function(data){
-                                console.log(data)
+                                // console.log(data)
                                 if(data["exist"] == "yes"){
                                     $(".delete_checked p").text("使用此数据表的视图/指标也同时删除").css("color","#ee3232").css("left","77.5px").show();
                                 }else{
@@ -1382,8 +1382,7 @@
 
             var end = dbArr[2];
 
-            // var table_end = dbArr[2];
-            //console.log(table_end);
+            
 
             if(source == "hdfs"){
                 aTable["sourcetype"] = source;
@@ -1415,7 +1414,6 @@
                     listselect.append(selectoption);
                     listselect.comboSelect();
                   }
-
 
               }
 
@@ -1675,8 +1673,25 @@
             }
           })
           }else{
-            postData["outputs"] = {"outputTableName":$(".cube-name-input-div .lists .combo-select .combo-dropdown .option-selected").html(),"removedColumns":[],"columnRenameMapping":outName_of_check,"mode":"overwrite"};
-            mergetablesPost();
+            postData["outputs"] = {"outputTableName":$(".cube-name-input-div .lists .combo-select .combo-dropdown .option-selected").html()};
+             $.ajax({
+                url:"/cloudapi/v1/mergetables/check",
+                type:"post",
+                dataType:"json",
+                contentType: "application/json; charset=utf-8",
+                async: true,
+                data:JSON.stringify(postData),
+                success:function(data){
+                  if(data["status"] == "failed"){
+                    alert("请检查表格之间的联系");
+                    return;
+                  }else{
+                    outName_of_check = data["columns"];
+                   postData["outputs"] = {"outputTableName":$(".cube-name-input-div .lists .combo-select .combo-dropdown .option-selected").html(),"removedColumns":[],"columnRenameMapping":outName_of_check,"mode":"overwrite"};
+                    mergetablesPost();
+                  }
+                }
+              })
           }
 
 
@@ -2084,7 +2099,7 @@
             data:JSON.stringify(post_splitData_arr),
             success:function(result){
               if(result["status"] == "success"){
-                  console.log("删除成功");
+                  // console.log("删除成功");
               }
             }
         });
@@ -2825,7 +2840,7 @@
                 async: true,
                 success:function(result){
                   if(result["status"] == "success"){
-                      console.log("清除成功");
+                      // console.log("清除成功");
                   }
                 }
             });

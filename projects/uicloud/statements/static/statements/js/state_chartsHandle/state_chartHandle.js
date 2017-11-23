@@ -825,7 +825,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]));
 	var all_measure = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]));
 	
-	console.log(drag_row_column_data_arr[storeNum_toview])
+	// console.log(drag_row_column_data_arr[storeNum_toview])
 
 	var commonLegend = [];
 	for (var k = 0;k <  all_measure.length;k++) {

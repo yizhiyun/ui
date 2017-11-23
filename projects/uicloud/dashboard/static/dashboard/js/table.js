@@ -530,6 +530,8 @@ function col_card(){
 					if(showHuanbiMeasureArray.indexOf(aMeasure) != -1){
 						huanbiAp.show();
 					}
+					var br = $("<br>");
+					measureDiv.append(br);
 
 				}
 			}

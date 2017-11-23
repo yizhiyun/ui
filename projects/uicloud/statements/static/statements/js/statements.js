@@ -238,6 +238,60 @@
 		}
 		statementsinit();
 
+		function searchFun(){
+		//搜索功能
+			$("#pageStatementsModule #statements_left_bar #state_left_bar_title #statements_left_search").click(function(event){
+				event.stopPropagation();
+				if($(this).parents("#statements_left_bar").find(".view_search").css("display") == "block"){
+					$(this).parents("#statements_left_bar").find(".view_search").hide(300);
+
+					$(this).parents("#statements_left_bar").find(".viewTableShow").animate({
+						"height":$(this).parents("#statements_left_bar").height() - 38 + "px",
+					},300);
+
+				}else{
+					$(this).parents("#statements_left_bar").find(".view_search_input").focus();
+					$(this).parents("#statements_left_bar").find(".view_search").show(300);
+					$(this).parents("#statements_left_bar").find(".viewTableShow").stop(true).animate({
+						"height":$(this).parents("#statements_left_bar").height() - 22 - 38 + "px",
+					},300);
+				}
+			})
+			Search($("#pageStatementsModule #statements_left_bar .view_search .view_search_input"),"view_show_name_save",$("#pageStatementsModule #statements_left_bar #statements_left_bar_area"));
+		}
+		searchFun();
+
+		function Search(ele,activeClass,showContent){
+			$("#pageStatementsModule #statements_left_bar .view_search .view_search_input").val('');
+		    //报表弹窗筛选功能
+		  $(ele).on("input",function(){
+		    //搜索里输入的值
+		    var search_input_data  = $(ele).val();
+
+		    if(search_input_data != ""){
+      			$(showContent).children().css("display","none");
+
+		      	var reg_str = "/"+search_input_data+"/gi";
+
+		      	var list_p=$(showContent).find("."+activeClass+"");
+
+			    for(var i = 0 ; i < list_p.length;i++){
+
+			    	var reg = eval(reg_str);
+
+			      (function(index){
+			        var list_li_text = list_p.eq(index).text();
+			        if(reg.test(list_li_text) == true){
+			          	list_p.eq(index).parent().parent().css("display","block");
+			        }
+			      })(i);
+
+			    }
+		    }else{
+      			$(showContent).children().css("display","block");
+		    }
+		  })
+		}
 
 		// if(isOnlyLaod){
 		// 	return;
@@ -454,7 +508,7 @@
 
 		//点击报表更多按钮创建弹窗
 		function click_state_show(thele){
-			console.log($(thele),$(thele).parent().find("#new_state_wrap"))
+			// console.log($(thele),$(thele).parent().find("#new_state_wrap"))
 			if($(thele).parent().find("#new_state_wrap").length == 0){
 				$("#new_state_wrap").remove();
 				var new_state_show = $("<div id='new_state_wrap'><div class='new_state_content' id='change_name'>重命名</div><div class='new_state_content' id='show_hide_img'>显示隐藏视图</div><div class='new_state_content' id='delete_view'>删除</div></div>");
@@ -1650,7 +1704,7 @@
 							 $.post("/dashboard/changeName",{"objtype":folder_or_view,"oldname":old_name,"newname":changeNameText},function(result){
 
 							 	if(result["status"] == "false"){
-							 		console.log("修改失败");
+							 		// console.log("修改失败");
 							 		return;
 							 	}else{
 							 		$(ele).find(".view_show_name_save").text(changeNameText);

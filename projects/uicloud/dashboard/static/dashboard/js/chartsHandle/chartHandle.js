@@ -2865,7 +2865,7 @@ function chartAPartDidClickedFunction(params){
 	});
 	$(document).click(function(event){
 		event.stopPropagation();
-		console.log(event.target);
+		// console.log(event.target);
 		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList").hide();
 		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection").hide();
 	});

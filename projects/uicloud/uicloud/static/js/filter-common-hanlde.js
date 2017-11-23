@@ -397,7 +397,7 @@ $(function(){
 		var inpVal1 = $("#filter-model #number-filter .number-filter-body .combo-select .text-input").val();
 		var inpVal2 = $("#filter-model #number-filter .number-filter-body .radiosBtns .relationvalue").val();
 		var inpVal3 = $("#filter-model #number-filter .number-filter-body .radiosBtns .userSelect_div .combo-select .text-input").val();
-		console.log(inpVal1,inpVal2,inpVal3);
+		// console.log(inpVal1,inpVal2,inpVal3);
 		$("input").val("");
 		$("select").val("");
 		$("#filter-model #contentChooser #common .detailSearchData input").prop("checked",false);
@@ -919,7 +919,7 @@ function contidon_value_change_fun(){
 					break;
 				}
 				var theData = filterNeedAllData[field][i];
-				var li = $("<li><label><input type='checkbox' checked='checked'/><span>"+theData+"</span></label></li>");
+				var li = $("<li><label><input type='checkbox' checked='checked'/><span class='val'>"+theData+"</span></label></li>");
 				li.find("input").attr("value",theData);
 				$("#filter-model #contentChooser #common .detailSearchData .dataList").append(li);
 									// 每个复选框绑定事件
@@ -951,7 +951,9 @@ function contidon_value_change_fun(){
 
 		//搜索
 		Search($("#filter-model #contentChooser .contentChooser_body #common .outer input"),"val",$("#filter-model #contentChooser .common-fold-module #common .detailSearchData .dataList"),"filter");
+		
 		function Search(ele,activeClass,showContent){
+			$("#filter-model #contentChooser .contentChooser_body #common .outer input").val('');
 		    //报表弹窗筛选功能
 		  $(ele).on("input",function(){
 		    //搜索里输入的值
