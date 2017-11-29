@@ -2445,11 +2445,11 @@ function comparisonStrip_generate_fun(){
 
 
 			for(var i = 0;i < dimensionality_show_data.length;i++){
-				var arr = [];
-				for(var j = 0;j < dimensionality_show_data[i].length; j ++){
-					arr.push(dimensionality_show_data[i][j].length);
-				}
-				var maxLength = Math.max.apply(null, arr);	
+				// var arr = [];
+				// for(var j = 0;j < dimensionality_show_data[i].length; j ++){
+				// 	arr.push(dimensionality_show_data[i][j].length);
+				// }
+				// var maxLength = Math.max.apply(null, arr);	
 				
 
 				var aY = {
@@ -2525,7 +2525,6 @@ function comparisonStrip_generate_fun(){
 				aGrid["bottom"] = 120;
 
 
-				
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
 				}
