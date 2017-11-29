@@ -1884,7 +1884,7 @@
            // 待处理
             var formData = new FormData($("#dataBaseConnectForm").get(0));
             formData.append("username","yzy");
-
+            
             $.ajax({
               url:"/dataCollection/connectDataBaseHandle",
               type:"POST",

@@ -216,7 +216,7 @@
 
 			<div id="parameter">
 				<div id="parameter_title">
-					<p>参数</p>
+					<p>分层结构</p>
 				</div>
 				<!--参数展示-->
 				<div id="parameter_show">
@@ -377,12 +377,41 @@
 					</div>
 
 				</div>
-				<div class="drillUpAndDrillDownSelection" style="display: none;">
-						<span class="drillUp">上钻</span>
-						<span class="levelTitle">无</span>
-						<span class="drillDown">下钻</span>
-						<ul class="drillSelctionList"></ul>
+				<!-- 上下钻操作框 -->
+				<div class="drillUpAndDrillDownSelection">
+						<p class="selectDown clear">
+							<span>选择</span>
+							<span class='shadowFu'> : </span>
+							<span class='mdShow'></span>
+						</p>
+						<p class='selectToValue clear'>
+							<span class='drillValue'></span>
+							<span class='shadowFu'> : </span>
+							<span class='drillData'></span>
+						</p>
+						<div class='drillWrap'>
+							<span class="drillUp selectDownBtn">上钻</span>
+							<span class="levelTitle"></span>
+							<span class="drillDown selectDownBtn">下钻</span>
+						</div>
+						<div class="drillSelctionList">
+							<!-- 搜索框 -->
+						<div class="drillDownSearch">
+							<div class="drillDownSearchImg">
+								<img src={% static "dashboard/img/search.png" %} alt="search">
+							</div>
+							<input type="text" placeholder="请选择下钻维度" class="drillDownSearchInput">
+						</div>
+
+
+							<!-- 维度展示区域 -->
+							<ul>
+									<li>country</li>
+									<li>city</li>
+							</ul>
+						</div>
 				</div>
+
 			</div>
 		</div>
 

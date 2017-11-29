@@ -72,7 +72,7 @@ html,body{-webkit-user-select:none;}
 #right_folder_show_are{float: left;height: 100%;box-sizing: border-box;margin-left: 200px;background: #f1f2f4;}
 
 .view_folder_show_area{width: 100%;box-sizing:border-box;padding: 0px 10px;overflow-y: auto;background:#f1f2f4}
-.view_folder_show_area>ul{margin: 0;padding: 0;position: absolute !important;width: 100% !important;}
+.view_folder_show_area>ul{margin: 0;padding: 0;position: absolute !important;/*width: 100% !important;*/}
 /*#right_folder_show_are .view_folder_show_area ul li{transition: none;}*/
 .right_folder_name_show{float: left;margin:20px 0px 10px 20px;display: none;height: 24px;line-height: 24px;}
 .right_folder_name_show .right_folder_name_show_img{width: 14px;height: 14px;vertical-align: middle;float: left;margin: -2px 10px 0px 0px}

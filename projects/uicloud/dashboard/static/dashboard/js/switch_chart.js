@@ -40,6 +40,7 @@ function beginDrawChart(edit_view){
 	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
 			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
 		}
+	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection").hide();
 	//行里维度度量的数量
 	var switch_row_di = drag_row_column_data["row"]["dimensionality"].length,
 

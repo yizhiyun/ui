@@ -169,7 +169,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
-			            endValue:15,
+			            endValue:dimensionality_need_show.length > 15 ? 15 : null,
 			          	handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
@@ -487,7 +487,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
-			            endValue:15,
+			            endValue:dimensionality_need_show.length > 15 ? 15 : null,
 			          	handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
@@ -690,7 +690,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				            		color:"#ff7e00"	
 				            },
 				            startValue:0,
-				            endValue:15,
+				            endValue:dimensionality_need_show.length > 15 ? 15 : null,
 				            orient:"horizontal",
 				            bottom:35,
 			          		handleSize:12,
@@ -825,7 +825,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]));
 	var all_measure = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]));
 	
-	console.log(drag_row_column_data_arr[storeNum_toview])
+	// console.log(drag_row_column_data_arr[storeNum_toview])
 
 	var commonLegend = [];
 	for (var k = 0;k <  all_measure.length;k++) {
@@ -1045,7 +1045,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
-			            endValue:15,
+			            endValue:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length > 15 ? 15 : null,
 			          	handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
@@ -1318,7 +1318,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
-			            endValue:15,
+			            endValue:dimensionality_show_data.length > 15 ? 15 : null,
 			            orient:"horizontal",
 				        bottom:35,
 				        left:"4%",
@@ -1792,7 +1792,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			            		color:"#ff7e00"
 			            },
 			            startValue:0,
-			            endValue:10,
+			            endValue:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15 ? 15 : null,
 						handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
@@ -1820,7 +1820,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			            		color:"#ff7e00"
 			            },
 			            startValue:0,
-			            endValue:10,
+			            endValue:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15 ? 15 : null,
 			            orient:"horizontal",
 				        bottom:25,
 			          	handleSize:12,
@@ -2284,7 +2284,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			            		color:"#ff7e00"	
 			            },
 			            startValue:0,
-			            endValue:15,
+			            endValue:dimensionality_show_data[dimensionality_show_data.length - 1].length >15 ? 15 : null,
 			          	handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
@@ -2576,7 +2576,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				            		color:"#ff7e00"	
 				            },
 				            startValue:0,
-				            endValue:15,
+				            endValue:dimensionality_show_data[dimensionality_show_data.length - 1].length > 15 ? 15 : null,
 				            orient:"horizontal",
 				            bottom:25,
 			          		handleSize:12,

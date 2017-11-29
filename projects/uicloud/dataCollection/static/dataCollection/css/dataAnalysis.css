@@ -126,7 +126,10 @@
 .mainDragArea #dragTableDetailInfo .imgBox img{position: absolute;margin: auto auto;left: 0;top: 0;right: 0;bottom: 0;}
 .ui-tooltip{font-size: 12px;color: #808080;background: white;opacity: 1;;border-radius: 6px;box-shadow: none;border: 0px;background: #dedede;}
 
-#tableDataDetailListPanel{position: absolute;border: 1px solid #dedede;font-size: 12px;background: white;text-align: center;right: 0;bottom: 0;border-left: 0px;z-index: 300;}
+
+
+.expression_show .mainContent{position: absolute;bottom:0px;left: 0}
+#tableDataDetailListPanel{position: absolute;border:1px solid #dedede;font-size: 12px;background: white;text-align: center;right: 0;bottom: 0;border-left: 0px;z-index: 300;}
 #tableDataDetailListPanel #closeableDataDetailListPanel{position: absolute;top: 0;z-index: 300;cursor: pointer;}
 #tableDataDetailListPanel .topInfo{height: 60px;border-left: 1px solid #dedede;}
 #tableDataDetailListPanel .topInfo div{heigt: 60px;float: right;margin-right: 20px;line-height: 60px;cursor: pointer;}

@@ -451,10 +451,26 @@
 
 		}
 
+		//移除报表更换默认显示报表
+		function deleteFolderChangeNew(now_folder_name){
+			if($("#pageStatementsModule .statement_li").length < 2){return;}
+			$("#pageStatementsModule .statement_li").each(function(index,ele){
+				if($(ele).children(".statement_li_content").children(".view_show_name_save").text() == now_folder_name){
+					if(index+1 >= $("#pageStatementsModule .statement_li").length){
+						loc_storage.setItem("now_add_view",$("#pageStatementsModule .statement_li").eq(0).children(".statement_li_content").children(".view_show_name_save").text());
+					}else{
+						loc_storage.setItem("now_add_view",$("#pageStatementsModule .statement_li").eq(index+1).children(".statement_li_content").children(".view_show_name_save").text());
+					}
+					
+				}
+			})
+		}
+
+
+
 
 		//点击报表更多按钮创建弹窗
 		function click_state_show(thele){
-			console.log($(thele),$(thele).parent().find("#new_state_wrap"))
 			if($(thele).parent().find("#new_state_wrap").length == 0){
 				$("#new_state_wrap").remove();
 				var new_state_show = $("<div id='new_state_wrap'><div class='new_state_content' id='change_name'>重命名</div><div class='new_state_content' id='show_hide_img'>显示隐藏视图</div><div class='new_state_content' id='delete_view'>删除</div></div>");
@@ -497,6 +513,11 @@
 									tempSaveDeleteViewDict["onlyFolder"] = tempSaveDeleteView;
 								}
 								
+								if(loc_storage.getItem("now_add_view") == now_folder_name){
+									loc_storage.removeItem("now_add_view");
+									deleteFolderChangeNew(now_folder_name);
+								}
+
 								if(sessionStorage.getItem("edit_view_now")){
 										if(sessionStorage.getItem("edit_view_now").split(",")[1] == now_folder_name){
 											 sessionStorage.removeItem("edit_view_now");
@@ -1053,7 +1074,15 @@
 
 			//根据报表显示其中的视图
 		function reason_view_drag(data_result,now_click_ele,click_view_btn){
-				saveViewShowArr[$(now_click_ele).text()] = saveViewShowArr[$(now_click_ele).text()] || [];
+				if(saveViewShowArr[$(now_click_ele).text()] != undefined){
+					saveViewShowArr[$(now_click_ele).text()] = saveViewShowArr[$(now_click_ele).text()] || [];
+				}else{
+					saveViewShowArr = {};
+					saveViewShowArr[$(now_click_ele).text()] = [];
+					$("#pageStatementsModule .gridster").html("");
+					$("#pageStatementsModule .gridster").append($("<ul></ul>"));
+				}
+
 				var view_true_show = [];
 				var view_true_false = [];
 				tablelist_location = {};
@@ -1091,8 +1120,8 @@
 				view_count_save = 0;
 				//清空选择框
 				$(".view_folder_select").html("");
-				$(".gridster").html("");
-				$(".gridster").append($("<ul></ul>"));
+				// $(".gridster").html("");
+				// $(".gridster").append($("<ul></ul>"));
 
 				var count = -1;
 
@@ -1500,6 +1529,8 @@
 						loc_storage.setItem("now_add_view",$(ele).text());
 						saveViewShowArr = {};
 						saveViewShowArr[$(ele).text()] = [];
+						$(".gridster").html("");
+						$(".gridster").append($("<ul></ul>"));
 						reason_view_drag(data_result,$(ele),click_view_btn);
 						small_view_click_hide();
 					}
@@ -2126,6 +2157,7 @@
 								post_dict["calculation"] = "null";
 								post_dict["viewstyle"] = "null";
 								post_dict["customcalculate"] = "null";
+								post_dict["sequential"] = "null";
 								$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 									if(result["status"] == "false"){
 										$(".click_new_folder_input").css("borderColor","red");

@@ -21,6 +21,19 @@ function initWindowSize(doc,win,paHeight){
 
 }
 
+//数组去重
+Array.prototype.unique3 = function(){
+ var res = [];
+ var json = {};
+ for(var i = 0; i < this.length; i++){
+  if(!json[this[i]]){
+   res.push(this[i]);
+   json[this[i]] = 1;
+  }
+ }
+ return res;
+}
+
 function inputSearch(ele,activeClass,showContent,md){
     //报表弹窗筛选功能
   $(ele).on("input",function(){

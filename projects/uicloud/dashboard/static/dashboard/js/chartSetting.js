@@ -62,7 +62,7 @@ function dahboardSetting_function(){
 		  			 event.stopPropagation();
 		  			 // console.log(currentColorGroupName);
 		  			 currentColorGroupName = $(this).siblings(".colorName").text();
-		  			 console.log(currentColorGroupName);
+		  			 // console.log(currentColorGroupName);
 
 		  			 // 图形改变颜色
 		  			 var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
@@ -73,7 +73,7 @@ function dahboardSetting_function(){
 		  			 $("#project_style .module_style .color_control .defaultColors span.color_flag").text(currentColorGroupName);
 		  			 $("#project_style .module_style .color_control .selectedColors span").each(function(index,ele){
 		  			 	// console.log(allColorsDict[currentColorGroupName][index]);
-		  			 	console.log(index);
+		  			 	// console.log(index);
 						$(ele).css("background",allColorsDict[currentColorGroupName][index]);
 					});
 
