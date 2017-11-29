@@ -238,8 +238,9 @@
 		}
 		statementsinit();
 
-		function searchFun(){
 		//搜索功能
+		function searchFun(){
+			$("#pageStatementsModule #statements_left_bar #state_left_bar_title #statements_left_search").unbind("click");
 			$("#pageStatementsModule #statements_left_bar #state_left_bar_title #statements_left_search").click(function(event){
 				event.stopPropagation();
 				if($(this).parents("#statements_left_bar").find(".view_search").css("display") == "block"){
@@ -250,7 +251,7 @@
 					},300);
 
 				}else{
-					$(this).parents("#statements_left_bar").find(".view_search_input").focus();
+					// $(this).parents("#statements_left_bar").find(".view_search_input").focus();
 					$(this).parents("#statements_left_bar").find(".view_search").show(300);
 					$(this).parents("#statements_left_bar").find(".viewTableShow").stop(true).animate({
 						"height":$(this).parents("#statements_left_bar").height() - 22 - 38 + "px",

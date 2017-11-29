@@ -60,7 +60,7 @@ function one_de_one_me_handle (chart_type_need) {
 				{
 					  	text: "单位: "+valueUnitValue,
 					  	show:true,
-					  	bottom:0,
+					  	bottom:40,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -70,7 +70,7 @@ function one_de_one_me_handle (chart_type_need) {
 			    legend:{
 			   	 	data:[drag_measureCalculateStyle[need_handle_measureName]],
 			   	 	left:"center",
-			   	 	bottom:0,
+			   	 	bottom:40,
 			   	 	width:"60%",
 
 			    },
@@ -119,7 +119,9 @@ function one_de_one_me_handle (chart_type_need) {
 			     }
 			 	},
 			    grid: {
-			        containLabel: true
+			        containLabel: true,
+			        left:50,
+			        bottom:120
 			    },
 			    toolbox: {
 			        show: true,
@@ -153,14 +155,16 @@ function one_de_one_me_handle (chart_type_need) {
 			    		type: 'slider',
            			 	show: dimensionality_need_show.length > 15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: [0],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
+			            bottom:0,
 			            startValue:0,
 			            endValue:15,
 			            handleSize:12,
@@ -244,7 +248,7 @@ function one_de_one_me_handle (chart_type_need) {
 					},
 					  {
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -300,7 +304,7 @@ function one_de_one_me_handle (chart_type_need) {
 					legend: {
 						type: 'scroll',
 						left: 'center',
-						bottom:0,
+						bottom:40,
 						data: dimensionality_need_show,
 						width:"60%",
 					},
@@ -309,7 +313,7 @@ function one_de_one_me_handle (chart_type_need) {
 						name: drag_measureCalculateStyle[need_handle_measureName],
 						type: "pie",
 						radius: "65%",
-						center: ["50%", "50%"],
+						center: ["50%", "40%"],
 						data: measure_need_show,
 						label: {
 			                normal: {
@@ -361,7 +365,7 @@ function one_de_one_me_handle (chart_type_need) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -403,7 +407,7 @@ function one_de_one_me_handle (chart_type_need) {
 				legend:{
 					data:[drag_measureCalculateStyle[need_handle_measureName]],
 					left: 'center',
-					bottom:0,
+					bottom:40,
 					width:"60%",
 				},
 				toolbox: {
@@ -422,7 +426,9 @@ function one_de_one_me_handle (chart_type_need) {
 			        itemGap:30
 				},
 				 grid: {
-			        containLabel: true
+			        containLabel: true,
+			        left:50,
+			        bottom:120
 			    },
 				xAxis:[
 					{
@@ -442,14 +448,16 @@ function one_de_one_me_handle (chart_type_need) {
 			    		type: 'slider',
            			 	show: dimensionality_need_show.length > 15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: [0],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
+			            bottom:0,
 			            startValue:0,
 			            endValue:15,
 			            handleSize:12,
@@ -535,7 +543,7 @@ function one_de_one_me_handle (chart_type_need) {
 				    },
 				    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -546,7 +554,7 @@ function one_de_one_me_handle (chart_type_need) {
 				    legend:{
 				    		data:[drag_measureCalculateStyle[need_handle_measureName]],
 				    		left:"center",
-				    		bottom:0,
+				    		bottom:40,
 				    		width:"60%",
 				    },
 				    color:allColorsDict[currentColorGroupName],
@@ -625,25 +633,29 @@ function one_de_one_me_handle (chart_type_need) {
 						nameLocation:"end",
 				    },
 				    grid: {
-			      		  containLabel: true
+			      		  containLabel: true,
+			      		  left:50,
+			      		  bottom:120
 			  		  },
 				      dataZoom:[
 			    			{
 				    		type: 'slider',
 	           			 	show: dimensionality_need_show.length > 15,
 	           			 	filterMode:"filter",
-	           			 	backgroundColor:"#dedede",
-	           			 	fillerColor:"#ff7e00",
+	           			 	backgroundColor:"#f5f5f5",
+	           			 	fillerColor:"#dedede",
+	           			 	borderColor:"#f5f5f5",
 	           			 	showDataShadow:false,
 				            yAxisIndex: [0],
 				            height:10,
 				            handleStyle:{
-				            		color:"#ff7e00"
+				            		color:"#dedede"
 				            },
 				            startValue:0,
 				            endValue:15,
 				            orient:"horizontal",
-				            bottom:35,
+				            // bottom:35,
+				            bottom:0,
 			            	handleSize:12,
 			            	maxValueSpan:15,
 			            	throttle:100,
@@ -810,7 +822,7 @@ function many_de_many_me_handle(chart_type_need){
 					},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -871,7 +883,7 @@ function many_de_many_me_handle(chart_type_need){
 	    			legend: {
 	       		 	data:commonLegend,
 	       		 	left:"center",
-	       		 	bottom:0,
+	       		 	bottom:40,
 	       		 	width:"60%",
 	    			},
 	    			grid: [],
@@ -926,7 +938,33 @@ function many_de_many_me_handle(chart_type_need){
 						if(!dimensionality_show_data_arr[dimensionality_i]){
 							dimensionality_show_data_arr[dimensionality_i] = [aData[aDimensionality]];
 						}else{
-							dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+							//dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+						
+							var index = dimensionality_show_data_arr[dimensionality_i].indexOf(aData[aDimensionality]);
+							if(index == -1){
+								dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+							}else if(index != -1){
+								//dimensionality_show_data_arr[dimensionality_i].push("YZYPD" + aData[aDimensionality]);
+								// if(all_dimensionality[dimensionality_show_data_arr.length - 1] != all_dimensionality[dimensionality_i]){
+								// 	dimensionality_show_data_arr[dimensionality_i].push("YZYPD" + aData[aDimensionality]);
+								// }else{
+								// 	dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+								// }
+								if(all_dimensionality[dimensionality_show_data_arr.length - 1] != all_dimensionality[dimensionality_i]){
+									var lastVal = dimensionality_show_data_arr[dimensionality_i][dimensionality_show_data_arr[dimensionality_i].length-1];
+									if(/YZYPD/.test(lastVal)){
+										lastVal = lastVal.split("YZYPD")[1];
+									}
+									if(lastVal == aData[aDimensionality]){
+									// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+										dimensionality_show_data_arr[dimensionality_i].push("YZYPD" + aData[aDimensionality]);
+									}else{
+										dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+									}
+								}else{
+									dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+								}
+							}
 						}
 					}
 				}
@@ -936,22 +974,26 @@ function many_de_many_me_handle(chart_type_need){
 						name:all_dimensionality[i],
 						nameLocation:"start",
 						nameGap:25,
+						nameRotate:-15,
 						type: 'category',
 						boundaryGap:false,
-						data:dimensionality_show_data_arr[i]	,
+						data:dimensionality_show_data_arr[i],
 						axisLabel:{
 							rotate:-15,
 							fontSize:10,
 							interval:0,
-							color:"black"
+							color:"black",
+							interval:function(index,value){return !/^YZYPD/.test(value)}
 						},
 						gridIndex:dimensionality_show_data_arr.length - 1 - i
 					}
 					var aGrid = {
 						containLabel:true,
 					}
-					aGrid["left"] = "10%";
-					aGrid["bottom"] = 60 + 40* i;
+					// aGrid["left"] = "10%";
+					// aGrid["bottom"] = 60 + 40* i;
+					aGrid["left"] = "5%";
+					aGrid["bottom"] = 120 + 40 * i;
 					if(i != dimensionality_show_data_arr.length - 1){
 						aGrid["tooltip"] = {show:false};
 					}
@@ -985,14 +1027,16 @@ function many_de_many_me_handle(chart_type_need){
 			    		type: 'slider',
            			 	show: dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length > 15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
+			            bottom:0,
 			            // orient:"horizontal",
 			            startValue:0,
 			            endValue:15,
@@ -1049,7 +1093,7 @@ function comparisonStrip_generate_fun(){
 					},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1060,7 +1104,7 @@ function comparisonStrip_generate_fun(){
 					legend: {
 						data: commonLegend,
 						left:"center",
-						bottom:0,
+						bottom:40,
 						width:"60%",
 						textStyle: {
 							color: '#00000',
@@ -1115,20 +1159,23 @@ function comparisonStrip_generate_fun(){
 						show: false,
 						left: '4%',
 						top: 60,
-						bottom: 60,
+						// bottom: 60,
+						bottom:120,
 						containLabel: true,
 						width: '46%',
 					}, {
 						show: false,
 						left: '50.5%',
 						top: 80,
-						bottom: 60,
+						// bottom: 60,
+						bottom:120,
 						width: '0%',
 					}, {
 						show: false,
 						right: '4%',
 						top: 60,
-						bottom: 60,
+						// bottom: 60,
+						bottom:120,
 						containLabel: true,
 						width: '46%',
 					}, ],
@@ -1249,18 +1296,20 @@ function comparisonStrip_generate_fun(){
 			    	 	type: 'slider',
            			 	show: dimensionality_show_data.length > 15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            yAxisIndex: [0,1,2],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
 			            startValue:0,
 			            endValue:15,
 			            orient:"horizontal",
-				        bottom:35,
+				        // bottom:35,
+				        bottom:0,
 				        left:"4%",
 				        right:"4%",
 			            handleSize:12,
@@ -1417,7 +1466,7 @@ function comparisonStrip_generate_fun(){
 					},
 						{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1428,7 +1477,7 @@ function comparisonStrip_generate_fun(){
 					legend:{
 						data:[drag_measureCalculateStyle[measureName]],
 						left:'center',
-						bottom:0,
+						bottom:40,
 						width:"60%",
 					},
 					 grid: [],
@@ -1571,7 +1620,8 @@ function comparisonStrip_generate_fun(){
 					},
 					label:{
 						normal:{
-							show:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length < 25,
+							show:false,
+							// show:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length < 25,
 							position:"insideRight",
 							formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -1592,9 +1642,11 @@ function comparisonStrip_generate_fun(){
 			for (var k = need_show_dimensionality_arr.length - 1;k >= 0;k--){
 				var obj = {
 					name:need_show_dime_name_arr[k],
-					nameLocation:"start",
-					nameGap:25,
-					nameRotate:-25,
+					// nameLocation:"start",
+					nameLocation:"end",
+					nameGap:10,
+					// nameRotate:-25,
+					nameRotate:15,
 					type: 'category',
 					axisTick:{
 						inside:false,
@@ -1651,8 +1703,10 @@ function comparisonStrip_generate_fun(){
 						option["series"].push(aSeriesData);
 
 					}
-					aGrid["left"] = "10%";
-					aGrid["bottom"] = 60 + 40*k;
+					// aGrid["left"] = "10%";
+					// aGrid["bottom"] = 60 + 40*k;
+					aGrid["left"] = "5%";
+					aGrid["bottom"] = 120 + 40 * k;
 
 
 				}else{
@@ -1690,8 +1744,11 @@ function comparisonStrip_generate_fun(){
 						option["series"].push(aSeriesData);
 					}
 					aGrid["containLabel"] = false;
-					aGrid["left"] =  60 + 70*k;
-					aGrid["bottom"] = 60;
+					// aGrid["left"] =  60 + 70*k;
+					// aGrid["left"] =  170 + 70*k;
+					// aGrid["bottom"] = 60;
+					aGrid["left"] =  170 + 70*k;
+					aGrid["bottom"] = 120;
 
 				}
 				if(k != need_show_dimensionality_arr.length - 1){
@@ -1712,13 +1769,15 @@ function comparisonStrip_generate_fun(){
 			    		type: 'slider',
            			 	show: need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
+			            bottom:0,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
 			            startValue:0,
 			            endValue:10,
@@ -1740,18 +1799,20 @@ function comparisonStrip_generate_fun(){
 			    		type: 'slider',
            			 	show: need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            yAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
 			            startValue:0,
 			            endValue:10,
 			            orient:"horizontal",
-				        bottom:25,
+				        // bottom:25,
+				        bottom:0,
 			          	handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
@@ -1860,7 +1921,7 @@ function comparisonStrip_generate_fun(){
 				},
 					{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1871,7 +1932,7 @@ function comparisonStrip_generate_fun(){
 				legend:[{
 					data:categorys,
 					left:"center",
-					bottom:0,
+					bottom:40,
 					type:'scroll',
 					width:"60%",
 				}],
@@ -2036,7 +2097,26 @@ function comparisonStrip_generate_fun(){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
 							// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							// if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+							// 	dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							// }else{
+							// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							// }
+							if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+								var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
+								if(/YZYPD/.test(lastVal)){
+									lastVal = lastVal.split("YZYPD")[1];
+								}
+								if(lastVal == aData[all_dimensionality[k]]){
+								// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+									dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+								}else{
+									dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+								}
+							}else{
+								dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							}
 						}
 					}
 				}
@@ -2047,8 +2127,9 @@ function comparisonStrip_generate_fun(){
 					"show":true,
 					"name":all_dimensionality[i],
 					"nameGap":30,
-					"nameLocation":"start",
-
+					// "nameLocation":"start",
+					"nameLocation":"end",
+					"nameRotate":15,
 					"type":"category",
 
 					axisTick:{
@@ -2058,8 +2139,19 @@ function comparisonStrip_generate_fun(){
 					axisLabel:{
 						color:"black",
 						rotate:15,
+						// rotate:45,
 						fontSize:10,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						// formatter:function(value,index)  
+      //                           {  
+      //                               debugger  
+      //                               if (index % 2 != 0) {  
+      //                                   return '\n\n' + value;  
+      //                               }  
+      //                               else {  
+      //                                   return value;  
+      //                               }  
+      //                           }  
 					},
 					position:"bottom",
 					"data":dimensionality_show_data[i],
@@ -2069,7 +2161,7 @@ function comparisonStrip_generate_fun(){
 					containLabel:true,
 				}
 				aGrid["left"] = "10%";
-				aGrid["bottom"] = 60 + 40*(dimensionality_show_data.length - 1 - i);
+				aGrid["bottom"] = 120 + 40*(dimensionality_show_data.length - 1 - i);
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
 					var obj = {
@@ -2120,7 +2212,7 @@ function comparisonStrip_generate_fun(){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2174,7 +2266,7 @@ function comparisonStrip_generate_fun(){
 			   legend: {
 			        data: commonLegend,
 					left:"center",
-					bottom:0,
+					bottom:40,
 					width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName],
@@ -2183,14 +2275,16 @@ function comparisonStrip_generate_fun(){
 			    		type: 'slider',
            			 	show: dimensionality_show_data[dimensionality_show_data.length - 1].length >15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
+			            bottom:0,
 			            startValue:0,
 			            endValue:15,
 			            handleSize:12,
@@ -2287,10 +2381,7 @@ function comparisonStrip_generate_fun(){
 				                    			// console.log(params.value);
 				                    			return params.value;
 				                    		}
-				                    		// var relVal = params.value;
-				                    		// if(relVal > 9999){
-				                    		// 	return relVal/10000 + "万";
-				                    		// }
+				   
 
 			                  		 },
 								}
@@ -2301,18 +2392,33 @@ function comparisonStrip_generate_fun(){
 						"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]],"measureName":all_measure[j]});
 					}
 				}
+
 				var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
 				for(var k = 0;k < dimension_length;k++){
-					if(!dimensionality_show_data[k]){
+					if(!dimensionality_show_data[k]){				
 						dimensionality_show_data[k] = [aData[all_dimensionality[k]]];
 					}else{
+						//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						var index = dimensionality_show_data[k].indexOf(aData[all_dimensionality[k]]);
 						if(index == -1){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
-							//dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+								var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
+								if(/YZYPD/.test(lastVal)){
+									lastVal = lastVal.split("YZYPD")[1];
+								}
+								if(lastVal == aData[all_dimensionality[k]]){
+								// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+									dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+								}else{
+									dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+								}
+							}else{
+								dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							}
 						}
+
 					}
 				}
 			}
@@ -2320,6 +2426,13 @@ function comparisonStrip_generate_fun(){
 
 
 			for(var i = 0;i < dimensionality_show_data.length;i++){
+				var arr = [];
+				for(var j = 0;j < dimensionality_show_data[i].length; j ++){
+					arr.push(dimensionality_show_data[i][j].length);
+				}
+				var maxLength = Math.max.apply(null, arr);	
+				
+
 				var aY = {
 					"show":true,
 					"name":all_dimensionality[i],
@@ -2327,6 +2440,7 @@ function comparisonStrip_generate_fun(){
 					"nameRotate":15,
 					"nameLocation":"end",
 					"type":"category",
+					//"position":"left",
 					// "offset":maxLength,
 					// "boundaryGap": ['20%', '20%'],
 
@@ -2339,13 +2453,38 @@ function comparisonStrip_generate_fun(){
 						rotate:15,
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
-						// formatter: function (value, index) {
-						//     if (value>=10000){
-						//         return value/10000 + '万';
-						//     }
-						//     else{
-						//         return value ;
-						//     }
+						// formatter:function(params){
+						// 	    var newParamsName = "";// 最终拼接成的字符串
+						// 	    var paramsNameNumber = params.length;// 实际标签的个数
+						// 	    var provideNumber = 6;// 每行能显示的字的个数
+						// 	    var rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+						// 	    /**
+						// 	     * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+						// 	     */
+						// 	    // 条件等同于rowNumber>1
+						// 	    if (paramsNameNumber > provideNumber) {
+						// 	        /** 循环每一行,p表示行 */
+						// 	        for (var p = 0; p < rowNumber; p++) {
+						// 	            var tempStr = "";// 表示每一次截取的字符串
+						// 	            var start = p * provideNumber;// 开始截取的位置
+						// 	            var end = start + provideNumber;// 结束截取的位置
+						// 	            // 此处特殊处理最后一行的索引值
+						// 	            if (p == rowNumber - 1) {
+						// 	                // 最后一次不换行
+						// 	                tempStr = params.substring(start, paramsNameNumber);
+						// 	            } else {
+						// 	                // 每一次拼接字符串并换行
+						// 	                tempStr = params.substring(start, end) + "\n";
+						// 	            }
+						// 	            newParamsName += tempStr;// 最终拼成的字符串
+						// 	        }
+
+						// 	    } else {
+						// 	        // 将旧标签的值赋给新标签
+						// 	        newParamsName = params;
+						// 	    }
+						// 	    //将最终的字符串返回
+						// 	    return newParamsName
 						// }
 					},
 					"data":dimensionality_show_data[i],
@@ -2356,10 +2495,18 @@ function comparisonStrip_generate_fun(){
 				var aGrid = {
 					containLabel:false,
 					show:false,
-
 				}
+
 				aGrid["left"] = 60 + i * (60 + i);
-				aGrid["bottom"] = 60;
+				// aGrid["left"] = 50 + (maxLength * 5) + i * (maxLength  + 150);
+
+				//暂待定   满足两维度一度量
+				// aGrid["left"] = maxLength * i * 10 + 30 + maxLength * (i+1) * 7 ;
+				// aGrid["bottom"] = 60;
+				aGrid["bottom"] = 120;
+
+
+				
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
 				}
@@ -2404,7 +2551,8 @@ function comparisonStrip_generate_fun(){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	bottom:40,
+					  	// bottom:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2458,7 +2606,8 @@ function comparisonStrip_generate_fun(){
 			    legend: {
 			        data: commonLegend,
 			        left:"center",
-			        bottom:0,
+			        // bottom:0,
+			        bottom:40,
 			        width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName],
@@ -2482,18 +2631,23 @@ function comparisonStrip_generate_fun(){
 				    		type: 'slider',
 	           			 	show: dimensionality_show_data[dimensionality_show_data.length - 1].length > 15,
 	           			 	filterMode:"filter",
-	           			 	backgroundColor:"#dedede",
-	           			 	fillerColor:"#ff7e00",
+	           			 	// backgroundColor:"#dedede",
+	           			 	// fillerColor:"#ff7e00",
+	           			 	backgroundColor:"#f5f5f5",
+	           			 	filterColor:"#dedede",
 	           			 	showDataShadow:false,
 				            yAxisIndex: dataZoomXindexArray,
 				            height:10,
+				            borderColor:"#f5f5f5",
 				            handleStyle:{
-				            		color:"#ff7e00"
+				            		// color:"#ff7e00"
+				            		color:"#dedede"
 				            },
 				            startValue:0,
 				            endValue:15,
 				            orient:"horizontal",
-				            bottom:25,
+				            // bottom:25,
+				            bottom:0,
 				            handleSize:12,
 			            	maxValueSpan:15,
 			           		throttle:100,
@@ -2501,9 +2655,9 @@ function comparisonStrip_generate_fun(){
 			    			},
 			    			{
 			    			type: 'slider',
-           			 	show: false,
-           			 	filterMode:"empty",
-			            xAxisIndex: dataZoomXindexArray,
+	           			 	show: false,
+	           			 	filterMode:"empty",
+				            xAxisIndex: dataZoomXindexArray,
 			    			}
 			    ],
 			    grid: gridArr,
@@ -2514,6 +2668,7 @@ function comparisonStrip_generate_fun(){
 
 				//清除上一个图形的图例
 				mycharts.clear();
+
 
 				//使用刚指定的配置项和数据显示图标
 				mycharts.setOption(option);
@@ -2556,7 +2711,8 @@ function comparisonStrip_generate_fun(){
 		    },
 		    	{
 					  	text: "单位: "+valueUnitValue,
-					  	bottom:0,
+					  	right:0,
+					  	bottom:100,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2597,10 +2753,13 @@ function comparisonStrip_generate_fun(){
 
 		    },
 		    legend: {
+		    	type: 'scroll',
+		    	orient: 'vertical',
+		        x:'right',
 		        data: commonLegend,
-		        left:"center",
-		        bottom:0,
-		        width:"60%",
+		        // left:"center",
+		        bottom:40,
+		        width:"60%", 
 		    },
 		    	color:allColorsDict[currentColorGroupName],
 			toolbox: {

@@ -1007,34 +1007,7 @@
         })
 
 
-      // $(window).resize(function(){
-      //   $("#tableDataDetailListPanel").css("overflow","auto");
-      // });
 
-      // window.onresize = adjust;
-      // adjust();
-      // function adjust(){
-
-      //    // alert(1)
-      //  $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").css("overflow-x","auto");
-
-      // }
-
-
-      // window.onresize = autoSizetableDataDetailListPanel;
-      // autoSizetableDataDetailListPanel();
-      // function autoSizetableDataDetailListPanel(){
-
-      //    alert(1)
-      // }
-
-      // window.onresize = function(){
-      //   autoSizetableDataDetailListPanel();
-      // }
-      // function autoSizetableDataDetailListPanel(){
-      //     alert(1);
-      //     // $(".rightConent #analysisContainer #tableDataDetailListPanel .mainContent").scrollLeft();
-      // }
 
       // 取消滑动事件的冒泡行为
       $("#analysisContainer .tablesOfaData").scroll(function(event){
@@ -1346,7 +1319,8 @@
           ele.css("margin-left","20px");
 
           $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
-          $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
+          $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).hide();
+          // $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
           $(".msg").hide();
           $("#buildDataPanelView .build-body .cube-name-radio .cover-original-cube").hide();
 
@@ -1403,7 +1377,8 @@
                   $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("float","left");
 
                   $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
-                  $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
+                  $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).hide();
+                  // $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).css("display","none");
                   $(".msg").hide();
 
 
@@ -1511,9 +1486,17 @@
 
               //重构之后的操作
           if(preBuildDataName!=null){
-            $("#buildDataPanelView .build-body .cube-name-radio .new-cube").eq(0).addClass("active");
-            $("#buildDataPanelView .build-body .cube-name-radio .new-cube").eq(0).css("margin-left","20px");
-            $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
+             // 如果是未构建的数据表，执行这部分
+              var len = $('div[id^="hdfs"]').length;
+              if(len == 0){
+                  $("#buildDataPanelView .build-body .cube-name-radio .new-cube").addClass("active");
+                  $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("margin-left","20px");
+                  $("#buildDataPanelView .build-body .cube-name-radio").css("height","22px");
+
+                  $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
+                  $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).hide();
+                  $(".msg").hide();
+              }
           }
 
           $(".maskLayer").show();
