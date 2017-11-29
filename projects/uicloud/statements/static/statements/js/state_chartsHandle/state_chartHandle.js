@@ -66,7 +66,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -77,7 +77,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			    legend:{
 			   	 	data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 			   	 	left:"center",
-			   	 	bottom:0,
+			   	 	bottom:40,
 			   	 	width:"60%",
 			    },
 			    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
@@ -126,7 +126,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			     }
 			 	},
 			    grid: {
-			        containLabel: true
+			        containLabel: true,
+			        left:50,
+			        bottom:120
 			    },
 			    toolbox: {
 			        show: true,
@@ -160,14 +162,16 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			    		type: 'slider',
            			 	show: dimensionality_need_show.length > 15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: [0],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#dedede"	
 			            },
+			            bottom:0,
 			            startValue:0,
 			            endValue:dimensionality_need_show.length > 15 ? 15 : null,
 			          	handleSize:12,
@@ -264,7 +268,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					},
 					  {
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -320,7 +324,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					legend: {
 						type: 'scroll',
 						left: 'center',
-						bottom:0,
+						bottom:40,
 						data: dimensionality_need_show,
 						width:"60%",
 					},
@@ -329,7 +333,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 						name: drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName],
 						type: "pie",
 						radius: "65%",
-						center: ["50%", "50%"],
+						center: ["50%", "40%"],
 						data: measure_need_show,
 						label: {
 			                normal: {
@@ -397,7 +401,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -439,7 +443,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				legend:{
 					data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 					left: 'center',
-					bottom:0,
+					bottom:40,
 					width:"60%",
 				},
 				toolbox: {
@@ -458,7 +462,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			        itemGap:30
 				},
 				 grid: {
-			        containLabel: true
+			        containLabel: true,
+			        left:50,
+			        bottom:120
 			    },
 				xAxis:[
 					{
@@ -478,14 +484,16 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			    		type: 'slider',
            			 	show: dimensionality_need_show.length > 15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: [0],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#dedede"	
 			            },
+			            bottom:0,
 			            startValue:0,
 			            endValue:dimensionality_need_show.length > 15 ? 15 : null,
 			          	handleSize:12,
@@ -584,7 +592,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				    },
 				    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -595,7 +603,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				    legend:{
 				    		data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 				    		left:"center",
-				    		bottom:0,
+				    		bottom:40,
 				    		width:"60%",
 				    },
 				    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
@@ -674,25 +682,29 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 						nameLocation:"end",
 				    },
 				    grid: {
-			      		  containLabel: true
+			      		  containLabel: true,
+			      		  left:50,
+			      		  bottom:120
 			  		  },
 				      dataZoom:[
 			    			{
 				    		type: 'slider',
 	           			 	show: dimensionality_need_show.length > 15,
 	           			 	filterMode:"filter",
-	           			 	backgroundColor:"#dedede",
-	           			 	fillerColor:"#ff7e00",
+	           			 	backgroundColor:"#f5f5f5",
+	           			 	fillerColor:"#dedede",
+	           			 	borderColor:"#f5f5f5",
 	           			 	showDataShadow:false,
 				            yAxisIndex: [0],
 				            height:10,
 				            handleStyle:{
-				            		color:"#ff7e00"	
+				            		color:"#dedede"	
 				            },
 				            startValue:0,
 				            endValue:dimensionality_need_show.length > 15 ? 15 : null,
 				            orient:"horizontal",
-				            bottom:35,
+				            // bottom:35,
+				            bottom:0,
 			          		handleSize:12,
 			            	maxValueSpan:15,
 			            	throttle:100,
@@ -871,7 +883,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 					},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -932,11 +944,12 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 	    			legend: {
 	       		 	data:commonLegend,
 	       		 	left:"center",
-	       		 	bottom:0,
+	       		 	bottom:40,
 	       		 	width:"60%",
 	    			},
 	    			 grid: {
-			        containLabel: true
+			        containLabel: true,
+			        bottom:120
 			    },
 			    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 			    
@@ -985,7 +998,27 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 						if(!dimensionality_show_data_arr[dimensionality_i]){
 							dimensionality_show_data_arr[dimensionality_i] = [aData[aDimensionality]];
 						}else{
-							dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+							//dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+
+							var index = dimensionality_show_data_arr[dimensionality_i].indexOf(aData[aDimensionality]);
+							if(index == -1){
+								dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+							}else if(index != -1){
+								if(all_dimensionality[dimensionality_show_data_arr.length - 1] != all_dimensionality[dimensionality_i]){
+									var lastVal = dimensionality_show_data_arr[dimensionality_i][dimensionality_show_data_arr[dimensionality_i].length-1];
+									if(/YZYPD/.test(lastVal)){
+										lastVal = lastVal.split("YZYPD")[1];
+									}
+									if(lastVal == aData[aDimensionality]){
+									// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+										dimensionality_show_data_arr[dimensionality_i].push("YZYPD" + aData[aDimensionality]);
+									}else{
+										dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+									}
+								}else{
+									dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+								}
+							}
 						}
 					}
 				}
@@ -995,17 +1028,20 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 						name:all_dimensionality[i],
 						nameLocation:"start",
 						nameGap:25,
+						nameRotate:-15,
 						type: 'category',
 						boundaryGap:false,
 						position:"bottom",
 						offset:25*(dimensionality_show_data_arr.length - 1 - i),
-						data:dimensionality_show_data_arr[i]	,
+						data:dimensionality_show_data_arr[i],
 						axisLabel:{
 							rotate:-15,
 							fontSize:10,
 							interval:0,
-							color:"black"
+							color:"black",
+							interval:function(index,value){return !/^YZYPD/.test(value)}
 						},
+						// gridIndex:dimensionality_show_data_arr.length - 1 - i
 					}
 					option["xAxis"].push(obj);
 					option["yAxis"].push({type:"value",show:false,min:10,max:80});
@@ -1036,14 +1072,16 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 			    			type: 'slider',
            			 	show: dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length > 15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#dedede"	
 			            },
+			            bottom:0,
 			            startValue:0,
 			            endValue:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length > 15 ? 15 : null,
 			          	handleSize:12,
@@ -1109,7 +1147,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1120,7 +1158,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					legend: {
 						data: commonLegend,
 						left:"center",
-						bottom:0,
+						bottom:40,
 						width:"60%",
 						textStyle: {
 							color: '#00000',
@@ -1175,20 +1213,20 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						show: false,
 						left: '4%',
 						top: 60,
-						bottom: 60,
+						bottom: 120,
 						containLabel: true,
 						width: '46%',
 					}, {
 						show: false,
 						left: '50.5%',
 						top: 80,
-						bottom: 60,
+						bottom: 120,
 						width: '0%',
 					}, {
 						show: false,
 						right: '4%',
 						top: 60,
-						bottom: 60,
+						bottom: 120,
 						containLabel: true,
 						width: '46%',
 					}, ],
@@ -1309,18 +1347,20 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    		type: 'slider',
            			 	show: dimensionality_show_data.length > 15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            yAxisIndex: [0,1,2],
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#dedede"	
 			            },
 			            startValue:0,
 			            endValue:dimensionality_show_data.length > 15 ? 15 : null,
 			            orient:"horizontal",
-				        bottom:35,
+				        // bottom:35,
+				        bottom:0,
 				        left:"4%",
 				        right:"4%",
 			          	handleSize:12,
@@ -1488,7 +1528,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 						{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1499,7 +1539,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					legend:{
 						data:[drag_measureCalculateStyle_arr[storeNum_toview][measureName]],
 						left:'center',
-						bottom:0,
+						bottom:40,
 						width:"60%",
 					},
 					 grid: [],
@@ -1642,7 +1682,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 					label:{
 						normal:{
-							show:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length < 25,
+							show:false,
+							// show:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length < 25,
 							position:"insideRight",
 							formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -1663,9 +1704,11 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			for (var k = need_show_dimensionality_arr.length - 1;k >= 0;k--){
 				var obj = {
 					name:need_show_dime_name_arr[k],
-					nameLocation:"start",
-					nameGap:25,
-					nameRotate:-25,
+					nameLocation:"end",
+					// nameGap:25,
+					// nameRotate:25,
+					nameGap:10,
+					nameRotate:15,
 					type: 'category',
 					axisTick:{
 						inside:false,
@@ -1722,8 +1765,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						option["series"].push(aSeriesData);
 
 					}
-					aGrid["left"] = "10%";
-					aGrid["bottom"] = 60 + 40*k;
+					aGrid["left"] = "5%";
+					aGrid["bottom"] = 120 + 40*k;
 
 
 				}else{
@@ -1761,8 +1804,9 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						option["series"].push(aSeriesData);
 					}
 					aGrid["containLabel"] = false;
-					aGrid["left"] =  60 + 70*k;
-					aGrid["bottom"] = 60;
+					// aGrid["left"] =  60 + 70*k;
+					aGrid["left"] =  170 + 70*k;
+					aGrid["bottom"] = 120;
 
 				}
 				if(k != need_show_dimensionality_arr.length - 1){
@@ -1783,14 +1827,16 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    		type: 'slider',
            			 	show: need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
+			            bottom:0,
 			            startValue:0,
 			            endValue:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15 ? 15 : null,
 						handleSize:12,
@@ -1811,18 +1857,19 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    		type: 'slider',
            			 	show: need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            yAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"
+			            		color:"#dedede"
 			            },
 			            startValue:0,
 			            endValue:need_show_dimensionality_arr[need_show_dimensionality_arr.length - 1].length >15 ? 15 : null,
 			            orient:"horizontal",
-				        bottom:25,
+				        bottom:0,
 			          	handleSize:12,
 			            maxValueSpan:15,
 			            throttle:100,
@@ -1944,7 +1991,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -1955,7 +2002,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				legend:[{
 					data:categorys,
 					left:"center",
-					bottom:0,
+					bottom:40,
 					width:"60%",
 					type:'scroll',
 				}],
@@ -2128,7 +2175,26 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
 							// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							// if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+							// 	dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							// }else{
+							// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							// }
+							if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+								var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
+								if(/YZYPD/.test(lastVal)){
+									lastVal = lastVal.split("YZYPD")[1];
+								}
+								if(lastVal == aData[all_dimensionality[k]]){
+								// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+									dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+								}else{
+									dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+								}
+							}else{
+								dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							}
 						}	
 					}
 				}
@@ -2139,8 +2205,9 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					"show":true,
 					"name":all_dimensionality[i],
 					"nameGap":30,
-					"nameLocation":"start",
-					
+					// "nameLocation":"start",
+					"nameLocation":"end",
+					"nameRotate":15,
 					"type":"category",
 					
 					axisTick:{
@@ -2161,7 +2228,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					containLabel:true,
 				}
 				aGrid["left"] = "10%";
-				aGrid["bottom"] = 60 + 40*(dimensionality_show_data.length - 1 - i);		
+				aGrid["bottom"] = 120 + 40*(dimensionality_show_data.length - 1 - i);		
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
 					var obj = {
@@ -2212,7 +2279,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2266,7 +2333,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			   legend: {
 			        data: commonLegend,
 					left:"center",
-					bottom:0,
+					bottom:40,
 					width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
@@ -2275,14 +2342,16 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    		type: 'slider',
            			 	show: dimensionality_show_data[dimensionality_show_data.length - 1].length >15,
            			 	filterMode:"filter",
-           			 	backgroundColor:"#dedede",
-           			 	fillerColor:"#ff7e00",
+           			 	backgroundColor:"#f5f5f5",
+           			 	fillerColor:"#dedede",
+           			 	borderColor:"#f5f5f5",
            			 	showDataShadow:false,
 			            xAxisIndex: dataZoomXindexArray,
 			            height:10,
 			            handleStyle:{
-			            		color:"#ff7e00"	
+			            		color:"#dedede"	
 			            },
+			            bottom:0,
 			            startValue:0,
 			            endValue:dimensionality_show_data[dimensionality_show_data.length - 1].length >15 ? 15 : null,
 			          	handleSize:12,
@@ -2408,7 +2477,26 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						}else if(index != -1){
 							// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							// if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+							// 	dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+							// }else{
+							// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							// }
+							if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+								var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
+								if(/YZYPD/.test(lastVal)){
+									lastVal = lastVal.split("YZYPD")[1];
+								}
+								if(lastVal == aData[all_dimensionality[k]]){
+								// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+									dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+								}else{
+									dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+								}
+							}else{
+								dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+							}
 						}	
 					}
 				}
@@ -2444,7 +2532,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					
 				}
 				aGrid["left"] = 60 + i * (60 + i);
-				aGrid["bottom"] = 60;	
+				// aGrid["left"] = 150 + i * 60;
+				aGrid["bottom"] = 120;	
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
 				}
@@ -2489,7 +2578,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    },
 			    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:40,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2543,7 +2632,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    legend: {
 			        data: commonLegend,
 			        left:"center",
-			        bottom:0,
+			        bottom:40,
 			        width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
@@ -2567,18 +2656,19 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				    		type: 'slider',
 	           			 	show: dimensionality_show_data[dimensionality_show_data.length - 1].length > 15,
 	           			 	filterMode:"filter",
-	           			 	backgroundColor:"#dedede",
-	           			 	fillerColor:"#ff7e00",
+	           			 	backgroundColor:"#f5f5f5",
+	           			 	fillerColor:"#dedede",
+	           			 	borderColor:"#f5f5f5",
 	           			 	showDataShadow:false,
 				            yAxisIndex: dataZoomXindexArray,
 				            height:10,
 				            handleStyle:{
-				            		color:"#ff7e00"	
+				            		color:"#dedede"	
 				            },
 				            startValue:0,
 				            endValue:dimensionality_show_data[dimensionality_show_data.length - 1].length > 15 ? 15 : null,
 				            orient:"horizontal",
-				            bottom:25,
+				            bottom:0,
 			          		handleSize:12,
 			            	maxValueSpan:15,
 			            	throttle:100,
@@ -2657,7 +2747,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		    },
 		    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:0,
+					  	bottom:100,
+					  	right:0,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2698,10 +2789,13 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		    		
 		    },
 		    legend: {
+		    	type: 'scroll',
+		    	orient: 'vertical',
+		        x:'right',
 		        data: commonLegend,
-		        left:"center",
-		        bottom:0,
-		        width:"60%",
+		        // left:"center",
+		        bottom:40,
+		        width:"60%"
 		    },
 		    	color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 			toolbox: {

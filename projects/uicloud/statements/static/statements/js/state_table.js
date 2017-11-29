@@ -474,18 +474,58 @@ function reporting_col_card(saveIndexPage){
 						//console.log(aData);
 						var measureDiv = $("<div class='measureDiv'></div>");
 						//console.log(allMeasure.length);
+						$("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body").append(measureDiv);
+
 						if(allMeasure.length < 3){
 						for(var j = 0;j < allMeasure.length;j++){
 							var aMeasure = allMeasure[j];
 							//console.log(aMeasure);
-								var p = $("<p class=p"+j+">" + aMeasure +"</p>");
+							var tit = drag_measureCalculateStyle[aMeasure];
+								var p = $("<p class=p"+j+">" + tit +"</p>");
 								var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
 								measureDiv.append(p);
 								measureDiv.append(span);
-								var div = $("<div class='cardInfo'></div>");
+								$(p).data("measureInfo",aMeasure);
+
+								var div = $("<div class='cardInfo' style='display:none'></div>");
 								div.addClass(aMeasure);
 								measureDiv.append(div);
-								$(p).data("measureInfo",aMeasure);
+								$(p).unbind("mouseover");
+								$(p).mouseover(function(event){
+									event.stopPropagation();
+									var MeasureInfo = $(this).data("measureInfo");
+									var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0)
+									if(eval(statements_tonghuanbi_arr[indexNum_toview])[0].indexOf(MeasureInfo) != -1){
+											$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv .cardInfo").hide();
+											$(compareDiv).show();
+											compareDiv.find("p.compareP").show();
+											if($(this).hasClass('p0')){
+												$(compareDiv).css({"left":$(this).position().left + 'px',"top":$(this).position().top - 70 + 'px'});
+											}else{
+												$(compareDiv).css({"left":$(this).position().left + 'px',"top":$(this).position().top + 50 + 'px'});
+											}
+									}
+									if(eval(statements_tonghuanbi_arr[indexNum_toview])[1].indexOf(MeasureInfo) != -1){
+										$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv .cardInfo").hide();
+										$(compareDiv).show();
+										compareDiv.find("p.linkP").show();
+										if($(this).hasClass('p0')){
+											$(compareDiv).css({"left":$(this).position().left + 'px',"top":$(this).position().top - 70 + 'px'});
+										}else{
+											$(compareDiv).css({"left":$(this).position().left + 'px',"top":$(this).position().top + 50 + 'px'});
+										}
+									}
+								});
+								$(p).unbind("mouseleave");
+								$(p).mouseleave(function(event){
+									event.stopPropagation();
+									var MeasureInfo = $(this).data("measureInfo");
+									var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0);
+									$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv .cardInfo").hide();
+									compareDiv.find("p").hide();
+								});
+
+
 								var tongbiShowNum = 0;
 								var huanbiShowNum = 0;
 								if(aData["同比"+drag_measureCalculateStyle[aMeasure]]){
@@ -501,7 +541,7 @@ function reporting_col_card(saveIndexPage){
 
 								div.append(tongbiAp);
 								div.append(huanbiAp);
-
+								// measureDiv.css({"marginLeft":$(".new_view_main").width()/2-measureDiv.width()/2+'px',"marginTop":$(".new_view_main").height()/2-measureDiv.height()/2+'px'})
 
 								if(eval(statements_tonghuanbi_arr[indexNum_toview])[0].indexOf(aMeasure) != -1){
 									tongbiAp.show();
@@ -510,32 +550,15 @@ function reporting_col_card(saveIndexPage){
 									huanbiAp.show();
 								}
 
-							$(p).unbind("mouseover");
-							$(p).mouseover(function(event){
-								event.stopPropagation();
-								var MeasureInfo = $(this).data("measureInfo");
-								var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0)
-								if(eval(statements_tonghuanbi_arr[indexNum_toview])[0].indexOf(MeasureInfo) != -1){
-										compareDiv.find("p.compareP").show();
-								}
-								if(eval(statements_tonghuanbi_arr[indexNum_toview])[1].indexOf(MeasureInfo) != -1){
-									compareDiv.find("p.linkP").show();
-								}
-							});
-							$(p).unbind("mouseleave");
-							$(p).mouseleave(function(event){
-								event.stopPropagation();
-								var MeasureInfo = $(this).data("measureInfo");
-								var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0);
-								compareDiv.find("p").hide();
-							});
-							if(j != allMeasure.length - 1){
-								// measureDiv.append("<span class='seperate'>/</span>");
-								measureDiv.append("<br>");
-							}
+							
+							// if(j != allMeasure.length - 1){
+							// 	// measureDiv.append("<span class='seperate'>/</span>");
+							// 	measureDiv.append("<br>");
+							// }
+							var br = $("<br>");
+							measureDiv.append(br);
 						}
 						}
-						$("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body").append(measureDiv);
 						spinner.stop(target);
 					}
 				});

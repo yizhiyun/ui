@@ -163,16 +163,12 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 
 #view_show_wrap #card{min-width: 100%;min-height: 100%;font-size: 12px;position: absolute;left: 0;top: 0;height: 100%;width:100%;display: none;}
-#card .right_module .content_body #data_list_for_body .measureDiv{height:100%;margin:175px 470px;}
-#card .right_module .content_body #data_list_for_body .measureDiv .cardInfo{padding:16px;background:white;opacity:0.7;}
-#card .right_module .content_body #data_list_for_body .measureDiv .sps0{width:500px;}
-#card .right_module .content_body #data_list_for_body .measureDiv .sps1{width:500px;display: inline;}
+#card .right_module .content_body #data_list_for_body .measureDiv{float:left;height:100%;}
+#card .right_module .content_body #data_list_for_body .measureDiv .cardInfo{padding:16px;background-color:rgba(255,255,255,0.8);box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0;position: absolute;}
 #card .right_module .content_body #data_list_for_body .measureDiv .p0{font-weight: bold;font-size:20px;}
 #card .right_module .content_body #data_list_for_body .measureDiv .sp0{color:#202020;font-size:70px;display: inline-block;margin-top: 10px;}
-#card .right_module .content_body #data_list_for_body .measureDiv .p1{display: inline-block;color:#505050;font-size:20px;margin-top:10px;}
-#card .right_module .content_body #data_list_for_body .measureDiv .sp1{color:red;font-size:20px;display: inline;margin-left:20px;}
-#card .right_module .content_body #data_list_for_body .measureDiv .ap0{display:inline-block;margin-left:20px;}
-#card .right_module .content_body #data_list_for_body .measureDiv .ap1{display: inline;}
+#card .right_module .content_body #data_list_for_body .measureDiv .p1{color:#505050;font-size:20px;margin-top:10px;display: inline-block;}
+#card .right_module .content_body #data_list_for_body .measureDiv .sp1{color:red;font-size:20px;margin-left:20px;display: inline-block;}
 #card .right_module .content_body #data_list_for_body .measureDiv .compareP{font-size:12px;}
 #card .right_module .content_body #data_list_for_body .measureDiv .linkP{font-size:12px;}
 

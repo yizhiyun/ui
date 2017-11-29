@@ -1785,6 +1785,7 @@
 											customCalculate[measureName]["name"] = val;
 											customCalculate[measureName]["value"] =  editor.getValue();
 
+
 											currentHandleMeasureCalculate.children(".drop_main").children("span.measure_list_text_left").eq(0).html($("#editMeasureCalculateView .edit_measure_body #measure_show_title").val());
 											switch_chart_handle_fun();
 											$("#editMeasureCalculateView").hide();
@@ -1798,6 +1799,7 @@
 											$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val("");
 											$("#editMeasureCalculateView .edit_measure_body .cm-variable").text("");
 										})
+
 									});
 									//同比环比弹窗
 									out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).unbind("click");
@@ -1838,63 +1840,64 @@
 										$(".me_out_content li").unbind("mouseenter mouseleave");
 										open_or_close = true;
 									});
-									// 移除对比
-									out_wrap_click.find(".deleteCompared").unbind("click");
-									out_wrap_click.find(".deleteCompared").click(function(event){
-										// console.log($(this).parents());
-										event.stopPropagation();
-										var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
-										var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
 
+								// 移除对比
+								out_wrap_click.find(".deleteCompared").unbind("click");
+								out_wrap_click.find(".deleteCompared").click(function(event){
+									// console.log($(this).parents());
+									event.stopPropagation();
+									var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
+									var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+
+									if(index1 != -1){
+										showHuanbiMeasureArray.splice(index1,1);
+									}
+									var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+									if(index2 != -1){
+										showTongbiMeasureArray.splice(index2,1);
+									}
+									showOrHidenSomeMeasureCompareOrLink();
+									// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+									// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+									// showOrHide();
+									// isNeedShowHuanBiOption = false;
+									// isNeedShowTongBiOption = false;
+									$(".me_out_content").remove();
+									$(".me_out_content li").unbind("mouseenter mouseleave");
+									open_or_close = true;
+								});
+								//移除
+								out_wrap_click.find(".deleting").on("click",function(){
+										var deleteInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":");
+										if(deleteInfo[0] == "measure"){
+										var measureInfo = deleteInfo[1];
+										var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
 										if(index1 != -1){
-											showHuanbiMeasureArray.splice(index1,1);
-										}
+												showHuanbiMeasureArray.splice(index1,1);
+											}
 										var index2 = showTongbiMeasureArray.indexOf(measureInfo);
 										if(index2 != -1){
-											showTongbiMeasureArray.splice(index2,1);
+												showTongbiMeasureArray.splice(index2,1);
+											}
+											showOrHidenSomeMeasureCompareOrLink();
+
 										}
-										showOrHidenSomeMeasureCompareOrLink();
-										// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
-										// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
-										// showOrHide();
-										// isNeedShowHuanBiOption = false;
-										// isNeedShowTongBiOption = false;
-										$(".me_out_content").remove();
-										$(".me_out_content li").unbind("mouseenter mouseleave");
-										open_or_close = true;
-									});
-									//移除
-									out_wrap_click.find(".deleting").on("click",function(){
-												var deleteInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":");
-												if(deleteInfo[0] == "measure"){
-													var measureInfo = deleteInfo[1];
-													var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
-													if(index1 != -1){
-														showHuanbiMeasureArray.splice(index1,1);
-													}
-													var index2 = showTongbiMeasureArray.indexOf(measureInfo);
-													if(index2 != -1){
-														showTongbiMeasureArray.splice(index2,1);
-													}
-													showOrHidenSomeMeasureCompareOrLink();
-													// showOrHide();
-												}
-												if($(this).parents(".drag_main").attr("id") == "drag_col"){
-													var clickAreaType = "column";
-												}else{
-													var clickAreaType = "row";
-												}
+										if($(this).parents(".drag_main").attr("id") == "drag_col"){
+											var clickAreaType = "column";
+										}else{
+											var clickAreaType = "row";
+										}
 
+										
+									if($(this).parent().parent().parent().hasClass("list_wrap")){
+										$(this).parent().parent().parent().remove();
+									}else{
+										$(this).parent().parent().remove();
+									}
 
-												if($(this).parent().parent().parent().hasClass("list_wrap")){
-													$(this).parent().parent().parent().remove();
-												}else{
-													$(this).parent().parent().remove();
-												}
-
-												remove_viewHandle(clickAreaType);
-												$(".me_out_content").remove();
-												open_or_close = true;
+									remove_viewHandle(clickAreaType);
+									$(".me_out_content").remove();
+									open_or_close = true;
 
 									});
 
@@ -2057,6 +2060,7 @@
 									 showOn: "both",
 									 buttonImageOnly: true
 							});
+
 							// 结束日期
 							$("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").datepicker({
 								dateFormat:"yy/mm/dd",
@@ -2068,6 +2072,81 @@
 									 buttonText:"选择开始日期",
 									 showOn: "both",
 									 buttonImageOnly: true
+
+							$(ele).find(".moreSelectBtn").css("display", "block");
+							$(ele).find(".moreSelectBtn").unbind("click");
+							$(ele).find(".moreSelectBtn").click(function(event){
+
+								//判断点击的是维度还是度量
+								if($(this).parent().hasClass("measure_list_text")){
+									saveTypeElement = "转换为维度";
+								}else{
+									saveTypeElement = "转换为度量";
+								}
+								var moreActionModule = $("<ul id='dimeOrMeasureMoreActionList'><li class='change'>"+saveTypeElement+"</li><li class='typeLi'>转化类型</li></ul>");
+								$(this).parents("li").append(moreActionModule);
+								$(moreActionModule).css({
+									"top":$(this).parents("li").eq(0).offset().top-47+'px',
+								});
+								$(moreActionModule).children("li.change").unbind("click");
+								$(moreActionModule).children("li.change").click(function(event){
+									event.stopPropagation();
+									// 挪动相应的位置
+									var needChangeEle = $(this).parents("#dimeOrMeasureMoreActionList").parent("li");
+									var needChangeType ="";
+									if(needChangeEle.hasClass("dimensionality_li")){
+										needChangeEle.removeClass("dimensionality_li");
+										needChangeEle.addClass("measure_li");
+										needChangeEle.find(".drop_list_main").removeClass("dimensionality_list_main");
+										needChangeEle.find(".drop_list_main").addClass("measure_list_main");
+										needChangeEle.find(".drop_list_main .drop_main").removeClass("dimensionality_list_text");
+										needChangeEle.find(".drop_list_main .drop_main .moreSelectBtn").hide();
+										needChangeEle.find(".drop_list_main .drop_main").addClass("measure_list_text").css({"background":"","border":"none","padding":"0px 5px","height":"23px","lineHeight":"23px"});
+										needChangeEle.find(".drop_list_main .drop_main>span").removeClass("dimensionality_list_text_left");
+										needChangeEle.find(".drop_list_main .drop_main>span").addClass("measure_list_text_left");
+										needChangeEle.find(".dimensionality_datatype img").attr("src",needChangeEle.find(".drop_main").eq(0).data("type").image_Name_Find("measure"));
+
+										$("#measure_show ul").append(needChangeEle);
+										needChangeType = "measure";
+									}else if(needChangeEle.hasClass("measure_li")){
+										needChangeEle.removeClass("measure_li");
+										needChangeEle.addClass("dimensionality_li");
+										needChangeEle.find(".drop_list_main").removeClass("measure_list_main");
+										needChangeEle.find(".drop_list_main").addClass("dimensionality_list_main");
+										needChangeEle.find(".drop_list_main .drop_main .moreSelectBtn").hide();
+										needChangeEle.find(".drop_list_main .drop_main").removeClass("measure_list_text");
+										needChangeEle.find(".drop_list_main .drop_main").addClass("dimensionality_list_text").css({"background":"","border":"none","padding":"0px 5px","height":"23px","lineHeight":"23px"});
+										needChangeEle.find(".drop_list_main .drop_main>span").removeClass("measure_list_text_left");
+										needChangeEle.find(".drop_list_main .drop_main>span").addClass("dimensionality_list_text_left");
+										needChangeEle.find(".dimensionality_datatype img").attr("src",needChangeEle.find(".drop_main").eq(0).data("type").image_Name_Find("dimensionality"));
+										$("#dimensionality_show ul").append(needChangeEle);
+										needChangeType = "dimensionality";
+									}
+									$("#dimeOrMeasureMoreActionList").remove();
+									$.ajax({
+										url:" /cloudapi/v1/recordCol/"+current_cube_name,
+										type:"post",
+										dataType:"json",
+										contentType: "application/json; charset=utf-8",
+										async: true,
+										data:JSON.stringify({"column":needChangeEle.find(".drop_list_main .drop_main>span").text(),"coltype":needChangeType}),
+
+										success:function(data){}
+
+									});
+
+
+									delete _cube_all_data[$('#lateral_title .custom-select').val()];
+
+								});
+
+								$(moreActionModule).find(".typeLi").unbind("mouseover");
+								$(moreActionModule).find(".typeLi").mouseover(function(event){
+									event.stopPropagation();
+									typeToShow($(this),"clickTra");
+									// $(this).children(".changeTypeList").show();
+								});
+
 							});
 							currentSetTableDateMinDate = $("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val();
 							currentSetTableDateMaxDate = $("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val();
