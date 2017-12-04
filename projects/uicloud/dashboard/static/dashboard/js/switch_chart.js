@@ -55,19 +55,22 @@ function beginDrawChart(edit_view){
 	//console.log(current_data);
 	//所有视图点击按钮
 	var show_btn_change = $("#project_chart ul li");
+	show_btn_change.removeClass("clicked");
+	show_btn_change.css("border","");
 	//满足条件给定指定样式
 	function change_view_css(element){
-		return $(element).css("border","1px solid #0d53a4").css("opacity","1");
+		// return $(element).css("border","1px solid #0d53a4").css("opacity","1");
+		return $(element).css("opacity","1");
 	}
 	
 	//初始化图例
 	function view_init(){
-		show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
+		show_btn_change.data("if_show","").css("border","").css("opacity","0.3");
 		$("#text_table_need_show").hide();
 		$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 	}
 
-	show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
+	show_btn_change.data("if_show","").css("border","").css("opacity","0.3");
 
 	if(switch_col_di ==  0 && switch_col_me == 0 && switch_row_di == 0 && switch_row_me == 0){
 			view_init();
@@ -205,13 +208,13 @@ function beginDrawChart(edit_view){
 		if(switch_col_di > 1 && switch_col_di < 4){
 
 			$("#show_storehis,#show_percontrasth,#show_table,#show_histogram,#show_polyline").css("opacity","1");
-			$("#show_storehis").css("border","1px solid #0d53a4");
+			// $("#show_storehis").css("border","1px solid #0d53a4");
 		}
 
 		if(switch_row_di > 1 && switch_row_di < 4){
 
 			$("#show_storebar,#prestorebar,#show_table,#show_bar,#show_polyline").css("opacity","1");
-			$("#show_storebar").css("border","1px solid #0d53a4");
+			// $("#show_storebar").css("border","1px solid #0d53a4");
 		}
 
 	}
@@ -220,7 +223,7 @@ function beginDrawChart(edit_view){
 	if((switch_col_di > 1 && switch_col_me ==0 && switch_row_me == 1 && switch_row_di == 0) || (switch_row_di > 1 && switch_row_me == 0 && switch_col_di == 0 && switch_col_me ==1)){
 		$("#show_treemap").css("opacity","1")
 	}else{
-		$("#show_treemap").css("opacity","0.5")
+		$("#show_treemap").css("opacity","0.3")
 	}
 
 
@@ -259,7 +262,7 @@ function beginDrawChart(edit_view){
 	if((switch_row_di == 1 && switch_col_me == 2 && switch_row_me == 0 && switch_col_di == 0) || (switch_row_di == 0 && switch_col_me == 0 && switch_row_me == 2 && switch_col_di == 1)){
 		$("#show_contrastbar,#show_polyline").css("opacity","1");
 	}else{
-		$("#show_contrastbar").css("opacity","0.5");
+		$("#show_contrastbar").css("opacity","0.3");
 	}
 
 	
@@ -290,7 +293,11 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 //遍历所有视图按钮给定绘图方法
 		show_btn_change.each(function(index,ele){
 			$(ele).on("click",function(){
+				show_btn_change.removeClass("clicked");
+				show_btn_change.css({"background":"","border":""});
+				$(".project_icon_hint_wrap").remove();
 				if($(ele).css("opacity") == 1){
+					$(ele).addClass("clicked");
 					if($(ele).data("if_show") != "true"){
 						show_btn_change.data("if_show","");
 						$(ele).data("if_show","true");

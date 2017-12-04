@@ -3532,13 +3532,18 @@
 			}
 
 
-
+				
 				$(".project_icon_hover").each(function(index, ele) {
 
 					$(ele).find('img[alt="条形图"]').css("marginLeft","5px");
-
+					
 					$(ele).on("mouseenter", function() {
 						$(ele).css("background", "white")
+
+						if($(ele).css("opacity") != 0.3){
+							$(ele).css({"background":"white","border":"1px solid rgb(13,83,164)"});
+						}
+
 						//动态创建提示框
 						var project_icon_hint = $("<div class='project_icon_hint_wrap'><p class='project_icon_hint_p_one'></p><p class='project_icon_hint_p_two'></p><p class='project_icon_hint_p_three'></p><p class='project_icon_hint_p_four'></p><img src='/static/dashboard/img/sanjiao_03.png' alt='project_tran'></div>")
 
@@ -3560,8 +3565,15 @@
 
 					//移出
 					$(ele).on("mouseleave", function() {
-						$(ele).css("background", "")
-						$(".project_icon_hint_wrap").remove();
+						if(!$(ele).hasClass("clicked")){
+							$(ele).css("background", "")
+							if($(ele).css("opacity") != 0.3){
+								$(ele).css({"background":"","border":""});
+							}
+							$(".project_icon_hint_wrap").remove();
+						}else{
+							$(".project_icon_hint_wrap").remove();
+						}
 					})
 
 				});

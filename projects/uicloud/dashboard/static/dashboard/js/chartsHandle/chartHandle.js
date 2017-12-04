@@ -165,14 +165,24 @@ function one_de_one_me_handle (chart_type_need) {
    				},
 
 			    xAxis: {
+			    	name:need_handle_dimensionalityName,
+					nameLocation:"start",
+					nameGap:25,
+					nameRotate:-15,
 			        type : 'category',
 			        splitLine: {show:false},
 					data:dimensionality_need_show,
 					axisLabel:{
-						rotate:15,
+						// align:"right",
+						// margin:20,
+						rotate:-25,
 						fontSize:10,
 						interval:0,
 						color:"black"
+						 // formatter:function(value)  
+       //                         {  
+       //                             return value.split("").join("\n");  
+       //                         }  
 					},
 			    },
 			    dataZoom:[
@@ -457,6 +467,10 @@ function one_de_one_me_handle (chart_type_need) {
 			    },
 				xAxis:[
 					{
+						name:need_handle_dimensionalityName,
+						nameLocation:"start",
+						nameGap:25,
+						nameRotate:-15,
 						type:"category",
 						boundaryGap:false,
 						data:dimensionality_need_show,
@@ -912,6 +926,7 @@ function many_de_many_me_handle(chart_type_need){
 			        	return leftDiv + rightDiv;
 					}
 	    			 },
+
 	    			legend: {
 	       		 	data:commonLegend,
 	       		 	left:"center",
@@ -1002,7 +1017,7 @@ function many_de_many_me_handle(chart_type_need){
 				}
 				var dataZoomXindexArray = [];
 				for(var i = dimensionality_show_data_arr.length - 1;i >= 0;i--){
-						var obj = {
+					var obj = {
 						name:all_dimensionality[i],
 						nameLocation:"start",
 						nameGap:25,
@@ -1693,12 +1708,12 @@ function comparisonStrip_generate_fun(){
 
 //  坐标轴设置值
 			for (var k = need_show_dimensionality_arr.length - 1;k >= 0;k--){
-				
+
 				var obj = {
 					name:need_show_dime_name_arr[k],
 					// nameLocation:"start",
-					nameLocation:"end",
-					nameGap:10,
+					// nameLocation:"end",
+					nameGap:30,
 					// nameRotate:-25,
 					nameRotate:15,
 					type: 'category',
@@ -1708,7 +1723,7 @@ function comparisonStrip_generate_fun(){
 					},
 					axisLabel:{
 						color:"black",
-						rotate:15,
+						rotate:25,
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)}
 					},
@@ -1722,6 +1737,7 @@ function comparisonStrip_generate_fun(){
 				}
 
 				if (bar_type == "number_bar" || bar_type == "percentage_bar") {
+					obj["nameLocation"] = "start";
 					obj["position"] = "bottom";
 					option["xAxis"].push(obj);
 					if(k > 0){
@@ -1764,6 +1780,7 @@ function comparisonStrip_generate_fun(){
 
 
 				}else{
+					obj["nameLocation"] = "end";
 					obj["position"] = "left";
 					option["yAxis"].push(obj);
 					if(k > 0){
@@ -1801,7 +1818,9 @@ function comparisonStrip_generate_fun(){
 					// aGrid["left"] =  60 + 70*k;
 					// aGrid["left"] =  170 + 70*k;
 					// aGrid["bottom"] = 60;
-					aGrid["left"] =  70 + 70*k;
+
+					aGrid["left"] =  120 + 70*k;
+
 					aGrid["bottom"] = 120;
 
 				}
@@ -1940,6 +1959,14 @@ function comparisonStrip_generate_fun(){
 							"fixed":false,
 							"draggable":true,
 							"category":categorys.hasObject("name",aData[need_dimensionality[0]]),
+							// "itemStyle":{
+				   //                  normal:{
+				   //                  	//根节点不同色，子节点同色   根节点同色，子节点不同色
+				   //                  	//color:allColorsDict[currentColorGroupName][categorys.length]
+				   //                  	//每部分3种颜色
+				   //                  	color:allColorsDict[currentColorGroupName][index]
+				   //                  }
+				   //              },
 							"dirllInfo":{"currentField":all_dimensionality[index],"currentValue":aData[all_dimensionality[index]]},
 							"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],
 							"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]],
@@ -2184,8 +2211,8 @@ function comparisonStrip_generate_fun(){
 					"show":true,
 					"name":all_dimensionality[i],
 					"nameGap":30,
-					// "nameLocation":"start",
-					"nameLocation":"end",
+					"nameLocation":"start",
+					// "nameLocation":"end",
 					"nameRotate":15,
 					"type":"category",
 
@@ -2195,7 +2222,7 @@ function comparisonStrip_generate_fun(){
 					},
 					axisLabel:{
 						color:"black",
-						rotate:15,
+						rotate:25,
 						// rotate:45,
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
@@ -2217,7 +2244,7 @@ function comparisonStrip_generate_fun(){
 				var aGrid = {
 					containLabel:true,
 				}
-				aGrid["left"] = "10%";
+				aGrid["left"] = "5%";
 				aGrid["bottom"] = 120 + 40*(dimensionality_show_data.length - 1 - i);
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
@@ -2484,11 +2511,18 @@ function comparisonStrip_generate_fun(){
 
 
 			for(var i = 0;i < dimensionality_show_data.length;i++){
-				// var arr = [];
-				// for(var j = 0;j < dimensionality_show_data[i].length; j ++){
-				// 	arr.push(dimensionality_show_data[i][j].length);
-				// }
-				// var maxLength = Math.max.apply(null, arr);	
+				var arr = [];
+				for(var j = 0;j < dimensionality_show_data[i].length; j ++){
+					// arr.push(dimensionality_show_data[i][j].length);
+					var dataLen = dimensionality_show_data[i][j];
+					if(dataLen){
+						if(/YZYPD/.test(dataLen)){
+							dataLen = dataLen.split("YZYPD")[1];
+						}
+						arr.push(dataLen.length);
+					}
+				}
+				var maxLength = Math.max.apply(null, arr);
 				
 
 				var aY = {
@@ -2498,9 +2532,9 @@ function comparisonStrip_generate_fun(){
 					"nameRotate":15,
 					"nameLocation":"end",
 					"type":"category",
-					//"position":"left",
+					// "position":"left",
 					// "offset":maxLength,
-					// "boundaryGap": ['20%', '20%'],
+					//"boundaryGap": ['20%', '20%'],
 
 					axisTick:{
 						inside:false,
@@ -2511,39 +2545,6 @@ function comparisonStrip_generate_fun(){
 						rotate:15,
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
-						// formatter:function(params){
-						// 	    var newParamsName = "";// 最终拼接成的字符串
-						// 	    var paramsNameNumber = params.length;// 实际标签的个数
-						// 	    var provideNumber = 6;// 每行能显示的字的个数
-						// 	    var rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
-						// 	    /**
-						// 	     * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
-						// 	     */
-						// 	    // 条件等同于rowNumber>1
-						// 	    if (paramsNameNumber > provideNumber) {
-						// 	        /** 循环每一行,p表示行 */
-						// 	        for (var p = 0; p < rowNumber; p++) {
-						// 	            var tempStr = "";// 表示每一次截取的字符串
-						// 	            var start = p * provideNumber;// 开始截取的位置
-						// 	            var end = start + provideNumber;// 结束截取的位置
-						// 	            // 此处特殊处理最后一行的索引值
-						// 	            if (p == rowNumber - 1) {
-						// 	                // 最后一次不换行
-						// 	                tempStr = params.substring(start, paramsNameNumber);
-						// 	            } else {
-						// 	                // 每一次拼接字符串并换行
-						// 	                tempStr = params.substring(start, end) + "\n";
-						// 	            }
-						// 	            newParamsName += tempStr;// 最终拼成的字符串
-						// 	        }
-
-						// 	    } else {
-						// 	        // 将旧标签的值赋给新标签
-						// 	        newParamsName = params;
-						// 	    }
-						// 	    //将最终的字符串返回
-						// 	    return newParamsName
-						// }
 					},
 					"data":dimensionality_show_data[i],
 					gridIndex:i
@@ -2554,12 +2555,14 @@ function comparisonStrip_generate_fun(){
 					containLabel:false,
 					show:false,
 				}
+				// aGrid["left"] = 60 + i * (60 + i);
+				if(maxLength > 0){
+					aGrid["left"] = 60 + (maxLength * 5) + i * (maxLength * 5 + 60);
+				}else{
+					aGrid["left"] = 100 + i * (60 + i);
 
-				aGrid["left"] = 60 + i * (60 + i);
-				// aGrid["left"] = 50 + (maxLength * 5) + i * (maxLength  + 150);
+				}
 
-				//暂待定   满足两维度一度量
-				// aGrid["left"] = maxLength * i * 10 + 30 + maxLength * (i+1) * 7 ;
 				// aGrid["bottom"] = 60;
 				aGrid["bottom"] = 120;
 
@@ -2768,8 +2771,8 @@ function comparisonStrip_generate_fun(){
 		    },
 		    	{
 					  	text: "单位: "+valueUnitValue,
-					  	right:0,
-					  	bottom:100,
+					  	right:70,
+					  	top:10,
 					  	show:true,
 					  	textStyle:{
 					  		fontSize:14,
@@ -2812,10 +2815,11 @@ function comparisonStrip_generate_fun(){
 		    legend: {
 		    	type: 'scroll',
 		    	orient: 'vertical',
-		        x:'right',
+		        right:70,
+		        top:40,
+		        bottom:50,
 		        data: commonLegend,
 		        // left:"center",
-		        bottom:40,
 		        width:"60%", 
 		    },
 		    	color:allColorsDict[currentColorGroupName],
@@ -3027,7 +3031,7 @@ var valueCount = 0;
 
 // 图形下钻功能
 function chartAPartDidClickedFunction(params,allDimensionality){
-	
+
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillDown").css("background","#F5F5F5");
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList").hide();
 	$("#dashboard_content #view_show_area #view_show_area_content .drillUpAndDrillDownSelection .drillDownSearch .drillDownSearchInput").val("");
