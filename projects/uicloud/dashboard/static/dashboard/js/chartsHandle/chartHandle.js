@@ -7,8 +7,18 @@ var showHuanbiMeasureArray = [];
 var drillDownWallPositionLeft = null;
 var drillDownWallPositionTop = null;
 
+//存储下钻对应的data和视图
+var saveDataAndView = [];
+
 //记录下钻时维度的数量信息
 var saveDimeData = [];
+
+var saveHandleViewData = [];
+
+
+//记录上钻前的数据和视图展现方式
+
+var saveDrillPreView = null;
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function one_de_one_me_handle (chart_type_need) {
@@ -28,15 +38,20 @@ function one_de_one_me_handle (chart_type_need) {
 	mycharts.off("click");
 	mycharts.on("click",function(params){
 		params.event.event.stopPropagation();
+
 		chartAPartDidClickedFunction(params,[need_handle_dimensionalityName]);
 	});
 
 
- 	if(currentChatType == chart_type_need && dirllConditions && dirllConditions.length > 0){
-		need_handle_dimensionalityName = dirllConditions[dirllConditions.length - 1].drillField;
-	}else if(currentChatType != chart_type_need && dirllConditions && dirllConditions.length > 0){
-		dirllConditions = [];
-	}
+ // 	if(currentChatType == chart_type_need && dirllConditions && dirllConditions.length > 0){
+ // 		console.log(saveDataAndView[saveDataAndView.length - 1]["viewdata"]["row"]["dimensionality"],)
+	// 	need_handle_dimensionalityName = specialRemoveDataTypeHandle(saveDataAndView[saveDataAndView.length - 1]["viewdata"]["row"]["dimensionality"].concat(saveDataAndView[saveDataAndView.length - 1]["viewdata"]["column"]["dimensionality"]))[0];
+	// }
+	// }else if(currentChatType != chart_type_need && dirllConditions && dirllConditions.length > 0){
+	// 	dirllConditions = [];
+	// }
+
+	
 	if(currentChatType != chart_type_need){
 		if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
 			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
@@ -808,14 +823,16 @@ function many_de_many_me_handle(chart_type_need){
 		commonLegend.push(drag_measureCalculateStyle[all_measure[k]])
 	}
 
-	if(currentChatType == chart_type_need && dirllConditions && dirllConditions.length > 0){
+	// if(currentChatType == chart_type_need && dirllConditions && dirllConditions.length > 0){
 
-		all_dimensionality.splice(0,all_dimensionality.length,dirllConditions[dirllConditions.length - 1].drillField);
+	// 	all_dimensionality.splice(0,all_dimensionality.length,dirllConditions[dirllConditions.length - 1].drillField);
 
-	}else if(currentChatType != chart_type_need && dirllConditions && dirllConditions.length > 0){
-		dirllConditions = [];
 
-	}
+	// }
+	// }else if(currentChatType != chart_type_need && dirllConditions && dirllConditions.length > 0){
+	// 	dirllConditions = [];
+
+	// }
 
 	if(currentChatType != chart_type_need){
 		if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
@@ -1429,7 +1446,7 @@ function comparisonStrip_generate_fun(){
 				var dimensionality_arr= []; // 各个维度的数组,绘制图形需要使用
 				var need_show_dimensionality_arr = [];
 				var need_show_dime_name_arr = all_dimensionality.slice(0,all_dimensionality.length-1);
-
+				var preChangeData = null;
 				var confir_max_obj = {};
 				var max = 1;
 				var groupArr = [];
@@ -1449,8 +1466,14 @@ function comparisonStrip_generate_fun(){
 							}else{
 								if(j < all_dimensionality.length - 2){
 									if(need_show_dimensionality_arr[j+1].hasObject("value",aData[all_dimensionality[j+1]]) == -1){
-										need_show_dimensionality_arr[j].push(({"value":" ","count":1}));
+										need_show_dimensionality_arr[j].push(({"value":"YZYPD"+aData[all_dimensionality[j]],"count":1}));
 									}
+								}else{
+
+									if(j != 0 && need_show_dimensionality_arr[j-1].length > need_show_dimensionality_arr[j].length){
+										need_show_dimensionality_arr[j].push(({"value":aData[all_dimensionality[j]],"count":1}));
+									}
+									
 								}
 							}
 						}
@@ -1458,20 +1481,33 @@ function comparisonStrip_generate_fun(){
 
 					var dime = aData[all_dimensionality[all_dimensionality.length - 2]];
 					var nowdime = aData[all_dimensionality[all_dimensionality.length - 1]];
+					
 					if(i > 0){
 						var predime = data[i-1][all_dimensionality[all_dimensionality.length - 1]];
 					}
 					if (!confir_max_obj[dime]){
 						confir_max_obj[dime] = 1;
 						groupArr.push([nowdime]);
+						preChangeData = aData[all_dimensionality[0]];
 						measure_Data_arr.push([{"value":aData[drag_measureCalculateStyle[all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]]}]);
 					}else{
 						if(i > 0){
+							
 							if(predime != nowdime){
-								confir_max_obj[dime] ++;
-								groupArr[groupArr.length - 1].push(nowdime);
-								measure_Data_arr[measure_Data_arr.length - 1].push({"value":aData[drag_measureCalculateStyle[all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]]});
-								max = max > confir_max_obj[dime] ? max:confir_max_obj[dime];
+								
+								if(preChangeData != aData[all_dimensionality[0]]){
+									groupArr.push([nowdime]);
+									measure_Data_arr.push([{"value":aData[drag_measureCalculateStyle[all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]]}]);
+									preChangeData = aData[all_dimensionality[0]];
+								}else{
+									confir_max_obj[dime] ++;
+									groupArr[groupArr.length - 1].push(nowdime);
+									measure_Data_arr[measure_Data_arr.length - 1].push({"value":aData[drag_measureCalculateStyle[all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]]});
+									max = max > confir_max_obj[dime] ? max:confir_max_obj[dime];
+								}
+								
+
+								
 							}
 						}
 					}
@@ -1657,7 +1693,7 @@ function comparisonStrip_generate_fun(){
 
 //  坐标轴设置值
 			for (var k = need_show_dimensionality_arr.length - 1;k >= 0;k--){
-				console.log(need_show_dimensionality_arr)
+				
 				var obj = {
 					name:need_show_dime_name_arr[k],
 					// nameLocation:"start",
@@ -1668,13 +1704,13 @@ function comparisonStrip_generate_fun(){
 					type: 'category',
 					axisTick:{
 						inside:false,
-						interval:function(index,value){return !/^\s/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)}
 					},
 					axisLabel:{
 						color:"black",
 						rotate:15,
 						fontSize:10,
-						interval:function(index,value){return !/^\s/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)}
 					},
 					data:need_show_dimensionality_arr[k],
 					gridIndex:need_show_dimensionality_arr.length - 1 - k,
@@ -1765,7 +1801,7 @@ function comparisonStrip_generate_fun(){
 					// aGrid["left"] =  60 + 70*k;
 					// aGrid["left"] =  170 + 70*k;
 					// aGrid["bottom"] = 60;
-					aGrid["left"] =  170 + 70*k;
+					aGrid["left"] =  70 + 70*k;
 					aGrid["bottom"] = 120;
 
 				}
@@ -1865,6 +1901,7 @@ function comparisonStrip_generate_fun(){
 		var need_all_nodes = []; // 所需要的所有节点
 		var need_all_link = [];
 		var count = 0;
+		var theDimeInfo = [];
 		for(var i =0;i < all_dimensionality.length;i++){
 			(function(index){
 				var need_dimensionality = all_dimensionality.slice(0,index+1);
@@ -1895,6 +1932,7 @@ function comparisonStrip_generate_fun(){
 							}
 
 						}
+						// theDimeInfo.push(aData[all_dimensionality[index]]);
 						var aNode = {
 							"value":aData[drag_measureCalculateStyle[all_measure[0]]]/allValueUnitDict[valueUnitValue],
 							"originValue":aData[drag_measureCalculateStyle[all_measure[0]]],
@@ -1905,6 +1943,7 @@ function comparisonStrip_generate_fun(){
 							"dirllInfo":{"currentField":all_dimensionality[index],"currentValue":aData[all_dimensionality[index]]},
 							"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[0]]],
 							"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[0]]],
+							"viewtype":"relational",
 							label:{
 								normal:
 								{
@@ -2982,9 +3021,13 @@ function calculateArraySpecialFieldSum(arr,field){
 }
 
 
+//记录下钻对应的下标
+var valueCount = 0;
+
+
 // 图形下钻功能
 function chartAPartDidClickedFunction(params,allDimensionality){
-	console.log(params)
+	
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillDown").css("background","#F5F5F5");
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList").hide();
 	$("#dashboard_content #view_show_area #view_show_area_content .drillUpAndDrillDownSelection .drillDownSearch .drillDownSearchInput").val("");
@@ -2998,7 +3041,10 @@ function chartAPartDidClickedFunction(params,allDimensionality){
 		for(var drillDown = 0;drillDown < params.data.theDimeInfo.length;drillDown++){
 			tempSplitView+=params.data.theDimeInfo[drillDown]+"-";
 		}
-		tempSplitView = tempSplitView.substring(0,tempSplitView.length -1)
+		tempSplitView = tempSplitView.substring(0,tempSplitView.length -1);
+	}else if(params.data.viewtype == "relational"){
+		tempSplitView = params.name.split("_YZYPD_").join("-");
+		tempSplitView = tempSplitView.substring(0,tempSplitView.length -1);
 	}else{
 		tempSplitView = params.data.dirllInfo.currentValue;
 	}
@@ -3014,7 +3060,7 @@ function chartAPartDidClickedFunction(params,allDimensionality){
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList ul").empty();
 	$("#dashboard_content #dimensionality #dimensionality_show ul li.dimensionality_li div.dimensionality_list_main div span.dimensionality_list_text_left").each(function(index,ele){
 		if($.inArray($(ele).text(),allDimensionality) == -1){
-			var li = $("<li title="+$(ele).text()+" class='drillDownShowLi'>"+$(ele).text()+"</li>");
+			var li = $("<li title="+$(ele).text()+" class='drillDownShowLi' dataType="+$(ele).attr("dataType")+">"+$(ele).text()+"</li>");
 			$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList ul").append(li);
 		}
 
@@ -3052,6 +3098,8 @@ function chartAPartDidClickedFunction(params,allDimensionality){
 
 		event.stopPropagation();
 
+		valueCount++;
+
 		saveDimeData.push(allDimensionality.length);
 
 		// $("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillSelctionList").css({"left":params.event.offsetX + "px","top":params.event.offsetY + "px"});
@@ -3082,24 +3130,64 @@ function chartAPartDidClickedFunction(params,allDimensionality){
 		$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection").hide();
 		var aDrillcondtion = null;
 
+		saveDataAndView.push({"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id")})
+		if(saveDataAndView.length  == 1){
+			saveDrillPreView = saveDataAndView[0];
+		}
 		if(currentChatType == "radarChart" && params.componentType == "radar"){
 			 aDrillcondtion = {"currentField":radarDiemension,"currentValue":params.name,"drillField":$(this).text()};
 			dirllConditions.push(aDrillcondtion);
+		
 		}else{
-			
-			for(var i = 0 ; i < allDimensionality.length; i++){
-				if(allDimensionality.length == 1){
-					aDrillcondtion = {"currentField":params.data.dirllInfo.currentField,"currentValue":params.data.dirllInfo.currentValue,"drillField":$(this).text()};
-				}else{
-					aDrillcondtion = {"currentField":allDimensionality[i],"currentValue":params.data.theDimeInfo[i],"drillField":$(this).text()};
+			if(params.data.viewtype == "relational"){
+				for(var z = 0; z < params.name.split("_YZYPD_").length;z++){
+					if(params.name.split("_YZYPD_")[z] != ""){
+						aDrillcondtion = {"currentField":allDimensionality[z],"currentValue":params.name.split("_YZYPD_")[z],"drillField":$(this).text()};
+						dirllConditions.push(aDrillcondtion);
+					}
 				}
-				
-				dirllConditions.push(aDrillcondtion);
+			}else{
+				for(var i = 0 ; i < allDimensionality.length; i++){
+					if(allDimensionality.length == 1){
+						aDrillcondtion = {"currentField":params.data.dirllInfo.currentField,"currentValue":params.data.dirllInfo.currentValue,"drillField":$(this).text()};
+					}else{
+						aDrillcondtion = {"currentField":allDimensionality[i],"currentValue":params.data.theDimeInfo[i],"drillField":$(this).text()};
+					}
+					
+					dirllConditions.push(aDrillcondtion);
+				}
 			}
+
+		}
+		
+		if(drag_row_column_data["row"]["dimensionality"].length > 0){
+			drag_row_column_data["row"]["dimensionality"].splice(0,drag_row_column_data["row"]["dimensionality"].length,$(this).attr("dataType"));
+		}else{
+			drag_row_column_data["column"]["dimensionality"].splice(0,drag_row_column_data["column"]["dimensionality"].length,$(this).attr("dataType"));
 		}
 
-		
+		if(saveDataAndView.length == 1){
+			$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content").height($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content").height()-30);
+		}
+		$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").show();
+		var showList = $("<li datavalue="+valueCount+"><img src='/static/statements/img/jt.png' alt='jt'><p>"+tempSplitView+"</p></li>");
+		$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul").append(showList);
 
+		showList.children("p").unbind("click");
+		showList.children("P").click(function(event){
+			event.stopPropagation();
+			//记录当前上钻的数据
+			saveHandleViewData = JSON.parse(JSON.stringify(saveDataAndView[Number($(this).parent().attr("datavalue"))]));
+			saveDataAndView.splice($(this).parent().attr("datavalue"));
+			var spliceCount = saveDimeData.splice($(this).parent().attr("datavalue"));
+			dirllConditions.splice(dirllConditions.length - spliceCount.reduce((prev,curr) => prev + curr));
+			valueCount = $(this).parent().attr("datavalue");
+			drag_row_column_data = saveHandleViewData["viewdata"];
+			save_now_show_view_text = $("#"+saveHandleViewData["viewType"]+"");
+			$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li:gt("+$(this).parent().attr("datavalue")+")").remove();
+			
+			switch_chart_handle_fun();
+		})
 		switch_chart_handle_fun();
 
 	});
@@ -3108,8 +3196,27 @@ function chartAPartDidClickedFunction(params,allDimensionality){
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillUp").click(function(event){
 		event.stopPropagation();
 		if(dirllConditions&&dirllConditions.length > 0){
+			
 			dirllConditions.splice(dirllConditions.length - saveDimeData[saveDimeData.length -1]);
+			
+			valueCount--;
+			//记录当前上钻的数据
+			saveHandleViewData = JSON.parse(JSON.stringify(saveDataAndView[saveDataAndView.length-1]));
+	
+			saveDataAndView.pop();
 			saveDimeData.pop();
+			if(saveDataAndView.length == 0){
+				
+				$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content").height($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content").height()+30);
+				$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").hide();
+				dirllConditions = [];
+				valueCount = 0;
+				saveDimeData =[];
+				saveDataAndView = [];
+			}
+			drag_row_column_data = saveHandleViewData["viewdata"];
+			save_now_show_view_text = $("#"+saveHandleViewData["viewType"]+"");
+			$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li").eq($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li").length -1).remove();
 			switch_chart_handle_fun();
 		}
 	});
@@ -3124,6 +3231,8 @@ function chartAPartDidClickedFunction(params,allDimensionality){
 
 	});
 }
+
+
 
 
 

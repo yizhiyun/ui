@@ -36,7 +36,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 		showTongbiMeasureArray = tempThData[0];
 		showHuanbiMeasureArray = tempThData[1];
 		var tempSaveClassName = viewshow_class;
-		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				  text: '数据获取中',
   				  color: '#c23531',
@@ -246,7 +246,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 		showTongbiMeasureArray = tempThData[0];
 		showHuanbiMeasureArray = tempThData[1];
 		var tempSaveClassName = viewshow_class;
-		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				  text: '数据获取中',
   				  color: '#c23531',
@@ -378,7 +378,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 		showTongbiMeasureArray = tempThData[0];
 		showHuanbiMeasureArray = tempThData[1];
 		var tempSaveClassName = viewshow_class;
-		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -562,7 +562,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 		showTongbiMeasureArray = tempThData[0];
 		showHuanbiMeasureArray = tempThData[1];
  		var tempSaveClassName = viewshow_class;
-		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -868,7 +868,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 			showTongbiMeasureArray = tempThData[0];
 			showHuanbiMeasureArray = tempThData[1];
 			var tempSaveClassName = viewshow_class;
-			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -1035,12 +1035,14 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 						offset:25*(dimensionality_show_data_arr.length - 1 - i),
 						data:dimensionality_show_data_arr[i],
 						axisLabel:{
+							show:true,
 							rotate:-15,
 							fontSize:10,
 							interval:0,
 							color:"black",
 							interval:function(index,value){return !/^YZYPD/.test(value)}
 						},
+
 						// gridIndex:dimensionality_show_data_arr.length - 1 - i
 					}
 					option["xAxis"].push(obj);
@@ -1118,7 +1120,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			showTongbiMeasureArray = tempThData[0];
 			showHuanbiMeasureArray = tempThData[1];
 			var tempSaveClassName = viewshow_class;
-			reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -1462,7 +1464,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
  		var tempSaveClassName = viewshow_class;
  		var  chartTile = {"number_bar":"堆积柱状图","number_liner":"堆积条形图","percentage_bar":"百分比堆积柱","percentage_liner":"百分比堆积条形"}
 
-		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -1475,7 +1477,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				var dimensionality_arr= []; // 各个维度的数组,绘制图形需要使用
 				var need_show_dimensionality_arr = [];
 				var need_show_dime_name_arr = all_dimensionality.slice(0,all_dimensionality.length-1);
-
+				var preChangeData = null;
 				var confir_max_obj = {};
 				var max = 1;
 				var groupArr = [];
@@ -1495,6 +1497,12 @@ function comparisonStrip_generate_fun(storeNum_toview){
 									if(need_show_dimensionality_arr[j+1].hasObject("value",aData[all_dimensionality[j+1]]) == -1){
 										need_show_dimensionality_arr[j].push(({"value":" ","count":1}));
 									}
+								}else{
+
+									if(j != 0 && need_show_dimensionality_arr[j-1].length > need_show_dimensionality_arr[j].length){
+										need_show_dimensionality_arr[j].push(({"value":aData[all_dimensionality[j]],"count":1}));
+									}
+									
 								}
 							}
 						}
@@ -1508,14 +1516,22 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					if (!confir_max_obj[dime]){
 						confir_max_obj[dime] = 1;
 						groupArr.push([nowdime]);
+						preChangeData = aData[all_dimensionality[0]];
 						measure_Data_arr.push([{"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]]}]);
 					}else{
 						if(i > 0){
 							if(predime != nowdime){
-								confir_max_obj[dime] ++;
-								groupArr[groupArr.length - 1].push(nowdime);
-								measure_Data_arr[measure_Data_arr.length - 1].push({"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]]});
-								max = max > confir_max_obj[dime] ? max:confir_max_obj[dime];
+								if(preChangeData != aData[all_dimensionality[0]]){
+									groupArr.push([nowdime]);
+									measure_Data_arr.push([{"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]]}]);
+									preChangeData = aData[all_dimensionality[0]];
+								}else{
+									confir_max_obj[dime] ++;
+									groupArr[groupArr.length - 1].push(nowdime);
+									measure_Data_arr[measure_Data_arr.length - 1].push({"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]]});
+									max = max > confir_max_obj[dime] ? max:confir_max_obj[dime];
+								}
+
 							}
 						}
 					}
@@ -1712,13 +1728,13 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					type: 'category',
 					axisTick:{
 						inside:false,
-						interval:function(index,value){return !/^\s/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)}
 					},
 					axisLabel:{
 						color:"black",
 						rotate:15,
 						fontSize:10,
-						interval:function(index,value){return !/^\s/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)}
 					},
 					data:need_show_dimensionality_arr[k],
 					gridIndex:need_show_dimensionality_arr.length - 1 - k,
@@ -1805,7 +1821,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					}
 					aGrid["containLabel"] = false;
 					// aGrid["left"] =  60 + 70*k;
-					aGrid["left"] =  170 + 70*k;
+					aGrid["left"] =  70 + 70*k;
 					aGrid["bottom"] = 120;
 
 				}
@@ -1913,7 +1929,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			(function(index){
 				var need_dimensionality = all_dimensionality.slice(0,index+1);
 
-				reporting_measure_Hanlde(need_dimensionality,all_measure,null,function(data){
+				reporting_measure_Hanlde(need_dimensionality,all_measure,null,storeNum_toview,function(data){
 					mycharts.showLoading({
 						 text: '数据获取中',
 							 color: '#c23531',
@@ -2104,7 +2120,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		showTongbiMeasureArray = tempThData[0];
 		showHuanbiMeasureArray = tempThData[1];
 		var tempSaveClassName = viewshow_class;
-		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -2405,7 +2421,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		showTongbiMeasureArray = tempThData[0];
 		showHuanbiMeasureArray = tempThData[1];
 		var tempSaveClassName = viewshow_class;
-		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',
@@ -2707,7 +2723,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		showTongbiMeasureArray = tempThData[0];
 		showHuanbiMeasureArray = tempThData[1];
 		var tempSaveClassName = viewshow_class;
-		reporting_measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
 				 text: '数据获取中',
   				 color: '#c23531',

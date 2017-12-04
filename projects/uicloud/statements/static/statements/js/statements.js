@@ -26,6 +26,9 @@
 		};
 
 
+		//存放仪表板处理过的数据JSON
+
+		var saveDashboardPostData = [];
 		//图表显示的区域
 		var viewshow_class = null,
 
@@ -213,6 +216,8 @@
 		view_show_id_arr = [];
 
 		statements_tonghuanbi_arr = [];
+
+		saveDashboardPostData = [];
 
 		function statementsinit(){
 
@@ -1130,8 +1135,11 @@
 
 				}
 
+		
+
 			//根据报表显示其中的视图
 		function reason_view_drag(data_result,now_click_ele,click_view_btn){
+				console.log(data_result)
 				if(saveViewShowArr[$(now_click_ele).text()] != undefined){
 					saveViewShowArr[$(now_click_ele).text()] = saveViewShowArr[$(now_click_ele).text()] || [];
 				}else{
@@ -1252,6 +1260,8 @@
 
 								statements_tonghuanbi_arr.push(data_result[now_view_folder][view_in_folder][right_view_show]["sequential"]);
 
+								saveDashboardPostData.push(data_result[now_view_folder][view_in_folder][right_view_show]["handledatapost"]);
+
 								if(data_result[now_view_folder][view_in_folder][right_view_show]["viewtype"] == "showTable_by_dragData()"){
 									save_allTable.push("bbv"+view_count_save+"view_show_class" + tableNum);
 								}else if(data_result[now_view_folder][view_in_folder][right_view_show]["viewtype"] == "col_card()"){
@@ -1290,6 +1300,8 @@
 								// state_view_show_type = change_view_show_click["viewtype"];
 
 								drag_measureCalculateStyle = JSON.parse(change_view_show_click["calculation"]);
+
+								
 
 								//颜色样式
 								// currentColorGroupName = change_view_show_click["viewstyle"].split("_YZY_")[0];
@@ -2216,6 +2228,7 @@
 								post_dict["viewstyle"] = "null";
 								post_dict["customcalculate"] = "null";
 								post_dict["sequential"] = "null";
+								post_dict["handledatapost"] = "null";
 								$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 									if(result["status"] == "false"){
 										$(".click_new_folder_input").css("borderColor","red");

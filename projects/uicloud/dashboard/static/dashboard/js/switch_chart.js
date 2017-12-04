@@ -59,8 +59,7 @@ function beginDrawChart(edit_view){
 	function change_view_css(element){
 		return $(element).css("border","1px solid #0d53a4").css("opacity","1");
 	}
-
-
+	
 	//初始化图例
 	function view_init(){
 		show_btn_change.data("if_show","").css("border","").css("opacity","0.5");

@@ -216,15 +216,20 @@ function equalCompare(objA, objB)
             return false;
 
         var allElementsEqual = true;
-        for (var i = 0; i < arguments[0].length; ++i)
+        for (var i = 0; i < arguments[0].length; i++)
         {
             if (typeof arguments[0][i] != typeof arguments[1][i])
                 return false;
 
             if (typeof arguments[0][i] == 'number' && typeof arguments[1][i] == 'number')
                 allElementsEqual = (arguments[0][i] == arguments[1][i]);
+            else if(typeof arguments[0][i] == 'string' && typeof arguments[1][i] == 'string')
+            	allElementsEqual = (arguments[0][i] == arguments[1][i]);
             else
                 allElementsEqual = arguments.callee(arguments[0][i], arguments[1][i]);            //递归判断对象是否相等
+          	 if(!allElementsEqual){
+           		return  allElementsEqual;
+          	 }
         }
         return allElementsEqual;
     }
@@ -327,6 +332,8 @@ $(function(){
 			saveNowWallDict["defaultparent"] = "default";
 			saveNowWallDict["calculation"] = JSON.stringify(drag_measureCalculateStyle);
 			saveNowWallDict["customcalculate"] = JSON.stringify(customCalculate);
+			saveNowWallDict["handledatapost"] = JSON.stringify(handleDataPost);
+			
 			var contactTH = [];
 			// console.log(showTongbiMeasureArray,showHuanbiMeasureArray)
 			contactTH.push(showTongbiMeasureArray);

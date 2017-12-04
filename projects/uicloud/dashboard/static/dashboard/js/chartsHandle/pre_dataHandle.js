@@ -28,6 +28,7 @@ Array.prototype.XMsort = function(propertyNameArray){
 var customCalculate = {}
 var preAllData = null;
 var recordConditon = null;
+var handleDataPost = {};
 
 // 定义一个对象用来记录拖拽的度量是否需要计算同比或者环比
 // var
@@ -110,129 +111,136 @@ function twoDateDistance(dateStr1,dateStr2){
 
 // needColumns暂时未用到
 function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
-	var filterNotWorkArr = getColumnFilterNotWorkedColumns(current_cube_name);
-	getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
-
-	var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
-
-  conditions = conditions.concat(conditionFilter_record[current_cube_name]["dateCondition"]);
-
-
-	var checkSelectConditionDict = getSelectionCondtion(current_cube_name);
-	for(var key in checkSelectConditionDict){
-		var valuesArr = checkSelectConditionDict[key];
-		if(valuesArr && valuesArr.length >0 && filterNotWorkArr.indexOf(key) == -1){
-			var filter = {"type":"isnotin","columnName":key,"value":valuesArr};
-			conditions.push(filter);
-		}
-	}
-	if(dirllConditions && dirllConditions.length > 0){
-		dimensionality_array.splice(dimensionality_array.length-1,1,dirllConditions[dirllConditions.length - 1].drillField);
-		for(var i = 0;i <  dirllConditions.length;i++){
-			var obj = dirllConditions[i];
-			if(obj.currentField != "全部" && obj.currentValue != "全部"){
-				conditions.push({"type":"=","columnName":obj.currentField,"value":obj.currentValue});
-			}
-		}
-	}
-
-	var groupby = dimensionality_array;
-	var basic_opration = ["sum(","max(","min(","avg(","count("];
-	var basic_names = ["求和(","最大值(","最小值(","平均值(","计数("];
-	var expressions = {};
-	if(measure_name_arr.length >0){
-		for (var i = 0;i < measure_name_arr.length;i++) {
-			if(measure_name_arr[i] == "记录数"){
-				var exprstr = "count("+dimensionality_array[dimensionality_array.length - 1]+")";
-				if(!dimensionality_array[dimensionality_array.length - 1]){
-					exprstr = "count(1)";
-				}
-				var exprstr1 = generateMeasureExpression(exprstr,currentSetTableDateFieldName,currentSetTableDateMinDate,currentSetTableDateMaxDate);
-				var obj = {"alias":"计数("+measure_name_arr[i]+")","exprstr":exprstr1};
-				if(expressions["exprlist"]){
-					expressions["exprlist"].push(obj);
-				}else{
-					expressions["exprlist"] = [obj];
-				}
-				if(currentSetTableDateFieldName&&currentSetTableDateMinDate&&currentSetTableDateMaxDate&&currentSetTableDateFieldArray.length>0){
-						var tongbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteTongBiAyearAgoDate(currentSetTableDateMinDate),calculteTongBiAyearAgoDate(currentSetTableDateMaxDate));
-						var distance = twoDateDistance(currentSetTableDateMinDate,currentSetTableDateMaxDate);
-						var huanbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteHuanBiAyearAgoDate(currentSetTableDateMinDate,distance),calculteHuanBiAyearAgoDate(currentSetTableDateMaxDate,distance));
-						var obj1 = {"alias":"同比计数("+measure_name_arr[i]+")","exprstr":"(("+exprstr1+")/"+"("+tongbiExpre+"))-1"};
-						var obj2 = {"alias":"环比计数("+measure_name_arr[i]+")","exprstr":"(("+exprstr1+")/"+"("+huanbiExpre+"))-1"};
-						expressions["exprlist"].push(obj1);
-						expressions["exprlist"].push(obj2);
-				}
-
-			}else{
-				for(var j = 0;j < basic_opration.length;j++){
-				var exprstr = basic_opration[j]+measure_name_arr[i]+")";
-				var exprstr1 = generateMeasureExpression(exprstr,currentSetTableDateFieldName,currentSetTableDateMinDate,currentSetTableDateMaxDate);
-				var obj = {"alias":basic_names[j]+measure_name_arr[i]+")","exprstr":exprstr1};
-				if(expressions["exprlist"]){
-					expressions["exprlist"].push(obj);
-				}else{
-					expressions["exprlist"] = [obj];
-				}
-				if(currentSetTableDateFieldName&&currentSetTableDateMinDate&&currentSetTableDateMaxDate&&currentSetTableDateFieldArray.length>0){
-						var tongbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteTongBiAyearAgoDate(currentSetTableDateMinDate),calculteTongBiAyearAgoDate(currentSetTableDateMaxDate));
-						var distance = twoDateDistance(currentSetTableDateMinDate,currentSetTableDateMaxDate);
-						var huanbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteHuanBiAyearAgoDate(currentSetTableDateMinDate,distance),calculteHuanBiAyearAgoDate(currentSetTableDateMaxDate,distance));
-						var obj1 = {"alias":"同比"+basic_names[j]+measure_name_arr[i]+")","exprstr":"(("+exprstr1+")/"+"("+tongbiExpre+"))-1"};
-						var obj2 = {"alias":"环比"+basic_names[j]+measure_name_arr[i]+")","exprstr":"(("+exprstr1+")/"+"("+huanbiExpre+"))-1"};
-						expressions["exprlist"].push(obj1);
-						expressions["exprlist"].push(obj2);
-				}
-				}
-			}
-
-			if(customCalculate[measure_name_arr[i]]){
-				var exprstr = customCalculate[measure_name_arr[i]]["value"];
-				var exprstr1 = generateMeasureExpression(exprstr,currentSetTableDateFieldName,currentSetTableDateMinDate,currentSetTableDateMaxDate);
-				var obj = {"alias":customCalculate[measure_name_arr[i]]["name"],"exprstr":exprstr1};
-				expressions["exprlist"].push(obj);
-				if(currentSetTableDateFieldName&&currentSetTableDateMinDate&&currentSetTableDateMaxDate&&currentSetTableDateFieldArray.length>0){
-						var tongbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteTongBiAyearAgoDate(currentSetTableDateMinDate),calculteTongBiAyearAgoDate(currentSetTableDateMaxDate));
-						var distance = twoDateDistance(currentSetTableDateMinDate,currentSetTableDateMaxDate);
-						var huanbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteHuanBiAyearAgoDate(currentSetTableDateMinDate,distance),calculteHuanBiAyearAgoDate(currentSetTableDateMaxDate,distance));
-						var obj1 = {"alias":"同比("+customCalculate[measure_name_arr[i]]["name"]+")","exprstr":"(("+exprstr1+")/"+"("+tongbiExpre+"))-1"};
-						var obj2 = {"alias":"环比("+customCalculate[measure_name_arr[i]]["name"]+")","exprstr":"(("+exprstr1+")/"+"("+huanbiExpre+"))-1"};
-						expressions["exprlist"].push(obj1);
-						expressions["exprlist"].push(obj2);
-				}
-			}
-		}
-
+	if(oldViewToShow){
+		handleDataPost = editViewPostData;
 	}else{
-		var obj = {"alias":"count("+groupby[0]+")","exprstr":"count("+groupby[0]+")"};
-		expressions["exprlist"] = [obj];
-	}
+		var filterNotWorkArr = getColumnFilterNotWorkedColumns(current_cube_name);
+		getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
 
-	if(needColumns){
-		if(needColumns["notneed"]){
-			for(var i =0;i < needColumns["notneed"].length;i++){
-				delete trans[needColumns["notneed"][i]];
+		var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
+
+	  conditions = conditions.concat(conditionFilter_record[current_cube_name]["dateCondition"]);
+
+
+		var checkSelectConditionDict = getSelectionCondtion(current_cube_name);
+		for(var key in checkSelectConditionDict){
+			var valuesArr = checkSelectConditionDict[key];
+			if(valuesArr && valuesArr.length >0 && filterNotWorkArr.indexOf(key) == -1){
+				var filter = {"type":"isnotin","columnName":key,"value":valuesArr};
+				conditions.push(filter);
 			}
 		}
-		if(needColumns["aggregations"]){
-			trans["aggregations"] = needColumns["aggregations"];
+		if(dirllConditions && dirllConditions.length > 0){
+			dimensionality_array.splice(dimensionality_array.length-1,1,dirllConditions[dirllConditions.length - 1].drillField);
+			for(var i = 0;i <  dirllConditions.length;i++){
+				var obj = dirllConditions[i];
+				if(obj.currentField != "全部" && obj.currentValue != "全部"){
+					conditions.push({"type":"=","columnName":obj.currentField,"value":obj.currentValue});
+				}
+			}
+		}
+
+		var groupby = dimensionality_array;
+		var basic_opration = ["sum(","max(","min(","avg(","count("];
+		var basic_names = ["求和(","最大值(","最小值(","平均值(","计数("];
+		var expressions = {};
+		if(measure_name_arr.length >0){
+			for (var i = 0;i < measure_name_arr.length;i++) {
+				if(measure_name_arr[i] == "记录数"){
+					var exprstr = "count("+dimensionality_array[dimensionality_array.length - 1]+")";
+					if(!dimensionality_array[dimensionality_array.length - 1]){
+						exprstr = "count(1)";
+					}
+					var exprstr1 = generateMeasureExpression(exprstr,currentSetTableDateFieldName,currentSetTableDateMinDate,currentSetTableDateMaxDate);
+					var obj = {"alias":"计数("+measure_name_arr[i]+")","exprstr":exprstr1};
+					if(expressions["exprlist"]){
+						expressions["exprlist"].push(obj);
+					}else{
+						expressions["exprlist"] = [obj];
+					}
+					if(currentSetTableDateFieldName&&currentSetTableDateMinDate&&currentSetTableDateMaxDate&&currentSetTableDateFieldArray.length>0){
+							var tongbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteTongBiAyearAgoDate(currentSetTableDateMinDate),calculteTongBiAyearAgoDate(currentSetTableDateMaxDate));
+							var distance = twoDateDistance(currentSetTableDateMinDate,currentSetTableDateMaxDate);
+							var huanbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteHuanBiAyearAgoDate(currentSetTableDateMinDate,distance),calculteHuanBiAyearAgoDate(currentSetTableDateMaxDate,distance));
+							var obj1 = {"alias":"同比计数("+measure_name_arr[i]+")","exprstr":"(("+exprstr1+")/"+"("+tongbiExpre+"))-1"};
+							var obj2 = {"alias":"环比计数("+measure_name_arr[i]+")","exprstr":"(("+exprstr1+")/"+"("+huanbiExpre+"))-1"};
+							expressions["exprlist"].push(obj1);
+							expressions["exprlist"].push(obj2);
+					}
+
+				}else{
+					for(var j = 0;j < basic_opration.length;j++){
+					var exprstr = basic_opration[j]+measure_name_arr[i]+")";
+					var exprstr1 = generateMeasureExpression(exprstr,currentSetTableDateFieldName,currentSetTableDateMinDate,currentSetTableDateMaxDate);
+					var obj = {"alias":basic_names[j]+measure_name_arr[i]+")","exprstr":exprstr1};
+					if(expressions["exprlist"]){
+						expressions["exprlist"].push(obj);
+					}else{
+						expressions["exprlist"] = [obj];
+					}
+					if(currentSetTableDateFieldName&&currentSetTableDateMinDate&&currentSetTableDateMaxDate&&currentSetTableDateFieldArray.length>0){
+							var tongbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteTongBiAyearAgoDate(currentSetTableDateMinDate),calculteTongBiAyearAgoDate(currentSetTableDateMaxDate));
+							var distance = twoDateDistance(currentSetTableDateMinDate,currentSetTableDateMaxDate);
+							var huanbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteHuanBiAyearAgoDate(currentSetTableDateMinDate,distance),calculteHuanBiAyearAgoDate(currentSetTableDateMaxDate,distance));
+							var obj1 = {"alias":"同比"+basic_names[j]+measure_name_arr[i]+")","exprstr":"(("+exprstr1+")/"+"("+tongbiExpre+"))-1"};
+							var obj2 = {"alias":"环比"+basic_names[j]+measure_name_arr[i]+")","exprstr":"(("+exprstr1+")/"+"("+huanbiExpre+"))-1"};
+							expressions["exprlist"].push(obj1);
+							expressions["exprlist"].push(obj2);
+					}
+					}
+				}
+
+				if(customCalculate[measure_name_arr[i]]){
+					var exprstr = customCalculate[measure_name_arr[i]]["value"];
+					var exprstr1 = generateMeasureExpression(exprstr,currentSetTableDateFieldName,currentSetTableDateMinDate,currentSetTableDateMaxDate);
+					var obj = {"alias":customCalculate[measure_name_arr[i]]["name"],"exprstr":exprstr1};
+					expressions["exprlist"].push(obj);
+					if(currentSetTableDateFieldName&&currentSetTableDateMinDate&&currentSetTableDateMaxDate&&currentSetTableDateFieldArray.length>0){
+							var tongbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteTongBiAyearAgoDate(currentSetTableDateMinDate),calculteTongBiAyearAgoDate(currentSetTableDateMaxDate));
+							var distance = twoDateDistance(currentSetTableDateMinDate,currentSetTableDateMaxDate);
+							var huanbiExpre = generateMeasureExpression(exprstr,currentSetTableDateFieldName,calculteHuanBiAyearAgoDate(currentSetTableDateMinDate,distance),calculteHuanBiAyearAgoDate(currentSetTableDateMaxDate,distance));
+							var obj1 = {"alias":"同比("+customCalculate[measure_name_arr[i]]["name"]+")","exprstr":"(("+exprstr1+")/"+"("+tongbiExpre+"))-1"};
+							var obj2 = {"alias":"环比("+customCalculate[measure_name_arr[i]]["name"]+")","exprstr":"(("+exprstr1+")/"+"("+huanbiExpre+"))-1"};
+							expressions["exprlist"].push(obj1);
+							expressions["exprlist"].push(obj2);
+					}
+				}
+			}
+
+		}else{
+			var obj = {"alias":"count("+groupby[0]+")","exprstr":"count("+groupby[0]+")"};
+			expressions["exprlist"] = [obj];
+		}
+
+		if(needColumns){
+			if(needColumns["notneed"]){
+				for(var i =0;i < needColumns["notneed"].length;i++){
+					delete trans[needColumns["notneed"][i]];
+				}
+			}
+			if(needColumns["aggregations"]){
+				trans["aggregations"] = needColumns["aggregations"];
+			}
+		}
+
+
+		handleDataPost = {
+			"conditions":conditions,
+		};
+
+		if(expressions["exprlist"] && expressions["exprlist"].length > 0){
+			expressions["groupby"]  = groupby;
+			expressions["orderby"] = groupby;
+			handleDataPost["expressions"] = expressions;
 		}
 	}
-
-
-	var handleDataPost = {
-		"conditions":conditions,
-	};
-
-	if(expressions["exprlist"] && expressions["exprlist"].length > 0){
-		expressions["groupby"]  = groupby;
-		expressions["orderby"] = groupby;
-		handleDataPost["expressions"] = expressions;
-	}
+	
+	
 
 
 	if(equalCompare(recordConditon,handleDataPost) && preAllData){
 		handleSuccessFunction(preAllData);
+		oldViewToShow =false;
 		return;
 	}
 
@@ -248,9 +256,13 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		},
 		success:function(data){
 			if(data.status == "success"){
+				
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
+
+				oldViewToShow =false;
+
 			}
 		}
 	});

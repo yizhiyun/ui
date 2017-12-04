@@ -52,7 +52,8 @@ def getAllDataFunction(username, datatype=None):
                         'status': tablelist[i].status,
                         'viewstyle': tablelist[i].viewstyle,
                         'customcalculate': tablelist[i].customcalculate,
-                        'sequential': tablelist[i].sequential
+                        'sequential': tablelist[i].sequential,
+                        'handledatapost': tablelist[i].handledatapost,
                     }
         return context
 
@@ -102,6 +103,7 @@ def dashboardTableAdd(request):
                 table.customcalculate = jsonData['customcalculate']
                 table.tablename = jsonData['tablename']
                 table.sequential = jsonData['sequential']
+                table.handledatapost = jsonData['handledatapost']
                 table.save()
             else:
                 foldername = jsonData['foldername']
@@ -139,7 +141,8 @@ def dashboardTableAdd(request):
                     folder=folder,
                     viewstyle=jsonData['viewstyle'],
                     customcalculate=jsonData['customcalculate'],
-                    sequential=jsonData['sequential']
+                    sequential=jsonData['sequential'],
+                    handledatapost=jsonData['handledatapost']
                 )
                 table.save()
 
@@ -427,6 +430,7 @@ def indexAdd(request):
             indexstyle=jsonData['indexstyle'],
             customcalculate=jsonData['customcalculate'],
             sequential=jsonData['sequential'],
+            handledatapost=jsonData['handledatapost']
 
         )
         index.save()
@@ -492,7 +496,8 @@ def indexGet(request):
                             'indexstyle': index.indexstyle,
                             'calculation': index.calculation,
                             'customcalculate': index.customcalculate,
-                            'sequential':index.sequential,
+                            'sequential': index.sequential,
+                            'handledatapost': index.handledatapost
                         }
                     }
             except Exception:

@@ -306,7 +306,12 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #project_style .module_style .valueUnit .content span{float: left;height: 18px;margin-left: 5px;border: 1px solid #dedede;border-radius: 2px;padding-left: 3px;padding-right: 3px;margin-top: 5px;cursor: pointer;}
 #project_style .module_style .valueUnit .content span.active{color: white;background: #0d53a4;}
 
-
+/*下钻展示*/
+#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow{font-size: 12px;margin-left: 0.75rem;max-width:100%;height:18;line-height:18px;margin-top:12px;overflow-x:auto;display: none}
+#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li{float: left;line-height: 18px}
+#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li img{float: left;margin: 3px 10px 0px}
+#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li p{cursor: pointer;float: left;}
+#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li p:hover{color:rgb(13, 83, 164);}
 
 
 
