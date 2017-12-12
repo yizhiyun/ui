@@ -559,4 +559,4 @@ def layoutHandle(request):
                 "data": dataList
             }
             return JsonResponse(context)
-        return jsonData({"status": "success"})
+        return JsonResponse({"status": "success"})
