@@ -40,3 +40,9 @@ class DashboardIndexByUser(models.Model):
     customcalculate = models.CharField(max_length=255)
     sequential = models.CharField(max_length=255)
     handledatapost = models.CharField(max_length=255)
+
+
+class Layout(models.Model):
+    username = models.CharField(max_length=32)
+    structure = models.CharField(max_length=255)
+    tablename = models.CharField(max_length=255)

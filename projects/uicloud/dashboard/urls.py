@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^setSwitch$', views.setSwitch, name='setSwitch'),
     url(r'^indexAdd$', views.indexAdd, name='indexAdd'),
     url(r'^indexGet$', views.indexGet, name='indexGet'),
+    url(r'^layoutHandle$', views.layoutHandle, name='layoutHandle'),
 ]
