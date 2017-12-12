@@ -509,6 +509,7 @@ def indexGet(request):
             return JsonResponse(context)
 
 
+@api_view(['POST'])
 def layoutHandle(request):
     '''
     '''
