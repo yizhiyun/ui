@@ -16,7 +16,7 @@ class DashboardViewByUser(models.Model):
     tablename = models.CharField(max_length=64)
     viewtype = models.CharField(max_length=255)
     viewname = models.CharField(max_length=32, null=True)
-    folder = models.ForeignKey(DashboardFolderByUser, null=True)
+    folder = models.ForeignKey(DashboardFolderByUser, on_delete=models.CASCADE, null=True)
     note = models.CharField(max_length=255, null=True)
     show = models.BooleanField(default=True)
     isopen = models.BooleanField(default=True)
@@ -27,6 +27,7 @@ class DashboardViewByUser(models.Model):
     sequential = models.CharField(max_length=255)
     handledatapost = models.CharField(max_length=255)
     drilldowndata = models.CharField(max_length=255)
+
 
 class DashboardIndexByUser(models.Model):
     username = models.CharField(max_length=32)
@@ -41,3 +42,11 @@ class DashboardIndexByUser(models.Model):
     sequential = models.CharField(max_length=255)
     handledatapost = models.CharField(max_length=255)
     drilldowndata = models.CharField(max_length=255)
+
+
+
+class Layout(models.Model):
+    username = models.CharField(max_length=32)
+    structure = models.CharField(max_length=255)
+    tablename = models.CharField(max_length=255)
+

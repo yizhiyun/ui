@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 import sys
-from .models import DashboardFolderByUser, DashboardViewByUser, DashboardIndexByUser
+from .models import *
 import logging
 
 # Get an instance of a logger
@@ -512,3 +512,50 @@ def indexGet(request):
                     "reason": "there is no this index"
                 }
             return JsonResponse(context)
+
+
+def layoutHandle(request):
+    '''
+    '''
+    jsonData = request.data
+    if request.method == 'POST':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        statuList = ['remove', 'change', 'add', 'search']
+        statu = jsonData['statu']
+        if statu not in statuList:
+            return JsonResponse({"status": "failed", "reason": "no_this_status"})
+
+        if statu == 'add':
+            ll = Layout()
+            ll.username = username
+            ll.tablename = jsonData['tablename']
+            ll.structure = jsonData['structure']
+            ll.save()
+            return JsonResponse({"status": "success", "id": ll.id})
+        elif statu == 'remove':
+            try:
+                ll = Layout.objects.get(id=jsonData['id'])
+                ll.delete()
+            except Exception:
+                return JsonResponse({"status": "failed", "reason": "no_this_id"})
+        elif statu == 'change':
+            try:
+                ll = Layout.objects.get(id=jsonData['id'])
+                ll.structure = jsonData['structure']
+                ll.save()
+            except Exception:
+                return JsonResponse({"status": "failed", "reason": "no_this_id"})
+        else:
+            lList = Layout.objects.filter(tablename=jsonData['tablename'])
+            dataList = []
+            for ll in lList:
+                dic = {}
+                dic['id'] = ll.id
+                dic['structure'] = ll.structure
+                dataList.append(dic)
+            context = {
+                "status": "success",
+                "data": dataList
+            }
+            return JsonResponse(context)
+        return jsonData({"status": "success"})
