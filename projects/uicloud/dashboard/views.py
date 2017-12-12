@@ -54,6 +54,7 @@ def getAllDataFunction(username, datatype=None):
                         'customcalculate': tablelist[i].customcalculate,
                         'sequential': tablelist[i].sequential,
                         'handledatapost': tablelist[i].handledatapost,
+                        'drilldowndata' : tablelist[i].drilldowndata
                     }
         return context
 
@@ -104,6 +105,7 @@ def dashboardTableAdd(request):
                 table.tablename = jsonData['tablename']
                 table.sequential = jsonData['sequential']
                 table.handledatapost = jsonData['handledatapost']
+                table.drilldowndata = jsonData['drilldowndata']
                 table.save()
             else:
                 foldername = jsonData['foldername']
@@ -142,7 +144,8 @@ def dashboardTableAdd(request):
                     viewstyle=jsonData['viewstyle'],
                     customcalculate=jsonData['customcalculate'],
                     sequential=jsonData['sequential'],
-                    handledatapost=jsonData['handledatapost']
+                    handledatapost=jsonData['handledatapost'],
+                    drilldowndata=jsonData['drilldowndata']
                 )
                 table.save()
 
@@ -430,7 +433,8 @@ def indexAdd(request):
             indexstyle=jsonData['indexstyle'],
             customcalculate=jsonData['customcalculate'],
             sequential=jsonData['sequential'],
-            handledatapost=jsonData['handledatapost']
+            handledatapost=jsonData['handledatapost'],
+            drilldowndata=jsonData['drilldowndata']
 
         )
         index.save()
@@ -497,7 +501,8 @@ def indexGet(request):
                             'calculation': index.calculation,
                             'customcalculate': index.customcalculate,
                             'sequential': index.sequential,
-                            'handledatapost': index.handledatapost
+                            'handledatapost': index.handledatapost,
+                            'drilldowndata' : index.drilldowndata
                         }
                     }
             except Exception:

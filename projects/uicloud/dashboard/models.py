@@ -26,6 +26,7 @@ class DashboardViewByUser(models.Model):
     customcalculate = models.CharField(max_length=255)
     sequential = models.CharField(max_length=255)
     handledatapost = models.CharField(max_length=255)
+    drilldowndata = models.CharField(max_length=255)
 
 class DashboardIndexByUser(models.Model):
     username = models.CharField(max_length=32)
@@ -39,3 +40,4 @@ class DashboardIndexByUser(models.Model):
     customcalculate = models.CharField(max_length=255)
     sequential = models.CharField(max_length=255)
     handledatapost = models.CharField(max_length=255)
+    drilldowndata = models.CharField(max_length=255)
