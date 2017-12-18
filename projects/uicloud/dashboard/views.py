@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 import sys
-from .models import DashboardFolderByUser, DashboardViewByUser, DashboardIndexByUser
+from .models import *
 import logging
 
 # Get an instance of a logger
@@ -54,6 +54,7 @@ def getAllDataFunction(username, datatype=None):
                         'customcalculate': tablelist[i].customcalculate,
                         'sequential': tablelist[i].sequential,
                         'handledatapost': tablelist[i].handledatapost,
+                        'drilldowndata' : tablelist[i].drilldowndata
                     }
         return context
 
@@ -104,6 +105,7 @@ def dashboardTableAdd(request):
                 table.tablename = jsonData['tablename']
                 table.sequential = jsonData['sequential']
                 table.handledatapost = jsonData['handledatapost']
+                table.drilldowndata = jsonData['drilldowndata']
                 table.save()
             else:
                 foldername = jsonData['foldername']
@@ -142,7 +144,8 @@ def dashboardTableAdd(request):
                     viewstyle=jsonData['viewstyle'],
                     customcalculate=jsonData['customcalculate'],
                     sequential=jsonData['sequential'],
-                    handledatapost=jsonData['handledatapost']
+                    handledatapost=jsonData['handledatapost'],
+                    drilldowndata=jsonData['drilldowndata']
                 )
                 table.save()
 
@@ -430,7 +433,8 @@ def indexAdd(request):
             indexstyle=jsonData['indexstyle'],
             customcalculate=jsonData['customcalculate'],
             sequential=jsonData['sequential'],
-            handledatapost=jsonData['handledatapost']
+            handledatapost=jsonData['handledatapost'],
+            drilldowndata=jsonData['drilldowndata']
 
         )
         index.save()
@@ -497,7 +501,8 @@ def indexGet(request):
                             'calculation': index.calculation,
                             'customcalculate': index.customcalculate,
                             'sequential': index.sequential,
-                            'handledatapost': index.handledatapost
+                            'handledatapost': index.handledatapost,
+                            'drilldowndata' : index.drilldowndata
                         }
                     }
             except Exception:
@@ -507,3 +512,51 @@ def indexGet(request):
                     "reason": "there is no this index"
                 }
             return JsonResponse(context)
+
+
+@api_view(['POST'])
+def layoutHandle(request):
+    '''
+    '''
+    jsonData = request.data
+    if request.method == 'POST':
+        username = jsonData['username'] if 'username' in jsonData.keys() else 'yzy'
+        statuList = ['remove', 'change', 'add', 'search']
+        statu = jsonData['statu']
+        if statu not in statuList:
+            return JsonResponse({"status": "failed", "reason": "no_this_status"})
+
+        if statu == 'add':
+            ll = Layout()
+            ll.username = username
+            ll.tablename = jsonData['tablename']
+            ll.structure = jsonData['structure']
+            ll.save()
+            return JsonResponse({"status": "success", "id": ll.id})
+        elif statu == 'remove':
+            try:
+                ll = Layout.objects.get(id=jsonData['id'])
+                ll.delete()
+            except Exception:
+                return JsonResponse({"status": "failed", "reason": "no_this_id"})
+        elif statu == 'change':
+            try:
+                ll = Layout.objects.get(id=jsonData['id'])
+                ll.structure = jsonData['structure']
+                ll.save()
+            except Exception:
+                return JsonResponse({"status": "failed", "reason": "no_this_id"})
+        else:
+            lList = Layout.objects.filter(tablename=jsonData['tablename'])
+            dataList = []
+            for ll in lList:
+                dic = {}
+                dic['id'] = ll.id
+                dic['structure'] = ll.structure
+                dataList.append(dic)
+            context = {
+                "status": "success",
+                "data": dataList
+            }
+            return JsonResponse(context)
+        return JsonResponse({"status": "success"})
