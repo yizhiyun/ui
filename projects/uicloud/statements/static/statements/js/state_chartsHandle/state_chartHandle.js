@@ -3,6 +3,9 @@ var currentChatType = "none";
 var radarDiemension = "none";
 var showTongbiMeasureArray = [];
 var showHuanbiMeasureArray = [];
+
+var count = 0;
+var array = [];
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
@@ -66,8 +69,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue,
-					  	show:true,
-					  	bottom:40,
+					  	show:false,
+					  	bottom:dimensionality_need_show.length > 15 ? 40 : 20,
+					  	// bottom:40,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -77,7 +81,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			    legend:{
 			   	 	data:[drag_measureCalculateStyle[need_handle_measureName]],
 			   	 	left:"center",
-			   	 	bottom:40,
+			   	 	// bottom:40,
+			   	 	bottom:dimensionality_need_show.length > 15 ? 40 : 20,
 			   	 	width:"60%",
 
 			    },
@@ -87,7 +92,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
 			         type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
 			     },
-			     backgroundColor:'rgba(255,255,255,0.8)',
+			     backgroundColor:'rgba(255,255,255,0.95)',
 			     extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			     formatter: function (params) {
 
@@ -128,12 +133,13 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			    grid: {
 			        containLabel: true,
 			        left:50,
-			        bottom:120
+			        bottom:dimensionality_need_show.length > 15 ? 120 : 80
+			        // bottom:120
 			    },
 			    toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -220,7 +226,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			            stack: '总量',
 			            label: {
 			                normal: {
-			                    show:dimensionality_need_show.length < 25 ,
+			                	show:false,
+			                    // show:dimensionality_need_show.length < 25 ,
 			                    position: 'top',
 			                    formatter:function(params){
 			                    		if(normalUnitValue != -1){
@@ -235,193 +242,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 			    ]
 
 				};
-			// var dimensionality_need_show = [];
-			// var measure_need_show = [];
-			// var measure_help_show =[];
-			// var count_help = 0;
-			// for(var i =0 ; i < data.length;i++){
-			// 	var aData = data[i];
-			// 	var value = aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]];
-			// 	dimensionality_need_show.push(aData[need_handle_dimensionalityName]);
-			// 	measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]]});
-			// 	measure_help_show.push({"value":count_help / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":count_help});
-			// 	count_help += value;
-			// }
-			// dimensionality_need_show.push("全部");
-			// measure_need_show.push({"value":count_help / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":count_help,"dirllInfo":{"currentField":"全部","currentValue":"全部"},"tongbi":0,"huanbi":0});
-			// measure_help_show.push({"value":0,"originValue":0});
-			// var option = {
-			// 	title: [{
-			// 			text: '瀑布图',
-			// 			show:false,
-			// 	},
-			// 	{
-			// 		  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-			// 		  	bottom:40,
-			// 		  	show:true,
-			// 		  	textStyle:{
-			// 		  		fontSize:14,
-			// 		  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
-			// 		  	}
-			// 		  }
-			// 	],
-			//     legend:{
-			//    	 	data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
-			//    	 	left:"center",
-			//    	 	bottom:40,
-			//    	 	width:"60%",
-			//     },
-			//     color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
-			//  	tooltip : {
-			//      trigger: 'axis',
-			//      axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-			//          type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
-			  
-			//      },
-			//      backgroundColor:'rgba(255,255,255,0.8)',
-			//      extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
-			//      formatter: function (params) {
-			     	
-			//          var tar;
-			//          if (params[1].value != '-') {
-			//              tar = params[1];
-			//          }
-			//          else {
-			//              tar = params[0];
-			//          }
-			// 		var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p>";
-			//          var needValue = tar.value;
-			//          if(normalUnitValue != -1){
-			//          	needValue = needValue.toFixed(normalUnitValue);
-			//          }
-			//          var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-
-			// 				 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
-			// 				 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
-			// 				 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.tongbi)*100).toFixed(2)+"%</p>";
-			// 				 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(tar.data.huanbi)*100).toFixed(2)+"%</p>";
-			// 				 if(showTongbiMeasureArray.indexOf(need_handle_measureName)!=-1){
-			// 					 leftDiv += leftTongbi;
-			// 					 rightDiv += rightTongbi;
-			// 				 }
-			// 				 if(showHuanbiMeasureArray.indexOf(need_handle_measureName)!=-1){
-			// 					 leftDiv += leftHuanbi;
-			// 					 rightDiv += rightHuanbi;
-			// 				 }
-			// 				 leftDiv += "</div>";
-			// 				 rightDiv += "</div>";
-
-			//          return leftDiv + rightDiv;
-
-
-			//      }
-			//  	},
-			//     grid: {
-			//         containLabel: true,
-			//         left:50,
-			//         bottom:120
-			//     },
-			//     toolbox: {
-			//         show: true,
-			//         feature: {
-			//             dataView: {readOnly: true},
-			//             restore: {},
-			//             saveAsImage: {
-			//             	title:"保存为png"
-			//             }
-			//         },
-			//         orient:"vertical",
-			//         right:20,
-			//         top:"middle",
-			//         itemSize:20,
-			//         itemGap:30
-   // 				},
-   				
-			//     xAxis: {
-			//     	name:need_handle_dimensionalityName,
-			// 		nameLocation:"start",
-			// 		nameGap:25,
-			// 		nameRotate:15,
-			//         type : 'category',
-			//         splitLine: {show:false},
-			// 		data:dimensionality_need_show,
-			// 		axisLabel:{
-			// 			rotate:15,
-			// 			fontSize:10,
-			// 			interval:0,
-			// 			color:"black"
-			// 		},
-			//     },
-			//     dataZoom:[
-			//     			{
-			//     		type: 'slider',
-   //         			 	show: dimensionality_need_show.length > 15,
-   //         			 	filterMode:"filter",
-   //         			 	backgroundColor:"#f5f5f5",
-   //         			 	fillerColor:"#dedede",
-   //         			 	borderColor:"#f5f5f5",
-   //         			 	showDataShadow:false,
-			//             xAxisIndex: [0],
-			//             height:10,
-			//             handleStyle:{
-			//             		color:"#dedede"	
-			//             },
-			//             bottom:0,
-			//             startValue:0,
-			//             endValue:dimensionality_need_show.length > 15 ? 15 : null,
-			//           	handleSize:12,
-			//             maxValueSpan:15,
-			//             throttle:100,
-			//             handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",			            
-			//     			},
-			//     			{
-			//     			type: 'slider',
-   //         			 	show: false,
-   //         			 	filterMode:"empty",
-			//             yAxisIndex: [0],
-			//     			}
-			//     ],
-			//     yAxis: {
-			//         type : 'value'
-			//     },
-			//     series: [
-			//         {
-			//             name: 'help',
-			//             type: 'bar',
-			//             stack: '总量',
-			//             itemStyle: {
-			//                 normal: {
-			//                     barBorderColor: 'rgba(0,0,0,0)',
-			//                     color: 'rgba(0,0,0,0)'
-			//                 },
-			//                 emphasis: {
-			//                     barBorderColor: 'rgba(0,0,0,0)',
-			//                     color: 'rgba(0,0,0,0)'
-			//                 }
-			//             },
-			// 			data:measure_help_show
-			//         },
-			//         {
-			//             name: drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName],
-			//             type: 'bar',
-			//             stack: '总量',
-			//             label: {
-			//                 normal: {
-			//                     show: dimensionality_need_show.length < 25,
-			//                     position: 'top',
-			//                     formatter:function(params){
-			//                     		if(normalUnitValue_arr[storeNum_toview] != -1){
-			//                     			return params.value.toFixed(normalUnitValue_arr[storeNum_toview]);
-			//                     		}
-			//                     		return params.value;
-			//                     }
-			//                 }
-			//             },
-			// 			data:measure_need_show
-			//         },
-			//     ]
-		
-			// 	};
+			
 				//清除上一个图例
 				mycharts.clear();
 				
@@ -463,8 +284,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					},
 					  {
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:40,
-					  	show:true,
+					  	bottom:20,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -474,7 +295,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					tooltip: {
 						show:true,
 						trigger: 'item',
-						backgroundColor:'rgba(255,255,255,0.8)',
+						backgroundColor:'rgba(255,255,255,0.95)',
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 						formatter:function (params){
 						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>占比:</p>";
@@ -503,7 +324,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					toolbox: {
 				        show: true,
 				        feature: {
-				            dataView: {readOnly: true},
+				            // dataView: {readOnly: true},
 				            restore: {},
 				            saveAsImage: {
 				            	title:"保存为png"
@@ -519,7 +340,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 					legend: {
 						type: 'scroll',
 						left: 'center',
-						bottom:40,
+						bottom:20,
 						data: dimensionality_need_show,
 						width:"60%",
 					},
@@ -528,11 +349,12 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 						name: drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName],
 						type: "pie",
 						radius: "65%",
-						center: ["50%", "40%"],
+						center: ["50%", "45%"],
 						data: measure_need_show,
 						label: {
 			                normal: {
-			                    show:dimensionality_need_show.length < 25,
+			                	show:false,
+			                    // show:dimensionality_need_show.length < 25,
 			                    formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
 			                    			return params.name+":"+params.value.toFixed(normalUnitValue_arr[storeNum_toview]);
@@ -596,8 +418,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:40,
-					  	show:true,
+					  	// bottom:40,
+					  	bottom:dimensionality_need_show.length > 15 ? 40 : 20,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -606,7 +429,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				],
 				tooltip:{
 					trigger:"axis",
-					backgroundColor:'rgba(255,255,255,0.8)',
+					backgroundColor:'rgba(255,255,255,0.95)',
 			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					formatter:function(params){
 
@@ -638,13 +461,14 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				legend:{
 					data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 					left: 'center',
-					bottom:40,
+					// bottom:40,
+					bottom:dimensionality_need_show.length > 15 ? 40 : 20,
 					width:"60%",
 				},
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -659,7 +483,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				 grid: {
 			        containLabel: true,
 			        left:50,
-			        bottom:120
+			        // bottom:120
+					bottom:dimensionality_need_show.length > 15 ? 120 : 80,
+
 			    },
 				xAxis:[
 					{
@@ -724,7 +550,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 						},
 						label:{
 							normal:{
-								show:dimensionality_need_show.length < 25,
+								show:false,
+								// show:dimensionality_need_show.length < 25,
 								position:"top",
 								formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -791,8 +618,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				    },
 				    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:40,
-					  	show:true,
+					  	// bottom:40,
+					  	bottom:dimensionality_need_show.length > 15 ? 40 : 20,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -802,14 +630,15 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				    legend:{
 				    		data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 				    		left:"center",
-				    		bottom:40,
+				    		// bottom:40,
+					  		bottom:dimensionality_need_show.length > 15 ? 40 : 20,
 				    		width:"60%",
 				    },
 				    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 					toolbox: {
 				        show: true,
 				        feature: {
-				            dataView: {readOnly: true},
+				            // dataView: {readOnly: true},
 				            restore: {},
 				            saveAsImage: {
 				            	title:"保存为png"
@@ -826,7 +655,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
 				         type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
 				     },
-				     backgroundColor:'rgba(255,255,255,0.8)',
+				     backgroundColor:'rgba(255,255,255,0.95)',
 			    	 extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					 formatter: function (params) {
 			         var tar;
@@ -883,7 +712,9 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				    grid: {
 			      		  containLabel: true,
 			      		  left:50,
-			      		  bottom:120
+			      		  // bottom:120
+					  	bottom:dimensionality_need_show.length > 15 ? 120 : 80
+
 			  		  },
 				      dataZoom:[
 			    			{
@@ -939,7 +770,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 				            stack: '总量',
 				            label: {
 				                normal: {
-				                    show: dimensionality_need_show.length < 25,
+				                	show:false,
+				                    // show: dimensionality_need_show.length < 25,
 				                    position: 'right',
 				                    formatter:function(params){
 				                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -1083,7 +915,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -1098,7 +930,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 	       			textStyle:{
 	       				fontSize:12
 	       			},
-	       			backgroundColor:'rgba(255,255,255,0.8)',
+	       			backgroundColor:'rgba(255,255,255,0.95)',
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 	       			formatter:function(params){
 						var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
@@ -1155,7 +987,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -1264,7 +1096,8 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
 					var measure = measure_show_data_arr[i];
            			var obj = {name:drag_measureCalculateStyle_arr[storeNum_toview][all_measure[i]],type:"line",smooth:true,data:measure,label:{
            				normal:{
-           					show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25 && all_measure.length < 3,
+           					show:false,
+           					// show:dimensionality_show_data_arr[dimensionality_show_data_arr.length - 1].length < 25 && all_measure.length < 3,
            					position:"top",
            					offset:[10,0],
            					formatter:function(params){
@@ -1365,8 +1198,9 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
-					  	bottom:40,
-					  	show:true,
+					  	// bottom:40,
+					  	bottom:dimensionality_show_data.length > 15 ? 40 : 20,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -1376,7 +1210,9 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					legend: {
 						data: commonLegend,
 						left:"center",
-						bottom:40,
+						// bottom:40,
+					  	bottom:dimensionality_show_data.length > 15 ? 40 : 20,
+
 						width:"60%",
 						textStyle: {
 							color: '#00000',
@@ -1386,7 +1222,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					toolbox: {
 				        show: true,
 				        feature: {
-				            dataView: {readOnly: true},
+				            // dataView: {readOnly: true},
 				            restore: {},
 				            saveAsImage: {
 				            	title:"保存为png"
@@ -1401,7 +1237,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					tooltip: {
 						show: true,
 						trigger: 'item',
-						backgroundColor:'rgba(255,255,255,0.8)',
+						backgroundColor:'rgba(255,255,255,0.95)',
 			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 						formatter:function(params){
 							var needValue = params.value;
@@ -1431,20 +1267,26 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						show: false,
 						left: '4%',
 						top: 60,
-						bottom: 120,
+						// bottom: 120,
+					  	bottom:dimensionality_show_data.length > 15 ? 120 : 80,
+
 						containLabel: true,
 						width: '46%',
 					}, {
 						show: false,
 						left: '50.5%',
 						top: 80,
-						bottom: 120,
+						// bottom: 120,
+					  	bottom:dimensionality_show_data.length > 15 ? 120 : 80,
+
 						width: '0%',
 					}, {
 						show: false,
 						right: '4%',
 						top: 60,
-						bottom: 120,
+						// bottom: 120,
+					  	bottom:dimensionality_show_data.length > 15 ? 120 : 80,
+
 						containLabel: true,
 						width: '46%',
 					}, ],
@@ -1601,7 +1443,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						barGap: 20,
 						label: {
 							normal: {
-								show: dimensionality_show_data.length < 25,
+								show:false,
+								// show: dimensionality_show_data.length < 25,
 								position:"left",
 								formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -1711,7 +1554,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							}else{
 								if(j < all_dimensionality.length - 2){
 									if(need_show_dimensionality_arr[j+1].hasObject("value",aData[all_dimensionality[j+1]]) == -1){
-										need_show_dimensionality_arr[j].push(({"value":" ","count":1}));
+										// need_show_dimensionality_arr[j].push(({"value":" ","count":1}));
+										need_show_dimensionality_arr[j].push(({"value":"YZYPD"+aData[all_dimensionality[j]],"count":1}));
 									}
 								}else{
 
@@ -1761,7 +1605,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -1778,7 +1622,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					toolbox: {
 				        show: true,
 				        feature: {
-				            dataView: {readOnly: true},
+				            // dataView: {readOnly: true},
 				            restore: {},
 				            saveAsImage: {
 				            	title:"保存为png"
@@ -1793,7 +1637,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
    					color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 					tooltip : {
 	        				trigger: 'item',
-	        				backgroundColor:'rgba(255,255,255,0.8)',
+	        				backgroundColor:'rgba(255,255,255,0.95)',
 			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 	        				formatter:function(params){
 	        					var val = params.value;
@@ -2190,15 +2034,19 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							"fixed":false,
 							"draggable":true,
 							"category":categorys.hasObject("name",aData[need_dimensionality[0]]),
-							"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},
+							// "dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},
+							"dirllInfo":{"currentField":all_dimensionality[index],"currentValue":aData[all_dimensionality[index]]},
 							"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],
 							"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],
+							"viewtype":"relational",
 							label:{
 								normal:
 								{
+									// show:false,
 									show:need_dimensionality.length < 25,
 									formatter:function(params){
 										var names = params["name"].split("_YZYPD_");
+										// console.log(equalCompare(names));
 										var needValue = params.value;
 										  if(normalUnitValue_arr[storeNum_toview] != -1){
 						  	 				needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
@@ -2209,6 +2057,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							}
 							
 						}
+						console.log(aNode)
 						need_all_nodes.push(aNode);
 					}
 					count++;
@@ -2228,7 +2077,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -2245,7 +2094,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -2259,7 +2108,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				},
 				color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 				tooltip:{
-					backgroundColor:'rgba(255,255,255,0.8)',
+					backgroundColor:'rgba(255,255,255,0.95)',
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					formatter:function(params){
 						if(params["dataType"] == "edge"){
@@ -2270,13 +2119,15 @@ function comparisonStrip_generate_fun(storeNum_toview){
 //							return ori[ori.length - 2] + " > "+ target[target.length - 2];
 						}else{
 							var needValue = params.value;
-							if(normalUnitValue != -1){
-						  	 needValue = needValue.toFixed(normalUnitValue);
+							// if(normalUnitValue != -1){
+						 //  	 needValue = needValue.toFixed(normalUnitValue);
+						 //  	}
+						 	if(normalUnitValue_arr[storeNum_toview] != -1){
+		  	 					needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 						  	}
 							var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+params.data.dirllInfo.currentField+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
 
 							var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.dirllInfo.currentValue+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-
 
 							var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
 							var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
@@ -2316,6 +2167,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							repulsion: 100,
 						},
 						symbolSize:function(value,params){
+							// console.log(params);
 							var names = params["name"].split("_YZYPD_");
 							var rs = names[names.length - 2]+":"+params.value;
 							return [rs.visualLength(12)+15,20]
@@ -2324,7 +2176,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				]	
 			}
 			mycharts.clear();
-	
+			
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
@@ -2383,7 +2235,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]],"measureName":all_measure[j]}],
 							label:{
 								normal:{
-									show:all_dimensionality.length < 25 && all_measure.length < 3,
+									show:false,
+									// show:all_dimensionality.length < 25 && all_measure.length < 3,
 									position:"top",
 									formatter:function(params){
 				                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -2516,7 +2369,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -2528,7 +2381,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			        axisPointer: { // 坐标轴指示器，坐标轴触发有效
 			            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
 			        },
-			        backgroundColor:'rgba(255,255,255,0.8)',
+			        backgroundColor:'rgba(255,255,255,0.95)',
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			        formatter:function(params){
 			        		var needValue = params.value;
@@ -2605,7 +2458,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -2687,7 +2540,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							z:3,
 							label:{
 								normal:{
-									show:dimensionality_show_data.length < 25 && all_measure.length < 3,
+									show:false,
+									// show:dimensionality_show_data.length < 25 && all_measure.length < 3,
 									position:"right",
 									formatter:function(params){
 				                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -2741,34 +2595,49 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			
 			
 			for(var i = 0;i < dimensionality_show_data.length;i++){
-				var arr = [];
-				for(var j = 0;j < dimensionality_show_data[i].length; j ++){
-					// arr.push(dimensionality_show_data[i][j].length);
-					var dataLen = dimensionality_show_data[i][j];
-					if(dataLen){
-						if(/YZYPD/.test(dataLen)){
-							dataLen = dataLen.split("YZYPD")[1];
-						}
-						arr.push(dataLen.length);
-					}
-				}
-				var maxLength = Math.max.apply(null, arr);
+				// var arr = [];
+				// for(var j = 0;j < dimensionality_show_data[i].length; j ++){
+				// 	// arr.push(dimensionality_show_data[i][j].length);
+				// 	var dataLen = dimensionality_show_data[i][j];
+				// 	if(dataLen){
+				// 		if(/YZYPD/.test(dataLen)){
+				// 			dataLen = dataLen.split("YZYPD")[1];
+				// 		}
+				// 		arr.push(dataLen.length);
+				// 	}
+				// }
+				// var maxLength = Math.max.apply(null, arr);
 				var aY = {
 					"show":true,
 					"name":all_dimensionality[i],
 					"nameGap":10,
+					"nameRotate":15,
 					"nameLocation":"end",
 					"type":"category",
 					axisTick:{
 						inside:false,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						// length: /^YZYPD/.test(dimensionality_show_data[i])? 0 : 70  + i,
 					},
 					axisLabel:{
 						color:"black",
 						rotate:15,
 						fontSize:10,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						formatter:function(value){
+							if(value.length > 6){
+								value = value.substring(0,6) + '...';
+							}
+							return value;
+						}
 					},
+					axisLine: {
+						show:true,   //去掉垂直线
+			          	// lineStyle: {color: '#ccc'}
+			        },
+			        splitLine:{
+			        	show:false
+			        },
 					"data":dimensionality_show_data[i],
 					gridIndex:i
 				}
@@ -2779,13 +2648,13 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					show:false,
 					
 				}
-				// aGrid["left"] = 60 + i * (60 + i);
+				aGrid["left"] = 80 + i * (70 + i);
 				// aGrid["left"] = 150 + i * 60;
-				if(maxLength > 0){
-					aGrid["left"] = 60 + (maxLength * 5) + i * (maxLength * 5 + 60);
-				}else{
-					aGrid["left"] = 100 + i * (60 + i);
-				}
+				// if(maxLength > 0){
+				// 	aGrid["left"] = 80 + (maxLength * 5) + i * (maxLength * 5 + 60);
+				// }else{
+				// 	aGrid["left"] = 100 + i * (60 + i);
+				// }
 				aGrid["bottom"] = 120;	
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
@@ -2832,7 +2701,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    	{
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -2844,7 +2713,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			        axisPointer: { // 坐标轴指示器，坐标轴触发有效
 			            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
 			        },
-			       backgroundColor:'rgba(255,255,255,0.8)',
+			       backgroundColor:'rgba(255,255,255,0.95)',
 			    	   extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			       formatter:function(params){
 			        		var needValue = params.value;
@@ -2892,7 +2761,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -2990,7 +2859,21 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						max  = aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]]/allValueUnitDict[valueUnitValue_arr[storeNum_toview]];
 					}
 				}
-				indicator.push({"name":aData[all_dimensionality[0]],"max":(max/allValueUnitDict[valueUnitValue_arr[storeNum_toview]])*1.2,"originalMax":max});
+				var str = "";
+				for(var k=0;k<all_dimensionality.length;k++){
+					// console.log(all_dimensionality[k],aData[all_dimensionality[k]]);
+					str +=  aData[all_dimensionality[k]] + "-";
+					//console.log(str);
+					var re = str.substring(0,str.length-1);
+					//console.log(re);
+					
+				}
+				indicator.push({
+					// "name":aData[all_dimensionality[0]],
+					"name":re,
+					"max":(max/allValueUnitDict[valueUnitValue])*1.2,
+					"originalMax":max
+           	 	});
 			}
 			
 		var option = {
@@ -3002,7 +2885,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					  	text: "单位: "+valueUnitValue_arr[storeNum_toview],
 					  	top:10,
 					  	right:70,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
@@ -3010,35 +2893,35 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					  }
 		    ],
 		    tooltip: {
-		    		trigger:"item",
+		    		trigger:"axis",
 		    		textStyle:{
 		    			fontSize:12	
 		    		},
-		    		backgroundColor:'rgba(255,255,255,0.8)',
+		    		backgroundColor:'rgba(255,255,255,0.95)',
 			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
-		    		formatter:function(params){
-					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
-					var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
-					for(var i = 0;i < all_measure.length;i++){
-						var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_measure[i]+":</p>";
-						leftDiv+=aP;
-						var aStyle = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[i]]+"</p>";
-						rightDiv+=aStyle;
-					}
+		   //  		formatter:function(params){
+					// var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+					// var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+					// for(var i = 0;i < all_measure.length;i++){
+					// 	var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_measure[i]+":</p>";
+					// 	leftDiv+=aP;
+					// 	var aStyle = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[i]]+"</p>";
+					// 	rightDiv+=aStyle;
+					// }
 
-   					for(var i = 0;i < params.value.length;i++){
-   						var needValue = params.value[i];
-   						if(normalUnitValue != -1){
-				  	 		needValue = needValue.toFixed(normalUnitValue);
-				 		 }
-						leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+indicator[i].name+":</span></p>";
-						rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-   					}
-   					leftDiv+="</div>";
-                     rightDiv+= "</div>";
-	        			 return leftDiv + rightDiv;
+   		// 			for(var i = 0;i < params.value.length;i++){
+   		// 				var needValue = params.value[i];
+   		// 				if(normalUnitValue != -1){
+				 //  	 		needValue = needValue.toFixed(normalUnitValue);
+				 // 		 }
+					// 	leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+indicator[i].name+":</span></p>";
+					// 	rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+   		// 			}
+   		// 			leftDiv+="</div>";
+     //                 rightDiv+= "</div>";
+	    //     			 return leftDiv + rightDiv;
 
-		    		}
+		   //  		}
 		    		
 		    },
 		    legend: {
@@ -3055,7 +2938,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			toolbox: {
 		        show: true,
 		        feature: {
-		            dataView: {readOnly: true},
+		            // dataView: {readOnly: true},
 		            restore: {},
 		            saveAsImage: {
 		            	title:"保存为png"
@@ -3068,9 +2951,25 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		        itemGap:30
 			},
 		    radar: [{
-		        shape: 'circle',
+		        // shape: 'circle',
 		        indicator:indicator,
 		        triggerEvent:true,
+		        name:{
+		        	formatter:function(params){
+	         			count++;		
+	         			if(data.length > 20){
+	         				if(count % 3 == 0){
+	         					return params;
+	         				}else{
+	         					array.push(params);
+	         				//	console.log(array);
+	         					return '';
+	         				}
+	         			}else{
+	         				return params;
+	         			}
+	         		}
+		        }
 		    }],
 		    "record":recordArr,
 		    series: series
