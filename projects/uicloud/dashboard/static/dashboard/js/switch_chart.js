@@ -33,7 +33,6 @@ function switch_chart_handle_fun(edit_view){
 
 
 function beginDrawChart(edit_view){
-
 	var target =  $("#view_show_wrap").get(0);
     spinner.spin(target);
     $(".maskLayer").show();
@@ -347,9 +346,6 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 			}
 		}
 
-
-
-		return;
 	}else{
 		
 		if(!save_now_show_view_text.hasClass("show_view_success")){

@@ -27,7 +27,6 @@ Array.prototype.XMsort = function(propertyNameArray){
 }
 var customCalculate = {}
 var preAllData = null;
-var recordConditon = null;
 var handleDataPost = {};
 
 // 定义一个对象用来记录拖拽的度量是否需要计算同比或者环比
@@ -131,9 +130,13 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 			}
 		}
 		if(dirllConditions && dirllConditions.length > 0){
-			dimensionality_array.splice(dimensionality_array.length-1,1,dirllConditions[dirllConditions.length - 1].drillField);
+			var tempSaveTableName = [];
+			// dimensionality_array.splice(dimensionality_array.length-1,1,dirllConditions[dirllConditions.length - 1].drillField);
 			for(var i = 0;i <  dirllConditions.length;i++){
 				var obj = dirllConditions[i];
+				if($.inArray(i,saveDrillCount) != -1){
+					continue;
+				}
 				if(obj.currentField != "全部" && obj.currentValue != "全部"){
 					conditions.push({"type":"=","columnName":obj.currentField,"value":obj.currentValue});
 				}
@@ -241,6 +244,17 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	if(equalCompare(recordConditon,handleDataPost) && preAllData){
 		handleSuccessFunction(preAllData);
 		oldViewToShow =false;
+		if($(".clickActive") != undefined && $(".clickActive").length > 0){
+			if($(".drillDownHandle").length > 0){
+				return;
+			}
+			saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
+			saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id")};
+		}else{
+			saveEveryViewPostData = {};
+			drillElementCount = {};
+		}
+		
 		return;
 	}
 
@@ -260,8 +274,20 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
-
 				oldViewToShow =false;
+				if($(".clickActive") != undefined && $(".clickActive").length > 0){
+					if($(".drillDownHandle").length > 0){
+						return;
+					}
+					saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
+					saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id")};
+				}else{
+					saveEveryViewPostData = {};
+					drillElementCount = {};
+				}
+
+
+				
 
 			}
 		}

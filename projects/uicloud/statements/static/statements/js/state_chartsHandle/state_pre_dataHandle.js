@@ -5,8 +5,12 @@ var reporting_recordConditon = null;
 
 // needColumns暂时未用到
 function reporting_measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,storeNum_toview,handleSuccessFunction){
+	if(clickDrill){
+		var handleDataPost = JSON.parse(saveDashboardPostData[storeNum_toview]);
+	}else{
+		var handleDataPost = freePostData;
+	}
 	
-	var handleDataPost = JSON.parse(saveDashboardPostData[storeNum_toview]);
 
 
 	if(equalCompare(reporting_recordConditon,handleDataPost) && reporting_preAllData){
@@ -30,6 +34,7 @@ function reporting_measure_Hanlde(dimensionality_array,measure_name_arr,needColu
 				reporting_preAllData = data.results.data;
 				reporting_recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
+				clickDrill = true;
 			}
 		}
 	});

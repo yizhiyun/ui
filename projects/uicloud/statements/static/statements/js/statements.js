@@ -236,7 +236,7 @@
 		if(isOnlyLaod == false || onlyRunOne){
 			//拿到构建报表的数据
 			$.post("/dashboard/getAllData",function(result){
-			// console.log(result);
+			
 			ajax_data_post = result;
 			toIfChangeSecond = true;
 			view_out_handle_init(result);
@@ -502,10 +502,17 @@
 					$.post("/dashboard/setSwitch",{"switch":"show","showall":"yes"},function(result){
 						if(result != ""){
 							$(".cookie_handle_view .view_show_content .view_show_handle").find("img").attr("src","../static/statements/img/hide.png");
-							$(".cookie_handle_view .view_show_content .view_show_handle").css("opacity","1").data("table_show","true").removeClass("table_hide_false");
-							$(".cookie_handle_view .view_show_content .view_show_handle").on("mouseenter",function(){$(".cookie_handle_view .view_show_content .view_show_handle").css("background","#F5F5F5");$(".cookie_handle_view .view_show_content .view_show_handle").find("img").css("display","block")});
-							$(".cookie_handle_view .view_show_content .view_show_handle").on("mouseleave",function(){$(".cookie_handle_view .view_show_content .view_show_handle").css("background","");$(".cookie_handle_view .view_show_content .view_show_handle").find("img").css("display","none")});
-							reason_view_drag(result,$(".cookie_handle_view .statement_li_content .view_fun_content"));
+							$(".cookie_handle_view .view_show_content .view_show_handle").css("opacity","1").data("table_show","true").removeClass("table_hide_false").css("background","");
+							$(".cookie_handle_view .view_show_content .view_show_handle img").hide();
+							$(".cookie_handle_view .view_show_content .view_show_handle").each(function(index,ele){
+								$(ele).unbind("mouseenter");
+								$(ele).on("mouseenter",function(){$(this).css("background","#F5F5F5");$(this).find("img").show()});
+
+								$(ele).unbind("mouseleave");
+								$(ele).on("mouseleave",function(){$(this).css("background","");$(this).find("img").hide()});
+							})
+
+							$(".view_folder_show_area ul li").show();
 						}
 					})
 				})
@@ -636,7 +643,9 @@
 								ajax_count_ele++;
 
 								if(ajax_count_ele == $(".table_hide_false").length){
-									reason_view_drag(result,$(ele).parent().parent().find(".view_fun_content"));
+									if($(ele).parent().parent().hasClass("cookie_handle_view")){
+										$(".view_folder_show_area ul li").show();
+									}
 									$(".view_show_handle").removeClass("table_hide_false");
 								}
 							}
@@ -824,12 +833,24 @@
 		}
 
 
+		function statementsClickDrill(element,toDrill){
+			clickDrill =false;
+			$(element).parents(".new_view_content").attr("clickcount",$(element).parent("li").attr("datavalue"));
+			freePostData = JSON.parse(JSON.stringify($(element).data("viewHandleFun")));
+			$(element).parents(".new_view_content").attr("showText",toDrill["showType"][$(element).parent("li").attr("datavalue")].split("_YZYPD_")[0]);
+			drag_row_column_data_arr[$(element).data("viewHandleCount")] = JSON.parse(JSON.stringify($(element).data("viewHandleData")));
+			eval($(element).data("viewHandleType"));
+		}
+
+
+
+
 			//获取当前容器的图例
 			 // gridster = $(".gridster ul").gridster().data('gridster');
 
 
 			//动态创建每个视图
-		function fun_add_view(view_type,right_view_show,viewshow_class,viewshow_class_arr,view_note,count,view_location,view_num_or,hide_show_if,saveTableName){
+		function fun_add_view(view_type,right_view_show,viewshow_class,viewshow_class_arr,view_note,count,view_location,view_num_or,hide_show_if,saveTableName,toDrill,drillHandle){
 				if(view_note == null){
 					view_note = "";
 				}
@@ -948,10 +969,10 @@
 				 	view_data_info["data-sizey"] = view_location["size_y"];
 				 }
 				if(view_type == "showTable_by_dragData()"){
-						gridster.add_widget("<li class='new_view_content right_view_table'  data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main new_view_table clear "+viewshow_class+" view_handle_count"+count+"'><div class='edit_table'><div class='right_module' style='display: inline-block;'> <div class='top_column_container' style='display: inline-block'><p class='top_column_name'></p><table class='column_data_list' cellspacing='0' cellpadding='0'><tbody></tbody></table></div><div class='content_body'><ul id='data_list_for_body'></ul></div></div><div class='left_row_container'><table cellspacing='0' cellpadding='0'><thead><tr></tr></thead><tbody></tbody></table></div></div></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='160'>"+view_note+"</textarea></div></li>", view_data_info["data-sizex"],view_data_info["data-sizey"]);
+						gridster.add_widget("<li class='new_view_content right_view_table' data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main new_view_table clear "+viewshow_class+" view_handle_count"+count+"'><div class='edit_table'><div class='right_module' style='display: inline-block;'> <div class='top_column_container' style='display: inline-block'><p class='top_column_name'></p><table class='column_data_list' cellspacing='0' cellpadding='0'><tbody></tbody></table></div><div class='content_body'><ul id='data_list_for_body'></ul></div></div><div class='left_row_container'><table cellspacing='0' cellpadding='0'><thead><tr></tr></thead><tbody></tbody></table></div></div></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='160'>"+view_note+"</textarea></div></li>", view_data_info["data-sizex"],view_data_info["data-sizey"]);
 						textAreaHandle(view_location,count,view_data_info);
 				}else if(view_type == "col_card()"){
-						gridster.add_widget("<li class='new_view_content indexPage'  data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main clear new_view_indexPage "+viewshow_class+" view_handle_count"+count+"'><div class='right_module'><div class='content_body'><ul class='session_data_list_for_body'></ul></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='60'>"+view_note+"</textarea></div></li>",view_data_info["data-sizex"],view_data_info["data-sizey"]);
+						gridster.add_widget("<li class='new_view_content indexPage' data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main clear new_view_indexPage "+viewshow_class+" view_handle_count"+count+"'><div class='right_module'><div class='content_body'><ul class='session_data_list_for_body'></ul></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='60'>"+view_note+"</textarea></div></li>",view_data_info["data-sizex"],view_data_info["data-sizey"]);
 						textAreaHandle(view_location,count,view_data_info);
 						$(".new_view_content").find("."+viewshow_class+"").find(".right_module").css("marginTop",($("."+viewshow_class+"").parent().height()-30)/2 - 80 + "px");
 				}else{
@@ -963,7 +984,29 @@
 					 $(".new_view_content").eq(count).append($("<div class='saveTable_class'><h4>"+saveTableName+"</h4></div>"));
 				}
 
-
+				if(toDrill["saveDrillDownTemp"] != undefined){
+					$(".new_view_content").eq(count).addClass("drillToClick").data("drillData",drillHandle).data("drillEvery",JSON.stringify(toDrill["saveDrillDownTemp"])).attr("clickcount",0).data("showtype",toDrill["showType"]).data("drillDownCount",toDrill["drillElementCount"]).data("drillElementPost",toDrill["saveEveryViewPostData"]);
+					$(".new_view_content").eq(count).append($("<div class='drillDownState'><ul><li class='statementsAll' datavalue='0'><p>全部</p></li></ui></div>"));
+					$(".new_view_content").eq(count).find(".drillDownState ul .statementsAll").unbind("click");
+					$(".new_view_content").eq(count).find(".drillDownState ul .statementsAll p").click(function(event){
+						event.stopPropagation();
+						$(this).parents(".drillDownState").find("ul li").hide();
+						statementsClickDrill($(this),toDrill);
+					})
+					for(var i = 0; i < allKeys(toDrill["saveDrillDownTemp"]).length - 1;i++){
+						$(".new_view_content").eq(count).find(".drillDownState ul").append($("<li datavalue="+(i+1)+"><img src='/static/statements/img/jt.png' alt='jt'><p>"+allKeys(toDrill["saveDrillDownTemp"])[i]+"</p></li>"));
+					}
+					$(".new_view_content").eq(count).find(".drillDownState ul li p").eq(1).unbind("click");
+					$(".new_view_content").eq(count).find(".drillDownState ul li p").eq(1).click(function(event){
+						event.stopPropagation();
+						if(allKeys(toDrill["saveDrillDownTemp"]).length == 2 || $(".new_view_content").eq(count).find(".drillDownState ul li").eq(2).css("display") == "none"){
+							return;
+						}
+						$(this).parents(".drillDownState").find("ul li:gt("+$(this).parent("li").attr("datavalue")+")").hide();
+						statementsClickDrill($(this),toDrill);
+					})
+				}
+				
 				// if(!hide_show_if){
 				// 	 $(".new_view_content").eq(count).css("display","none");
 				// }
@@ -1143,7 +1186,7 @@
 
 			//根据报表显示其中的视图
 		function reason_view_drag(data_result,now_click_ele,click_view_btn){
-				console.log(data_result)
+				
 				if(saveViewShowArr[$(now_click_ele).text()] != undefined){
 					saveViewShowArr[$(now_click_ele).text()] = saveViewShowArr[$(now_click_ele).text()] || [];
 				}else{
@@ -1321,7 +1364,7 @@
 
 
 								//创建容器
-								fun_add_view(change_view_show_click["viewtype"],now_click_ele.parent().parent().find(".small_view_text").eq(count).text(),viewshow_class,viewshow_class_arr,change_view_show_click["note"],count,JSON.parse(view_session),change_view_show_click["calculation"],change_view_show_click["show"],change_view_show_click["viewstyle"].split("_YZY_")[3]);
+								fun_add_view(change_view_show_click["viewtype"],now_click_ele.parent().parent().find(".small_view_text").eq(count).text(),viewshow_class,viewshow_class_arr,change_view_show_click["note"],count,JSON.parse(view_session),change_view_show_click["calculation"],change_view_show_click["show"],change_view_show_click["viewstyle"].split("_YZY_")[3],JSON.parse(change_view_show_click["drilldowndata"]),change_view_show_click["handledatapost"]);
 								view_handle_switch_statements(viewshow_class,change_view_show_click["show"],change_view_show_click["viewtype"],view_contact.length-1,save_allTable,saveIndexPage);
 								saveViewShowArr[$(now_click_ele).text()].push(change_view_show_click['id']);
 								})(i);
@@ -2233,6 +2276,7 @@
 								post_dict["customcalculate"] = "null";
 								post_dict["sequential"] = "null";
 								post_dict["handledatapost"] = "null";
+								post_dict["drilldowndata"] = "null";
 								$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 									if(result["status"] == "false"){
 										$(".click_new_folder_input").css("borderColor","red");
@@ -2480,8 +2524,11 @@
 		//新建视图 下载 操作部分
 		function view_content_right_handle(){
 			//新建视图
+			$("#pageStatementsModule #right_folder_show_are .click_out_handle .click_new_view").unbind("click");
 			$("#pageStatementsModule #right_folder_show_are .click_out_handle .click_new_view").on("click",function(){
 				changePageTo_navDashBoardView();
+				addNewViewHandle = false;
+				$("#pageDashboardModule .action_add_view").trigger("click");
 			})
 
 			//下载视图区域为pdf格式

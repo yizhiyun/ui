@@ -1,40 +1,45 @@
-var dirllConditions = [];
 var currentChatType = "none";
 var radarDiemension = "none";
 var showTongbiMeasureArray = [];
 var showHuanbiMeasureArray = [];
+var freePostData;
+var clickDrill = true;
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
-function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
-	
-	var mycharts = echarts.getInstanceByDom($("."+viewshow_class+"").get(0));
-	if(!mycharts){
-	mycharts = 	echarts.init($("."+viewshow_class+"").get(0));
+function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCount) {
+	if(freeCount != undefined){
+		var mycharts = echarts.getInstanceByDom($(".new_view_main[_echarts_instance_="+freeCount+"]").get(0));
+	}else{
+		var mycharts = echarts.getInstanceByDom($("."+viewshow_class+"").get(0));
+		if(!mycharts){
+				mycharts = 	echarts.init($("."+viewshow_class+"").get(0));
+		}
+		if(currentChatType != chart_type_need){
+			if(echarts.getInstanceByDom($("."+viewshow_class+"").get(0))){
+				echarts.getInstanceByDom($("."+viewshow_class+"").get(0)).clear();
+			}
+		}
+		
 	}
+	
+
 	
 	mycharts.off("click");
 	mycharts.on("click",function(params){
-		chartAPartDidClickedFunction(params);
+		clickDrillStatementsFunction(params,$(params.event.event.target).parents(".new_view_content"),JSON.parse(JSON.stringify(storeNum_toview)),JSON.parse(JSON.stringify(viewshow_class)))
 	});
  	var need_handle_measureName = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]))[0];
  	var need_handle_dimensionalityName = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]))[0];
  	
- 	if(currentChatType == chart_type_need && dirllConditions && dirllConditions.length > 0){
-		need_handle_dimensionalityName = dirllConditions[dirllConditions.length - 1].drillField;
-	}else if(currentChatType != chart_type_need && dirllConditions && dirllConditions.length > 0){
-		dirllConditions = [];
-	}
-	if(currentChatType != chart_type_need){
-		if(echarts.getInstanceByDom($("."+viewshow_class+"").get(0))){
-			echarts.getInstanceByDom($("."+viewshow_class+"").get(0)).clear();
-		}
-	}
+
  	
 	 // 一个维度一个度量
 	function waterWall_generate_fun(storeNum_toview){
-		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		}
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -431,15 +436,18 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
                 elementContent($("."+tempSaveClassName+""),option);	
                 
                 
-            }, 400)
+            }, 200)
 		});
 	}
 
 	//  饼图
 	function  cake_generate_fun (storeNum_toview) {
-		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		}
+
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -560,7 +568,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
 
-            }, 400)
+            }, 200)
 				
 				
 		});
@@ -569,9 +577,11 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 	
 	// 4、面积图
 	function area_generate_fun (storeNum_toview) {
-		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		}
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -747,7 +757,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
                 mycharts.setOption(option);
                // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)
+            }, 200)
 		});
 		
 		
@@ -757,9 +767,11 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
 
 
  function gantt_generate_fun(storeNum_toview){
- 		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		}
  		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -963,7 +975,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview) {
                 mycharts.setOption(option);
                 // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)
+            }, 200)
 		});
 		
  }
@@ -1009,63 +1021,50 @@ currentChatType = chart_type_need;
 
 // end------------------
 // 多个维度多个度量
-function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
-
+function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCount){
+		var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]));
+		var all_measure = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]));
 	//释放图表实例
-	
-	var mycharts = echarts.getInstanceByDom($("."+viewshow_class+"").get(0));
-	if(!mycharts){
-		mycharts = 	echarts.init($("."+viewshow_class+"").get(0));
-	}
+	if(freeCount != undefined){
+		var mycharts = echarts.getInstanceByDom($(".new_view_main[_echarts_instance_="+freeCount+"]").get(0));
+	}else{
+		var mycharts = echarts.getInstanceByDom($("."+viewshow_class+"").get(0));
+		if(!mycharts){
+				mycharts = 	echarts.init($("."+viewshow_class+"").get(0));
+		}
+		if(currentChatType != chart_type_need){
+			if(echarts.getInstanceByDom($("."+viewshow_class+"").get(0))){
+				echarts.getInstanceByDom($("."+viewshow_class+"").get(0)).clear();
+			}
+		}
+		var commonLegend = [];
+		for (var k = 0;k <  all_measure.length;k++) {
+			commonLegend.push(drag_measureCalculateStyle_arr[storeNum_toview][all_measure[k]])
+		}
+	}	
+
+
+
+
 	mycharts.off("click");
 	mycharts.on("click",function(params){
-		
-		if(currentChatType == "radarChart"){
-			if(params.componentType == "radar"){
-				chartAPartDidClickedFunction(params);
-			}
-		}else if(currentChatType == "reliationTree"){
-			if(params.dataType == "node"){
-				chartAPartDidClickedFunction(params);
-			}
-		}else{
-			chartAPartDidClickedFunction(params);
-		}
+		clickDrillStatementsFunction(params,$(params.event.event.target).parents(".new_view_content"),JSON.parse(JSON.stringify(storeNum_toview)),JSON.parse(JSON.stringify(viewshow_class)))
 	});
-	
-	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]));
-	var all_measure = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]));
+
+
 	
 	// console.log(drag_row_column_data_arr[storeNum_toview])
 
-	var commonLegend = [];
-	for (var k = 0;k <  all_measure.length;k++) {
-		commonLegend.push(drag_measureCalculateStyle_arr[storeNum_toview][all_measure[k]])
-	}
-	
-	if(currentChatType == chart_type_need && dirllConditions && dirllConditions.length > 0){
-		
-		all_dimensionality.splice(all_dimensionality.length-1,1,dirllConditions[dirllConditions.length - 1].drillField);
-		
-	}else if(currentChatType != chart_type_need && dirllConditions && dirllConditions.length > 0){
-		dirllConditions = [];
-		
-	}
-	
-	if(currentChatType != chart_type_need){
-		if(echarts.getInstanceByDom($("."+viewshow_class+"").get(0))){
-			echarts.getInstanceByDom($("."+viewshow_class+"").get(0)).clear();
-		}
-	}
-	
-	
+
 	var last_dimensionaity = all_dimensionality[all_dimensionality.length - 1];
 	
 	// 1、折线图
 	function polyLine_generate_fun(storeNum_toview){
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
 			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
 			showTongbiMeasureArray = tempThData[0];
 			showHuanbiMeasureArray = tempThData[1];
+		}
 			var tempSaveClassName = viewshow_class;
 			reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -1325,16 +1324,18 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview){
                 mycharts.setOption(option);
                 // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)
+            }, 200)
 			});
 					
 	}
 
 //2、对比条形图
 function comparisonStrip_generate_fun(storeNum_toview){
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
 			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
 			showTongbiMeasureArray = tempThData[0];
 			showHuanbiMeasureArray = tempThData[1];
+		}
 			var tempSaveClassName = viewshow_class;
 			reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -1661,7 +1662,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
                 mycharts.setOption(option);
                 // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)
+            }, 200)
 			});	
 }
 
@@ -1674,9 +1675,11 @@ function comparisonStrip_generate_fun(storeNum_toview){
  // 3、堆积柱状图 2-3个维度，1个度量
  //	type：number_bar、number_liner、percentage_bar、percentage_liner
  	function stackedBar_generate_fun(bar_type,storeNum_toview){
- 		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		}
  		var tempSaveClassName = viewshow_class;
  		var  chartTile = {"number_bar":"堆积柱状图","number_liner":"堆积条形图","percentage_bar":"百分比堆积柱","percentage_liner":"百分比堆积条形"}
 
@@ -2127,7 +2130,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
                 mycharts.setOption(option);
                 // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)
+            }, 200)
 				
 			});
 			
@@ -2137,9 +2140,11 @@ function comparisonStrip_generate_fun(storeNum_toview){
 
 // 关系图
 	function reliationTree_generate_fun(storeNum_toview){
-		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		}
 		var tempSaveClassName = viewshow_class;
 		var categorys = [];// 分类，主要用作图例
 		var need_all_nodes = []; // 所需要的所有节点
@@ -2193,6 +2198,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},
 							"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],
 							"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]],
+							"viewtype":"relational",
 							label:{
 								normal:
 								{
@@ -2330,15 +2336,17 @@ function comparisonStrip_generate_fun(storeNum_toview){
                 mycharts.setOption(option);
                 // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)
+            }, 200)
 		}
 	}
 
 // 柱状图
 	function histogram_generate_fun(storeNum_toview){
-		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		}
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -2630,16 +2638,18 @@ function comparisonStrip_generate_fun(storeNum_toview){
                 mycharts.setOption(option);
                 // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)			
+            }, 200)			
 		});
 	}
 	// var maxLength = 0;
 	
 	// 条形图 
 	function barChart_generate_fun(storeNum_toview){
-		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		};
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -2949,16 +2959,18 @@ function comparisonStrip_generate_fun(storeNum_toview){
                 mycharts.setOption(option);
                 // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)
+            }, 200)
 
 
 		});
 	}
 	//  雷达图
 	function radarChart_generate_fun(storeNum_toview){
-		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
-		showTongbiMeasureArray = tempThData[0];
-		showHuanbiMeasureArray = tempThData[1];
+		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
+			var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+			showTongbiMeasureArray = tempThData[0];
+			showHuanbiMeasureArray = tempThData[1];
+		}
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
 			mycharts.showLoading({
@@ -3083,7 +3095,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
                 mycharts.setOption(option);
                 // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
                 elementContent($("."+tempSaveClassName+""),option);
-            }, 400)
+            }, 200)
 			
 		});
 	}
@@ -3140,3 +3152,48 @@ function comparisonStrip_generate_fun(storeNum_toview){
 	currentChatType = chart_type_need;
 }
 
+
+
+//点击下钻
+function clickDrillStatementsFunction(params,element,storeNum_toview){
+	
+	if(!$(element).hasClass("drillToClick") || $(element).attr("clickcount") >= allKeys(JSON.parse($(element).data("drillEvery"))).length-1) return;
+	if($(element).attr("clickcount") == 0){
+		freePostData = JSON.parse($(element).data("drillData"));
+	}
+	var freeShowType = $(element).data("showtype");
+
+	var freeDrillCount = $(element).data("drillDownCount")[freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[0]];
+
+	var freeDrillPost = $(element).data("drillElementPost");
+	//判断单维度和多维度获取点击的value
+	if(params.data.theDimeInfo == undefined || params.data.theDimeInfo.length == 1){
+		var statementsValue = objectDeepCopy(params.name);
+	}else{
+		if(freeDrillCount == undefined){
+			var statementsValue =objectDeepCopy( params.data.theDimeInfo[0]);
+		}else{
+			var statementsValue = objectDeepCopy(params.data.theDimeInfo[freeDrillCount]);
+		}
+		
+	}
+
+	var freeType = JSON.parse($(element).data("drillEvery"));
+	
+	$(element).find(".drillDownState ul li p").eq(Number($(element).attr("clickcount"))).data("viewHandleFun",JSON.parse(JSON.stringify(freePostData))).data("viewHandleType","reporting_"+freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[1].replace(/\)/,","+storeNum_toview+",'"+$(element).find(".new_view_main").attr("_echarts_instance_"))+"')").data("viewHandleData",JSON.parse(JSON.stringify(freeType[freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[0]]["viewdata"]))).data("viewHandleCount",JSON.parse(JSON.stringify(storeNum_toview)));
+	$(element).attr("clickcount",Number($(element).attr("clickcount"))+1);
+	var freeCount = Number($(element).attr("clickcount"));
+	$(element).find(".drillDownState ul li p").eq(freeCount).text(statementsValue);
+	$(element).find(".drillDownState ul li:lt("+(freeCount+1)+")").show();
+	$(element).attr("showText",freeShowType[freeCount].split("_YZYPD_")[0]);
+	if(freeDrillPost[freeShowType[freeCount].split("_YZYPD_")[0]] != undefined){
+		var tempShowHandleData = JSON.parse(JSON.stringify( freeDrillPost[freeShowType[freeCount].split("_YZYPD_")[0]]));
+		tempShowHandleData["conditions"] = JSON.parse(JSON.stringify(freePostData))["conditions"];
+		tempShowHandleData["conditions"].push({"columnName":freeShowType[freeCount-1].split("_YZYPD_")[0],"type":"=","value":statementsValue})
+		freePostData = JSON.parse(JSON.stringify(tempShowHandleData));
+	}
+	drag_row_column_data_arr[storeNum_toview] = JSON.parse(JSON.stringify(freeType[freeShowType[freeCount].split("_YZYPD_")[0]]["viewdata"]));
+	clickDrill =false;
+	eval("reporting_"+freeShowType[freeCount].split("_YZYPD_")[1].replace(/\)/,","+storeNum_toview+",'"+$(element).find(".new_view_main").attr("_echarts_instance_"))+"')");
+
+	}

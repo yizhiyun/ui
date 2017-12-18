@@ -65,8 +65,8 @@ html,body{-webkit-user-select:none;}
 #delete_area .delete_checked p{position: absolute;}
 #delete_area .delete_area_ok_btn{width: 160px;height: 30px;background: #0d53a4;color: white;text-align: center;line-height: 30px;margin:0 auto;font-size: 12px;border-radius: 3px;cursor: pointer;}
 /*拖拉拽样式*/
-.ui-state-default_z{border:1px solid #e2efff}
-.ui-state-hover_z{background:#e2efff;}
+#pageStatementsModule .ui-state-default_z{border:1px solid #e2efff}
+#pageStatementsModule .ui-state-hover_z{background:#e2efff;}
 
 /*右侧视图展示区域*/
 #right_folder_show_are{float: left;height: 100%;box-sizing: border-box;margin-left: 200px;background: #f1f2f4;}
@@ -107,6 +107,12 @@ html,body{-webkit-user-select:none;}
 .view_folder_show_area .new_view_content .textarea textarea{width: 100%;font-size: 12px;height:46px;outline: none;line-height: 17px;box-sizing: border-box;padding: 2px;overflow-x: hidden;overflow-y: auto;resize: none}
 .view_folder_show_area .new_view_content .saveTable_class{position: absolute;top: 40px;right: 0px;bottom: 0px;left: 10px;z-index:9999;height: 25px;line-height: 25px;font-size: 18px;}
 .view_folder_show_area .new_view_content .saveTable_class h4{font-weight: normal;}
+.view_folder_show_area .new_view_content .drillDownState{position: absolute;bottom:10px;font-size: 12px;z-index: 100;height: 18px;line-height: 18px;left: 18px;}
+.view_folder_show_area .new_view_content .drillDownState ul li{display: none}
+.view_folder_show_area .new_view_content .drillDownState ul li,.view_folder_show_area .new_view_content .drillDownState ul li img,.view_folder_show_area .new_view_content .drillDownState ul li p{float: left;}
+.view_folder_show_area .new_view_content .drillDownState ul li img{margin: 3px 10px 0px;}
+.view_folder_show_area .new_view_content .drillDownState ul li p {cursor:pointer;}
+.view_folder_show_area .new_view_content .drillDownState ul li p:hover{color:rgb(13, 83, 164)}
 /*视图缩略图*/
 .view_show_handle .thumbnail_wrap{width: 200px;height: 200px;box-sizing:border-box;border:1px solid #DEDEDE;position:absolute;left: 190px;z-index:9999;border-radius: 3px;background: white;opacity: 1 !important;overflow: hidden;}
 .view_show_handle .thumbnail_wrap img{width:198px;float: left;}

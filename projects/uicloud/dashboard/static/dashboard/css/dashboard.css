@@ -75,7 +75,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 
 /*维度*/
-#dimensionality_show,#measure_show,#index_show,#parameter_show{width:100%;overflow-y: auto;overflow-x: hidden;}
+#dimensionality_show,#measure_show,#index_show,#parameter_show{width:100%;overflow-y: auto;overflow-x: hidden;box-sizing: border-box;}
 /*#dimensionality,*/#measurement,#indicator,#parameter{border-top: 1px solid #DEDEDE;}
 #dimensionality_title,#measurement_title,#indicator_title,#parameter_title{width:176px;margin: 0 auto;height: 32px;}
 #dimensionality_title p,#measurement_title p,#indicator_title p,#parameter_title p{font-size: 12px;color: #808080;line-height: 32px;float: left;}
@@ -92,12 +92,20 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #drop_zb_view img{display: block;}
 
 /*拖拽维度度量样式*/
-#drop_row_view .drog_row_list,#drop_col_view .drog_row_list{height: 23px;line-height: 23px;margin:5px auto 0;list-style: none}
+.perterWallContentList{font-size: 12px;border: 1px solid #86a9d1;height: 23px;line-height: 23px;border-radius: 2px;}
+#drop_row_view .drog_row_list,#drop_col_view .drog_row_list{line-height: 23px;margin:5px auto 0;list-style: none;border-radius: 2px;}
 #drop_row_view .drop_main,#drop_col_view .drop_main{width: 94%;float: none;box-sizing: content-box;}
+#drop_row_view .drog_row_list .perterWallContent,#drop_col_view .drog_row_list .perterWallContent{display: none}
+.downImgContent{width: 15px;height: 23px;float: left;text-align: center;margin-right: 5px;display: none}
+#drop_row_view .threeView,#drop_col_view .threeView{display: inherit;visibility: hidden;}
+.downImgContent img{vertical-align: middle;display: inline !important;}
+#drop_row_view .drog_row_list .perterWallContentList,#drop_col_view .drog_row_list .perterWallContentList{height:23px;width: 94%;padding: 0px 5px;margin-top: 5px;border:1px solid #DEDEDE;color: #000;border-radius: 2px;cursor:pointer;}
+#drop_row_view .drog_row_list .perterWallContentList span,#drop_col_view .drog_row_list .perterWallContentList span{float: left;width: 90%;overflow:hidden;text-overflow: ellipsis;white-space:nowrap;text-align: left;}
+#drop_row_view .drog_row_list .perterThree,#drop_col_view .drog_row_list .perterThree{display: none}
 /*biaojizhanshi*/
 .color_icon_wrap{width: 13px;height: 13px;line-height: 13px;float: left;margin-top: 4px;margin-left: 5px};
 .color_icon{margin-top: 5px;cursor: pointer;}
-
+#drop_row_view .drog_row_list .clickActive,#drop_col_view .drog_row_list .clickActive{border-color:#86a9d1 !important;}
 
 /*biaojitanchuxianshi*/
 .label_icon_wrap{width: 100px;height: auto;border: 1px solid #DEDEDE;position: absolute;background: white;z-index: 9999}
@@ -383,6 +391,19 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #pageDashboardModule #clickWallDelete .clickWallDelete_ok .clickWallDelete_yes{background: #0d53a4;margin-left: 20px;color: white}
 
 
+/*拖拽起来样式*/
+.perterSpan{width: 145px;height: 23px;line-height: 23px;font-size:12px;text-indent: 3px;border-radius: 2px;cursor:pointer;}
+
+
+/*分层结构*/
+#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .parameterElement{width: 173px;margin-left: 12px;margin-bottom:2px}
+#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .parameterChlid{width:173px;height: 23px;line-height: 23px;font-size: 12px;vertical-align: middle;}
+#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .currentChildren{width: 118px;height: 23px;line-height: 23px;font-size: 12px;vertical-align: middle;}
+#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .parameterElement .imageShowContent{margin-right:5px;float: left;width: 18px;height: 23px;text-align: center}
+#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .parameterElement .imageShowContent img{vertical-align: middle}
+#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .parameterElement .imageShowTra{cursor:pointer;width:12px;height: 23px;display: none}
+#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .parameterElement span{float: left;margin-top:2px;width: 148px;cursor:pointer;text-indent: 3px;box-sizing: border-box;border-radius: 2px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .currentChildren span{width: 90px;}
 
 /*body遮罩*/
 #body_content_shadow{width: 100%;height: 100%;position: absolute;top: 0;left: 0;background: rgba(0,0,0,0.3);z-index: 1111;display: none}
@@ -390,7 +411,9 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 /*拖拉拽样式*/
 .ui-state-default_z{border:1px solid #4169E1}
-.ui-state-hover_z{background:#DEDEDE;}
+.ui-state-hover_z{background:#e2efff;}
+
+.preter-ui-state-default_z{border-bottom:1px solid #4169E1;}
 
 
 /*侧边栏点击更换数据类型*/

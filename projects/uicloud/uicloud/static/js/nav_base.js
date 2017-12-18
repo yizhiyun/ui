@@ -34,6 +34,28 @@ Array.prototype.unique3 = function(){
  return res;
 }
 
+// 分层下钻移入移出
+function peterDrillDown(){
+			//移入移出事件
+		$(".drog_row_list .peterMouse").not($(".clickActive")).each(function(index,ele){
+			$(ele).unbind("mouseenter");
+			$(ele).mouseenter(function(event){
+				event.stopPropagation();
+				$(ele).css("borderColor","#86a9d1");
+			});
+
+
+			$(ele).unbind("mouseleave");
+			$(ele).mouseleave(function(event){
+				event.stopPropagation();
+				$(ele).css("borderColor","#DEDEDE");
+			});
+		})
+}
+
+
+
+
 function inputSearch(ele,activeClass,showContent,md){
     //报表弹窗筛选功能
   $(ele).on("input",function(){
@@ -313,6 +335,25 @@ $(function(){
 		document.onmousedown = norightclick; //
 	}
 
+	//分层下钻默认给定存储数据
+	function drillDownNoClick(){
+		$(".peterMouse span").each(function(index,ele){
+			if(saveDrillDownTemp[$(ele).text()] == undefined){
+				var freeHandleViewData = JSON.parse(JSON.stringify(drag_row_column_data));
+				if(index > 0){
+					if(freeHandleViewData["row"]["dimensionality"].length > 0){
+						freeHandleViewData["row"]["dimensionality"].splice(0,freeHandleViewData["row"]["dimensionality"].length,$(ele).text());
+					}else{
+						freeHandleViewData["column"]["dimensionality"].splice(0,freeHandleViewData["column"]["dimensionality"].length,$(ele).text());
+					}
+				}
+				saveDrillDownTemp[$(ele).text()] = {"viewdata":JSON.parse(JSON.stringify(freeHandleViewData)),"viewType":save_now_show_view_text.attr("id")};
+			}
+		})
+	}
+
+
+
 	//实时保存修改标签页对应的数据
 	function realSaveData(){
 		//存储当前窗口对应的数据
@@ -324,16 +365,99 @@ $(function(){
 				saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue+"_YZY_"+ $("#view_show_area #view_show_area_content .tableView_name h4").text();
 			}
 			//记录同环比
+			var showListView = {};
+			
+			if($("#pageDashboardModule #dashboard_content .peterMouse").length <= 0 && $("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li").length > 1){
+				var freeListData = [];
+				$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li:gt(0)").children("p").each(function(index,ele){
+					freeListData.push($(ele).text());
+				})
+				showListView["showList"] = objectDeepCopy(freeListData);
+			}
 
-			saveNowWallDict["row"]= JSON.stringify(drag_row_column_data["row"]);
-			saveNowWallDict["column"]= JSON.stringify(drag_row_column_data["column"]);
+
+			if($("#pageDashboardModule #dashboard_content .peterMouse").length > 1){
+				if(allKeys(saveDrillDownTemp).length <= 1){
+					drillDownNoClick();
+					saveNowWallDict["handledatapost"] = JSON.stringify(handleDataPost);
+				}else{
+					saveNowWallDict["handledatapost"] = JSON.stringify(saveEveryViewPostData[$(".peterMouse").eq(0).find("span").text()]);
+				}
+
+				var freePeterData = [];
+				var viewTypeChange = [];
+				$("#pageDashboardModule #dashboard_content .peterMouse").each(function(index,ele){
+					freePeterData.push($(ele).find("span").attr("datatype"));
+					if(saveEveryViewPostData[$(ele).find("span").text()] == undefined){
+						var tempHandlePostData = JSON.parse(JSON.stringify(saveEveryViewPostData[$(".peterMouse").eq(index -1).find("span").text()]));
+						// tempHandlePostData["conditions"].push({"columnName":$(".peterMouse").eq(index -1).find("span").text(),"type":"=","value":"yzy"});
+						tempHandlePostData["expressions"]["groupby"] = specialRemoveDataTypeHandle(objectDeepCopy(saveDrillDownTemp[$(ele).find("span").text()]["viewdata"]["row"]["dimensionality"]).concat(objectDeepCopy(saveDrillDownTemp[$(ele).find("span").text()]["viewdata"]["column"]["dimensionality"])));
+						tempHandlePostData["expressions"]["orderby"] = specialRemoveDataTypeHandle(objectDeepCopy(saveDrillDownTemp[$(ele).find("span").text()]["viewdata"]["row"]["dimensionality"]).concat(objectDeepCopy(saveDrillDownTemp[$(ele).find("span").text()]["viewdata"]["column"]["dimensionality"])));
+						saveEveryViewPostData[$(ele).find("span").text()] = objectDeepCopy(tempHandlePostData);
+
+					}
+
+				})
+				showListView["peterList"] = freePeterData;
+
+				for(type in saveDrillDownTemp){
+					viewTypeChange.push(type+"_YZYPD_"+$("#"+saveDrillDownTemp[type]["viewType"]+"").data("show_view_fun"));
+				}
+			}
+
+
+			
+			if(allKeys(saveDrillDownTemp).length > 0){
+					if(drillElementCount[$(".peterMouse").eq(0).find("span").text()] == undefined){
+						$(".peterMouse").parents(".annotation_text").find("li").each(function(index,ele){
+							if($(ele).find(".peterMouse").length > 0){
+								drillElementCount[$(".peterMouse").eq(0).find("span").text()] = index;
+							}
+						});
+					}
+					saveNowWallDict["row"]= JSON.stringify(JSON.parse(JSON.stringify(saveDrillDownTemp[$(".peterMouse").eq(0).find("span").text()]["viewdata"]["row"])));
+					saveNowWallDict["column"]= JSON.stringify(JSON.parse(JSON.stringify(saveDrillDownTemp[$(".peterMouse").eq(0).find("span").text()]["viewdata"]["column"])));
+					saveNowWallDict["viewtype"] = $("#"+saveDrillDownTemp[$(".peterMouse").eq(0).find("span").text()]["viewType"]+"").data("show_view_fun");
+				var tempHandleData = {
+					"saveDimeData":saveDimeData,
+					"showList":showListView,
+					"saveDrillCount":saveDrillCount,
+					"saveDrillDownTemp":saveDrillDownTemp,
+					"showType":viewTypeChange,
+					"drillElementCount":drillElementCount,
+					"saveEveryViewPostData":saveEveryViewPostData,
+				}
+
+				
+			}else{
+				if($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li").length > 1){
+					//记录上下钻数据
+					var tempHandleData = {
+						"dirllConditions":dirllConditions,
+						"saveDimeData":saveDimeData,
+						"showList":showListView,
+						"saveDataAndView":saveDataAndView
+					};
+					saveNowWallDict["row"]= JSON.stringify(drag_row_column_data["row"]);
+					saveNowWallDict["column"]= JSON.stringify(drag_row_column_data["column"]);
+				}else{
+					var tempHandleData = {};
+					saveNowWallDict["row"]= JSON.stringify(drag_row_column_data["row"]);
+					saveNowWallDict["column"]= JSON.stringify(drag_row_column_data["column"]);
+				}
+
+
+				saveNowWallDict["viewtype"] = view_name;
+				saveNowWallDict["handledatapost"] = JSON.stringify(handleDataPost);
+			}
+
+			saveNowWallDict["drilldowndata"] = JSON.stringify(tempHandleData);
 			saveNowWallDict["tablename"] = current_cube_name;
-			saveNowWallDict["viewtype"] = view_name;
 			saveNowWallDict["defaultparent"] = "default";
 			saveNowWallDict["calculation"] = JSON.stringify(drag_measureCalculateStyle);
 			saveNowWallDict["customcalculate"] = JSON.stringify(customCalculate);
-			saveNowWallDict["handledatapost"] = JSON.stringify(handleDataPost);
 			
+
 			var contactTH = [];
 			// console.log(showTongbiMeasureArray,showHuanbiMeasureArray)
 			contactTH.push(showTongbiMeasureArray);
@@ -342,6 +466,566 @@ $(function(){
 
 			return saveNowWallDict;
 	}
+
+ //移除函数
+function remove_viewHandle(type,sortable){
+	// isNeedShowHuanBiOption = false;
+	// isNeedShowTongBiOption = false;
+	if(dirllConditions && dirllConditions.length > 0 && sortable != "get" && sortable != "only" && sortable != "drill"){
+		if($(".drillDownHandle").length > 0){
+			drag_row_column_data = saveDrillPreView["viewdata"];
+			save_now_show_view_text = $("#"+saveDrillPreView["viewType"]+"");
+		}
+
+		if($(".peterDownHandle").length > 0){
+			// drag_row_column_data = JSON.parse(JSON.stringify(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]));
+			// save_now_show_view_text = $("#"+ saveDrillDownTemp[$(".clickActive").find("span").text()]["viewType"]+"");
+			saveDrillCount = [];
+			saveDrillDownDict = {};
+			saveDrillDownTemp = {};
+		}
+
+		deleteDrillFun();
+	}
+	if(type == "column"){
+		drag_row_column_data["column"]["measure"]= [];
+		drag_row_column_data["column"]["dimensionality"] =[];
+		//遍历所有行里的li 排序后更新数据
+		for(var i = 0; i < $("#drop_col_view").find("li").length;i++){
+			if($("#drop_col_view").find("li").eq(i).find(".drop_main").hasClass("peterMouse")){
+				var data_id = $("#drop_col_view").find("li").eq(i).find(".clickActive span").attr("handledata").split(":");
+			}else{
+				//获取数据字段
+				var data_id = $("#drop_col_view").find("li").eq(i).attr("id").split(":");
+			}
+
+			//判断元素的类型
+			var data_wd_type = data_id[0];
+			//对应的数据
+			var sortable_data = data_id[1]+":"+data_id[2];
+
+			drag_row_column_data["column"][data_wd_type].push(sortable_data)
+		}
+	}else{
+			drag_row_column_data["row"]["measure"]= [];
+			drag_row_column_data["row"]["dimensionality"] =[];
+		//遍历所有行里的li 排序后更新数据
+		for(var i = 0; i < $("#drop_row_view").find("li").length;i++){
+			if($("#drop_row_view").find("li").eq(i).find(".drop_main").hasClass("peterMouse")){
+				var data_id = $("#drop_row_view").find("li").eq(i).find(".clickActive span").attr("handledata").split(":");
+			}else{
+				//获取数据字段
+				var data_id = $("#drop_row_view").find("li").eq(i).attr("id").split(":");
+			}
+			//判断元素的类型
+			var data_wd_type = data_id[0];
+			//对应的数据
+			var sortable_data = data_id[1]+":"+data_id[2];
+
+			drag_row_column_data["row"][data_wd_type].push(sortable_data)
+		}
+	}
+		if(sortable != "sortable" && sortable != "drill"){
+			// 移除筛选列
+			rightFilterListDraw();
+			switch_chart_handle_fun();
+		}
+
+}
+
+
+
+
+//创建弹窗
+function md_click_show(ele,data_dict){
+
+				var open_or_close = true;
+
+					$(ele).on("click",function(){
+					//判断拖入的是否是计数
+					if($(this).parent().hasClass("recordCount")){
+						delete data_dict["度量_YZY_measure"];
+					}
+					// 表格中没有时间维度，则无法计算同比和环比
+					if(currentSetTableDateFieldArray.length < 1){
+						delete data_dict["同比_YZY_compared"];
+						delete data_dict["环比_YZY_linkBack"];
+						delete data_dict["移除对比_YZY_deleteCompared"];
+					}
+					if(open_or_close){
+						open_or_close = false;
+						currentHandleMeasureCalculate = $(ele).parent().parent(".drog_row_list");
+							//创建最外层元素
+						var out_wrap_click = $("<ul class='me_out_content'></ul>");
+						var columnName = $(ele).parent().parent().data("field_name");
+
+						out_wrap_click.appendTo($(ele).parent().parent()).data("pop_data_handle",username+"_YZY_"+ $("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY_"+ columnName);
+
+						if($(ele).parent().parent().attr("id").split(":")[0] == "dimensionality"){
+							out_wrap_click.addClass("dimensionalityWrap");
+						}
+
+						out_wrap_click.css({
+							"left":$(ele).parent().parent().offset().left + $(ele).parent().parent().width() - 60 -50+ "px",
+							"top":$(ele).parent().parent().offset().top - 47+  "px",
+						});
+						for(out_wrap_count in data_dict){
+							if(data_dict[out_wrap_count] != null){
+							//创建单个元素
+							var add_ele_evr = $("<li class='me_out_content_li "+out_wrap_count.split("_YZY_")[1]+"'><p>"+out_wrap_count.split("_YZY_")[0]+"</p><ul class='second_menu'><ul></li>");
+							add_ele_evr.addClass("have_second_menu").appendTo(out_wrap_click);
+								for(var i =0; i < data_dict[out_wrap_count].length;i++){
+									$("<li class='second_li "+data_dict[out_wrap_count][i].split("_YZY_")[1]+"'><p>"+data_dict[out_wrap_count][i].split("_YZY_")[0]+"</p><li>").appendTo(add_ele_evr.find(".second_menu"));
+
+								}
+
+								//清除空元素
+								add_ele_evr.find(".second_menu").children().each(function(index,ele){
+									if($(ele).html() ==""){
+										$(ele).remove();
+									}
+								})
+							}else{
+							//创建单个元素
+							var add_ele_evr = $("<li class='me_out_content_li "+out_wrap_count.split("_YZY_")[1]+"'><p>"+out_wrap_count.split("_YZY_")[0]+"</p></li>");
+							if(out_wrap_count.split("_YZY_")[0] == "同比" || out_wrap_count.split("_YZY_")[0] == "环比"){
+								add_ele_evr.children("p").addClass("tonghuanClass").append($("<span class='clickImg'></span>"));
+							}
+							add_ele_evr.appendTo(out_wrap_click);
+
+							}
+
+						}
+
+					if( showHuanbiMeasureArray.indexOf($(out_wrap_click).parents(".drog_row_list").eq(0).attr("id").split(":")[1]) != -1){
+						out_wrap_click.find(".me_out_content_li p .clickImg").eq(1).css("visibility","visible");
+					}
+
+					if(showTongbiMeasureArray.indexOf($(out_wrap_click).parents(".drog_row_list").eq(0).attr("id").split(":")[1]) != -1){
+						out_wrap_click.find(".me_out_content_li p .clickImg").eq(0).css("visibility","visible");
+					}
+
+						//移入事件
+					$(".me_out_content li").on("mouseenter",function(){
+						$(this).css("background","rgb(222,222,222)");
+						if($(this).hasClass("have_second_menu")){
+							$(".second_menu").css("display","block");
+						}
+					})
+					$(".me_out_content li").on("mouseleave",function(){
+						$(this).css("background","");
+						if($(this).hasClass("have_second_menu")){
+							$(".second_menu").css("display","none");
+						}
+					})
+
+					$(".me_out_content").on("mouseleave",function(){
+						$(this).remove();
+						open_or_close = true;
+					})
+					}else{
+						$(".me_out_content").remove();
+						$(".me_out_content li").unbind("mouseenter mouseleave");
+						open_or_close = true;
+						return;
+					}
+
+					if(out_wrap_click.hasClass("dimensionalityWrap")){
+							out_wrap_click.find(".me_out_content_li").not(".deleting").remove();
+					}
+
+					// 点击事件-------------
+					//编辑计算
+					out_wrap_click.find(".edit_calculation").on("click",function(){
+;
+						if($(this).parent(".me_out_content").hasClass("dimensionalityWrap")) return;
+//							$("#editMeasureCalculateView").data("userCustomTile",false);
+
+
+						$("#editMeasureCalculateView .dimensionalityFiled").hide();
+						$("#editMeasureCalculateView .edit_measure_body").show();
+
+						$("#editMeasureCalculateView").show(0,function(){
+							if(editMeasureCalculateView_isFirstShow){
+								editMeasureCalculateView_isFirstShow = false;
+								CodeMirror.velocityContext = "sum avg max min count";  //提取到外部，方便从后台获取数据
+//								      CodeMirror.velocityCustomizedKeywords = "server.ip server.cache software.conf software.version software.tags.count";
+							      	editor = CodeMirror.fromTextArea($("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea").get(0), {
+							        lineNumbers: true,
+							        extraKeys: {"Ctrl": "autocomplete"},
+							        mode: "text/javascript",
+							        indentWithTabs: true,
+							        autoCloseTags: true,
+							        autoCloseBrackets: true,
+							        lineWrapping:true
+							      });
+							      editor.on('keypress', function() {
+							          editor.showHint();  //满足自动触发自动联想功能
+							      });
+							}
+						});
+						$(".maskLayer").show();
+						var measureList = $(this).parents(".me_out_content").eq(0);
+						var measureInfo = measureList.data("pop_data_handle");
+						$(".me_out_content").remove();
+						open_or_close = true
+						$("#editMeasureCalculateView").data("measureInfo",measureInfo);
+						$("#editMeasureCalculateView .edit_measure_body #measure_show_title").unbind("change");
+						$("#editMeasureCalculateView .edit_measure_body #measure_show_title").change(function(){
+							if($(this).hasClass("warn")){
+								$(this).removeClass("warn");
+							}
+						})
+						$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").unbind("click");
+						$("#editMeasureCalculateView .common-head .close,#editMeasureCalculateView .common-filer-footer .cancleBtn").click(function(event){
+							event.stopPropagation();
+							$("#editMeasureCalculateView").hide();
+							$(".maskLayer").hide();
+						});
+						$("#editMeasureCalculateView .common-filer-footer .confirmBtn").unbind("click");
+						$("#editMeasureCalculateView .common-filer-footer .confirmBtn").click(function(event){
+							if($(this).parent(".me_out_content").hasClass("dimensionalityWrap")) return;
+							event.stopPropagation();
+							var  val = $("#editMeasureCalculateView .edit_measure_body #measure_show_title").val();
+							if(!val||/^\s*$/.test(val)){
+									$("#editMeasureCalculateView .edit_measure_body #measure_show_title").addClass("warn");
+								return;
+							}
+							var meausureInfo = $(this).parents("#editMeasureCalculateView").data('measureInfo');
+							var measureName = meausureInfo.split("_YZY_")[2];
+
+							if(drag_measureCalculateStyle[measureName] == val && customCalculate[measureName] && customCalculate[measureName]["value"] == editor.getValue()){
+								return;
+							}
+							drag_measureCalculateStyle[measureName] = val;
+							if(!customCalculate[measureName]){
+								customCalculate[measureName] = {};
+							}
+							customCalculate[measureName]["name"] = val;
+							customCalculate[measureName]["value"] =  editor.getValue();
+
+
+							currentHandleMeasureCalculate.children(".drop_main").children("span.measure_list_text_left").eq(0).html($("#editMeasureCalculateView .edit_measure_body #measure_show_title").val());
+							switch_chart_handle_fun();
+							$("#editMeasureCalculateView").hide();
+							$(".maskLayer").hide();
+						})
+
+						//清除功能
+						$("#editMeasureCalculateView .edit_measure_body .clearInputBtn").unbind("click");
+						$("#editMeasureCalculateView .edit_measure_body .clearInputBtn").click(function(event){
+							event.stopPropagation();
+							$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val("");
+							$("#editMeasureCalculateView .edit_measure_body .cm-variable").text("");
+						})
+
+					});
+					//同比环比弹窗
+					out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).unbind("click");
+					out_wrap_click.find(".compared").add(out_wrap_click.find(".linkBack")).click(function(event){
+						event.stopPropagation();
+						$("#text_table_need_show .content_body #data_list_for_body .measureDiv p").show();
+						var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
+
+						if($(this).hasClass("linkBack")){
+							// isNeedShowHuanBiOption = true;
+							var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+							if(index1 == -1){
+
+								showHuanbiMeasureArray.push(measureInfo);
+
+							}
+						}else{
+							// isNeedShowTongBiOption = true;
+							var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+							if(index2 == -1){
+								showTongbiMeasureArray.push(measureInfo);
+
+							}
+						}
+						// showOrHidenSomeMeasureCompareOrLink();
+						// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseenter');
+						// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseenter(function(event){
+						// 	event.stopPropagation();
+						// 	showOrHide();
+						// })
+						// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").unbind('mouseleave');
+						// $("#card .right_module .content_body #data_list_for_body .measureDiv>p").mouseleave(function(event){
+						// 	event.stopPropagation();
+						// 	$("#card .content_body #data_list_for_body .measureDiv .cardInfo").hide();
+						// })
+
+						$(".me_out_content").remove();
+						$(".me_out_content li").unbind("mouseenter mouseleave");
+						open_or_close = true;
+					});
+
+				// 移除对比
+				out_wrap_click.find(".deleteCompared").unbind("click");
+				out_wrap_click.find(".deleteCompared").click(function(event){
+					// console.log($(this).parents());
+					event.stopPropagation();
+					var measureInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":")[1];
+					var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+
+					if(index1 != -1){
+						showHuanbiMeasureArray.splice(index1,1);
+					}
+					var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+					if(index2 != -1){
+						showTongbiMeasureArray.splice(index2,1);
+					}
+					showOrHidenSomeMeasureCompareOrLink();
+					// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .compareP").hide();
+					// $("#card .content_body #data_list_for_body .measureDiv .cardInfo .linkP").hide();
+					// showOrHide();
+					// isNeedShowHuanBiOption = false;
+					// isNeedShowTongBiOption = false;
+					$(".me_out_content").remove();
+					$(".me_out_content li").unbind("mouseenter mouseleave");
+					open_or_close = true;
+				});
+				//移除
+				out_wrap_click.find(".deleting").on("click",function(){
+						var deleteInfo = $(this).parents(".drog_row_list").eq(0).attr("id").split(":");
+						if(deleteInfo[0] == "measure"){
+						var measureInfo = deleteInfo[1];
+						var index1 = showHuanbiMeasureArray.indexOf(measureInfo);
+						if(index1 != -1){
+								showHuanbiMeasureArray.splice(index1,1);
+							}
+						var index2 = showTongbiMeasureArray.indexOf(measureInfo);
+						if(index2 != -1){
+								showTongbiMeasureArray.splice(index2,1);
+							}
+							showOrHidenSomeMeasureCompareOrLink();
+
+						}
+						if($(this).parents(".drag_main").attr("id") == "drag_col"){
+							var clickAreaType = "column";
+						}else{
+							var clickAreaType = "row";
+						}
+
+					
+
+					if($(this).parent().parent().parent().hasClass("list_wrap")){
+						$(this).parent().parent().parent().remove();
+					}else{
+						$(this).parent().parent().remove();
+					}
+
+					remove_viewHandle(clickAreaType,"only");
+					$(".me_out_content").remove();
+					open_or_close = true;
+
+					});
+
+					//判断拖入的是否是计数
+					if($(this).parent().hasClass("recordCount")){
+						return;
+					}
+					//度量里点击事件
+					out_wrap_click.find(".pop_count_all").click(function(event){
+						event.stopPropagation();
+						var measureList = $(this).parents(".me_out_content").eq(0);
+						var measureInfo = measureList.data("pop_data_handle");
+						var measureName = measureInfo.split("_YZY_")[2];
+						if(drag_measureCalculateStyle[measureName] == "计数("+measureName+")"){
+							return;
+						}
+
+						drag_measureCalculateStyle[measureName] = "计数("+measureName+")";
+						measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("计数("+measureName+")");
+						switch_chart_handle_fun();
+					})
+
+					//求和
+					out_wrap_click.find(".pop_total").on("click",function(){
+
+						var measureList = $(this).parents(".me_out_content").eq(0);
+						var measureInfo = measureList.data("pop_data_handle");
+						var measureName = measureInfo.split("_YZY_")[2];
+						if(drag_measureCalculateStyle[measureName] == "求和("+measureName+")"){
+							return;
+						}
+						drag_measureCalculateStyle[measureName] = "求和("+measureName+")";
+						measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("求和("+measureName+")");
+						switch_chart_handle_fun();
+						$(".me_out_content").remove();
+						$(".me_out_content li").unbind("mouseenter mouseleave");
+						open_or_close = true;
+					});
+					//平均值
+					out_wrap_click.find(".pop_mean").on("click",function(){
+						var measureList = $(this).parents(".me_out_content").eq(0);
+						var measureInfo = measureList.data("pop_data_handle");
+						var measureName = measureInfo.split("_YZY_")[2];
+						if(drag_measureCalculateStyle[measureName] == "平均值("+measureName+")"){
+							return;
+						}
+						drag_measureCalculateStyle[measureName] = "平均值("+measureName+")";
+						measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("平均值("+measureName+")");
+						switch_chart_handle_fun();
+						$(".me_out_content").remove();
+						$(".me_out_content li").unbind("mouseenter mouseleave");
+						open_or_close = true;
+					});
+					//最大值
+					out_wrap_click.find(".pop_max").on("click",function(){
+//							console.log("最大值");
+						var measureList = $(this).parents(".me_out_content").eq(0);
+						var measureInfo = measureList.data("pop_data_handle");
+						var measureName = measureInfo.split("_YZY_")[2];
+						if(drag_measureCalculateStyle[measureName] == "最大值("+measureName+")"){
+							return;
+						}
+						drag_measureCalculateStyle[measureName] = "最大值("+measureName+")";
+						measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("最大值("+measureName+")");
+						switch_chart_handle_fun();
+						$(".me_out_content").remove();
+						$(".me_out_content li").unbind("mouseenter mouseleave");
+						open_or_close = true;
+					});
+					//最小值
+					out_wrap_click.find(".pop_min").on("click",function(){
+
+						var measureList = $(this).parents(".me_out_content").eq(0);
+
+						var measureInfo = measureList.data("pop_data_handle");
+						var measureName = measureInfo.split("_YZY_")[2];
+						if(drag_measureCalculateStyle[measureName] == "最小值("+measureName+")"){
+							return;
+						}
+						drag_measureCalculateStyle[measureName] = "最小值("+measureName+")";
+						measureList.siblings(".set_style.measure_list_text").children("span.measure_list_text_left").html("最小值("+measureName+")");
+						switch_chart_handle_fun();
+						$(".me_out_content").remove();
+						$(".me_out_content li").unbind("mouseenter mouseleave");
+						open_or_close = true;
+					});
+					// -------------------
+					// -------------------
+					})
+
+
+					$(ele).parent().parent().on("mouseleave",function(){
+						$(".me_out_content").remove();
+						open_or_close = true;
+					});
+
+			}
+
+
+
+
+
+
+
+
+//绘制分层上钻添加的维度
+function dragDrillDimen(datatype,datacount){
+			var tempList = $("<div class='list_wrap'><li class='drog_row_list date_list bj_information' id='dimensionality:"+datatype+"'><div class='drop_main clear set_style dimensionality_list_text ui-draggable ui-draggable-handle noPerter'><span class='dimensionality_list_text_left' datatype="+datatype+">"+datatype.split(":")[0]+"</span><div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></div></div></li></div>");
+			if(datacount == 0){
+				$(".clickActive").parents(".annotation_text").prepend(tempList);
+			}else{
+				if($(".clickActive").parents(".annotation_text").find("li").eq(datacount - 1).parent().hasClass("list_wrap")){
+					$(".clickActive").parents(".annotation_text").find("li").eq(datacount - 1).parent().after(tempList);
+				}else{
+					$(".clickActive").parents(".annotation_text").find("li").eq(datacount - 1).after(tempList);
+				}
+				
+			}
+
+		tempList.find(".set_style").on("mouseenter",function(){$(this).find(".moreSelectBtn").show()});
+		tempList.find(".set_style").on("mouseleave",function(){$(this).find(".moreSelectBtn").hide()});
+		tempList.find("li .set_style").css("background","#c5e0ff").css("border","1px solid #86a9d1");
+			$(tempList).find("li").css({
+			width: $(".annotation_text").width() * 0.91+ "px",
+			margin: "5px auto 0",
+			listStyle: "none",
+		});
+		$(tempList).find(".set_style").css({
+			width: "94%",
+			height: "23px",
+			padding: "0px 5px",
+			color: "black"
+		});
+		$(tempList).find(".set_style").find("span").css({
+			float: "left",
+			display: "block",
+		});
+		$(tempList).find("img").css({
+			display: "block",
+		})
+
+		md_click_show(tempList.find("li").find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});
+
+}
+
+
+
+
+//上下钻点击事件
+function drillDownClick(theElement,peter){
+			if($(theElement).parent().attr("datavalue") == $("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li").length -1){
+				return;
+			}
+			var freeSaveClass = $(theElement).parent().hasClass("drillDownHandle");
+			$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li:gt("+$(theElement).parent().attr("datavalue")+")").remove();
+			if($(".drillDownHandle").length == 0){
+				peter = "peter";
+			}
+
+			if(peter == "peter"){
+					if(onlyGetDrillDown){
+						saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id")};
+					}
+					
+					if($(".peterMouse").parents(".annotation_text").find(".noPerter").length > 0){
+
+						$(".noPerter").parents(".drog_row_list").remove();
+						$(".peterMouse").parents(".annotation_text").find(".list_wrap").each(function(index,ele){
+							if($(ele).find("li").length == 0){
+								$(ele).remove();
+							}
+						})
+					}
+					$(".peterMouse").removeClass("clickActive");
+					$(".peterMouse[datavalue="+$(theElement).parent().attr("datavalue")+"]").addClass("clickActive");
+					handleMiChange();
+					if($(".clickActive").length > 0 && saveDrillDownDict[$(".clickActive").find("span").text()] != undefined && saveDrillDownDict[$(".clickActive").find("span").text()].length > 0){
+						for(var i = 0; i < saveDrillDownDict[$(".clickActive").find("span").text()].length;i++){
+							dragDrillDimen(saveDrillDownDict[$(".clickActive").find("span").text()][i].split("_YZYPD_")[0],saveDrillDownDict[$(".clickActive").find("span").text()][i].split("_YZYPD_")[1]);
+						}
+						
+					}
+					peterDrillDown();
+					drag_row_column_data = JSON.parse(JSON.stringify(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]));
+					save_now_show_view_text = $("#"+ saveDrillDownTemp[$(".clickActive").find("span").text()]["viewType"]+"");
+
+			}else{
+				//记录当前上钻的数据
+				saveHandleViewData = JSON.parse(JSON.stringify(saveDataAndView[Number($(theElement).parent().attr("datavalue"))]));				
+				drag_row_column_data = saveHandleViewData["viewdata"];
+				save_now_show_view_text = $("#"+saveHandleViewData["viewType"]+"");
+				saveDataAndView.splice($(theElement).parent().attr("datavalue"));
+			}
+
+			
+			var spliceCount = saveDimeData.splice($(theElement).parent().attr("datavalue"));
+			dirllConditions.splice(dirllConditions.length - spliceCount.reduce((prev,curr) => prev + curr));
+			valueCount = $(theElement).parent().attr("datavalue");
+
+			
+			if($(".drillDownHandle").length == 0){
+
+				onlyGetDrillDown = true;
+			}
+			switch_chart_handle_fun();
+	
+}
+
 
 function pallasdaraFunctionNavBtnHandle(){
 	// 获取当前可用的导航选项

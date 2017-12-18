@@ -283,7 +283,7 @@ function manyTable(storeClass){
 		function measureNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"])).length > 0 && specialRemoveDataTypeHandle(current_all_measure).length >0){
 					recordData();
-					reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
+					reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,storeNum_toview,function(data){
 						function_draw_measure_data(data);
 						function_draw_row_line();
 						function_draw_column_line();
@@ -297,7 +297,7 @@ function manyTable(storeClass){
 		function rowNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"]).length > 0){
 				recordData();
-				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"]),[],null,function(data){
+				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"]),[],null,storeNum_toview,function(data){
 			 	function_draw_row_data(data);
 			 	layout_table_size();
 				// spinner.stop(target);
@@ -319,7 +319,7 @@ function manyTable(storeClass){
 		function columnNeedDraw(finish){
 			if(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]).length > 0){
 				recordData();
-				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]),[],null,function(data){
+				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]),[],null,storeNum_toview,function(data){
 		 	 	function_draw_column_data(data);
 		 	 	layout_table_size();
 				// spinner.stop(target);
@@ -461,7 +461,7 @@ function reporting_col_card(saveIndexPage){
 				$("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body").html("");
 				var current_all_measure = drag_row_column_data_arr[indexNum_toview]["column"]["measure"].concat(drag_row_column_data_arr[indexNum_toview]["row"]["measure"]);
 
-				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[indexNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[indexNum_toview]["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,function(data){
+				reporting_measure_Hanlde(specialRemoveDataTypeHandle(drag_row_column_data_arr[indexNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[indexNum_toview]["column"]["dimensionality"])),specialRemoveDataTypeHandle(current_all_measure),null,indexNum_toview,function(data){
 
 					// $("#text_table_need_show").hide();
 					// $("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
