@@ -10,6 +10,13 @@ var drillDownWallPositionTop = null;
 //存储下钻对应的data和视图
 var saveDataAndView = [];
 
+//记录下钻时维度的数量信息
+var saveDimeData = [];
+
+var saveHandleViewData = [];
+
+var count = 0;
+var array = [];
 
 //记录上钻前的数据和视图展现方式
 
@@ -119,7 +126,7 @@ function one_de_one_me_handle (chart_type_need) {
 				},
 				{
 					  	text: "单位: "+valueUnitValue,
-					  	show:true,
+					  	show:false,
 					  	bottom:40,
 					  	textStyle:{
 					  		fontSize:14,
@@ -140,7 +147,7 @@ function one_de_one_me_handle (chart_type_need) {
 			     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
 			         type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
 			     },
-			     backgroundColor:'rgba(255,255,255,0.8)',
+			     backgroundColor:'rgba(255,255,255,0.95)',
 			     extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			     formatter: function (params) {
 
@@ -186,7 +193,7 @@ function one_de_one_me_handle (chart_type_need) {
 			    toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -319,7 +326,7 @@ function one_de_one_me_handle (chart_type_need) {
 					  {
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -329,7 +336,7 @@ function one_de_one_me_handle (chart_type_need) {
 					tooltip: {
 						show:true,
 						trigger: 'item',
-						backgroundColor:'rgba(255,255,255,0.8)',
+						backgroundColor:'rgba(255,255,255,0.95)',
 			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 						formatter:function (params){
 						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>占比:</p>";
@@ -358,7 +365,7 @@ function one_de_one_me_handle (chart_type_need) {
 					toolbox: {
 				        show: true,
 				        feature: {
-				            dataView: {readOnly: true},
+				            // dataView: {readOnly: true},
 				            restore: {},
 				            saveAsImage: {
 				            	title:"保存为png"
@@ -436,7 +443,7 @@ function one_de_one_me_handle (chart_type_need) {
 				{
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -445,7 +452,7 @@ function one_de_one_me_handle (chart_type_need) {
 				],
 				tooltip:{
 					trigger:"axis",
-					backgroundColor:'rgba(255,255,255,0.8)',
+					backgroundColor:'rgba(255,255,255,0.95)',
 			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					formatter:function(params){
 
@@ -483,7 +490,7 @@ function one_de_one_me_handle (chart_type_need) {
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -618,7 +625,7 @@ function one_de_one_me_handle (chart_type_need) {
 				    	{
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -635,7 +642,7 @@ function one_de_one_me_handle (chart_type_need) {
 					toolbox: {
 				        show: true,
 				        feature: {
-				            dataView: {readOnly: true},
+				            // dataView: {readOnly: true},
 				            restore: {},
 				            saveAsImage: {
 				            	title:"保存为png"
@@ -652,7 +659,7 @@ function one_de_one_me_handle (chart_type_need) {
 				     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
 				         type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
 				     },
-				     backgroundColor:'rgba(255,255,255,0.8)',
+				     backgroundColor:'rgba(255,255,255,0.95)',
 			    		 extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					 formatter: function (params) {
 			         var tar;
@@ -930,7 +937,7 @@ function many_de_many_me_handle(chart_type_need){
 					{
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -946,7 +953,7 @@ function many_de_many_me_handle(chart_type_need){
 	       			textStyle:{
 	       				fontSize:12
 	       			},
-	       			backgroundColor:'rgba(255,255,255,0.8)',
+	       			backgroundColor:'rgba(255,255,255,0.95)',
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 	       			formatter:function(params){
 						var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
@@ -1001,7 +1008,7 @@ function many_de_many_me_handle(chart_type_need){
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -1203,7 +1210,7 @@ function comparisonStrip_generate_fun(){
 					{
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -1223,7 +1230,7 @@ function comparisonStrip_generate_fun(){
 					toolbox: {
 				        show: true,
 				        feature: {
-				            dataView: {readOnly: true},
+				            // dataView: {readOnly: true},
 				            restore: {},
 				            saveAsImage: {
 				            	title:"保存为png"
@@ -1238,7 +1245,7 @@ function comparisonStrip_generate_fun(){
 					tooltip: {
 						show: true,
 						trigger: 'item',
-						backgroundColor:'rgba(255,255,255,0.8)',
+						backgroundColor:'rgba(255,255,255,0.95)',
 			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 						formatter:function(params){
 							var needValue = params.value;
@@ -1598,7 +1605,7 @@ function comparisonStrip_generate_fun(){
 						{
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -1615,7 +1622,7 @@ function comparisonStrip_generate_fun(){
 					toolbox: {
 				        show: true,
 				        feature: {
-				            dataView: {readOnly: true},
+				            // dataView: {readOnly: true},
 				            restore: {},
 				            saveAsImage: {
 				            	title:"保存为png"
@@ -1630,7 +1637,7 @@ function comparisonStrip_generate_fun(){
    					color:allColorsDict[currentColorGroupName],
 					tooltip : {
 	        				trigger: 'item',
-	        				backgroundColor:'rgba(255,255,255,0.8)',
+	        				backgroundColor:'rgba(255,255,255,0.95)',
 			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 	        				formatter:function(params){
 	        					var val = params.value;
@@ -1988,6 +1995,7 @@ function comparisonStrip_generate_fun(){
 				var need_dimensionality = all_dimensionality.slice(0,index+1);
 				measure_Hanlde(need_dimensionality,all_measure,null,function(data){
 					for(var j = 0;j < data.length;j++){
+						// console.log(data.length);
 						var aData = data[j];
 						var name = "";
 						for(var k =0;k < need_dimensionality.length;k++){
@@ -2039,6 +2047,7 @@ function comparisonStrip_generate_fun(){
 									show:need_dimensionality.length < 25,
 									formatter:function(params){
 										var names = params["name"].split("_YZYPD_");
+										// console.log(names);
 										var needValue = params.value;
 										  if(normalUnitValue != -1){
 						  	 				needValue = needValue.toFixed(normalUnitValue);
@@ -2049,6 +2058,7 @@ function comparisonStrip_generate_fun(){
 							}
 
 						}
+						console.log(aNode);
 						need_all_nodes.push(aNode);
 					}
 					count++;
@@ -2068,7 +2078,7 @@ function comparisonStrip_generate_fun(){
 					{
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -2085,7 +2095,7 @@ function comparisonStrip_generate_fun(){
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -2099,7 +2109,7 @@ function comparisonStrip_generate_fun(){
 				},
 				color:allColorsDict[currentColorGroupName],
 				tooltip:{
-					backgroundColor:'rgba(255,255,255,0.8)',
+					backgroundColor:'rgba(255,255,255,0.95)',
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					formatter:function(params){
 						if(params["dataType"] == "edge"){
@@ -2116,7 +2126,6 @@ function comparisonStrip_generate_fun(){
 							var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+params.data.dirllInfo.currentField+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
 
 							var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.dirllInfo.currentValue+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-
 
 							var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
 							var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
@@ -2156,6 +2165,7 @@ function comparisonStrip_generate_fun(){
 							repulsion: 100,
 						},
 						symbolSize:function(value,params){
+							// console.log(params);
 							var names = params["name"].split("_YZYPD_");
 							var rs = names[names.length - 2]+":"+params.value;
 							return [rs.visualLength(12)+15,20]
@@ -2164,7 +2174,6 @@ function comparisonStrip_generate_fun(){
 				]
 			}
 			mycharts.clear();
-
 			mycharts.setOption(option);
 			spinner.stop();
 			$(".maskLayer").hide();
@@ -2359,7 +2368,7 @@ function comparisonStrip_generate_fun(){
 			    	{
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -2371,7 +2380,7 @@ function comparisonStrip_generate_fun(){
 			        axisPointer: { // 坐标轴指示器，坐标轴触发有效
 			            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
 			        },
-			        backgroundColor:'rgba(255,255,255,0.8)',
+			        backgroundColor:'rgba(255,255,255,0.95)',
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			        formatter:function(params){
 			        		var needValue = params.value;
@@ -2448,7 +2457,7 @@ function comparisonStrip_generate_fun(){
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -2475,6 +2484,341 @@ function comparisonStrip_generate_fun(){
 		});
 	}
 
+	// // 条形图
+	// function barChart_generate_fun(){
+	// 	measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+	// 		var series = [];
+	// 		var dimensionality_show_data = [];
+	// 		var needYais = [];
+	// 		var needXais = [
+	// 			{
+	// 		   	 	show:true,
+	// 		        type: "value",
+	// 				gridIndex:all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
+	// 				// name: commonLegend.join("\n"),
+	// 		        nameLocation:"end",
+	// 		        nameGap:10,
+	// 		        // offset:maxLength * 5,
+	// 		    }
+	// 		];
+	// 		var gridArr = [];
+	// 		var valueMax = 0;
+
+	// 		for(var i = 0;i < data.length;i++){
+	// 			var aData = data[i];
+	// 			var theDimeInfo = [];
+	// 			var theDimeData = [];
+	// 			for(var k = 0;k < all_dimensionality.length;k++){
+	// 				theDimeInfo.push(aData[all_dimensionality[k]]);
+	// 				// console.log(typeof(String(aData[all_dimensionality[k]])),String(aData[all_dimensionality[k]]))
+
+	// 			}
+	// 			for(var j = 0;j < all_measure.length;j++){ // 计算出series
+	// 				if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
+	// 					valueMax = aData[drag_measureCalculateStyle[all_measure[j]]];
+	// 				}
+	// 				if(!series[j]){
+	// 					series[j] = {
+	// 						"name":drag_measureCalculateStyle[all_measure[j]],
+	// 						"type":"bar",
+	// 						"yAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
+	// 						"xAxisIndex":all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
+	// 						"data":[{"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]],"measureName":all_measure[j]}],
+	// 						z:3,
+	// 						label:{
+	// 							normal:{
+	// 								show:dimensionality_show_data.length < 25 && all_measure.length < 3,
+	// 								position:"right",
+	// 								formatter:function(params){
+	// 			                    		if(normalUnitValue != -1){
+	// 			                    			return params.value.toFixed(normalUnitValue);
+	// 			                    		}else{
+	// 			                    			// console.log(params.name);
+	// 			                    			// console.log(params.value);
+	// 			                    			return params.value;
+	// 			                    		}
+				   
+
+	// 		                  		 },
+	// 							}
+	// 						},
+	// 					};
+	// 				}else{
+	// 					series[j]["data"].push({"value":aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue],"originValue":aData[drag_measureCalculateStyle[all_measure[j]]],"theDimeInfo":theDimeInfo,"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"tongbi":aData["同比"+drag_measureCalculateStyle[all_measure[j]]],
+	// 					"huanbi":aData["环比"+drag_measureCalculateStyle[all_measure[j]]],"measureName":all_measure[j]});
+	// 				}
+	// 			}
+
+	// 			var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
+	// 			for(var k = 0;k < dimension_length;k++){
+	// 				if(!dimensionality_show_data[k]){				
+	// 					dimensionality_show_data[k] = [aData[all_dimensionality[k]]];
+	// 				}else{
+	// 					//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+	// 					var index = dimensionality_show_data[k].indexOf(aData[all_dimensionality[k]]);
+	// 					if(index == -1){
+	// 						dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+	// 					}else if(index != -1){
+	// 						if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+	// 							var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
+	// 							if(/YZYPD/.test(lastVal)){
+	// 								lastVal = lastVal.split("YZYPD")[1];
+	// 							}
+	// 							if(lastVal == aData[all_dimensionality[k]]){
+	// 							// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+	// 								dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+	// 							}else{
+	// 								dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+	// 							}
+	// 						}else{
+	// 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+	// 						}
+	// 					}
+
+	// 				}
+	// 			}
+	// 		}
+
+
+
+	// 		for(var i = 0;i < dimensionality_show_data.length;i++){
+	// 			//var arr = [];
+	// 			// for(var j = 0;j < dimensionality_show_data[i].length; j ++){
+	// 			// 	// arr.push(dimensionality_show_data[i][j].length);
+	// 			// 	var dataLen = dimensionality_show_data[i][j];
+	// 			// 	if(dataLen){
+	// 			// 		if(/YZYPD/.test(dataLen)){
+	// 			// 			dataLen = dataLen.split("YZYPD")[1];
+	// 			// 		}
+	// 			// 		//arr.push(dataLen.length);
+	// 			// 	}
+	// 			// 	console.log(dataLen,dataLen.length);
+	// 			// }
+	// 			//var maxLength = Math.max.apply(null, arr);
+
+				
+	// 			var aY = {
+	// 				"show":true,
+	// 				"name":all_dimensionality[i],
+	// 				"nameGap":10,
+	// 				"nameRotate":15,
+	// 				"nameLocation":"end",
+	// 				"type":"category",
+	// 				// "position":"left",
+	// 				// "offset":maxLength,
+	// 				//"boundaryGap": ['20%', '20%'],
+
+	// 				axisTick:{
+	// 					inside:false,
+	// 					interval:function(index,value){return !/^YZYPD/.test(value)}
+	// 				},
+	// 				axisLabel:{
+	// 					color:"black",
+	// 					rotate:15,
+	// 					fontSize:10,
+	// 					interval:function(index,value){return !/^YZYPD/.test(value)},
+ //       					formatter:function(value){
+ //       						//console.log(value);
+ //       						if(value.length > 3){
+	// 							value = value.substring(0,3) + '...';
+	// 						}
+	// 						return value;
+
+	// 						//console.log(value);
+ //       					}
+
+	// 				},
+	// 				"data":dimensionality_show_data[i],
+	// 				gridIndex:i
+	// 			}
+	// 			needYais.push(aY);
+
+	// 			var aGrid = {
+	// 				containLabel:false,
+	// 				show:false,
+	// 			}
+	// 			aGrid["left"] = 80 + i * (60 + i);
+	// 			// if(maxLength > 0){
+	// 			// 	aGrid["left"] = 80 + (maxLength * 5) + i * (maxLength * 5 + 60);
+	// 			// }else{
+	// 			// 	aGrid["left"] = 100 + i * (60 + i);
+	// 			// }
+
+	// 			// aGrid["bottom"] = 60;
+	// 			aGrid["bottom"] = 120;
+
+
+	// 			if(i != dimensionality_show_data.length - 1){
+	// 				aGrid["tooltip"] = {show:false}
+	// 			}
+	// 			if(i > 0){
+	// 				var obj = {
+	// 			    	show:false,
+	// 			        type: "value",
+	// 			        gridIndex:dimensionality_show_data.length - 1 - i,
+	// 			        min:0,
+	// 			        max:valueMax,
+	// 				}
+	// 				needXais.unshift(obj);
+
+	// 				var aSeriesData = {
+	// 					name:"help",
+	// 					type:"bar",
+	// 					xAxisIndex:i-1,
+	// 					yAxisIndex:i-1,
+	// 					"data":[{"value":valueMax/valueUnitValue,"originValue":valueMax}],
+	// 					itemStyle:{
+	// 						normal:{
+	// 							opacity:0
+	// 						}
+	// 					},
+	// 					cursor:"default"
+	// 				}
+	// 				series.push(aSeriesData);
+	// 			}
+
+	// 			gridArr.push(aGrid);
+
+	// 		}
+	// 		var dataZoomXindexArray = [];
+	// 		var dimension_length =  all_dimensionality.length <= 0 ? 1 : all_dimensionality.length;
+	// 		for(var k = dimension_length - 1; k >= 0;k--){
+	// 			dataZoomXindexArray.push(k);
+	// 		}
+	// 		var option = {
+	// 		    title: [{
+	// 		        text: "条形图",
+	// 		        show:false
+	// 		    },
+	// 		    	{
+	// 				  	text: "单位: "+valueUnitValue,
+	// 				  	bottom:40,
+	// 				  	// bottom:0,
+	// 				  	show:false,
+	// 				  	textStyle:{
+	// 				  		fontSize:14,
+	// 				  		color:allColorsDict[currentColorGroupName][0]
+	// 				  	}
+	// 				  }
+	// 		    ],
+	// 		    tooltip: {
+	// 		        trigger: 'item',
+	// 		        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+	// 		            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+	// 		        },
+	// 		       backgroundColor:'rgba(255,255,255,0.95)',
+	// 		    	   extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
+	// 		       formatter:function(params){
+	// 		        		var needValue = params.value;
+	// 							  if(normalUnitValue != -1){
+	// 							  	 needValue = needValue.toFixed(normalUnitValue);
+	// 							  }
+	// 			       	 	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+	// 								var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+	// 								for(var i = 0;i < all_dimensionality.length;i++){
+	// 									var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[i]+":</p>";
+	// 									leftDiv+=aP;
+	// 								}
+	// 								leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+	// 								for(var k = 0;k < params.data.theDimeInfo.length;k++){
+	//                    rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
+	//                 }
+ //                  rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+	// 								var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+	// 								 var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+	// 								 var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+	// 								 var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+	// 								 if(showTongbiMeasureArray.indexOf(params.data.measureName) != -1){
+	// 									 leftDiv += leftTongbi;
+	// 									 rightDiv += rightTongbi;
+	// 								 }
+	// 								 if(showHuanbiMeasureArray.indexOf(params.data.measureName) != -1){
+	// 									 leftDiv += leftHuanbi;
+	// 									 rightDiv += rightHuanbi;
+	// 								 }
+	// 								 leftDiv+= "</div>";
+	// 								 rightDiv+= "</div>";
+	//                  return leftDiv+rightDiv;
+	// 		        },
+	// 		        textStyle:{
+	// 		        		fontSize:12
+	// 		        }
+	// 		    },
+	// 		    legend: {
+	// 		        data: commonLegend,
+	// 		        left:"center",
+	// 		        // bottom:0,
+	// 		        bottom:40,
+	// 		        width:"60%",
+	// 		    },
+	// 		    	color:allColorsDict[currentColorGroupName],
+	// 			toolbox: {
+	// 		        show: true,
+	// 		        feature: {
+	// 		            // dataView: {readOnly: true},
+	// 		            restore: {},
+	// 		            saveAsImage: {
+	// 		            	title:"保存为png"
+	// 		            }
+	// 		        },
+	// 		        orient:"vertical",
+	// 		        right:20,
+	// 		        top:"middle",
+	// 		        itemSize:20,
+	// 		        itemGap:30
+	// 			},
+	// 			  dataZoom:[
+	// 		    			{
+	// 			    		type: 'slider',
+	//            			 	show: dimensionality_show_data[dimensionality_show_data.length - 1].length > 15,
+	//            			 	filterMode:"filter",
+	//            			 	// backgroundColor:"#dedede",
+	//            			 	// fillerColor:"#ff7e00",
+	//            			 	backgroundColor:"#f5f5f5",
+	//            			 	filterColor:"#dedede",
+	//            			 	showDataShadow:false,
+	// 			            yAxisIndex: dataZoomXindexArray,
+	// 			            height:10,
+	// 			            borderColor:"#f5f5f5",
+	// 			            handleStyle:{
+	// 			            		// color:"#ff7e00"
+	// 			            		color:"#dedede"
+	// 			            },
+	// 			            startValue:0,
+	// 			            endValue: dimensionality_show_data[dimensionality_show_data.length - 1].length > 15 ? 15:null,
+	// 			            orient:"horizontal",
+	// 			            // bottom:25,
+	// 			            bottom:0,
+	// 			            handleSize:12,
+	// 		            	maxValueSpan:15,
+	// 		           		throttle:100,
+	// 		            	handleIcon:"path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z",
+	// 		    			},
+	// 		    			{
+	// 		    			type: 'slider',
+	//            			 	show: false,
+	//            			 	filterMode:"empty",
+	// 			            xAxisIndex: dataZoomXindexArray,
+	// 		    			}
+	// 		    ],
+	// 		    grid: gridArr,
+	// 		    yAxis: needYais,
+	// 		    xAxis:needXais,
+	// 		    series:series
+	// 		};
+
+	// 			//清除上一个图形的图例
+	// 			mycharts.clear();
+
+
+	// 			//使用刚指定的配置项和数据显示图标
+	// 			mycharts.setOption(option);
+	// 			spinner.stop();
+	// 			$(".maskLayer").hide();
+	// 	});
+	// }
+
+
 	// 条形图
 	function barChart_generate_fun(){
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
@@ -2486,10 +2830,14 @@ function comparisonStrip_generate_fun(){
 			   	 	show:true,
 			        type: "value",
 					gridIndex:all_dimensionality.length-1 < 0 ? 0 : all_dimensionality.length-1,
-					// name: commonLegend.join("\n"),
 			        nameLocation:"end",
 			        nameGap:10,
-			        // offset:maxLength * 5,
+			   		axisLine: {
+          				//lineStyle: {color: '#ccc'}
+        			},
+			      	axisLabel: {
+			          //	textStyle: {color: '#777'}
+			        }
 			    }
 			];
 			var gridArr = [];
@@ -2500,9 +2848,8 @@ function comparisonStrip_generate_fun(){
 				var theDimeInfo = [];
 				var theDimeData = [];
 				for(var k = 0;k < all_dimensionality.length;k++){
-					theDimeInfo.push(aData[all_dimensionality[k]]);
-					// console.log(typeof(String(aData[all_dimensionality[k]])),String(aData[all_dimensionality[k]]))
-
+					theDimeInfo.push(aData[all_dimensionality[k]]);	
+					//console.log(theDimeInfo);				
 				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
@@ -2524,12 +2871,8 @@ function comparisonStrip_generate_fun(){
 				                    		if(normalUnitValue != -1){
 				                    			return params.value.toFixed(normalUnitValue);
 				                    		}else{
-				                    			// console.log(params.name);
-				                    			// console.log(params.value);
 				                    			return params.value;
 				                    		}
-				   
-
 			                  		 },
 								}
 							},
@@ -2545,7 +2888,6 @@ function comparisonStrip_generate_fun(){
 					if(!dimensionality_show_data[k]){				
 						dimensionality_show_data[k] = [aData[all_dimensionality[k]]];
 					}else{
-						//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
 						var index = dimensionality_show_data[k].indexOf(aData[all_dimensionality[k]]);
 						if(index == -1){
 							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
@@ -2556,7 +2898,6 @@ function comparisonStrip_generate_fun(){
 									lastVal = lastVal.split("YZYPD")[1];
 								}
 								if(lastVal == aData[all_dimensionality[k]]){
-								// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
 									dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
 								}else{
 									dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
@@ -2572,21 +2913,21 @@ function comparisonStrip_generate_fun(){
 
 
 
+			
 			for(var i = 0;i < dimensionality_show_data.length;i++){
-				var arr = [];
-				for(var j = 0;j < dimensionality_show_data[i].length; j ++){
-					// arr.push(dimensionality_show_data[i][j].length);
-					var dataLen = dimensionality_show_data[i][j];
-					if(dataLen){
-						if(/YZYPD/.test(dataLen)){
-							dataLen = dataLen.split("YZYPD")[1];
-						}
-						arr.push(dataLen.length);
-					}
-				}
-				var maxLength = Math.max.apply(null, arr);
 				
-
+				// console.log(dimensionality_show_data[i]);
+				// console.log(series);
+				// for(var j=0;j<dimensionality_show_data[i].length;j++){
+				// 	console.log(series[0].data[j].theDimeInfo);
+				// 	var str = '';
+				// 	for(var k=0;k<series[0].data[j].theDimeInfo.length;k++){
+				// 		str += series[0].data[j].theDimeInfo[k];
+				// 	}
+				// 	console.log(str,str.length);
+				// 	str = str.substring(series[0].data[j].theDimeInfo[0].length);
+				// 	console.log(str)
+				// }
 				var aY = {
 					"show":true,
 					"name":all_dimensionality[i],
@@ -2594,20 +2935,36 @@ function comparisonStrip_generate_fun(){
 					"nameRotate":15,
 					"nameLocation":"end",
 					"type":"category",
-					// "position":"left",
-					// "offset":maxLength,
-					//"boundaryGap": ['20%', '20%'],
-
 					axisTick:{
+						// show:,
 						inside:false,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						// length: /^YZYPD/.test(dimensionality_show_data[i])? 0 : 70  + i,
+						// length:i == dimensionality_show_data.length-1 ? 60 * i + i : 0,
+          				// lineStyle: {color: '#ccc'}   
 					},
 					axisLabel:{
 						color:"black",
 						rotate:15,
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
+       					formatter:function(value){
+       						if(value.length > 6){
+								value = value.substring(0,6) + '...';
+							}
+							//console.log(value);
+
+							return value;
+       					}
+
 					},
+					axisLine: {
+						show:true,   //去掉垂直线
+			          	// lineStyle: {color: '#ccc'}
+			        },
+			        splitLine:{
+			        	show:false
+			        },
 					"data":dimensionality_show_data[i],
 					gridIndex:i
 				}
@@ -2617,15 +2974,7 @@ function comparisonStrip_generate_fun(){
 					containLabel:false,
 					show:false,
 				}
-				// aGrid["left"] = 60 + i * (60 + i);
-				if(maxLength > 0){
-					aGrid["left"] = 60 + (maxLength * 5) + i * (maxLength * 5 + 60);
-				}else{
-					aGrid["left"] = 100 + i * (60 + i);
-
-				}
-
-				// aGrid["bottom"] = 60;
+				aGrid["left"] = 80 + i * (70 + i);
 				aGrid["bottom"] = 120;
 
 
@@ -2656,6 +3005,7 @@ function comparisonStrip_generate_fun(){
 						cursor:"default"
 					}
 					series.push(aSeriesData);
+					// console.log(series);
 				}
 
 				gridArr.push(aGrid);
@@ -2674,8 +3024,7 @@ function comparisonStrip_generate_fun(){
 			    	{
 					  	text: "单位: "+valueUnitValue,
 					  	bottom:40,
-					  	// bottom:0,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -2687,7 +3036,7 @@ function comparisonStrip_generate_fun(){
 			        axisPointer: { // 坐标轴指示器，坐标轴触发有效
 			            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
 			        },
-			       backgroundColor:'rgba(255,255,255,0.8)',
+			       backgroundColor:'rgba(255,255,255,0.95)',
 			    	   extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			       formatter:function(params){
 			        		var needValue = params.value;
@@ -2736,7 +3085,7 @@ function comparisonStrip_generate_fun(){
 				toolbox: {
 			        show: true,
 			        feature: {
-			            dataView: {readOnly: true},
+			            // dataView: {readOnly: true},
 			            restore: {},
 			            saveAsImage: {
 			            	title:"保存为png"
@@ -2753,8 +3102,6 @@ function comparisonStrip_generate_fun(){
 				    		type: 'slider',
 	           			 	show: dimensionality_show_data[dimensionality_show_data.length - 1].length > 15,
 	           			 	filterMode:"filter",
-	           			 	// backgroundColor:"#dedede",
-	           			 	// fillerColor:"#ff7e00",
 	           			 	backgroundColor:"#f5f5f5",
 	           			 	filterColor:"#dedede",
 	           			 	showDataShadow:false,
@@ -2762,13 +3109,11 @@ function comparisonStrip_generate_fun(){
 				            height:10,
 				            borderColor:"#f5f5f5",
 				            handleStyle:{
-				            		// color:"#ff7e00"
 				            		color:"#dedede"
 				            },
 				            startValue:0,
 				            endValue: dimensionality_show_data[dimensionality_show_data.length - 1].length > 15 ? 15:null,
 				            orient:"horizontal",
-				            // bottom:25,
 				            bottom:0,
 				            handleSize:12,
 			            	maxValueSpan:15,
@@ -2791,20 +3136,30 @@ function comparisonStrip_generate_fun(){
 				//清除上一个图形的图例
 				mycharts.clear();
 
-
 				//使用刚指定的配置项和数据显示图标
 				mycharts.setOption(option);
 				spinner.stop();
 				$(".maskLayer").hide();
 		});
 	}
-	//  雷达图
-	function radarChart_generate_fun(){
+
+
+
+//雷达图:
+function radarChart_generate_fun(){
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
 			radarDiemension = all_dimensionality[0];
 			var indicator = [];
-			var series = [{"name":all_measure.join("/"),"type":"radar","data":[]}];
+			var series = [
+				{
+					"name":all_measure.join("/"),
+					"type":"radar",
+					"data":[]
+				}
+			];
 			var recordArr = [];
+			// var arr = [];
+			// var newArr = [];
 			for(var i =0;i < data.length;i++){
 				var aData = data[i];
 				var max = aData[drag_measureCalculateStyle[all_measure[0]]] / allValueUnitDict[valueUnitValue];
@@ -2823,8 +3178,43 @@ function comparisonStrip_generate_fun(){
 						max  = aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue];
 					}
 				}
-				indicator.push({"name":aData[all_dimensionality[0]],"max":(max/allValueUnitDict[valueUnitValue])*1.2,"originalMax":max});
+				// console.log(data.length);
+
+				var str = "";
+				for(var k=0;k<all_dimensionality.length;k++){
+					// console.log(all_dimensionality[k],aData[all_dimensionality[k]]);
+					str +=  aData[all_dimensionality[k]] + "-";
+					//console.log(str);
+					var re = str.substring(0,str.length-1);
+					//console.log(re);
+				}
+
+
+				indicator.push({
+					// "name":aData[all_dimensionality[0]],
+					"name":re,
+					"max":(max/allValueUnitDict[valueUnitValue])*1.2,
+					"originalMax":max
+           	 	});
+
+
+    		// 	if(data.length < 20){
+    		// 		indicator.push({
+						// // "name":aData[all_dimensionality[0]],
+						// "name":re,
+						// "max":(max/allValueUnitDict[valueUnitValue])*1.2,
+						// "originalMax":max
+	     //       	 	});
+    		// 	}else{
+    		// 		indicator.push({
+    		// 			"name":val,
+						// "max":(max/allValueUnitDict[valueUnitValue])*1.2,
+						// "originalMax":max
+	     //       	 	});
+    		// 	}
+
 			}
+
 
 		var option = {
 		    title: [{
@@ -2835,7 +3225,7 @@ function comparisonStrip_generate_fun(){
 					  	text: "单位: "+valueUnitValue,
 					  	right:70,
 					  	top:10,
-					  	show:true,
+					  	show:false,
 					  	textStyle:{
 					  		fontSize:14,
 					  		color:allColorsDict[currentColorGroupName][0]
@@ -2843,36 +3233,42 @@ function comparisonStrip_generate_fun(){
 					  }
 		    ],
 		    tooltip: {
-		    		trigger:"item",
+		    		trigger:"axis",
+		    		// trigger:"item",
 		    		textStyle:{
 		    			fontSize:12
 		    		},
-		    		backgroundColor:'rgba(255,255,255,0.8)',
+		    		// position:'inside',
+		   //  		position: function (point, params, dom, rect, size) {     
+					//     // return [point[0],point[1]];
+					//     return [point[0],'50%'];
+					// },
+		    		backgroundColor:'rgba(255,255,255,0.95)',
 			    	extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
-		    		formatter:function(params){
-					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
-					var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
-					for(var i = 0;i < all_measure.length;i++){
-						var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_measure[i]+":</p>";
-						leftDiv+=aP;
-						var aStyle = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+drag_measureCalculateStyle[all_measure[i]]+"</p>";
-						rightDiv+=aStyle;
-					}
+		    // 		formatter:function(params){
+						// var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
+						// var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
+						// for(var i = 0;i < all_measure.length;i++){
+						// 	var aP = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_measure[i]+":</p>";
+						// 	leftDiv+=aP;
+						// 	var aStyle = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+drag_measureCalculateStyle[all_measure[i]]+"</p>";
+						// 	rightDiv+=aStyle;
+						// }
 
-   					for(var i = 0;i < params.value.length;i++){
-   						var needValue = params.value[i];
-   						if(normalUnitValue != -1){
-				  	 		needValue = needValue.toFixed(normalUnitValue);
-				 		 }
-						leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+indicator[i].name+":</span></p>";
-						rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
-   					}
-   					leftDiv+="</div>";
-                     rightDiv+= "</div>";
-	        			 return leftDiv + rightDiv;
+	   		// 			for(var i = 0;i < params.value.length;i++){
+	   		// 				var needValue = params.value[i];
+	   		// 				if(normalUnitValue != -1){
+					 //  	 		needValue = needValue.toFixed(normalUnitValue);
+					 // 		}
+						// 	leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+indicator[i].name+":</span></p>";
+						// 	rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+	   		// 			}
+	   		// 			leftDiv+="</div>";
+	     //                rightDiv+= "</div>";
+		    //     		return leftDiv + rightDiv;
 
-		    		}
-
+		    // 		}
+	
 		    },
 		    legend: {
 		    	type: 'scroll',
@@ -2884,11 +3280,11 @@ function comparisonStrip_generate_fun(){
 		        // left:"center",
 		        width:"60%", 
 		    },
-		    	color:allColorsDict[currentColorGroupName],
+		    color:allColorsDict[currentColorGroupName],
 			toolbox: {
 		        show: true,
 		        feature: {
-		            dataView: {readOnly: true},
+		            // dataView: {readOnly: true},
 		            restore: {},
 		            saveAsImage: {
 		            	title:"保存为png"
@@ -2904,6 +3300,22 @@ function comparisonStrip_generate_fun(){
 //		        shape: 'circle',
 		        indicator:indicator,
 		        triggerEvent:true,
+	         	name:{
+	         		formatter:function(params){
+	         			count++;		
+	         			if(data.length > 20){
+	         				if(count % 3 == 0){
+	         					return params;
+	         				}else{
+	         					array.push(params);
+	         				//	console.log(array);
+	         					return '';
+	         				}
+	         			}else{
+	         				return params;
+	         			}
+	         		}
+	         	},	
 		    }],
 		    "record":recordArr,
 		    series: series

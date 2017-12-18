@@ -55,11 +55,11 @@ function beginDrawChart(edit_view){
 	//所有视图点击按钮
 	var show_btn_change = $("#project_chart ul li");
 	show_btn_change.removeClass("clicked");
-	show_btn_change.css("border","");
+	show_btn_change.css({"background":"","border":""});
 	//满足条件给定指定样式
 	function change_view_css(element){
-		// return $(element).css("border","1px solid #0d53a4").css("opacity","1");
 		return $(element).css("opacity","1");
+		// return $(element).css("border","1px solid #0d53a4").css("opacity","1");
 	}
 	
 	//初始化图例
@@ -141,12 +141,14 @@ function beginDrawChart(edit_view){
 					if(!click_view_icon){
 						save_now_show_view_text = $("#show_card");
 					}
-				}else{
-					$("#view_show_wrap #card").hide();
-					$("#show_bar,#show_histogram,#show_card,#show_table").css("opacity","1");
-					change_view_css("#show_card");
+			}else{
+				$("#view_show_wrap #card").hide();
+				$("#show_bar,#show_histogram,#show_card,#show_table").css("opacity","1");
+				change_view_css("#show_card");
+				if(!click_view_icon){
+					save_now_show_view_text = $("#show_card");
 				}
-
+			}
 
 		}
 	}
@@ -196,8 +198,14 @@ function beginDrawChart(edit_view){
 
 		if(switch_col_me > 1){
 			change_view_css("#show_bar");
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_bar");
+			}
 		}else{
 			change_view_css("#show_histogram");
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_histogram");
+			}
 		}
 	}
 
@@ -207,20 +215,40 @@ function beginDrawChart(edit_view){
 		if(switch_col_di > 1 && switch_col_di < 4){
 
 			$("#show_storehis,#show_percontrasth,#show_table,#show_histogram,#show_polyline").css("opacity","1");
-			// $("#show_storehis").css("border","1px solid #0d53a4");
-		}
+			//$("#show_storehis").css("border","1px solid #0d53a4");
+			//$("#show_storehis").addClass("clicked").css("opacity","1");
+			// if(!click_view_icon){
+			// 	save_now_show_view_text = $("#show_storehis");
+			// }
+			$("#show_histogram").addClass("clicked").css("opacity","1");
 
+			// change_view_css("#show_histogram");
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_histogram");
+			}
+		}
+		
 		if(switch_row_di > 1 && switch_row_di < 4){
 
 			$("#show_storebar,#prestorebar,#show_table,#show_bar,#show_polyline").css("opacity","1");
-			// $("#show_storebar").css("border","1px solid #0d53a4");
+			//$("#show_storebar").css("border","1px solid #0d53a4");
+			//$("#show_storebar").addClass("clicked").css("opacity","1");
+			// if(!click_view_icon){
+			// 	save_now_show_view_text = $("#show_storebar");
+			// }
+			
+			$("#show_bar").addClass("clicked").css("opacity","1");
+			//change_view_css("#show_bar");
+			if(!click_view_icon){
+				save_now_show_view_text = $("#show_bar");
+			}
 		}
 
 	}
 
 	//2或多个维度1个度量展示树状图
 	if((switch_col_di > 1 && switch_col_me ==0 && switch_row_me == 1 && switch_row_di == 0) || (switch_row_di > 1 && switch_row_me == 0 && switch_col_di == 0 && switch_col_me ==1)){
-		$("#show_treemap").css("opacity","1")
+		$("#show_treemap,#show_randar").css("opacity","1")
 	}else{
 		$("#show_treemap").css("opacity","0.3")
 	}
@@ -230,12 +258,17 @@ function beginDrawChart(edit_view){
 	if(switch_col_di > 1 && switch_col_me == 0 && switch_row_me >1 && switch_row_di ==0 || switch_col_di == 0 && switch_col_me > 1 && switch_row_me ==0 && switch_row_di > 1){
 		view_init();
 				
-				$("#show_table,#show_polyline").css("opacity","1");
+				$("#show_table,#show_polyline,#show_randar").css("opacity","1");
 				if(switch_col_me > 1){
 					change_view_css("#show_bar");
+					if(!click_view_icon){
+						save_now_show_view_text = $("#show_bar");
+					}
 				}else{
 					change_view_css("#show_histogram");
-						
+					if(!click_view_icon){
+						save_now_show_view_text = $("#show_histogram");
+					}
 				}
 	}
 
@@ -249,9 +282,14 @@ function beginDrawChart(edit_view){
 		}
 				if(switch_col_me >= 1){
 					change_view_css("#show_bar");
+					if(!click_view_icon){
+						save_now_show_view_text = $("#show_bar");
+					}
 				}else{
 					change_view_css("#show_histogram");
-						
+					if(!click_view_icon){
+						save_now_show_view_text = $("#show_histogram");
+					}	
 				}
 	}
 
@@ -291,6 +329,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 
 //遍历所有视图按钮给定绘图方法
 		show_btn_change.each(function(index,ele){
+			// show_btn_change.css({"background":"","border":""});
 			$(ele).on("click",function(){
 				show_btn_change.removeClass("clicked");
 				show_btn_change.css({"background":"","border":""});
@@ -326,6 +365,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 					}
 				}
 			})
+
 		})
 
 
@@ -361,6 +401,8 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 			}
 		}
 
+		show_btn_change.removeClass("clicked");
+		save_now_show_view_text.addClass("clicked").css("opacity",1);
 		eval(save_now_show_view_text.data("show_view_fun"));
 		view_name = save_now_show_view_text.data("show_view_fun");
 		save_now_show_view_text.data("if_show","true");

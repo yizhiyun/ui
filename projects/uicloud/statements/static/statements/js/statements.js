@@ -141,13 +141,13 @@
 
 
 					for(var j = 0; j < opp.xAxis.length; j++){
-						opp.xAxis[j].axisTick.interval = 0;
-						opp.xAxis[j].axisLabel.interval = 0;
+						opp.xAxis[j].axisTick.interval = 2;
+						opp.xAxis[j].axisLabel.interval = 2;
 					}
 
 					for(var z = 0; z < opp.yAxis.length; z++){
-						opp.yAxis[z].axisTick.interval = 0;
-						opp.yAxis[z].axisLabel.interval = 0;
+						opp.yAxis[z].axisTick.interval = 2;
+						opp.yAxis[z].axisLabel.interval = 2;
 					}
 
 					myChartsChange.setOption(opp);
@@ -1184,9 +1184,8 @@
 
 		
 
-			//根据报表显示其中的视图
+		//根据报表显示其中的视图
 		function reason_view_drag(data_result,now_click_ele,click_view_btn){
-				
 				if(saveViewShowArr[$(now_click_ele).text()] != undefined){
 					saveViewShowArr[$(now_click_ele).text()] = saveViewShowArr[$(now_click_ele).text()] || [];
 				}else{

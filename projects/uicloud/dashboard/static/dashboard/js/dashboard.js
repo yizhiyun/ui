@@ -3601,13 +3601,9 @@
 					//..........................右侧设计样式点击事件
 					dahboardSetting_function();
 
-				//..........................右侧设计样式点击事件
-				dahboardSetting_function();
 
-			 	//..........................视图图标的操作事件
-				//设计视图icon
-				var project_icon = [["文本表","1或多个维度","1或多个度量","show_table"],["指标卡","0个维度","1或2个度量","show_card"],["饼图","1个维度","1个度量","show_cake"],["折线图","1个维度","1或多个度量","show_polyline"], ["柱状图","0或多个维度","1或多个度量","show_histogram"],["堆积柱状图","2或3个维度","1个度量","show_storehis"], ["瀑布图","1个维度","1个度量","show_waterfall"],["百分比堆积柱状图","2或3个维度","1个度量","show_percontrasth"], ["条形图","0或多个维度","1或多个度量","show_bar"], ["堆积条形图","2或3个维度","1个度量","show_storebar"], ["对比条形图","1个维度","2个度量","show_contrastbar"], ["百分比堆积条形图","2或3个维度","1个度量","prestorebar"], ["面积图","1个维度","1个度量","show_area"], ["范围图","1个维度","1个度量","show_scale"],["甘特图","1个维度","1个度量","show_gantt"],["雷达图","1个维度","1或多个度量","show_randar"], ["树状图","2或多个维度","1个度量","show_treemap"]];
-
+			//设计视图icon
+				var project_icon = [["文本表","1或多个维度","1或多个度量","show_table"],["指标卡","0个维度","1或2个度量","show_card"],["饼图","1个维度","1个度量","show_cake"],["折线图","1个维度","1或多个度量","show_polyline"], ["柱状图","0或多个维度","1或多个度量","show_histogram"],["堆积柱状图","2或3个维度","1个度量","show_storehis"], ["瀑布图","1个维度","1个度量","show_waterfall"],["百分比堆积柱状图","2或3个维度","1个度量","show_percontrasth"], ["条形图","0或多个维度","1或多个度量","show_bar"], ["堆积条形图","2或3个维度","1个度量","show_storebar"], ["对比条形图","1个维度","2个度量","show_contrastbar"], ["百分比堆积条形图","2或3个维度","1个度量","prestorebar"], ["面积图","1个维度","1个度量","show_area"], ["范围图","1个维度","1个度量","show_scale"],["甘特图","1个维度","1个度量","show_gantt"],["雷达图","1或多个维度","1或多个度量","show_randar"], ["树状图","2或多个维度","1个度量","show_treemap"]];
 
 				//图表对应生成的视图
 				var save_show_click_change_das = ["showTable_by_dragData()","col_card()","one_de_one_me_handle('cake')","many_de_many_me_handle('polyline')","many_de_many_me_handle('histogram')","many_de_many_me_handle('number_bar')","one_de_one_me_handle('waterWall')","many_de_many_me_handle('percentage_bar')","many_de_many_me_handle('barChart')","many_de_many_me_handle('number_liner')","many_de_many_me_handle('comparisonStrip')","many_de_many_me_handle('percentage_liner')","one_de_one_me_handle('area')","one_de_one_me_handle('scale')","one_de_one_me_handle('gantt')","many_de_many_me_handle('radarChart')","many_de_many_me_handle('reliationTree')"];
