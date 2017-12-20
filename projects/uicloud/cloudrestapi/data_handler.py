@@ -24,13 +24,13 @@ def executeSpark(sparkCode,
     '''
     host = sparkHost
     sessionData = {
-        'kind': 'pyspark',
+        'kind': 'pyspark3',
         'pyFiles': pyFiles
     }
     headers = {'Content-Type': 'application/json'}
 
     # check if there is a session to be used, if not or the last session kind
-    # is not pyspark, create one.
+    # is not pyspark3, create one.
     rootSessionsUrl = host + '/sessions'
     curSessionsReqJson = requests.get(rootSessionsUrl, headers=headers).json()
     noValidSession = True
@@ -38,10 +38,10 @@ def executeSpark(sparkCode,
         for sItem in curSessionsReqJson['sessions']:
             sessionUrl = "{0}/{1}".format(rootSessionsUrl, sItem['id'])
             logger.debug("sItem: {0}, sessionUrl: {1}".format(sItem, sessionUrl))
-            if (sItem['kind'] == 'pyspark') and (sItem['state'] == 'idle'):
+            if (sItem['kind'] == 'pyspark3') and (sItem['state'] == 'idle'):
                 noValidSession = False
                 break
-            elif (sItem['kind'] == 'pyspark') and (sItem['state'] in ['dead', 'error']):
+            elif (sItem['kind'] == 'pyspark3') and (sItem['state'] in ['dead', 'error']):
                 requests.delete(sessionUrl)
     if noValidSession:
         newSessionReqJson = requests.post(
