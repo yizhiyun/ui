@@ -42,6 +42,9 @@ var onlyGetDrillDown = true;
 var saveEveryViewPostData = {};
 
 var drillElementCount = {};
+
+//图形下钻初始数据存储
+var viewClickChange;
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function one_de_one_me_handle (chart_type_need) {
@@ -3530,21 +3533,21 @@ function drillDownCommonFunction(params,allDimensionality,tempSplitView,drillFie
 
 
 		if(peter == "peter" && saveDrillDownTemp[$(".clickActive").find("span").text()] != undefined){
-			drag_row_column_data = JSON.parse(JSON.stringify(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]));
+			editView_change_color("默认_YZY_-1_YZY_个");
+			drag_row_column_data = objectDeepCopy(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]);
 			if($(".clickActive").parents(".annotation_text").attr("id") == "drop_col_view"){
 				remove_viewHandle("column","get");
 			}else{
 				remove_viewHandle("row","get");
 			}
-			saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"] = JSON.parse(JSON.stringify(drag_row_column_data));
-			drag_row_column_data = JSON.parse(JSON.stringify(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]));
+			saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"] = objectDeepCopy(drag_row_column_data);
 			freeTemp = "peter";
-			save_now_show_view_text = $("#"+ saveDrillDownTemp[$(".clickActive").find("span").text()]["viewType"]+"");
+			drillNumHandle();
 		}else{
 
-			saveDataAndView.push({"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id")})
+			saveDataAndView.push({"viewdata":objectDeepCopy(drag_row_column_data),"viewType":save_now_show_view_text.attr("id")})
 			if(saveDataAndView.length  == 1){
-				saveDrillPreView = JSON.parse(JSON.stringify(saveDataAndView[0]));
+				saveDrillPreView = objectDeepCopy(saveDataAndView[0]);
 			}
 
 			if(drag_row_column_data["row"]["dimensionality"].length > 0){
@@ -3554,7 +3557,6 @@ function drillDownCommonFunction(params,allDimensionality,tempSplitView,drillFie
 			}
 			freeTemp = "null";
 		}
-
 
 		$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").show();
 
@@ -3664,6 +3666,10 @@ function chartAPartDidClickedFunction(params,allDimensionality){
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection .drillDown").click(function(event){
 
 		event.stopPropagation();
+
+		if(valueCount == 0){
+			viewClickChange = JSON.parse(JSON.stringify(drag_row_column_data));
+		}
 
 		onlyGetDrillDown = false;
 
@@ -3785,6 +3791,7 @@ function changeMiToHandle(eleArr,content){
 	for(var i = 0; i < eleArr.length;i++){
 		var tempList = $("<div class='list_wrap'><li class='drog_row_list date_list bj_information' id='measure:"+eleArr[i]+"'><div class='drop_main clear set_style measure_list_text ui-draggable ui-draggable-handle'><span class='measure_list_text_left' datatype="+eleArr[i]+">"+drag_measureCalculateStyle[eleArr[i].split(":")[0]]+"</span><div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></div></div></li></div>");
 		content.append(tempList);
+		tempList.find(".drog_row_list").data("field_name",eleArr[i].split(":")[0]).data("pop_data_handle",username+"_YZY_"+$("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY__"+eleArr[i].split(":")[0]);
 		tempList.find(".set_style").on("mouseenter",function(){$(this).find(".moreSelectBtn").show()});
 		tempList.find(".set_style").on("mouseleave",function(){$(this).find(".moreSelectBtn").hide()});
 		tempList.find("li .set_style").css("background","#ffcc9a").css("border","1px solid #ffbe7f");
@@ -3807,7 +3814,7 @@ function changeMiToHandle(eleArr,content){
 			display: "block",
 		})
 
-		md_click_show(tempList.find("li").find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});		
+		md_click_show(tempList.find("li").find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});
 	}
 }
 
@@ -3815,15 +3822,16 @@ function changeMiToHandle(eleArr,content){
 
 //判断分层下钻度量是否需要重绘
 function handleMiChange(handleType){
-	var oneMi = saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]["row"]["measure"].concat(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]["column"]["measure"]);
-	var twoMi = drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]);
+	var oneMi = saveDrillDownTemp[$(".clickActive").find("span").text()]["calculateStyle"];
+	var twoMi = objectDeepCopy(drag_measureCalculateStyle);
 	if(!equalCompare(oneMi,twoMi)){
+		drag_measureCalculateStyle = saveDrillDownTemp[$(".clickActive").find("span").text()]["calculateStyle"];
 		if($("#drop_row_view").find(".measure_list_text").length > 0){
 			$("#drop_row_view").html($("<span class='drag_text' style='display:none'>请拖入左边的字段</span>"));
-			changeMiToHandle(oneMi,$("#drop_row_view"));
+			changeMiToHandle(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]["row"]["measure"].concat(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]["column"]["measure"]),$("#drop_row_view"));
 		}else{
 			$("#drop_col_view").html($("<span class='drag_text' style='display:none'>请拖入左边的字段</span>"));
-			changeMiToHandle(oneMi,$("#drop_col_view"));
+			changeMiToHandle(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]["row"]["measure"].concat(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]["column"]["measure"]),$("#drop_col_view"));
 		}
 	}
 }
@@ -3836,7 +3844,7 @@ function chartPerterClickedFunction(params,allDimensionality,handleType){
 	}
 	
 	getNodrillIndex();
-	saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id")};
+	saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
 	if($(".peterMouse").parents(".annotation_text").find(".noPerter").length > 0){
 		$(".noPerter").parents(".drog_row_list").remove();
 		$(".peterMouse").parents(".annotation_text").find(".list_wrap").each(function(index,ele){
@@ -3886,7 +3894,6 @@ function chartPerterClickedFunction(params,allDimensionality,handleType){
 		
 	}
 
-	
 	//判断度量是否有改变是否重绘
 	handleMiChange();
 	

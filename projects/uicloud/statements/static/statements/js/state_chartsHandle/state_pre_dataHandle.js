@@ -30,7 +30,6 @@ function reporting_measure_Hanlde(dimensionality_array,measure_name_arr,needColu
 		},
 		success:function(data){
 			if(data.status == "success"){
-
 				reporting_preAllData = data.results.data;
 				reporting_recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);

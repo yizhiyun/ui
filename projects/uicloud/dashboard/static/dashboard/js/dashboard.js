@@ -86,6 +86,8 @@
 
 				var isDisaed = true;
 
+				//记录维度度量框的宽度
+				var mideiCountData = null;
 
 				//分层下钻不同层数对应的维度
 
@@ -130,6 +132,12 @@
 				var oldViewToShow = false;
 
 				var addNewViewHandle = true;
+
+				//分层下钻返回编辑维度显示的位置
+				var editViewDimenCount = null;
+
+				// 删除后数据的更改
+				var deleteDataHandleArr;
 				//保存视图触发事件
 				function save_btn_fun(){
 					$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -248,43 +256,43 @@
 
 					//获取层级关系
 					function getPeterOnly(element){
-					var tempHandleData = [];
-					$(element).find(".perterSpan").each(function(index,ele){
-						tempHandleData.push($(ele).attr("datatype"));
-					})
-					return tempHandleData;
+						var tempHandleData = [];
+						$(element).find(".perterSpan").each(function(index,ele){
+							tempHandleData.push($(ele).attr("datatype"));
+						})
+						return tempHandleData;
 					}
 
 					//层级结构的拖拽公共事件
 					function peterHandleCommon(current_li,element){
-					current_li.find(".imageShowTra").unbind("click");
-					current_li.find(".imageShowTra").click(function(event){
-						event.stopPropagation();
-						$(this).parents(".parameterElement").find(".pereterArea").toggle(300,function(){
-							if($(this).parents(".parameterElement").find(".pereterArea").css("display") == "block"){
-								$(this).parents(".parameterElement").find(".imageShowTra img").attr("src","/static/dashboard/img/left_35.png");
-							}else{
-								$(this).parents(".parameterElement").find(".imageShowTra img").attr("src","/static/dashboard/img/left_40.png");
-							}
-						});
-					})
-					//拖拽
-					current_li.find("span").data("type",element).draggable({
-						appendTo: "body",
-						helper: "clone",
-						containment:$("body"),
-						addClasses:false,
+						current_li.find(".imageShowTra").unbind("click");
+						current_li.find(".imageShowTra").click(function(event){
+							event.stopPropagation();
+							$(this).parents(".parameterElement").find(".pereterArea").toggle(300,function(){
+								if($(this).parents(".parameterElement").find(".pereterArea").css("display") == "block"){
+									$(this).parents(".parameterElement").find(".imageShowTra img").attr("src","/static/dashboard/img/left_35.png");
+								}else{
+									$(this).parents(".parameterElement").find(".imageShowTra img").attr("src","/static/dashboard/img/left_40.png");
+								}
+							});
+						})
+						//拖拽
+						current_li.find("span").data("type",element).draggable({
+							appendTo: "body",
+							helper: "clone",
+							containment:$("body"),
+							addClasses:false,
 
-						start:function(event,ui){
-							$(".drop_view").not($(".handle_one,#handle_color_text")).each(function(index,ele){
-								$(ele).droppable( "option", "accept", ".dimensionality_list_text,.measure_list_text,.perterSpan");
-								
-							})
-							$("#view_show_area_content").droppable({disabled:false});
-						},
-						stop:function(event,ui){
-							$("#view_show_area_content").droppable({disabled:true});
-						}
+							start:function(event,ui){
+								$(".drop_view").not($(".handle_one,#handle_color_text")).each(function(index,ele){
+									$(ele).droppable( "option", "accept", ".dimensionality_list_text,.measure_list_text,.perterSpan");
+									
+								})
+								$("#view_show_area_content").droppable({disabled:false});
+							},
+							stop:function(event,ui){
+								$("#view_show_area_content").droppable({disabled:true});
+							}
 
 					});
 
@@ -337,7 +345,119 @@
 					}
 
 
+				// 分层下钻展现样式
+				function peterDrillShowHandle(element,content){
+							onlyGetDrillDown = true;
+							var current_li = $("<div class='list_wrap clear'><li class='drog_row_list' id="+"dimensionality:"+element[0]+"><div class='drop_main clear set_style dimensionality_list_text peterMouse' dataValue='0'><div class='downImgContent'><img src='/static/dashboard/img/dashboard_icon2.png' alt='downup'></div><span class='dimensionality_list_text_left perterHandle' datatype="+element[0]+">"+element[0].split(":")[0]+"</span></div><div class='perterWallContent'></div></li></div>");
+							current_li.find(".drop_main").css("border","1px solid #DEDEDE").addClass("clickActive");
+							current_li.unbind("click");
+							for(var i = 1; i < element.length;i++){
+								if(i == 1){
+									current_li.find(".perterWallContent").append($("<div class='perterWallContentList perterSecond peterMouse' dataValue='1'><div class='downImgContent'><img src='/static/dashboard/img/dashboard_icon2.png' alt='downup'></div><span class='secondMenuText' datatype="+element[1]+">"+element[1].split(":")[0]+"</span></div><div class='perterThree'></div>"))
+								}else{
+									
+									current_li.find(".perterWallContent").find(".perterThree").append($("<div class='perterWallContentList peterMouse' dataValue='2'><div class='downImgContent threeView'><img src='/static/dashboard/img/dashboard_icon2.png' alt='downup'></div><span class='secondMenuText' datatype="+element[2]+">"+element[2].split(":")[0]+"</span></div>"));
+								}
+							}
+							
 
+							current_li.find(".peterMouse span").each(function(index,ele){
+								$(ele).attr("handledata","dimensionality:"+$(ele).attr("datatype"));
+								$(ele).unbind("click");
+								$(ele).click(function(event){
+									event.stopPropagation();
+									if(onlyGetDrillDown && !$(ele).parent(".peterMouse").hasClass("clickActive")){
+										freeTemp = "peter";
+										if($(ele).parent(".peterMouse").attr("datavalue") == 0){
+											$(".deleteDrill").children("p").trigger("click");
+										}else{
+											$(".peterDownHandle[datavalue="+$(ele).parent(".peterMouse").attr("datavalue")+"]").children("p").trigger("click");	
+										}
+										
+									}
+								})
+							})
+
+							$(content).append(current_li);
+
+							if(element.length  == 2){
+								current_li.find(".drop_main .downImgContent").show();
+								current_li.find(".perterWallContent .perterSecond .downImgContent").css("display","inherit").css("visibility","hidden");
+								
+							}else if(element.length  == 3){
+								current_li.find(".drop_main .downImgContent").show();
+								current_li.find(".perterWallContent .perterSecond .downImgContent").css("display","block").css("visibility","visible");
+							}
+
+							//移入移出事件
+							peterDrillDown();
+
+							//层级结构点击收起放下
+							$("#drop_row_view .downImgContent,#drop_col_view .downImgContent").each(function(index,ele){
+								$(ele).unbind("click");
+								$(ele).click(function(event){
+									event.stopPropagation();
+									if($(ele).parent().hasClass("drop_main")){
+										$(ele).parents(".drog_row_list").find(".perterWallContent").toggle(300,function(){
+											if($(ele).parents(".drog_row_list").find(".perterWallContent").css("display") == "block"){
+												$(ele).find("img").attr("src","/static/dashboard/img/dashboard_icon1.png");
+												// $(ele).parents(".drog_row_list").find(".perterThree").show();
+												// $(ele).parents(".drog_row_list").find(".perterWallContent .perterSecond .downImgContent img").attr("src","/static/dashboard/img/dashboard_icon1.png");														
+											}else{
+												$(ele).find("img").attr("src","/static/dashboard/img/dashboard_icon2.png");
+												// $(ele).parents(".drog_row_list").find(".perterThree").hide();
+												// $(ele).parents(".drog_row_list").find(".perterWallContent .perterSecond .downImgContent img").attr("src","/static/dashboard/img/dashboard_icon2.png");
+											}
+
+
+										});
+									}else{
+										$(ele).parents(".perterWallContent").find(".perterThree").toggle(300,function(){
+											if($(ele).parents(".perterWallContent").find(".perterThree").css("display") == "block"){
+												$(ele).find("img").attr("src","/static/dashboard/img/dashboard_icon1.png");
+											}else{
+												$(ele).find("img").attr("src","/static/dashboard/img/dashboard_icon2.png");
+											}
+										});
+									}
+								})
+							})
+
+
+							//拖拽删除
+							$(".drog_row_list .perterWallContentList").each(function(index,ele){
+								$(ele).draggable({
+									appendTo: "body",
+									helper: "clone",
+									containment:$("body"),
+									addClasses:false,
+									create:function(event,ui){
+
+									$("#view_show_area_content").droppable( "option", "accept", ".dimensionality_list_text,.measure_list_text,.perterSpan,.perterWallContentList");
+
+									},
+									start:function(event,ui){
+										$(ui.helper).css({
+											"width":$(event.target).width() + "px",
+										});
+
+										$(ui.helper).find(".downImgContent").css({
+											"display":"inherit",
+											"visibility":"hidden",
+										});
+										$("#view_show_area_content").droppable({disabled:false});
+										$("#drop_row_view,#drop_col_view").droppable({disabled:true});
+									},
+									stop:function(){
+										$("#view_show_area_content").droppable({disabled:true});
+										$("#drop_row_view,#drop_col_view").droppable({disabled:false});														
+									}
+								});
+							})
+
+
+						return current_li;
+				}
 
 
 
@@ -356,26 +476,42 @@
 					saveDataAndView = [];
 				}
 
+				//获得删除后的数据放置在数组
+				function getDeleteData(){
+					var freeHandleDeleteData = [];
+					$(".noDelete").each(function(index,ele){
+						freeHandleDeleteData.push($(ele).find("span").text());
+					})
+					return freeHandleDeleteData;
+				}
+
 				function dashboardReadySumFunction(isOnlyLoad){
 
 					// $("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").hide();
 
-					//判断在仪表板是否删除过视图 使仪表板同步
+					//判断在视图库是否删除过视图 使仪表板同步
 					if(statementsToView){
-						$("#dashboard_content #new_view ul .edit_list").each(function(index,ele){
+						deleteDataHandleArr = getDeleteData();
+						$("#dashboard_content #new_view ul .edit_list").not($(".noDelete")).each(function(index,ele){
 							if(tempSaveDeleteViewDict["onlyFolder"] != undefined){
 								if($.inArray($(ele).find("span").text(),tempSaveDeleteViewDict["onlyFolder"]) != -1){
+									$(ele).addClass("statementsDelete");
 									$(ele).find(".folderview_li_del_btn").trigger("click");
-									delete preClickView[$(ele).find("span").text()];
+									if($.inArray($(ele).find("span").text(),deleteDataHandleArr) == -1){
+										delete preClickView[$(ele).find("span").text()];
+									}
+									
 								}
 							}else if(tempSaveDeleteViewDict["onlyParentFolder"] != undefined){
 								for(var i = 0; i < tempSaveDeleteViewDict["onlyParentFolder"].length; i++){
 									if($(ele).find("span").text().split("-")[0] == tempSaveDeleteViewDict["onlyParentFolder"][i]){
+										$(ele).addClass("statementsDelete");
 										$(ele).find(".folderview_li_del_btn").trigger("click");
 										delete preClickView[$(ele).find("span").text()];
 									}
 								}
 							}else{
+									$(ele).addClass("statementsDelete");
 									$(ele).find(".folderview_li_del_btn").trigger("click");
 									delete preClickView[$(ele).find("span").text()];
 							}
@@ -388,14 +524,20 @@
 							}
 						})
 
+						$(".noDelete").each(function(index,ele){
+							if($(ele).find("span").text() != $(ele).attr("title")){
+								$(ele).attr("title",$(ele).find("span").text());
+							}
+						})
+
+						deleteDataHandleArr  = [];
 						if($("#pageDashboardModule").hasClass("handleTrue")){
 							return;
 						}
 						
 					}
 
-
-
+					
 					if(saveAddNewFile){
 						$.ajax({
 							url:"/cloudapi/v1/tables",
@@ -411,14 +553,18 @@
 										var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
 										var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
 										// 创建数据块
-										
+										if($("#dashboard_content #new_view ul li[prechangename="+have_view_edit[1]+ "-" +have_view_edit[2]+"]").length > 0){
+											$("#dashboard_content #new_view ul li").removeClass("auto_show").data("view_btn","true");
+											$("#dashboard_content #new_view ul li[prechangename="+have_view_edit[1]+ "-" +have_view_edit[2]+"]").addClass("auto_show").data("view_btn","false");
+											return;
+										}
 										cubeSelectContent_fun(data["results"],have_view_edit[3]);
 									}else if(Object.getOwnPropertyNames(preClickView).length != 0 && preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] != null  && preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["viewtype"] != null){
 
 										cubeSelectContent_fun(data["results"],preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["tablename"]);
 									}else{
-									// 创建数据块
-									cubeSelectContent_fun(data["results"]);
+										// 创建数据块
+										cubeSelectContent_fun(data["results"]);
 									}
 
 									save_data_sum_handle = data["results"];
@@ -463,34 +609,16 @@
 						$("#sizer").height($("#lateral_bar").height() + 50);
 						$("#sizer_place").height($("#sizer").height());
 						$("#sizer_place #sizer_mpt").css("marginTop",$("#sizer").height()/2 - $("#sizer_place #sizer_mpt").height()/2 + "px");
-				}
-
-						leftBar_sizeW_function();
-
-					//编辑跳回后对颜色 小数点等对应的修改
-					function editView_change_color(colorArr,filterArr){
-						//修改对应颜色
-						var getColor_arr = allColorsDict[colorArr.split("_YZY_")[0]];
-						$("#project_chart #project_style .defaultColors .color_flag").text(colorArr.split("_YZY_")[0]);
-						for(var i =0; i < 5;i++){
-							$("#project_chart #project_style .defaultColors .selectedColors span").eq(i).css("background",getColor_arr[i]);
-						};
-
-						//小数点的切换
-						$("#project_chart #project_style .module_style .normalUnit .content span").add($("#project_chart #project_style .module_style .valueUnit .content span")).removeClass("active");
-						$("#project_chart #project_style .module_style .normalUnit .content span[unit="+colorArr.split("_YZY_")[1]+"]").addClass("active");
-
-						//值单位的切换
-						$("#project_chart #project_style .module_style .valueUnit .content span").each(function(index,ele){
-							if($(ele).text() == colorArr.split("_YZY_")[2]){
-								$(ele).addClass("active");
+						$("#dashboard_content #new_view ul li").each(function(index,ele){
+							if($(ele).attr("title") != $(ele).find("span").text()){
+								$(ele).attr("title",$(ele).find("span").text());
 							}
 						})
 
-						//右侧筛选器显示
-						rightFilterListDraw();
+						mideiCountData = $("#drop_row_view").width() * 0.91;
+				}
 
-					}
+						leftBar_sizeW_function();
 
 					$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
 
@@ -623,7 +751,7 @@
 					}
 
 					//根据已有的维度度量恢复数据展示
-					function reason_old_show(ele_wrap,current_cube_name,now_title_handle_view,drag_measureCalculateStyle,indexEdit){
+					function reason_old_show(ele_wrap,current_cube_name,now_title_handle_view,drag_measureCalculateStyle,indexEdit,editViewDimenCount){
 						$("#operational_view #drag_row .annotation_text .drag_text,#operational_view #drag_col .annotation_text .drag_text").hide();
 						$("#drag_wrap_content #drag_row .annotation_text .list_wrap,#drag_wrap_content #drag_row .annotation_text li").remove();
 						$("#drag_wrap_content #drag_col .annotation_text .list_wrap,#drag_wrap_content #drag_col .annotation_text li").remove();
@@ -633,52 +761,60 @@
 								//判断得到的数组不为空
 								if(ele_wrap[col_or_row][view_data_md].length != 0){
 									for(var i = 0; i < ele_wrap[col_or_row][view_data_md].length; i++){
+										if(view_data_md == "dimensionality" && editViewDimenCount != null && $.inArray(i,[editViewDimenCount[JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["peterList"][0].split(":")[0]]]) != -1){
+											if(col_or_row == "row"){
+												var handleContent = $("#drag_wrap_content #drag_row .annotation_text");
+											}else{
+												var handleContent = $("#drag_wrap_content #drag_col .annotation_text");
+											}
+											var reason_old_content = peterDrillShowHandle(JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["peterList"],handleContent);
 
-									//创建元素
-									var reason_old_content = $("<div class='list_wrap clear'><li class='drog_row_list date_list bj_information' id='"+view_data_md+":"+ele_wrap[col_or_row][view_data_md][i]+"'><div class='drop_main clear set_style "+view_data_md+"_list_text ui-draggable ui-draggable-handle'><span class='"+view_data_md+"_list_text_left'></span><div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></div></div></li></div>");
-
-									reason_old_content.find(".set_style").on("mouseenter",function(){$(this).find(".moreSelectBtn").show()});
-									reason_old_content.find(".set_style").on("mouseleave",function(){$(this).find(".moreSelectBtn").hide()});
-									if(view_data_md == "dimensionality"){
-										reason_old_content.find("li .set_style").css("background","#c5e0ff").css("border","1px solid #86a9d1");
-										reason_old_content.find("."+view_data_md+"_list_text_left").text(ele_wrap[col_or_row][view_data_md][i].split(":")[0])
-										if(col_or_row == "row"){
-											reason_old_content.appendTo($("#drag_wrap_content #drag_row .annotation_text"));
 										}else{
-											reason_old_content.appendTo($("#drag_wrap_content #drag_col .annotation_text"));
+											//创建元素
+											var reason_old_content = $("<div class='list_wrap clear'><li class='drog_row_list date_list bj_information' id='"+view_data_md+":"+ele_wrap[col_or_row][view_data_md][i]+"'><div class='drop_main clear set_style "+view_data_md+"_list_text ui-draggable ui-draggable-handle'><span class='"+view_data_md+"_list_text_left'></span><div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'></div></div></li></div>");
+
+											reason_old_content.find(".set_style").on("mouseenter",function(){$(this).find(".moreSelectBtn").show()});
+											reason_old_content.find(".set_style").on("mouseleave",function(){$(this).find(".moreSelectBtn").hide()});
+											if(view_data_md == "dimensionality"){
+												reason_old_content.find("li .set_style").css("background","#c5e0ff").css("border","1px solid #86a9d1").addClass("noPerter");
+												reason_old_content.find("."+view_data_md+"_list_text_left").text(ele_wrap[col_or_row][view_data_md][i].split(":")[0])
+												if(col_or_row == "row"){
+													reason_old_content.appendTo($("#drag_wrap_content #drag_row .annotation_text"));
+												}else{
+													reason_old_content.appendTo($("#drag_wrap_content #drag_col .annotation_text"));
+												}
+											}else{
+												reason_old_content.find("li .set_style").css("background","#ffcc9a").css("border","1px solid #ffbe7f");
+												reason_old_content.find("li").data("field_name",ele_wrap[col_or_row][view_data_md][i].split(":")[0]).data("pop_data_handle",username+"_YZY_"+ $("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY_"+ ele_wrap[col_or_row][view_data_md][i].split(":")[0]);
+												reason_old_content.find("."+view_data_md+"_list_text_left").text(drag_measureCalculateStyle[ele_wrap[col_or_row][view_data_md][i].split(":")[0]]);
+												if(col_or_row == "row"){
+													reason_old_content.appendTo($("#drag_wrap_content #drag_row .annotation_text"));
+												}else{
+													reason_old_content.appendTo($("#drag_wrap_content #drag_col .annotation_text"));
+												}
+											}
+
+											md_click_show(reason_old_content.find("li").find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});	
 										}
-									}else{
-										reason_old_content.find("li .set_style").css("background","#ffcc9a").css("border","1px solid #ffbe7f");
-										reason_old_content.find("li").data("field_name",ele_wrap[col_or_row][view_data_md][i].split(":")[0]).data("pop_data_handle",username+"_YZY_"+ $("#lateral_bar #lateral_title .combo-select ul").find(".option-selected").text()+"_YZY_"+ ele_wrap[col_or_row][view_data_md][i].split(":")[0]);
-										reason_old_content.find("."+view_data_md+"_list_text_left").text(drag_measureCalculateStyle[ele_wrap[col_or_row][view_data_md][i].split(":")[0]]);
-										if(col_or_row == "row"){
-											reason_old_content.appendTo($("#drag_wrap_content #drag_row .annotation_text"));
-										}else{
-											reason_old_content.appendTo($("#drag_wrap_content #drag_col .annotation_text"));
-										}
-									}
 
-
-									$(reason_old_content).find("li").css({
-										width: $(".annotation_text").width() * 0.91+ "px",
-										margin: "5px auto 0",
-										listStyle: "none",
-									});
-									$(reason_old_content).find(".set_style").css({
-										width: "94%",
-										height: "23px",
-										padding: "0px 5px",
-										color: "black"
-									});
-									$(reason_old_content).find(".set_style").find("span").css({
-										float: "left",
-										display: "block",
-									});
-									$(reason_old_content).find("img").css({
-										display: "block",
-									})
-
-									md_click_show(reason_old_content.find("li").find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null});
+											$(reason_old_content).find("li").css({
+												width: mideiCountData+ "px",
+												margin: "5px auto 0",
+												listStyle: "none",
+											});
+											$(reason_old_content).find(".set_style").css({
+												width: "94%",
+												height: "23px",
+												padding: "0px 5px",
+												color: "black"
+											});
+											$(reason_old_content).find(".set_style").find("span").css({
+												float: "left",
+												display: "block",
+											});
+											$(reason_old_content).find("img").css({
+												display: "block",
+											})
 									}
 								}
 							}
@@ -707,6 +843,8 @@
 
 					//根据编辑过的视图重新展示
 					function edit_view_show(edit_view,result,second,indexEdit){
+
+						var freeHandleDragData;
 
 						if(indexEdit || indexEdit == "noLocation"){
 							var now_title_handle_view = result;
@@ -740,20 +878,25 @@
 
 						current_cube_name = now_title_handle_view["tablename"];
 
-
-						dirllConditions = JSON.parse(now_title_handle_view["drilldowndata"])["dirllConditions"];
-
-						saveDimeData = JSON.parse(now_title_handle_view["drilldowndata"])["saveDimeData"];
-
-						saveDataAndView = JSON.parse(now_title_handle_view["drilldowndata"])["saveDataAndView"];
 						if(JSON.parse(now_title_handle_view["drilldowndata"])["showList"] != undefined&& JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["showList"] != undefined){
 							if(JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["showList"].length > 0){
-							$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").show();
-							$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content").height($("body").height() - $(".container .topInfo").height() - $(".rightConent #dashboard_content #new_view").height() - $(".rightConent #dashboard_content #action_box").height() - Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2 - $("#operational_view").height() - 30);
-							for(var i = 0; i <JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["showList"].length; i++){
-								var showList = $("<li datavalue="+i+1+"><img src='/static/statements/img/jt.png' alt='jt'><p>"+JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["showList"][i]+"</p></li>");
-								$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul").append(showList);
-							}
+								editViewDimenCount = null;
+
+								viewClickChange = JSON.parse(now_title_handle_view["drilldowndata"])["viewClickChange"];
+								
+								dirllConditions = JSON.parse(now_title_handle_view["drilldowndata"])["dirllConditions"];
+
+								saveDimeData = JSON.parse(now_title_handle_view["drilldowndata"])["saveDimeData"];
+
+								saveDataAndView = JSON.parse(now_title_handle_view["drilldowndata"])["saveDataAndView"];
+
+								saveDrillPreView =  JSON.parse(now_title_handle_view["drilldowndata"])["saveDrillPreView"];
+								$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").show();
+								$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content").height($("body").height() - $(".container .topInfo").height() - $(".rightConent #dashboard_content #new_view").height() - $(".rightConent #dashboard_content #action_box").height() - Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2 - $("#operational_view").height() - 30);
+								for(var i = 0; i <JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["showList"].length; i++){
+									var showList = $("<li datavalue="+(i+1)+" class='drillDownHandle'><img src='/static/statements/img/jt.png' alt='jt'><p>"+JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["showList"][i]+"</p></li>");
+									$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul").append(showList);
+								}
 							}else{
 								$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").hide();
 								$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content").height($("body").height() - $(".container .topInfo").height() - $(".rightConent #dashboard_content #new_view").height() - $(".rightConent #dashboard_content #action_box").height() - Number($("#drag_wrap_content").css("paddingTop").match(/\d+/g))*2 - $("#operational_view").height());
@@ -766,14 +909,24 @@
 									drillDownClick($(ele));
 								})
 							})
+
+							freeHandleDragData = JSON.parse(now_title_handle_view["drilldowndata"])["viewClickChange"];
+
+						}else if(JSON.parse(now_title_handle_view["drilldowndata"])["showList"] != undefined && JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["peterList"] != undefined){
+							editViewDimenCount = JSON.parse(now_title_handle_view["drilldowndata"])["drillElementCount"];
+							freeHandleDragData = drag_row_column_data;
+							saveDimeData = JSON.parse(now_title_handle_view["drilldowndata"])["saveDimeData"];
+							saveDrillDownTemp = JSON.parse(now_title_handle_view["drilldowndata"])["saveDrillDownTemp"];
+							saveDrillCount = JSON.parse(now_title_handle_view["drilldowndata"])["saveDrillCount"];
+							saveDrillDownDict = JSON.parse(now_title_handle_view["drilldowndata"])["saveDrillDownDict"];
+						}else{
+							editViewDimenCount = null;
+							freeHandleDragData = drag_row_column_data;
 						}
-
-
 
 						editViewPostData = JSON.parse(now_title_handle_view["handledatapost"]);
 
 						oldViewToShow = true;
-
 
 						// //....
 						// if(now_title_handle_view["viewtype"] != "many_de_many_me_handle(radarChart)" || "many_de_many_me_handle(save_data_handle)"){
@@ -787,7 +940,7 @@
 						$("#view_show_empty").hide();
 						$("#view_show_area #view_show_area_content .tableView_name").show();
 						drag_measureCalculateStyle = JSON.parse(now_title_handle_view["calculation"]);
-						reason_old_show(drag_row_column_data,current_cube_name,now_title_handle_view,drag_measureCalculateStyle,indexEdit);
+						reason_old_show(freeHandleDragData,current_cube_name,now_title_handle_view,drag_measureCalculateStyle,indexEdit,editViewDimenCount);
 					}
 
 
@@ -804,7 +957,7 @@
 							// if(sessionStorage.getItem("edit_view_now")){
 
 							// 	}
-
+							view_homo_data = {};
 							for(folder in result){
 								for(folder_view in result[folder]){
 									for(folder_view_name in result[folder][folder_view]){
@@ -819,8 +972,10 @@
 										view_homo_data[add_view_post_name] = result[folder][folder_view][folder_view_name];
 										if(result[folder][folder_view][folder_view_name]["viewname"] != null){
 											var changeViewName = result[folder][folder_view][folder_view_name]['viewname'];
+											var preChangeName = "";
 										}else{
 											var changeViewName = folder_view_name;
+											var preChangeName = folder_view_name;
 										}
 										if(view_homo_data[add_view_post_name]["isopen"]){
 											if(sessionStorage.getItem("edit_view_now")){
@@ -828,12 +983,11 @@
 												var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
 												var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
 												if(view_homo_data[add_view_post_name]["id"] == result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"]){
-
-													folder_view_add_show(have_view_edit[1]+"-"+changeViewName,"edit",hava_view_edit_old,result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"]);
+													folder_view_add_show(have_view_edit[1]+"-"+changeViewName,"edit",hava_view_edit_old,result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"],have_view_edit[1]+"-"+preChangeName);
 													continue;
 											   }
 											}
-											folder_view_add_show(folder_view+"-"+changeViewName,"new",folder+","+folder_view+","+folder_view_name+","+result[folder][folder_view][folder_view_name]["tablename"],result[folder][folder_view][folder_view_name]["id"]);
+											// folder_view_add_show(folder_view+"-"+changeViewName,"new",folder+","+folder_view+","+folder_view_name+","+result[folder][folder_view][folder_view_name]["tablename"],result[folder][folder_view][folder_view_name]["id"]);
 
 									}
 
@@ -1045,7 +1199,7 @@
 									}
 								})
 								$(this).find("li").css({
-									width: $(".annotation_text").width() * 0.91 + "px",
+									width: mideiCountData + "px",
 								});
 								$(this).find("li p").css("background","#a7eff4").css("padding","0px").css("margin-left","0px");
 
@@ -1084,13 +1238,14 @@
 									//判断拖入视图展示区域移除指标
 									if($("#view_show_area_content").find(".index_row_list").length > 0){
 										$("#view_show_area_content").find(".index_row_list").remove();
+										$(".handleAll_wrap #operational_view #drag_zb .annotation_text,#view_show_area_content").css("border","none");
 										empty_viem_init();
 										$(".handleAll_wrap #operational_view #drag_zb .annotation_text,#view_show_area_content").css("background","").css("border","none");
 										$("#drag_zb .annotation_text").droppable("option", "disabled", false);
 									}
 							},
 							stop:function(){
-									$(".handleAll_wrap #operational_view #drag_zb .annotation_text,#view_show_area_content").css("border","none");
+
 									$("#drag_zb .annotation_text").droppable("option", "disabled", false);
 							}
 
@@ -1126,76 +1281,88 @@
 						window.onmousewheel = document.onmousewheel = document.onkeydown = null;
 					}
 
+					function deleteBtnClickDash(title,view_title_index){
+							$(".rightConent #dashboard_content #new_view ul li[title="+title+"]").remove();
+							for(var i = 0; i < $(".rightConent #dashboard_content #new_view ul li").length;i++){
+								add_view_count = $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g);
+								if(add_view_count < $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g)){
+									add_view_count = $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g);
+								}
+								$(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title_change",i);
+
+							}
+							$("#new_view").width($("#pageDashboardModule #dashboard_content").width());
+							if(Math.ceil($("#new_view").width()/90) > $(".rightConent #dashboard_content #new_view ul li").length){
+									$(".rightConent #dashboard_content #new_view ul li").css("width","90px");
+									$(".rightConent #dashboard_content #new_view ul li .folderview_li_del_btn").css("display","block");
+								}else{
+									$(".rightConent #dashboard_content #new_view ul li").css("width",$("#new_view").width()/$(".rightConent #dashboard_content #new_view ul li").length + "px");
+								}
+
+
+								if($("#pageDashboardModule #clickWallDelete").data("nowViewIf")){
+									$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").addClass("auto_show");
+									$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_del_btn").css("display","block");
+									if($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view") != undefined || (preClickView[$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_span").text()] != null && preClickView[$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_span").text()]["viewtype"] != null)){
+										//视图保存事件
+										$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
+										save_btn_fun();
+										deleteDrillFun();
+										// empty_viem_init();
+										if($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view") != undefined){
+											sessionStorage.setItem("edit_view_now",$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view"));
+											edit_view_show($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]"),ajax_data_post,"noedit");
+										}else{
+											edit_view_show(null,preClickView[$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_span").text()],"noedit","noLocation");
+										}
+
+									}else{
+										if($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view") != undefined){
+											sessionStorage.removeItem("edit_view_now");
+										}
+
+										empty_viem_init("click");
+									}
+								}
+							if($.inArray($("#pageDashboardModule #clickWallDelete").data("nowDeleteView"),deleteDataHandleArr) == -1){
+								delete preClickView[$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")];
+							}
+							//判断是否标签页是否全部删除
+							if($(".rightConent #dashboard_content #new_view ul li").length == 0){
+								preClickView = {};
+								add_view_count = 0;
+								folder_view_add_show("新建视图","old");
+								preClickView["新建视图"] = null;
+							}
+					}
+
 					//点击标签页 移除
 					function clickViewTo(title){
+
 						if($(".rightConent #dashboard_content #new_view ul li[title="+title+"]").attr("title_change") == $(".rightConent #dashboard_content #new_view ul li").length -1){
 							var view_title_index = Number($(".rightConent #dashboard_content #new_view ul li[title="+title+"]").attr("title_change"))-1;
 						}else{
 							var view_title_index = Number($(".rightConent #dashboard_content #new_view ul li[title="+title+"]").attr("title_change"));
 						}
-
+						if($(".rightConent #dashboard_content #new_view ul li[title="+title+"]").hasClass("statementsDelete")){
+							deleteBtnClickDash(title,view_title_index);
+							return;
+						}
 						//删除视图对应的显示和关闭
 						if(/-/gi.test(title)){
 							$.post("../dashboard/setSwitch",{"switch":"isopen","id":$(".rightConent #dashboard_content #new_view ul li[title="+$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")+"]").data("tableViewId")},function(result){
 								if(result["status"] == "ok"){
-									$("#pageStatementsModule .statement_li").eq(sessionStorage.getItem("edit_view_now").split(",")[sessionStorage.getItem("edit_view_now").split(",").length -2]).find(".view_show_handle").eq(sessionStorage.getItem("edit_view_now").split(",")[sessionStorage.getItem("edit_view_now").split(",").length -1]).find(".small_view_text").data("setopen",false);
+									var freeDashboardData = $(".rightConent #dashboard_content #new_view ul li[title="+$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")+"]").data("edit_view").split(",");
+									$("#pageStatementsModule .statement_li").eq(freeDashboardData[freeDashboardData.length -2]).find(".view_show_handle").eq(freeDashboardData[freeDashboardData.length -1]).find(".small_view_text").data("setopen",false);
+									deleteBtnClickDash(title,view_title_index);
 								}
 							});
+
+						}else{
+							deleteBtnClickDash(title,view_title_index);
 						}
 
-
-
-						$(".rightConent #dashboard_content #new_view ul li[title="+title+"]").remove();
-
-						for(var i = 0; i < $(".rightConent #dashboard_content #new_view ul li").length;i++){
-							add_view_count = $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g);
-							if(add_view_count < $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g)){
-								add_view_count = $(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title").match(/\d+/g);
-							}
-							$(".rightConent #dashboard_content #new_view ul li").eq(i).attr("title_change",i);
-
-						}
-						$("#new_view").width($("#pageDashboardModule #dashboard_content").width());
-						if(Math.ceil($("#new_view").width()/90) > $(".rightConent #dashboard_content #new_view ul li").length){
-								$(".rightConent #dashboard_content #new_view ul li").css("width","90px");
-								$(".rightConent #dashboard_content #new_view ul li .folderview_li_del_btn").css("display","block");
-							}else{
-								$(".rightConent #dashboard_content #new_view ul li").css("width",$("#new_view").width()/$(".rightConent #dashboard_content #new_view ul li").length + "px");
-							}
-
-
-							if($("#pageDashboardModule #clickWallDelete").data("nowViewIf")){
-								$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").addClass("auto_show");
-								$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_del_btn").css("display","block");
-								if($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view") != undefined || (preClickView[$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_span").text()] != null && preClickView[$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_span").text()]["viewtype"] != null)){
-									//视图保存事件
-									$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
-									save_btn_fun();
-									if($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view") != undefined){
-										sessionStorage.setItem("edit_view_now",$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view"));
-										edit_view_show($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]"),ajax_data_post,"noedit");
-									}else{
-										edit_view_show(null,preClickView[$(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").find(".folderview_li_span").text()],"noedit","noLocation");
-									}
-
-								}else{
-									if($(".rightConent #dashboard_content #new_view ul li[title_change="+view_title_index+"]").data("edit_view") != undefined){
-										sessionStorage.removeItem("edit_view_now");
-									}
-
-									empty_viem_init("click");
-								}
-							}
-
-						delete preClickView[$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")];
-
-						//判断是否标签页是否全部删除
-						if($(".rightConent #dashboard_content #new_view ul li").length == 0){
-							preClickView = {};
-							add_view_count = 0;
-							folder_view_add_show("新建视图","old");
-							preClickView["新建视图"] = null;
-						}
+						
 
 					}
 
@@ -1321,18 +1488,18 @@
 							}
 								for(small_view_show in data_result[erv_data]){
 
-								var oDiv = $("<div class='dashboard_statement_li clear'><div class='dashboard_statement_li_content'><img src=../static/dashboard/img/form_icon.png  class='view_show_icon'><div class='view_show_name_save filter_view_class'>"+small_view_show+"</div></div><div class='view_show_content'></div></div>");
-								if(erv_data != "default" && small_view_show != ""){
-									oDiv.find(".view_show_name_save").parent().parent().addClass("floder_view_wrap");
-									oDiv.appendTo(folder);
-									folder.find(".dashboard_statement_li").find(".view_show_name_save").css("width","324px");
+										var oDiv = $("<div class='dashboard_statement_li clear'><div class='dashboard_statement_li_content'><img src=../static/dashboard/img/form_icon.png  class='view_show_icon'><div class='view_show_name_save filter_view_class'>"+small_view_show+"</div></div><div class='view_show_content'></div></div>");
+										if(erv_data != "default" && small_view_show != ""){
+											oDiv.find(".view_show_name_save").parent().parent().addClass("floder_view_wrap");
+											oDiv.appendTo(folder);
+											folder.find(".dashboard_statement_li").find(".view_show_name_save").css("width","324px");
 
-									$("<img src=../static/dashboard/img/left_35.png  class='click_tra click_tra_floder'/>").prependTo($(folder).find(".state_folder_content"));
-								}else{
-									oDiv.addClass("only_folder");
+											$("<img src=../static/dashboard/img/left_35.png  class='click_tra click_tra_floder'/>").prependTo($(folder).find(".state_folder_content"));
+										}else{
+											oDiv.addClass("only_folder");
 
-									oDiv.appendTo($("#show_excel_name"));
-								}
+											oDiv.appendTo($("#show_excel_name"));
+										}
 
 
 								}
@@ -1409,22 +1576,17 @@
 									 $("#pageDashboardModule #view_save_up").hide();
 									 $("#pageDashboardModule #view_save_up #show_excel_name").html("");
 									 $("#pageDashboardModule #body_content_shadow").hide();
-									 if(saveViewShowArr != undefined && saveViewShowArr[$(".auto_show").data("edit_view").split(",")[1]] != undefined && saveViewShowArr[$(".auto_show").data("edit_view").split(",")[1]] != []){
 
-										var tempDeleteArr = saveViewShowArr[$("#pageDashboardModule #dashboard_content #new_view .auto_show").data("edit_view").split(",")[1]];
-
-										$("#pageStatementsModule .view_folder_show_area>ul li").eq($.inArray($("#pageDashboardModule #dashboard_content #new_view .auto_show").data("tableViewId"),tempDeleteArr)).remove();
-
-										tempDeleteArr.splice($.inArray($("#pageDashboardModule #dashboard_content #new_view .auto_show").data("tableViewId"),tempDeleteArr),1);
-										
-										saveViewShowArr[$("#pageDashboardModule #dashboard_content #new_view .auto_show").data("edit_view").split(",")[1]] = tempDeleteArr;
-									}
-
+									 mideiCountData = $("#drop_row_view").width() * 0.91;
 									 clickViewTo($(nowDeleteElement).attr("title"));
 									 $(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
-									 changePageTo_navReporttingView(false);
-									 //移除编辑视图storage
-									 // sessionStorage.removeItem("edit_view_now");
+									 if($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li").length > 0){
+										 changePageTo_navReporttingView(true);
+										 changeEditViewFunction(editChangeView);
+									 }else{
+									 	changePageTo_navReporttingView(false);
+									 }
+
 									 $("#pageDashboardModule #view_save_up").hide();
 									 $("#pageDashboardModule #view_save_up #show_excel_name").html("");
 									 $("#pageDashboardModule #body_content_shadow").hide();
@@ -1488,6 +1650,7 @@
 							delete obj2["status"];
 							obj2["defaultparent"] = "default";
 						}
+
 						if(obj1["viewtype"] == null || equalCompare(obj1,obj2)){
 							return true;
 						}else{
@@ -1496,7 +1659,7 @@
 					}
 
 					//创建视图标题展示和新建
-					function folder_view_add_show(add_view_name,new_or_old,edit_view_save_data,tableViewId){
+					function folder_view_add_show(add_view_name,new_or_old,edit_view_save_data,tableViewId,preChangeName){
 						var folderview_li = $("<li class='folderview_li_show' title="+add_view_name+"><span class='folderview_li_span'>"+add_view_name+"</span><div class='folderview_li_del_btn'></div></li>");
 						if(new_or_old == "new"){
 							folderview_li.addClass("edit_list").prependTo($(".rightConent #dashboard_content #new_view ul"));
@@ -1508,7 +1671,7 @@
 							folderview_li.addClass("auto_show");
 						}
 						if(new_or_old != "new" && new_or_old != "old"){
-							folderview_li.addClass("edit_list").prependTo($(".rightConent #dashboard_content #new_view ul"));
+							folderview_li.addClass("edit_list").prependTo($(".rightConent #dashboard_content #new_view ul")).attr("preChangeName",preChangeName);
 							$(".rightConent #dashboard_content #new_view ul li").removeClass("auto_show");
 							folderview_li.data("edit_view",edit_view_save_data).addClass("auto_show").data("tableViewId",tableViewId);
 							$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
@@ -1543,6 +1706,8 @@
 							if($(this).hasClass("auto_show")){
 								return;
 							}
+
+							if_or_load = true;
 
 							clickWallPre = $(".auto_show").attr("title");
 
@@ -1606,12 +1771,12 @@
 								var nowViewShow = false;
 							}
 
+
 							$("#pageDashboardModule #clickWallDelete").data("nowViewIf",nowViewShow).data("nowDeleteView",$(this).siblings(".folderview_li_span").text());
 
-
-
+							
 							//判断标签页视图是否正在显示
-							if(nowViewShow){
+							if(nowViewShow && $.inArray($(this).siblings(".folderview_li_span").text(),deleteDataHandleArr) == -1){
 								var deleteNowView = realSaveData();
 								preClickView[$(this).siblings(".folderview_li_span").text()] = deleteNowView;
 							}
@@ -2189,7 +2354,7 @@
 
 
 				function drag(){
-						var view_show = $(".annotation_text").width() * 0.91;
+						// var view_show = $(".annotation_text").width() * 0.91;
 
 						$("#lateral_bar .set_style").each(function(index,ele){
 								//移入事件
@@ -2465,7 +2630,6 @@
 													postPeterDict = {"statu":"add","tablename":current_cube_name,"structure":getPeterOnly(current_li)};
 													peterAddChange(postPeterDict,current_li);
 													eachMouse(current_li.find("span"));
-
 													peterHandleCommon(current_li,$(ui.draggable).data("type"));
 
 											}
@@ -2561,36 +2725,13 @@
 
 
 											if($(ui.draggable).hasClass("perterSpan")){
-												onlyGetDrillDown = true;
-												var current_li = $("<li class='drog_row_list'><div class='drop_main clear set_style dimensionality_list_text peterMouse' dataValue='0'><div class='downImgContent'><img src='/static/dashboard/img/dashboard_icon2.png' alt='downup'></div><span class='dimensionality_list_text_left perterHandle' datatype="+$(ui.draggable).attr("datatype")+">"+$(ui.draggable).text()+"</span></div><div class='perterWallContent'></div></li>");
-												current_li.find(".drop_main").css("border","1px solid #DEDEDE").addClass("clickActive");
-												current_li.unbind("click");
-												for(var i = 0; i < $(ui.draggable).parents(".parameterElement").find(".currentChildren").length;i++){
-													if(i == 0){
-														current_li.find(".perterWallContent").append($("<div class='perterWallContentList perterSecond peterMouse' dataValue='1'><div class='downImgContent'><img src='/static/dashboard/img/dashboard_icon2.png' alt='downup'></div><span class='secondMenuText' datatype="+$(ui.draggable).parents(".parameterElement").find(".currentChildren").eq(i).children(".perterSpan").attr("datatype")+">"+$(ui.draggable).parents(".parameterElement").find(".currentChildren").eq(i).children(".perterSpan").text()+"</span></div><div class='perterThree'></div>"))
-													}else{
-														
-														current_li.find(".perterWallContent").find(".perterThree").append($("<div class='perterWallContentList peterMouse' dataValue='2'><div class='downImgContent threeView'><img src='/static/dashboard/img/dashboard_icon2.png' alt='downup'></div><span class='secondMenuText' datatype="+$(ui.draggable).parents(".parameterElement").find(".currentChildren").eq(i).children(".perterSpan").attr("datatype")+">"+$(ui.draggable).parents(".parameterElement").find(".currentChildren").eq(i).children(".perterSpan").text()+"</span></div>"));
-													}
-												}
-												var _field_name =$(ui.draggable).text(); // 字段名
-
-												current_li.find(".peterMouse span").each(function(index,ele){
-													$(ele).unbind("click");
-													$(ele).click(function(event){
-														event.stopPropagation();
-														if(onlyGetDrillDown && !$(ele).parent(".peterMouse").hasClass("clickActive")){
-															freeTemp = "peter";
-															if($(ele).parent(".peterMouse").attr("datavalue") == 0){
-																$(".deleteDrill").children("p").trigger("click");
-															}else{
-																$(".peterDownHandle[datavalue="+$(ele).parent(".peterMouse").attr("datavalue")+"]").children("p").trigger("click");	
-															}
-															
-														}
-													})
+												var freeElementArr = [];
+												$("#pageDashboardModule #dashboard_content #lateral_bar #parameter #parameter_show .perterSpan").each(function(index,ele){
+													freeElementArr.push($(ele).attr("datatype"));
 												})
+												var current_li = peterDrillShowHandle(freeElementArr,$(this));
 
+												var _field_name =$(ui.draggable).text(); // 字段名
 											}else{
 
 												var current_li = $("<li class='drog_row_list'></li>").html($(ui.draggable).parent().html());
@@ -2600,90 +2741,10 @@
 												$(this).find("img").css({
 													display: "block",
 												})
+												current_li.appendTo($(this));
 												var _field_name =$(ui.draggable).children("span").eq(0).html(); // 字段名
 											}
-											current_li.appendTo($(this));
 
-											if($(ui.draggable).hasClass("perterSpan")){
-												if($(ui.draggable).parents(".parameterElement").find(".currentChildren").length  == 1){
-													current_li.find(".drop_main .downImgContent").show();
-													current_li.find(".perterWallContent .perterSecond .downImgContent").css("display","inherit").css("visibility","hidden");
-													
-												}else if($(ui.draggable).parents(".parameterElement").find(".currentChildren").length  == 2){
-													current_li.find(".drop_main .downImgContent").show();
-													current_li.find(".perterWallContent .perterSecond .downImgContent").css("display","block").css("visibility","visible");
-												}
-
-												//移入移出事件
-												peterDrillDown();
-
-												//层级结构点击收起放下
-												$("#drop_row_view .downImgContent,#drop_col_view .downImgContent").each(function(index,ele){
-													$(ele).unbind("click");
-													$(ele).click(function(event){
-														event.stopPropagation();
-														if($(ele).parent().hasClass("drop_main")){
-															$(ele).parents(".drog_row_list").find(".perterWallContent").toggle(300,function(){
-																if($(ele).parents(".drog_row_list").find(".perterWallContent").css("display") == "block"){
-																	$(ele).find("img").attr("src","/static/dashboard/img/dashboard_icon1.png");
-																	// $(ele).parents(".drog_row_list").find(".perterThree").show();
-																	// $(ele).parents(".drog_row_list").find(".perterWallContent .perterSecond .downImgContent img").attr("src","/static/dashboard/img/dashboard_icon1.png");														
-																}else{
-																	$(ele).find("img").attr("src","/static/dashboard/img/dashboard_icon2.png");
-																	// $(ele).parents(".drog_row_list").find(".perterThree").hide();
-																	// $(ele).parents(".drog_row_list").find(".perterWallContent .perterSecond .downImgContent img").attr("src","/static/dashboard/img/dashboard_icon2.png");
-																}
-
-
-															});
-														}else{
-															$(ele).parents(".perterWallContent").find(".perterThree").toggle(300,function(){
-																if($(ele).parents(".perterWallContent").find(".perterThree").css("display") == "block"){
-																	$(ele).find("img").attr("src","/static/dashboard/img/dashboard_icon1.png");
-																}else{
-																	$(ele).find("img").attr("src","/static/dashboard/img/dashboard_icon2.png");
-																}
-															});
-														}
-													})
-												})
-
-
-												//拖拽删除
-												$(".drog_row_list .perterWallContentList").each(function(index,ele){
-													$(ele).draggable({
-														appendTo: "body",
-														helper: "clone",
-														containment:$("body"),
-														addClasses:false,
-														create:function(event,ui){
-
-														$("#view_show_area_content").droppable( "option", "accept", ".dimensionality_list_text,.measure_list_text,.perterSpan,.perterWallContentList");
-
-														},
-														start:function(event,ui){
-															$(ui.helper).css({
-																"width":$(event.target).width() + "px",
-															});
-
-															$(ui.helper).find(".downImgContent").css({
-																"display":"inherit",
-																"visibility":"hidden",
-															});
-															$("#view_show_area_content").droppable({disabled:false});
-															$("#drop_row_view,#drop_col_view").droppable({disabled:true});
-														},
-														stop:function(){
-															$("#view_show_area_content").droppable({disabled:true});
-															$("#drop_row_view,#drop_col_view").droppable({disabled:false});														
-														}
-													});
-												})
-
-
-											}
-											
-											
 
 											$(".drog_row_list").each(function(index, ele) {
 												if(!$(ele).parent().hasClass("list_wrap")) {
@@ -2710,7 +2771,7 @@
 												current_li.find(".drop_main").css("background","#ffcc9a").css("border","1px solid #ffbe7f");
 											}
 											$(this).find("li").css({
-												width: view_show + "px",
+												width: mideiCountData + "px",
 												lineHeight: "23px",
 												margin: "5px auto 0",
 												listStyle: "none",
@@ -2738,7 +2799,7 @@
 												//遍历展示窗有没有重复的元素
 												$("#handle_color_text").find(".color_icon_wrap").find("img[alt=" + $(this).find(".handle_bj").text() + "]").parent().parent().remove();
 												$(this).find(".list_wrap").css({
-													width: view_show + "px",
+													width: mideiCountData + "px",
 													
 													margin: "5px auto 0",
 
@@ -2760,7 +2821,7 @@
 													}
 
 													$(this).find("li").css({
-														width: view_show * 0.85 + "px",
+														width: mideiCountData * 0.85 + "px",
 													}).addClass("date_list").addClass("bj_color");
 
 												})
@@ -2774,7 +2835,7 @@
 												//遍历展示窗有没有重复的元素
 												$("#handle_color_text").find(".color_icon_wrap").find("img[alt=" + $(this).find(".handle_bj").text() + "]").parent().parent().remove();
 												$(this).find(".list_wrap").css({
-													width: view_show + "px",
+													width: mideiCountData + "px",
 													
 													margin: "5px auto 0",
 
@@ -2794,7 +2855,7 @@
 
 													}
 													$(this).find("li").css({
-														width: view_show * 0.85 + "px",
+														width: mideiCountData * 0.85 + "px",
 													}).addClass("date_list").addClass("bj_prompt");
 
 												})
@@ -2806,7 +2867,7 @@
 											if($(this).attr("id") == "information") {
 												//
 												$(this).find(".list_wrap").css({
-													width: view_show + "px",
+													width: mideiCountData + "px",
 													
 													margin: "5px auto 0",
 
@@ -2827,7 +2888,7 @@
 													}
 
 													$(this).find("li").css({
-														width: view_show * 0.85 + "px",
+														width: mideiCountData * 0.85 + "px",
 													}).addClass("date_list").addClass("bj_information");
 
 												});
@@ -2854,16 +2915,7 @@
 											}
 											//给予li id名 记录元素对应的内容
 											$(this).find("li").eq($(this).find("li").length-1).attr("id",_wd_type+":"+_field_name + ":" + _dataType);
-											if($(ui.draggable).hasClass("perterSpan")){
-												$(this).find("li").eq($(this).find("li").length-1).find(".peterMouse span").each(function(index,ele){
-													if(index == 0){
-														$(ele).attr("handledata",_wd_type+":"+_field_name + ":" + _dataType);
-													}else{
-														$(ele).attr("handledata",_wd_type+":"+$(ui.draggable).parents(".parameterElement").find(".currentChildren").eq(index-1).children(".perterSpan").attr("datatype"));
-													}
-													
-												})
-											}
+
 											//判断拖入的区域
 											switch($(this).attr("id")) {
 
@@ -2890,10 +2942,10 @@
 												case 'handle_color_text':
 
 													//标记两边间距
-													var bz_margin = ($("#handle_color_text").width() - view_show) / 2;
+													var bz_margin = ($("#handle_color_text").width() - mideiCountData) / 2;
 
 													$(this).find(".list_wrap").css({
-														width: view_show + "px",
+														width: mideiCountData + "px",
 														
 														margin: "5px auto 0",
 
@@ -2915,7 +2967,7 @@
 
 
 													$(this).find("li").css({
-														width: view_show * 0.85 + "px",
+														width: mideiCountData * 0.85 + "px",
 													}).addClass("date_list").addClass("bj_information");
 
 
@@ -2945,7 +2997,7 @@
 											$("#view_show_area_content").css("border","1px solid #4169E1");
 											if($(this).attr("id") == "handle_color_text") {
 												$(this).find("li").css({
-													width: view_show * 0.85 + "px",
+													width: mideiCountData * 0.85 + "px",
 												});
 											};
 
@@ -3016,7 +3068,7 @@
 											});
 
 											$(this).find("li").css({
-												width: view_show + "px",
+												width: mideiCountData + "px",
 												float: "none",
 												listStyle: "none",
 												marginTop: "5px",
@@ -3044,7 +3096,7 @@
 													//遍历展示窗有没有重复的元素
 													$("#handle_color_text").find(".color_icon_wrap").find("img[alt=" + $(this).find(".handle_bj").text() + "]").parent().parent().remove();
 													$(this).find(".list_wrap").css({
-														width: view_show + "px",
+														width: mideiCountData + "px",
 														
 														margin: "5px auto 0",
 
@@ -3066,7 +3118,7 @@
 
 														}
 														$(this).find("li").css({
-														width: view_show * 0.85 + "px",
+														width: mideiCountData * 0.85 + "px",
 													}).addClass("date_list").addClass("bj_color");
 
 													})
@@ -3078,7 +3130,7 @@
 													//遍历展示窗有没有重复的元素
 													$("#handle_color_text").find(".color_icon_wrap").find("img[alt=" + $(this).find(".handle_bj").text() + "]").parent().parent().remove();
 													$(this).find(".list_wrap").css({
-														width: view_show + "px",
+														width: mideiCountData + "px",
 														
 														margin: "5px auto 0",
 
@@ -3098,7 +3150,7 @@
 
 														}
 														$(this).find("li").css({
-														width: view_show * 0.85 + "px",
+														width: mideiCountData * 0.85 + "px",
 													}).addClass("date_list").addClass("bj_prompt");
 
 													})
@@ -3109,7 +3161,7 @@
 												case "information":
 													$(this).find("li").wrap("<div class='list_wrap clear'></div>");
 													$(this).find(".list_wrap").css({
-														width: view_show + "px",
+														width: mideiCountData + "px",
 														
 														margin: "5px auto 0",
 
@@ -3129,7 +3181,7 @@
 
 															}
 															$(this).find("li").css({
-														width: view_show * 0.85 + "px",
+														width: mideiCountData * 0.85 + "px",
 													}).addClass("date_list").addClass("bj_information");
 
 													})
@@ -3138,7 +3190,7 @@
 
 													break;
 												case "drop_row_view":
-													console.log(event,ui)
+													
 													if($(ui.item).find(".drop_main").hasClass("peterMouse") && $(ui.item).find(".peterMouse").length > 1 && ui.sender != null){
 														if($(this).find($(ui.item)).length > 0){
 															$(".peterMouse").removeClass("clickActive");
@@ -3256,7 +3308,7 @@
 													}
 
 													$(this).find(".list_wrap").css({
-														width: view_show + "px",
+														width: mideiCountData + "px",
 														
 														margin: "5px auto 0",
 
@@ -3284,7 +3336,7 @@
 													})
 													markShow();
 													$(this).find("li").css({
-														width: view_show * 0.85 + "px",
+														width: mideiCountData * 0.85 + "px",
 														
 														float: "right",
 														listStyle: "none",
@@ -3303,7 +3355,7 @@
 												//拖拽区域外消失
 
 												case "view_show_area_content":
-												if($(ui.item).find("li").hasClass("index_row_list")){
+												if($(ui.item).hasClass("index_row_list")){
 													return;
 												}
 												var deleteInfo = $(ui.item).find(".drog_row_list").attr("id").split(":");
@@ -3797,67 +3849,48 @@
 
 				 	var nowIndexName = folder_name_sum("新指标",getIndexNameDict[current_cube_name]);
 				 	event.stopPropagation();
-				 	var indexTH = [];
-					indexTH.push(showTongbiMeasureArray);
-					indexTH.push(showHuanbiMeasureArray);
-				   	var postIndexDic = {
-				   		"row":JSON.stringify(drag_row_column_data["row"]),
-				   		"column":JSON.stringify(drag_row_column_data["column"]),
-				   		"tablename":current_cube_name,
-				   		"indextype":view_name,
-				   		"indexname":nowIndexName,
-				   		"calculation":JSON.stringify(drag_measureCalculateStyle),
-				   		"indexstyle":currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue,
-				   		"customcalculate":JSON.stringify(customCalculate),
-				   		"sequential":JSON.stringify(indexTH),
-				   		"handledatapost":JSON.stringify(handleDataPost),
-				   	};
-				var showListIndex = [];
-				$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li:gt(0)").children("p").each(function(index,ele){
-					showListIndex.push($(ele).text());
-				})
-				//记录上下钻数据
-				var tempHandleDataIndex = {
-					"dirllConditions":dirllConditions,
-					"saveDimeData":saveDimeData,
-					"showList":showListIndex,
-					"saveDataAndView":saveDataAndView
-				};
-				postIndexDic["drilldowndata"] = JSON.stringify(tempHandleDataIndex);
-				   	// 请求保存指标
-				   	$.ajax({
-				   		url:"/dashboard/indexAdd",
-				   		type:"post",
-						dataType:"json",
-						contentType: "application/json; charset=utf-8",
-						async: true,
-						data:JSON.stringify(postIndexDic),
-						success:function(data){
-							if(data.status == "success"){
-								// 指标框出现输入框
-				 			createAIndexElementToLeftList(nowIndexName,true);
+				 	postIndexDic = realSaveData();
 
-				 			getIndexNameDict[current_cube_name].push(nowIndexName);
+					postIndexDic["indexname"] = nowIndexName;
+					postIndexDic["indexstyle"] = objectDeepCopy(postIndexDic["viewstyle"]);
+					postIndexDic["indextype"] = objectDeepCopy(postIndexDic["viewtype"]);
+					delete postIndexDic["viewstyle"];
+					delete postIndexDic["viewtype"];
+					delete postIndexDic["defaultparent"];
+					   	// 请求保存指标
+					   	$.ajax({
+					   		url:"/dashboard/indexAdd",
+					   		type:"post",
+							dataType:"json",
+							contentType: "application/json; charset=utf-8",
+							async: true,
+							data:JSON.stringify(postIndexDic),
+							success:function(data){
+								if(data.status == "success"){
+									// 指标框出现输入框
+					 			createAIndexElementToLeftList(nowIndexName,true);
+
+					 			getIndexNameDict[current_cube_name].push(nowIndexName);
+								}
 							}
-						}
-				   	})
-				 });
+					   	})
+					 });
 
-				function saveViewToWall(post_dict){
+				function saveViewToWall(post_dict,type){
 							//将数据存储数据库
 							$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 							if(result["status"] == "ok"){
 								reporttingFunction_abale();
 								$(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
-								changePageTo_navReporttingView(false);
+								mideiCountData = $("#drop_row_view").width() * 0.91;
+								if(type == "pull" && $("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li").length > 0){
+									changePageTo_navReporttingView(true);
+									changeEditViewFunction(post_dict);
+								}else{
+									changePageTo_navReporttingView(false);
+								}
+								
 								loc_storage.setItem("now_add_view",post_dict["foldername"]);
-								// saveViewShowArr = {};
-								// saveViewShowArr[post_dict["foldername"]] = [];
-								// $(".gridster").html("");
-								// $(".gridster").append($("<ul></ul>"));
-								// saveViewShowArr = {};
-								 //移除编辑视图storage
-								 // sessionStorage.removeItem("edit_view_now");
 								 $("#pageDashboardModule #view_save_up").hide();
 								 $("#pageDashboardModule #view_save_up #show_excel_name").html("");
 								 $("#pageDashboardModule #body_content_shadow").hide();
@@ -3886,11 +3919,7 @@
 								var viewWallChangeSave = SecondDict(post_dict,ajax_data_post[$(".auto_show").data("edit_view").split(",")[0]][$(".auto_show").data("edit_view").split(",")[1]][$(".auto_show").data("edit_view").split(",")[2]]);
 								if(viewWallChangeSave && $(".active_folder_view").text() == $(".auto_show").data("edit_view").split(",")[1]){
 									reporttingFunction_abale();
-									// $(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
 									changePageTo_navReporttingView(false);
-									 // saveViewShowArr = {};
-									 //移除编辑视图storage
-									 // sessionStorage.removeItem("edit_view_now");
 								 	$("#pageDashboardModule #view_save_up").hide();
 									$("#pageDashboardModule #view_save_up #show_excel_name").html("");
 									$("#pageDashboardModule #body_content_shadow").hide();
@@ -3902,7 +3931,7 @@
 										post_dict["foldername"] = $(".active_folder_view").text();
 										$("#pageStatementsModule .gridster").html("");
 										$("#pageStatementsModule .gridster").append($("<ul></ul>"));
-										saveViewToWall(post_dict);
+										saveViewToWall(post_dict,"add");
 										return;
 									}
 
@@ -3911,21 +3940,7 @@
 									post_dict["foldername"] =  $(".auto_show").data("edit_view").split(",")[1];
 									delete post_dict["defaultparent"];
 
-									if(saveViewShowArr != undefined && saveViewShowArr[$(".auto_show").data("edit_view").split(",")[1]] != undefined && saveViewShowArr[$(".auto_show").data("edit_view").split(",")[1]] != []){
-										var tempDeleteArr = saveViewShowArr[$(".auto_show").data("edit_view").split(",")[1]];
-
-
-										$("#pageStatementsModule .view_folder_show_area>ul li").eq($.inArray($(".auto_show").data("tableViewId"),tempDeleteArr)).remove();
-										
-										tempDeleteArr.splice($.inArray($(".auto_show").data("tableViewId"),tempDeleteArr),1);
-										
-										saveViewShowArr[$(".auto_show").data("edit_view").split(",")[1]] = tempDeleteArr;
-									}
-
-
-									// $(".gridster").html("");
-									// $(".gridster").append($("<ul></ul>"));
-									saveViewToWall(post_dict);
+									saveViewToWall(post_dict,"pull");
 									return;
 								}
 
@@ -3937,7 +3952,7 @@
 								$("#pageStatementsModule .gridster").append($("<ul></ul>"));
 							}
 
-							saveViewToWall(post_dict);
+							saveViewToWall(post_dict,"change");
 
 
 						}else{
@@ -3963,7 +3978,8 @@
 			$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul .deleteDrill p").click(function(event){
 				event.stopPropagation();
 				if($(".peterMouse").length > 1){
-						saveDrillDownTemp[$(".clickActive").find("span").text()] =  {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id")};
+						editView_change_color("默认_YZY_-1_YZY_个");
+						saveDrillDownTemp[$(".clickActive").find("span").text()] =  {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
 						saveDrillDownDict[$(".clickActive").find("span").text()] = [];
 						$(".peterMouse").parents(".annotation_text").find("li").each(function(index,ele){
 							if($(ele).find(".peterMouse").length == 0){
@@ -3994,8 +4010,7 @@
 						}
 						peterDrillDown();
 						saveDrillCount = [];
-						drag_row_column_data = JSON.parse(JSON.stringify(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]));
-						save_now_show_view_text = $("#"+ saveDrillDownTemp[$(".clickActive").find("span").text()]["viewType"]+"");
+						drillNumHandle();
 						onlyGetDrillDown = true;
 					}else{
 						drag_row_column_data = JSON.parse(JSON.stringify(saveDataAndView[0]))["viewdata"];

@@ -116,16 +116,16 @@ function showTable_by_dragData(){
 		var columnInfo = $("#text_table_need_show .top_column_container .column_data_list tbody tr").length;
 		$("#text_table_need_show .left_row_container table tbody tr").each(function(index,ele){
 			var aLi = $("<li></li>");
-			aLi.css("height",$(ele).innerHeight());
+			aLi.css("height",$(ele).actual("innerHeight"));
 			if(columnInfo < 1){
 				if(index == 0){
 					aLi.css({
 					"border-top":"1px solid #dedede",
-					"border-right":"1px solid #dedede"
+					"border-right":"1px solid #dedede",
 					});
 				}else{
 					aLi.css({
-					"border-right":"1px solid #dedede"
+					"border-right":"1px solid #dedede",
 					});
 				}
 			}
@@ -134,7 +134,7 @@ function showTable_by_dragData(){
 		if($("#text_table_need_show .left_row_container table tbody tr").length < 1 && columnInfo > 0){
 			var ali = $("<li></li>");
 			ali.css("minHeight","25px");
-			ali.css("height",$("#text_table_need_show .content_body #data_list_for_body .measureDiv").eq(0)[0].offsetHeight);
+			ali.css("height",$("#text_table_need_show .content_body #data_list_for_body .measureDiv").eq(0).actual("outerHeight"));
 			$("#text_table_need_show #data_list_for_body").append(ali);
 		}
 
@@ -144,9 +144,9 @@ function showTable_by_dragData(){
 		$("#text_table_need_show .top_column_container .column_data_list tbody tr:last td").each(function(index,ele){
 
 			var vertical_line = $("<div class='vertical_line'></div>");
-			vertical_line.css("left",(index+1)*$(ele)[0].offsetWidth - 1);
+			vertical_line.css("left",(index+1)*$(ele).actual("outerWidth") - 1);
 			if(index == 0){
-				vertical_line.css("left",(index+1)*$(ele)[0].offsetWidth);
+				vertical_line.css("left",(index+1)*$(ele).actual("outerWidth"));
 			}
 			$("#text_table_need_show #data_list_for_body").append(vertical_line);
 
@@ -207,8 +207,8 @@ function showTable_by_dragData(){
 			var leftValue = 0;
 			if(rowClass!=""){
 				var topHelpTr = $("#text_table_need_show .left_row_container table tbody tr td."+rowClass).parent("tr").eq(0);
-				topHelpTr.css("height",measureDiv.outerHeight());
-				topValue = topHelpTr.outerHeight() * topHelpTr.index();
+				topHelpTr.css("height",measureDiv.actual("outerHeight"));
+				topValue = topHelpTr.actual("outerHeight") * topHelpTr.index();
 				measureDiv.data("topIndex",topHelpTr.index());
 				if(topHelpTr.index() < 0){
 					measureDiv.data("topIndex",0);
@@ -220,8 +220,8 @@ function showTable_by_dragData(){
 			if(columnClass !=""){
 				var leftHelpTd = $("#text_table_need_show .top_column_container .column_data_list tbody tr td."+columnClass).eq(0);
 				// var theWidth = measureDiv[0].offsetWidth;
-				if(leftHelpTd[0] && leftHelpTd[0].offsetWidth > theWidth){
-					theWidth = leftHelpTd[0].offsetWidth;
+				if(leftHelpTd[0] && leftHelpTd.actual("outerWidth") > theWidth){
+					theWidth = leftHelpTd.actual("outerWidth");
 				}
 				if(leftHelpTd.index() >= 0){
 					// leftValue = theWidth * leftHelpTd.index();
@@ -230,7 +230,7 @@ function showTable_by_dragData(){
 				var tableWidth = $("#text_table_need_show .top_column_container .column_data_list tbody tr:last td").length;
 				$("#text_table_need_show .top_column_container .column_data_list tbody tr td").css("width",theWidth);
 				$("#text_table_need_show .top_column_container .column_data_list").css("width",theWidth*tableWidth+"px");
-				if(tableWidth < 1 && $("#text_table_need_show #data_list_for_body")[0].offsetWidth < theWidth){
+				if(tableWidth < 1 && $("#text_table_need_show #data_list_for_body").actual("outerWidth") < theWidth){
 					$("#text_table_need_show #data_list_for_body").css("width",theWidth+5+"px");
 				}else if(tableWidth > 0){
 					$("#text_table_need_show #data_list_for_body").css("width","");
@@ -412,10 +412,10 @@ function layout_table_size(){
 		// 为了让浮动不换行，动态计算左侧模块的宽度
 		// 1、计算左侧行的宽度
 
-		var left_row_width = $("#text_table_need_show .left_row_container").eq(0).outerWidth();
+		var left_row_width = $("#text_table_need_show .left_row_container").eq(0).actual("outerWidth");
 		$("#text_table_need_show .right_module").css("margin-left",left_row_width + "px");
 		// 左侧行设置 th 的高度
-		var top_height = $("#text_table_need_show .right_module .top_column_container").eq(0).height();
+		var top_height = $("#text_table_need_show .right_module .top_column_container").eq(0).actual("outerHeight");
 		$("#text_table_need_show .left_row_container table th").css("height",top_height -1);
 }
 
@@ -521,7 +521,7 @@ function col_card(){
 					div.append(tongbiAp);
 					div.append(huanbiAp);
 
-			measureDiv.css({"marginLeft":$("#view_show_wrap").width()/2-measureDiv.width()/2+'px',"marginTop":$("#view_show_wrap").height()/2-measureDiv.height()/2+'px'})
+			measureDiv.css({"marginLeft":$("#view_show_wrap").actual("width")/2-measureDiv.actual("width")/2+'px',"marginTop":$("#view_show_wrap").actual("height")/2-measureDiv.actual("height")/2+'px'})
 
 					if(showTongbiMeasureArray.indexOf(aMeasure) != -1){
 						tongbiAp.show();
@@ -558,7 +558,7 @@ function showOrHidenSomeMeasureCompareOrLink(){
 	for(var i = 0;i <  showHuanbiMeasureArray.length;i++){
 		$("#text_table_need_show .content_body #data_list_for_body .measureDiv p.linkP."+showHuanbiMeasureArray[i]).show();
 	}
-	var aMeasureDivHeight = $("#text_table_need_show .content_body #data_list_for_body .measureDiv").eq(0).outerHeight()
+	var aMeasureDivHeight = $("#text_table_need_show .content_body #data_list_for_body .measureDiv").eq(0).actual("outerHeight");
 	$("#text_table_need_show .left_row_container table tbody tr").css("height",aMeasureDivHeight);
 	$("#text_table_need_show .content_body #data_list_for_body li").css("height",aMeasureDivHeight-1);
 	$("#text_table_need_show .content_body #data_list_for_body .measureDiv").each(function(index,ele){
