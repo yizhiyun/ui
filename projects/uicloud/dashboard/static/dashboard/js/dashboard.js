@@ -3138,7 +3138,7 @@
 
 													break;
 												case "drop_row_view":
-													console.log(event,ui)
+													// console.log(event,ui)
 													if($(ui.item).find(".drop_main").hasClass("peterMouse") && $(ui.item).find(".peterMouse").length > 1 && ui.sender != null){
 														if($(this).find($(ui.item)).length > 0){
 															$(".peterMouse").removeClass("clickActive");
