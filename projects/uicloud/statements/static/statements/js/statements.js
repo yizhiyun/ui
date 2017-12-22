@@ -117,7 +117,7 @@
                 }
 			}
 			if($(ele).height() < 320 || $(ele).width() < 400){
-		              var myChartsChange = echarts.getInstanceByDom($(ele).get(0));
+		            var myChartsChange = echarts.getInstanceByDom($(ele).get(0));
 					var opp = myChartsChange.getOption();
 
 					opp.toolbox[0].show = false;
@@ -139,13 +139,17 @@
 
 
 					for(var j = 0; j < opp.xAxis.length; j++){
-						opp.xAxis[j].axisTick.interval = 2;
-						opp.xAxis[j].axisLabel.interval = 2;
+						// opp.xAxis[j].axisTick.interval = 2;
+						// opp.xAxis[j].axisLabel.interval = 2;
+						opp.xAxis[j].axisTick.interval = function(index,value){return !/^YZYPD/.test(value)};
+						opp.xAxis[j].axisLabel.interval = function(index,value){return !/^YZYPD/.test(value)};
 					}
 
 					for(var z = 0; z < opp.yAxis.length; z++){
-						opp.yAxis[z].axisTick.interval = 2;
-						opp.yAxis[z].axisLabel.interval = 2;
+						// opp.yAxis[z].axisTick.interval = 2;
+						// opp.yAxis[z].axisLabel.interval = 2;
+						opp.yAxis[z].axisTick.interval = function(index,value){return !/^YZYPD/.test(value)};
+						opp.yAxis[z].axisLabel.interval = function(index,value){return !/^YZYPD/.test(value)};
 					}
 
 					myChartsChange.setOption(opp);
@@ -189,8 +193,8 @@
 				for(var z = 0; z < opp.yAxis.length; z++){
 					// opp.yAxis[z].axisTick.interval = 0;
 					// opp.yAxis[z].axisLabel.interval = 0;
-					opp.xAxis[z].axisTick.interval = function(index,value){return !/^YZYPD/.test(value)};
-					opp.xAxis[z].axisLabel.interval = function(index,value){return !/^YZYPD/.test(value)};
+					opp.yAxis[z].axisTick.interval = function(index,value){return !/^YZYPD/.test(value)};
+					opp.yAxis[z].axisLabel.interval = function(index,value){return !/^YZYPD/.test(value)};
 				}
 
 				myChartsChange.setOption(opp);

@@ -17,6 +17,9 @@ var saveHandleViewData = [];
 
 var count = 0;
 var array = [];
+var tempArr = [];
+
+
 
 //记录上钻前的数据和视图展现方式
 
@@ -1177,7 +1180,7 @@ function many_de_many_me_handle(chart_type_need){
 
 				//清除上一个图例
 				// mycharts.clear();
-				console.log(option)
+				// console.log(option)
 
 				mycharts.setOption(option);
 				spinner.stop();
@@ -2003,6 +2006,7 @@ function comparisonStrip_generate_fun(){
 						var name = "";
 						for(var k =0;k < need_dimensionality.length;k++){
 							name += aData[need_dimensionality[k]] +"_YZYPD_";
+							// console.log(name);
 						}
 						if(categorys.hasObject("name",aData[need_dimensionality[0]]) == -1){
 							categorys.push({"name":aData[need_dimensionality[0]]});
@@ -2061,7 +2065,7 @@ function comparisonStrip_generate_fun(){
 							}
 
 						}
-						console.log(aNode);
+						// console.log(aNode);
 						need_all_nodes.push(aNode);
 					}
 					count++;
@@ -2852,7 +2856,7 @@ function comparisonStrip_generate_fun(){
 				var theDimeData = [];
 				for(var k = 0;k < all_dimensionality.length;k++){
 					theDimeInfo.push(aData[all_dimensionality[k]]);	
-					//console.log(theDimeInfo);				
+					// console.log(theDimeInfo);				
 				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
@@ -2918,19 +2922,10 @@ function comparisonStrip_generate_fun(){
 
 			
 			for(var i = 0;i < dimensionality_show_data.length;i++){
-				
+				// console.log(dimensionality_show_data);
 				// console.log(dimensionality_show_data[i]);
-				// console.log(series);
-				// for(var j=0;j<dimensionality_show_data[i].length;j++){
-				// 	console.log(series[0].data[j].theDimeInfo);
-				// 	var str = '';
-				// 	for(var k=0;k<series[0].data[j].theDimeInfo.length;k++){
-				// 		str += series[0].data[j].theDimeInfo[k];
-				// 	}
-				// 	console.log(str,str.length);
-				// 	str = str.substring(series[0].data[j].theDimeInfo[0].length);
-				// 	console.log(str)
-				// }
+
+
 				var aY = {
 					"show":true,
 					"name":all_dimensionality[i],
@@ -2939,10 +2934,10 @@ function comparisonStrip_generate_fun(){
 					"nameLocation":"end",
 					"type":"category",
 					axisTick:{
-						// show:,
 						inside:false,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
-						// length: /^YZYPD/.test(dimensionality_show_data[i])? 0 : 70  + i,
+						// length:dimensionality_show_data.length == 1 ? 0 : 80 + i,
+						// length: /^YZYPD/.test(dimensionality_show_data[i])? 0 : 80 + i,
 						// length:i == dimensionality_show_data.length-1 ? 60 * i + i : 0,
           				// lineStyle: {color: '#ccc'}   
 					},
@@ -2952,11 +2947,10 @@ function comparisonStrip_generate_fun(){
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
        					formatter:function(value){
-       						if(value.length > 6){
-								value = value.substring(0,6) + '...';
+       						if(value.length > 3){
+								value = value.substring(0,3) + '...';
 							}
 							//console.log(value);
-
 							return value;
        					}
 
@@ -2971,13 +2965,17 @@ function comparisonStrip_generate_fun(){
 					"data":dimensionality_show_data[i],
 					gridIndex:i
 				}
+
+				
 				needYais.push(aY);
+				// console.log(needYais);
+				//console.log(needYais[i].data);
 
 				var aGrid = {
 					containLabel:false,
 					show:false,
 				}
-				aGrid["left"] = 80 + i * (70 + i);
+				aGrid["left"] = 70 + i * (60 + i);
 				aGrid["bottom"] = 120;
 
 
@@ -3008,7 +3006,7 @@ function comparisonStrip_generate_fun(){
 						cursor:"default"
 					}
 					series.push(aSeriesData);
-					// console.log(series);
+					//console.log(series);
 				}
 
 				gridArr.push(aGrid);

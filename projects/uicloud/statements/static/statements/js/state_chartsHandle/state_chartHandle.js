@@ -2038,6 +2038,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						for(var k =0;k < need_dimensionality.length;k++){
 							name += aData[need_dimensionality[k]] +"_YZYPD_"; 
 							// console.log(name);
+
 						}
 
 						//关系图报错dataIndex 有重复节点或id解决方法
@@ -2049,6 +2050,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							}
 							// console.log(str);
 						}
+
+
 			
 						
 						if(categorys.hasObject("name",aData[need_dimensionality[0]]) == -1){
