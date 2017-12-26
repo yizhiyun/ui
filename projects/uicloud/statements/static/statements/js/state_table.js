@@ -43,8 +43,9 @@ function manyTable(storeClass){
 
 	var target =  $("."+storeClass+"").get(0);
 
-  spinner.spin(target);
+  	spinner.spin(target);
 
+  	emptyAllTable();
 	// 绘制行数据
 	function function_draw_row_data(needAllData){
 		var need_Handle_drag_row_dimensionality = drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"];
@@ -151,7 +152,7 @@ function manyTable(storeClass){
 		if($("."+storeClass+" .left_row_container table tbody tr").length < 1 && columnInfo > 0){
 			var ali = $("<li></li>");
 			ali.css("minHeight","25px");
-			ali.css("height",$("."+storeClass+" #data_list_for_body .measureDiv").eq(0)[0].offsetHeight);
+			ali.css("height",$("."+storeClass+" #data_list_for_body .measureDiv").eq(0).actual("outerHeight"));
 			$("."+storeClass+" #data_list_for_body").append(ali);
 		}
 
@@ -161,7 +162,7 @@ function manyTable(storeClass){
 		$("."+storeClass+" .top_column_container .column_data_list tbody tr:last td").each(function(index,ele){
 
 			var vertical_line = $("<div class='vertical_line'></div>");
-			vertical_line.css("left",(index+1)*$(ele).outerWidth());
+			vertical_line.css("left",(index+1)*$(ele).actual("outerWidth"));
 			$("."+storeClass+" #data_list_for_body").append(vertical_line);
 
 		});
@@ -221,8 +222,8 @@ function manyTable(storeClass){
 			var leftValue = 0;
 			if(rowClass!=""){
 				var topHelpTr = $("."+storeClass+" .left_row_container table tbody tr td."+rowClass).parent("tr").eq(0);
-				topHelpTr.css("height",measureDiv.outerHeight());
-				topValue = topHelpTr.outerHeight() * topHelpTr.index();
+				topHelpTr.css("height",measureDiv.actual("outerHeight"));
+				topValue = topHelpTr.actual("outerHeight") * topHelpTr.index();
 				measureDiv.data("topIndex",topHelpTr.index());
 				if(topHelpTr.index() < 0){
 					measureDiv.data("topIndex",0);
@@ -234,8 +235,8 @@ function manyTable(storeClass){
 			}
 			if(columnClass !=""){
 				var leftHelpTd = $("."+storeClass+" .top_column_container .column_data_list tbody tr td."+columnClass).eq(0);
-				if(leftHelpTd[0] && leftHelpTd[0].offsetWidth > theWidth){
-					theWidth = leftHelpTd[0].offsetWidth;
+				if(leftHelpTd[0] && leftHelpTd.actual("outerWidth") > theWidth){
+					theWidth = leftHelpTd.actual("outerWidth");
 				}
 				if(leftHelpTd.index() >= 0){
 					// leftValue = theWidth * leftHelpTd.index();
@@ -244,7 +245,7 @@ function manyTable(storeClass){
 				var tableWidth = $("."+storeClass+" .top_column_container .column_data_list tbody tr:last td").length;
 				$("."+storeClass+" .top_column_container .column_data_list tbody tr td").css("width",theWidth);
 				$("."+storeClass+" .top_column_container .column_data_list").css("width",theWidth*tableWidth+"px");
-				if(tableWidth < 1 && $("."+storeClass+" #data_list_for_body")[0].offsetWidth < theWidth){
+				if(tableWidth < 1 && $("."+storeClass+" #data_list_for_body").actual("outerWidth") < theWidth){
 					$("."+storeClass+" #data_list_for_body").css("width",theWidth+5+"px");
 				}else if(tableWidth > 0){
 					$("."+storeClass+" #data_list_for_body").css("width","");
@@ -415,13 +416,13 @@ function manyTable(storeClass){
 		// 为了让浮动不换行，动态计算左侧模块的宽度
 		// 1、计算左侧行的宽度
 
-		var left_row_width = $("."+storeClass+" .left_row_container").eq(0).outerWidth();
+		var left_row_width = $("."+storeClass+" .left_row_container").eq(0).actual("outerWidth");
 		$("."+storeClass+" .right_module").css("margin-left",left_row_width + 30 + "px").css("margin-top","30px");
 		// 左侧行设置 th 的高度
 		var top_height = $("."+storeClass+" .right_module .top_column_container").eq(0).height();
 		$("."+storeClass+" .left_row_container table th").css("height",top_height -1);
-		  $("."+storeClass+" .content_body #data_list_for_body li").css("width","100%");
-		 $("."+storeClass+" .edit_table").width(200).height(200).css("background","white");
+		$("."+storeClass+" .content_body #data_list_for_body li").css("width","100%");
+		$("."+storeClass+" .edit_table").width(200).height(200).css("background","white");
 }
 
 
@@ -450,9 +451,9 @@ function reporting_col_card(saveIndexPage){
 		})(j);
 	}
 
+}
 
-
-	function runIndexPage(indexClass){
+function runIndexPage(indexClass){
 				indexClass = indexClass;
 				var target =  $("."+indexClass+"").get(0);
     			spinner.spin(target);
@@ -480,9 +481,9 @@ function reporting_col_card(saveIndexPage){
 						for(var j = 0;j < allMeasure.length;j++){
 							var aMeasure = allMeasure[j];
 							//console.log(aMeasure);
-							var tit = drag_measureCalculateStyle[aMeasure];
+							var tit = drag_measureCalculateStyle_arr[indexNum_toview][aMeasure];
 								var p = $("<p class=p"+j+">" + tit +"</p>");
-								var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle[aMeasure]]+"</span>");
+								var span = $("<span class=sp"+j+">"+aData[drag_measureCalculateStyle_arr[indexNum_toview][aMeasure]]+"</span>");
 								measureDiv.append(p);
 								measureDiv.append(span);
 								$(p).data("measureInfo",aMeasure);
@@ -528,11 +529,11 @@ function reporting_col_card(saveIndexPage){
 
 								var tongbiShowNum = 0;
 								var huanbiShowNum = 0;
-								if(aData["同比"+drag_measureCalculateStyle[aMeasure]]){
-									tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+								if(aData["同比"+drag_measureCalculateStyle_arr[indexNum_toview][aMeasure]]){
+									tongbiShowNum = (Number(aData["同比"+drag_measureCalculateStyle_arr[indexNum_toview][aMeasure]]) * 100).toFixed(2);
 								}
-								if(aData["环比"+drag_measureCalculateStyle[aMeasure]]){
-									huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle[aMeasure]]) * 100).toFixed(2);
+								if(aData["环比"+drag_measureCalculateStyle_arr[indexNum_toview][aMeasure]]){
+									huanbiShowNum = (Number(aData["环比"+drag_measureCalculateStyle_arr[indexNum_toview][aMeasure]]) * 100).toFixed(2);
 								}
 								var tongbiAp = $("<p style='display:none' class='compareP'>同比("+aMeasure+"):"+tongbiShowNum+"%</p>");
 			 					var huanbiAp = $("<p style='display:none' class='linkP'>环比("+aMeasure+"):"+huanbiShowNum+"%</p>");
@@ -564,4 +565,4 @@ function reporting_col_card(saveIndexPage){
 				});
 	}
 
-}
+

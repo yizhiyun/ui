@@ -92,7 +92,7 @@ html,body{-webkit-user-select:none;}
 
 /*右侧视图区域视图*/
 .view_folder_show_area .new_view_content{background: white;box-shadow:0px 3px 5px 0px rgba(0,49,98,0.08);}
-.view_folder_show_area .new_view_content .new_view_title{width: 100%;height: 30px;background: #f5f5f5;box-sizing: border-box;padding: 4px 9px 0px;}
+.view_folder_show_area .new_view_content .new_view_title{width: 100%;height: 30px;background: #f5f5f5;box-sizing: border-box;padding: 4px 9px 0px;position: absolute;z-index: 4;}
 .view_folder_show_area .new_view_content .new_view_title .new_view_table_name{font-size: 12px;float: left;width: 120px;height: 20px;border: 1px solid #DEDEDE;box-sizing: border-box;background: white;text-indent: 3px;margin-top: 1px;line-height: 20px;}
 .view_folder_show_area .new_view_content .new_view_right_icon{float: right;}
 .view_folder_show_area .new_view_content .new_view_right_icon .add_css_img{width: 23px;height: 23px;float: left;box-sizing: border-box;cursor: pointer;}
@@ -130,7 +130,7 @@ html,body{-webkit-user-select:none;}
 .new_view_table .left_row_container,.edit_table .left_row_container{position: absolute;top: 10px;left:40px;top: 40px;}
 .new_view_table .left_row_container table,.edit_table .left_row_container table{border:0px;border-collapse: collapse;overflow: auto;}
 .new_view_table .left_row_container table tr,.edit_table .left_row_container table tr{border-bottom: 1px solid #dedede;}
-.new_view_table .left_row_container table tbody tr,.edit_table .left_row_container table tbody tr {border-right: 1px solid #dedede;}
+.new_view_table .left_row_container table tbody tr,.edit_table .left_row_container table tbody tr {border-right: 1px solid #dedede;box-sizing: border-box;}
 .new_view_table .left_row_container table tr th,.edit_table .left_row_container table tr th{padding-right: 10px;vertical-align: bottom;}
 .new_view_table .left_row_container table tr td,.edit_table .left_row_container table tr td{color: #808080;}
 .new_view_table .left_row_container table tr td.firstRow,.edit_table .left_row_container table tr td.firstRow{color: black;}
@@ -147,7 +147,8 @@ html,body{-webkit-user-select:none;}
 .new_view_table .content_body #data_list_for_body  .measureDiv p,.edit_table .content_body #data_list_for_body  .measureDiv p{height: 22px;line-height: 22px;padding-left: 5px;padding-right: 5px;color: #808080;font-size: 12px}
 
 /*指标样式*/
-.new_view_indexPage{min-width: 100%;min-height: 100%;font-size: 12px;position: absolute;left: 0;top: 0;height: 100%;width:100%;display: none;}
+.new_view_indexPage{font-size: 12px;position: absolute;left: 0;top: 0;height: 100%;width:100%;display: none;}
+.new_view_indexPage .right_module{background: white;}
 /*.new_view_indexPage{min-width: 100%;font-size: 12px;position: absolute;left: 0;display: none;background: white}*/
 .new_view_indexPage .right_module .content_body .session_data_list_for_body{width: auto !important;position: static !important;}
 .new_view_indexPage .right_module .content_body .session_data_list_for_body .measureDiv{text-align:center;width:100%;}

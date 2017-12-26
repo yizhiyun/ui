@@ -34,6 +34,112 @@ Array.prototype.unique3 = function(){
  return res;
 }
 
+
+//获取隐藏元素的宽度
+;( function ( factory ) {
+if ( typeof define === 'function' && define.amd ) {
+    // AMD. Register module depending on jQuery using requirejs define.
+    define( ['jquery'], factory );
+} else {
+    // No AMD.
+    factory( jQuery );
+}
+}( function ( $ ){
+  $.fn.addBack = $.fn.addBack || $.fn.andSelf;
+
+  $.fn.extend({
+
+    actual : function ( method, options ){
+      // check if the jQuery method exist
+      if( !this[ method ]){
+        throw '$.actual => The jQuery method "' + method + '" you called does not exist';
+      }
+
+      var defaults = {
+        absolute      : false,
+        clone         : false,
+        includeMargin : false,
+        display       : 'block'
+      };
+
+      var configs = $.extend( defaults, options );
+
+      var $target = this.eq( 0 );
+      var fix, restore;
+
+      if( configs.clone === true ){
+        fix = function (){
+          var style = 'position: absolute !important; top: -1000 !important; ';
+
+          // this is useful with css3pie
+          $target = $target.
+            clone().
+            attr( 'style', style ).
+            appendTo( 'body' );
+        };
+
+        restore = function (){
+          // remove DOM element after getting the width
+          $target.remove();
+        };
+      }else{
+        var tmp   = [];
+        var style = '';
+        var $hidden;
+
+        fix = function (){
+          // get all hidden parents
+          $hidden = $target.parents().addBack().filter( ':hidden' );
+          style   += 'visibility: hidden !important; display: ' + configs.display + ' !important; ';
+
+          if( configs.absolute === true ) style += 'position: absolute !important; ';
+
+          // save the origin style props
+          // set the hidden el css to be got the actual value later
+          $hidden.each( function (){
+            // Save original style. If no style was set, attr() returns undefined
+            var $this     = $( this );
+            var thisStyle = $this.attr( 'style' );
+
+            tmp.push( thisStyle );
+            // Retain as much of the original style as possible, if there is one
+            $this.attr( 'style', thisStyle ? thisStyle + ';' + style : style );
+          });
+        };
+
+        restore = function (){
+          // restore origin style values
+          $hidden.each( function ( i ){
+            var $this = $( this );
+            var _tmp  = tmp[ i ];
+
+            if( _tmp === undefined ){
+              $this.removeAttr( 'style' );
+            }else{
+              $this.attr( 'style', _tmp );
+            }
+          });
+        };
+      }
+
+      fix();
+      // get the actual value with user specific methed
+      // it can be 'width', 'height', 'outerWidth', 'innerWidth'... etc
+      // configs.includeMargin only works for 'outerWidth' and 'outerHeight'
+      var actual = /(outer)/.test( method ) ?
+        $target[ method ]( configs.includeMargin ) :
+        $target[ method ]();
+
+      restore();
+      // IMPORTANT, this plugin only return the value of the first element
+      return actual;
+    }
+  });
+}));
+
+
+
+
 // 分层下钻移入移出
 function peterDrillDown(){
 			//移入移出事件
@@ -336,23 +442,54 @@ $(function(){
 	}
 
 	//分层下钻默认给定存储数据
-	function drillDownNoClick(){
+	function drillDownNoClick(save){
 		$(".peterMouse span").each(function(index,ele){
 			if(saveDrillDownTemp[$(ele).text()] == undefined){
 				var freeHandleViewData = JSON.parse(JSON.stringify(drag_row_column_data));
+				var freeStyle;
 				if(index > 0){
 					if(freeHandleViewData["row"]["dimensionality"].length > 0){
 						freeHandleViewData["row"]["dimensionality"].splice(0,freeHandleViewData["row"]["dimensionality"].length,$(ele).text());
+						freeStyle = "默认_YZY_-1_YZY_个";
 					}else{
 						freeHandleViewData["column"]["dimensionality"].splice(0,freeHandleViewData["column"]["dimensionality"].length,$(ele).text());
+						freeStyle = objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue);
 					}
 				}
-				saveDrillDownTemp[$(ele).text()] = {"viewdata":JSON.parse(JSON.stringify(freeHandleViewData)),"viewType":save_now_show_view_text.attr("id")};
+				if(save == "save"){
+					saveDrillDownTemp[$(ele).text()] = {"viewdata":JSON.parse(JSON.stringify(freeHandleViewData)),"viewType":"show_bar","calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":freeStyle};
+				}else{
+					saveDrillDownTemp[$(ele).text()] = {"viewdata":JSON.parse(JSON.stringify(freeHandleViewData)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":freeStyle};
+				}
+				
 			}
 		})
 	}
 
+	//编辑跳回后对颜色 小数点等对应的修改
+	function editView_change_color(colorArr,filterArr){
+		//修改对应颜色
+		var getColor_arr = allColorsDict[colorArr.split("_YZY_")[0]];
+		$("#project_chart #project_style .defaultColors .color_flag").text(colorArr.split("_YZY_")[0]);
+		for(var i =0; i < 5;i++){
+			$("#project_chart #project_style .defaultColors .selectedColors span").eq(i).css("background",getColor_arr[i]);
+		};
 
+		//小数点的切换
+		$("#project_chart #project_style .module_style .normalUnit .content span").add($("#project_chart #project_style .module_style .valueUnit .content span")).removeClass("active");
+		$("#project_chart #project_style .module_style .normalUnit .content span[unit="+colorArr.split("_YZY_")[1]+"]").addClass("active");
+
+		//值单位的切换
+		$("#project_chart #project_style .module_style .valueUnit .content span").each(function(index,ele){
+			if($(ele).text() == colorArr.split("_YZY_")[2]){
+				$(ele).addClass("active");
+			}
+		})
+
+		//右侧筛选器显示
+		rightFilterListDraw();
+
+	}
 
 	//实时保存修改标签页对应的数据
 	function realSaveData(){
@@ -360,11 +497,20 @@ $(function(){
 			var saveNowWallDict = {};
 			//判断表标题是否为空
 			if($("#view_show_area #view_show_area_content .tableView_name h4").text() == "添加表标题"){
-				saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue;
+				if($("#pageDashboardModule #dashboard_content .peterMouse").length > 1){
+					saveNowWallDict["viewstyle"] = saveDrillDownTemp[$(".peterMouse").eq(0).find("span").text()]["dragViewStyle"];
+				}else{
+					saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue;
+				}
 			}else{
-				saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue+"_YZY_"+ $("#view_show_area #view_show_area_content .tableView_name h4").text();
+				if($("#pageDashboardModule #dashboard_content .peterMouse").length > 1){
+					saveNowWallDict["viewstyle"] = saveDrillDownTemp[$(".peterMouse").eq(0).find("span").text()]["dragViewStyle"]+"_YZY_"+ $("#view_show_area #view_show_area_content .tableView_name h4").text();
+				}else{
+					saveNowWallDict["viewstyle"] = currentColorGroupName+"_YZY_"+normalUnitValue+"_YZY_"+valueUnitValue+"_YZY_"+ $("#view_show_area #view_show_area_content .tableView_name h4").text();
+				}
+				
 			}
-			//记录同环比
+			
 			var showListView = {};
 			
 			if($("#pageDashboardModule #dashboard_content .peterMouse").length <= 0 && $("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li").length > 1){
@@ -378,7 +524,7 @@ $(function(){
 
 			if($("#pageDashboardModule #dashboard_content .peterMouse").length > 1){
 				if(allKeys(saveDrillDownTemp).length <= 1){
-					drillDownNoClick();
+					drillDownNoClick("save");
 					saveNowWallDict["handledatapost"] = JSON.stringify(handleDataPost);
 				}else{
 					saveNowWallDict["handledatapost"] = JSON.stringify(saveEveryViewPostData[$(".peterMouse").eq(0).find("span").text()]);
@@ -407,7 +553,7 @@ $(function(){
 
 
 			
-			if(allKeys(saveDrillDownTemp).length > 0){
+			if(allKeys(saveDrillDownTemp).length > 0 && $(".peterMouse").length > 1){
 					if(drillElementCount[$(".peterMouse").eq(0).find("span").text()] == undefined){
 						$(".peterMouse").parents(".annotation_text").find("li").each(function(index,ele){
 							if($(ele).find(".peterMouse").length > 0){
@@ -426,6 +572,7 @@ $(function(){
 					"showType":viewTypeChange,
 					"drillElementCount":drillElementCount,
 					"saveEveryViewPostData":saveEveryViewPostData,
+					"saveDrillDownDict":saveDrillDownDict,
 				}
 
 				
@@ -436,7 +583,9 @@ $(function(){
 						"dirllConditions":dirllConditions,
 						"saveDimeData":saveDimeData,
 						"showList":showListView,
-						"saveDataAndView":saveDataAndView
+						"saveDataAndView":saveDataAndView,
+						"viewClickChange":viewClickChange,
+						"saveDrillPreView":saveDrillPreView,
 					};
 					saveNowWallDict["row"]= JSON.stringify(drag_row_column_data["row"]);
 					saveNowWallDict["column"]= JSON.stringify(drag_row_column_data["column"]);
@@ -457,9 +606,8 @@ $(function(){
 			saveNowWallDict["calculation"] = JSON.stringify(drag_measureCalculateStyle);
 			saveNowWallDict["customcalculate"] = JSON.stringify(customCalculate);
 			
-
+			//记录同环比
 			var contactTH = [];
-			// console.log(showTongbiMeasureArray,showHuanbiMeasureArray)
 			contactTH.push(showTongbiMeasureArray);
 			contactTH.push(showHuanbiMeasureArray);
 			saveNowWallDict["sequential"] = JSON.stringify(contactTH);
@@ -525,7 +673,7 @@ function remove_viewHandle(type,sortable){
 			drag_row_column_data["row"][data_wd_type].push(sortable_data)
 		}
 	}
-		if(sortable != "sortable" && sortable != "drill"){
+		if(sortable != "sortable" && sortable != "drill" && sortable != "get"){
 			// 移除筛选列
 			rightFilterListDraw();
 			switch_chart_handle_fun();
@@ -963,6 +1111,15 @@ function dragDrillDimen(datatype,datacount){
 
 }
 
+// 数值单位操作
+function drillNumHandle(){
+			drag_row_column_data = JSON.parse(JSON.stringify(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]));
+			save_now_show_view_text = $("#"+ saveDrillDownTemp[$(".clickActive").find("span").text()]["viewType"]+"");
+			currentColorGroupName = saveDrillDownTemp[$(".clickActive").find("span").text()]["dragViewStyle"].split("_YZY_")[0];
+			normalUnitValue = saveDrillDownTemp[$(".clickActive").find("span").text()]["dragViewStyle"].split("_YZY_")[1];
+			valueUnitValue = saveDrillDownTemp[$(".clickActive").find("span").text()]["dragViewStyle"].split("_YZY_")[2];
+			editView_change_color(saveDrillDownTemp[$(".clickActive").find("span").text()]["dragViewStyle"],objectDeepCopy(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"])["row"]["dimensionality"].concat(objectDeepCopy(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"])["column"]["dimensionality"]));	
+}
 
 
 
@@ -979,9 +1136,9 @@ function drillDownClick(theElement,peter){
 
 			if(peter == "peter"){
 					if(onlyGetDrillDown){
-						saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id")};
+						saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
 					}
-					
+					editView_change_color("默认_YZY_-1_YZY_个");
 					if($(".peterMouse").parents(".annotation_text").find(".noPerter").length > 0){
 
 						$(".noPerter").parents(".drog_row_list").remove();
@@ -993,6 +1150,7 @@ function drillDownClick(theElement,peter){
 					}
 					$(".peterMouse").removeClass("clickActive");
 					$(".peterMouse[datavalue="+$(theElement).parent().attr("datavalue")+"]").addClass("clickActive");
+
 					handleMiChange();
 					if($(".clickActive").length > 0 && saveDrillDownDict[$(".clickActive").find("span").text()] != undefined && saveDrillDownDict[$(".clickActive").find("span").text()].length > 0){
 						for(var i = 0; i < saveDrillDownDict[$(".clickActive").find("span").text()].length;i++){
@@ -1001,9 +1159,7 @@ function drillDownClick(theElement,peter){
 						
 					}
 					peterDrillDown();
-					drag_row_column_data = JSON.parse(JSON.stringify(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]));
-					save_now_show_view_text = $("#"+ saveDrillDownTemp[$(".clickActive").find("span").text()]["viewType"]+"");
-
+					drillNumHandle();
 			}else{
 				//记录当前上钻的数据
 				saveHandleViewData = JSON.parse(JSON.stringify(saveDataAndView[Number($(theElement).parent().attr("datavalue"))]));				
@@ -1025,6 +1181,64 @@ function drillDownClick(theElement,peter){
 			switch_chart_handle_fun();
 	
 }
+
+
+//视图修改编辑修改方法
+function changeEditViewFunction(editChangeView){
+
+	//获得视图区域
+	var editViewEcherts = echarts.getInstanceByDom($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").get(0));
+	var statementsViewToChangeNum = $("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").match(/\d+/g)[1];
+	var freeHandleStateDragData = {
+		"row":JSON.parse(editChangeView["row"]),
+		"column":JSON.parse(editChangeView["column"])
+	}
+	drag_row_column_data_arr[statementsViewToChangeNum] = objectDeepCopy(freeHandleStateDragData);
+	drag_measureCalculateStyle_arr[statementsViewToChangeNum] = objectDeepCopy(JSON.parse(editChangeView["calculation"]));
+	currentColorGroupName_arr[statementsViewToChangeNum] = objectDeepCopy(editChangeView["viewstyle"].split("_YZY_")[0]);
+	normalUnitValue_arr[statementsViewToChangeNum] = objectDeepCopy(editChangeView["viewstyle"].split("_YZY_")[1]);
+	valueUnitValue_arr[statementsViewToChangeNum] = objectDeepCopy(editChangeView["viewstyle"].split("_YZY_")[2]);
+	saveDashboardPostData[statementsViewToChangeNum] = objectDeepCopy(editChangeView["handledatapost"]);
+	statements_tonghuanbi_arr[statementsViewToChangeNum] = objectDeepCopy(editChangeView["sequential"]);
+	statements_current_cube_name = objectDeepCopy(editChangeView["tablename"]);
+	//获取对应容器的class
+	var getClassContent = $("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").split(" ").splice($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").split(" ").length -2);
+	if(editChangeView["viewtype"] == "showTable_by_dragData()"){
+		isagainDrawTable = true;
+		if($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main .edit_table").length == 0){
+			$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").empty().append($("<div class='edit_table'><div class='right_module' style='display: inline-block;'> <div class='top_column_container' style='display: inline-block'><p class='top_column_name'></p><table class='column_data_list' cellspacing='0' cellpadding='0'><tbody></tbody></table></div><div class='content_body'><ul id='data_list_for_body'></ul></div></div><div class='left_row_container'><table cellspacing='0' cellpadding='0'><thead><tr></tr></thead><tbody></tbody></table></div></div></div>"));
+			$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").removeClass().addClass("new_view_main clear new_view_table "+getClassContent[0]+" "+getClassContent[1]+"").removeAttr("_echarts_instance_");
+		}
+		$("#pageStatementsModule .view_show_handle[viewId="+editChangeView["id"]+"]").removeClass().addClass("view_show_handle clear view_handle_table");
+		manyTable($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").split(" ")[$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").split(" ").length -2]);
+	}else if(editChangeView["viewtype"] == "col_card()"){
+		if($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main .cardInfo").length == 0){
+			$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").empty().append($("<div class='right_module'><div class='content_body'><ul class='session_data_list_for_body'></ul></div></div>"));
+			$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").removeClass().addClass("new_view_main clear new_view_indexPage "+getClassContent[0]+" "+getClassContent[1]+"").removeAttr("_echarts_instance_");
+		}
+		$("#pageStatementsModule .view_show_handle[viewId="+editChangeView["id"]+"]").removeClass().addClass("view_show_handle clear view_handle_indexPage");
+		runIndexPage($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").split(" ")[$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").split(" ").length -2]);
+		$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_indexPage .right_module").css("marginTop",($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").height()-30)/2 - 80 + "px");
+	}else{
+		if($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main canvas").length == 0){
+			$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").html("");
+		}
+		if(allKeys(JSON.parse(editChangeView["drilldowndata"])["saveDrillDownTemp"]).length > 0){
+			console.log("abcd")
+		}
+		$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").removeClass().addClass("new_view_main clear "+getClassContent[0]+" "+getClassContent[1]+"");
+		$("#pageStatementsModule .view_show_handle[viewId="+editChangeView["id"]+"]").removeClass().addClass("view_show_handle clear");
+		viewshow_class = getClassContent[0];
+		eval("reporting_"+editChangeView["viewtype"].replace(/\)/,","+statementsViewToChangeNum)+")");
+	}
+
+	$.post("../dashboard/getAllData",function(result){
+		ajax_data_post = result;
+	})
+
+}
+
+
 
 
 function pallasdaraFunctionNavBtnHandle(){

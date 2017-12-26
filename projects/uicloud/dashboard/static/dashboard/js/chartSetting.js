@@ -33,7 +33,7 @@ var normalUnitValue = -1;
 var valueUnitValue = "个";
 
 
-function dahboardSetting_function(){	
+function dahboardSetting_function(){
 	// 设置默认的颜色
 	$("#project_style .module_style .color_control .selectedColors span").each(function(index,ele){
 		$(ele).css("background",allColorsDict[currentColorGroupName][index]);
@@ -63,9 +63,7 @@ function dahboardSetting_function(){
 				}
 				 someColorList.find(".colorGroupItem .colorsContainer").click(function(event){
 		  			 event.stopPropagation();
-		  			 // console.log(currentColorGroupName);
 		  			 currentColorGroupName = $(this).siblings(".colorName").text();
-
 
 		  			 // 图形改变颜色
 		  			 var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
@@ -83,7 +81,18 @@ function dahboardSetting_function(){
 
 					// 隐藏更多颜色的展示面板
 					$("#project_style .module_style .color_control .otherColorsModule").hide();
-		  			$("#project_style .module_style .color_control .otherColorsModule").data("openOrColse","close"); 
+		  			$("#project_style .module_style .color_control .otherColorsModule").data("openOrColse","close");
+					if($(".clickActive") != undefined && $(".clickActive").length > 0){
+						if($(".drillDownHandle").length > 0){
+							return;
+						}
+						if(saveDrillDownTemp[$(".clickActive").find("span").text()] == undefined){
+							saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
+						}else{
+							saveDrillDownTemp[$(".clickActive").find("span").text()]["dragViewStyle"] = objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue);
+						}
+						
+					}
 			 	 });
 			}
 		  otherColorModule.show();
@@ -107,6 +116,17 @@ function dahboardSetting_function(){
 			$(this).siblings("span.active").removeClass("active");
 			$(this).addClass("active");
 			normalUnitValue = Number($(this).attr("unit"));
+			if($(".clickActive") != undefined && $(".clickActive").length > 0){
+				if($(".drillDownHandle").length > 0){
+					return;
+				}
+				if(saveDrillDownTemp[$(".clickActive").find("span").text()] == undefined){
+					saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
+				}else{
+					saveDrillDownTemp[$(".clickActive").find("span").text()]["dragViewStyle"] = objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue);
+				}
+				
+			}
 			normalUnitDidChangeValue();
 		}
 	});
@@ -118,6 +138,17 @@ function dahboardSetting_function(){
 			$(this).siblings("span.active").removeClass("active");
 			$(this).addClass("active");
 			valueUnitValue = $(this).text();
+			if($(".clickActive") != undefined && $(".clickActive").length > 0){
+				if($(".drillDownHandle").length > 0){
+					return;
+				}
+				if(saveDrillDownTemp[$(".clickActive").find("span").text()] == undefined){
+					saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
+				}else{
+					saveDrillDownTemp[$(".clickActive").find("span").text()]["dragViewStyle"] = objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue);
+				}
+				
+			}
 			valueUnitDidChangedValue();
 		}
 	});

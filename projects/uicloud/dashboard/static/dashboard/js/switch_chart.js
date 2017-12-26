@@ -115,7 +115,6 @@ function beginDrawChart(edit_view){
 	// 文本表end----------------------------------------------
 	function handleTableShow(){
 			$("#view_show_wrap #card").hide();
-			$("#text_table_need_show").show();
 			$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
 			$("#show_bar,#show_histogram").css("opacity","1");
 			change_view_css("#show_table");
@@ -133,7 +132,6 @@ function beginDrawChart(edit_view){
 
 		}else{
 			if(save_now_show_view_text == null || (save_now_show_view_text.attr("id") != "show_bar" && save_now_show_view_text.attr("id") != "show_histogram" && save_now_show_view_text.attr("id") != "show_table")){
-					$("#view_show_wrap #card").show();
 					$("#text_table_need_show").hide();
 					$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
 					$("#show_bar,#show_histogram,#show_card,#show_table").css("opacity","1");

@@ -9,7 +9,7 @@
 #text_table_need_show .left_row_container{position: absolute;top: 0;left: 0;}
 #text_table_need_show .left_row_container table{border:0px;border-collapse: collapse;overflow: auto;}
 #text_table_need_show .left_row_container table tr{border-bottom: 1px solid #dedede;}
-#text_table_need_show .left_row_container table tbody tr {border-right: 1px solid #dedede;}
+#text_table_need_show .left_row_container table tbody tr {border-right: 1px solid #dedede;box-sizing: border-box;}
 #text_table_need_show .left_row_container table tr th{padding-right: 10px;vertical-align: bottom;}
 #text_table_need_show .left_row_container table tr td{color: #808080;height: 18px;}
 #text_table_need_show .left_row_container table tr td.firstRow{color: black;}
