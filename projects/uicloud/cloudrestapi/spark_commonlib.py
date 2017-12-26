@@ -180,7 +180,7 @@ def filterDataFrameSparkCode():
         columnList = "*"
         logger.debug(u"tableDict:{0}".format(tableDict))
         if 'columns' in tableDict.keys():
-            columnList = list(tableDict['columns'].keys())
+            columnList = ["`{0}`".format(colit1) for colit1 in list(tableDict['columns'].keys())]
             logger.debug(u"columnList:{0}".format(columnList))
             inDataFrame=inDataFrame.select(columnList)
 

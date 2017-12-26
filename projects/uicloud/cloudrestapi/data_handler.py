@@ -266,10 +266,10 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         jsonData = json.loads(jsonStr, encoding='utf-8')
         logger.debug("jsonData: {0}".format(jsonData))
         newDF = generateNewDataFrame(jsonData, maxRowCount)
-        newDF.persist(storageLevel=pyspark.StorageLevel.MEMORY_ONLY)
         if not newDF:
             return False
 
+        newDF.persist(storageLevel=pyspark.StorageLevel.MEMORY_ONLY)
         # get user information, especially username.
 
         # shorten the partition num.
@@ -357,12 +357,12 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 return False
 
             outputDf = joinDF(sortedRelList, dfDict)
+            logger.debug("outputDf columns: {0}".format(outputDf.columns))
             if outputDf is None:
                 return False
 
             # rename the new dataframe.
-            for key, newCol in jsonData["outputs"]['columnRenameMapping'].items():
-                oldCol = key.replace('.', '_')
+            for oldCol, newCol in jsonData["outputs"]['columnRenameMapping'].items():
                 outputDf = outputDf.withColumnRenamed(oldCol, newCol)
         except KeyError as e:
             print("Mapping key {0} not found.".format(e.message))
@@ -437,8 +437,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         for dbTable in dfDict.keys():
             for colItem in dfDict[dbTable].columns:
                 dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(
-                    colItem,
-                    u"{0}_{1}".format(dbTable.replace('.', '_'), colItem))
+                    colItem, u"{0}.{1}".format(dbTable, colItem))
 
         # TBD, this mapping need to be researched again for the details.
         # joinType must be one of below
@@ -470,8 +469,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             # print(dfDict[fromDbTable].printSchema())
             # print(dfDict[toDbTable].printSchema())
             for mapit in columnMapList:
-                fromCol = u"{0}_{1}".format(fromDbTable.replace('.', '_'), mapit["fromCol"])
-                toCol = u"{0}_{1}".format(toDbTable.replace('.', '_'), mapit["toCol"])
+                fromCol = u"`{0}.{1}`".format(fromDbTable, mapit["fromCol"])
+                toCol = u"`{0}.{1}`".format(toDbTable, mapit["toCol"])
                 logger.debug(u"fromCol: {0}, toCol: {1}".format(fromCol, toCol))
                 cond.append(dfDict[fromDbTable][fromCol] == dfDict[toDbTable][toCol])
 
