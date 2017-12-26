@@ -62,8 +62,8 @@ def executeSpark(sparkCode,
     statementsUrl = sessionUrl + '/statements'
     sparkCodesReq = requests.post(
         statementsUrl, data=json.dumps(runData), headers=headers)
-    logger.debug("Request a livy job. sparkCodesReq:{0}, headers:{1}".format(
-        sparkCodesReq.json(), sparkCodesReq.headers))
+    # logger.debug("Request a livy job. sparkCodesReq:{0}, headers:{1}".format(
+    #     sparkCodesReq.json(), sparkCodesReq.headers))
 
     resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'],
                                               desiredState=checkDesiredState,
@@ -256,6 +256,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     import sys
     import traceback
     import json
+    import pyspark
     ''' + setupLoggingSparkCode() + getDataFrameFromSourceSparkCode() + '''
     def writeDataFrame(jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=False):
         """
@@ -265,6 +266,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         jsonData = json.loads(jsonStr, encoding='utf-8')
         logger.debug("jsonData: {0}".format(jsonData))
         newDF = generateNewDataFrame(jsonData, maxRowCount)
+        newDF.persist(storageLevel=pyspark.StorageLevel.MEMORY_ONLY)
         if not newDF:
             return False
 
@@ -280,6 +282,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             newDF.coalesce(1).write.parquet(savedPathUrl, mode=mode)
         else:
             newDF.write.parquet(savedPathUrl, mode=mode)
+        newDF.unpersist()
         return True
 
     def generateNewDataFrame(jsonData, maxRowCount=10000, userName="myfolder", rootFolder="/users"):

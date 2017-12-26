@@ -10,11 +10,11 @@ def setupLoggingSparkCode():
     """
 
     return '''
-    # set up logging to spark-excutedby-livy.log
+    # set up logging to spark-executedby-livy.log
     def setupLogging():
         import logging
 
-        logpath = '/opt/spark/logs/spark-excutedby-livy.log'
+        logpath = '/opt/spark/logs/spark-executedby-livy.log'
         logger = logging.getLogger("sparkExecutedBylivy")
 
         # Set level of logger source.  Use debug for development time options, then bump it up
