@@ -230,7 +230,6 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		handleDataPost = {
 			"conditions":conditions,
 		};
-
 		if(expressions["exprlist"] && expressions["exprlist"].length > 0){
 			expressions["groupby"]  = groupby;
 			expressions["orderby"] = groupby;
@@ -240,23 +239,22 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	
 	
 
-
-	if(equalCompare(recordConditon,handleDataPost) && preAllData){
-		handleSuccessFunction(preAllData);
-		oldViewToShow =false;
-		if($(".clickActive") != undefined && $(".clickActive").length > 0){
-			if($(".drillDownHandle").length > 0){
-				return;
-			}
-			saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
-			saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
-		}else{
-			saveEveryViewPostData = {};
-			drillElementCount = {};
-		}
+	// if(equalCompare(recordConditon,handleDataPost) && preAllData){
+	// 	handleSuccessFunction(preAllData);
+	// 	oldViewToShow =false;
+	// 	if($(".clickActive") != undefined && $(".clickActive").length > 0){
+	// 		if($(".drillDownHandle").length > 0){
+	// 			return;
+	// 		}
+	// 		saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
+	// 		saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
+	// 	}else{
+	// 		saveEveryViewPostData = {};
+	// 		drillElementCount = {};
+	// 	}
 		
-		return;
-	}
+	// 	return;
+	// }
 
 	$.ajax({
 		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
@@ -264,14 +262,15 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		dataType:"json",
 		contentType: "application/json; charset=utf-8",
 		async: true,
+		// async:false,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
 //			console.log("startSend");
 		},
 		success:function(data){
 			if(data.status == "success"){
-				
 				preAllData = data.results.data;
+				// console.log(preAllData);
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
 				oldViewToShow =false;
@@ -285,10 +284,6 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 					saveEveryViewPostData = {};
 					drillElementCount = {};
 				}
-
-
-				
-
 			}
 		}
 	});
