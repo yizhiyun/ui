@@ -138,6 +138,13 @@
 
 				// 删除后数据的更改
 				var deleteDataHandleArr;
+
+				// 复选框点击同步多维度关系
+				var checkedHandle = false;
+
+				var preAllData = null;
+				
+				var preHandleDataCheck = null;
 				//保存视图触发事件
 				function save_btn_fun(){
 					$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -607,7 +614,7 @@
 
 						//筛选器高度
 						$("#sizer").height($("#lateral_bar").height() + 50);
-						$("#sizer_place").height($("#sizer").height());
+						$("#sizer_place").height($("#sizer").height() - 10);
 						$("#sizer_place #sizer_mpt").css("marginTop",$("#sizer").height()/2 - $("#sizer_place #sizer_mpt").height()/2 + "px");
 						$("#dashboard_content #new_view ul li").each(function(index,ele){
 							if($(ele).attr("title") != $(ele).find("span").text()){
@@ -694,6 +701,8 @@
 						click_view_icon = false;
 
 						editView_change_color("默认_YZY_-1_YZY_个");
+
+						rightFilterListDraw();
 
 						currentColorGroupName = "默认";
 
@@ -1837,6 +1846,7 @@
 							$("#pageDashboardModule #dashboard_content #lateral_bar #indicator #index_show ul").html("");
 							event.stopPropagation();
 							if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
+								loc_storage.removeItem(current_cube_name);
 								if_or_load = true;
 								empty_viem_init("change");
 								isDisaed = false;
@@ -1852,7 +1862,7 @@
 						var exprlist = [];
 						for(var i = 0;i < _cube_all_data[current_cube_name].schema.length;i++ ){
 							var aSchema = _cube_all_data[current_cube_name].schema[i];
-							var obj = {"alias":aSchema["field"],"exprstr":"collect_set("+aSchema["field"]+")"};
+							var obj = {"alias":aSchema["field"],"exprstr":"collect_set(`"+aSchema["field"]+"`)"};
 							exprlist.push(obj);
 						}
 						var handleDataPost = {
@@ -1868,8 +1878,15 @@
 							contentType: "application/json; charset=utf-8",
 							async: true,
 							data:JSON.stringify(handleDataPost),
+							beforeSend:function(){
+									var target =  $("#view_show_wrap").get(0);
+									$(".maskLayer").show();
+    								spinner.spin(target);
+							},
 							success:function(data){
 								if(data.status == "success"){
+									spinner.stop();
+									$(".maskLayer").hide();
 									filterNeedAllData = data.results.data[0];
 
 								}
@@ -2979,7 +2996,6 @@
 
 
 									// 展现 table
-									rightFilterListDraw();
 									switch_chart_handle_fun();
 									//度量更多操作过程
 									md_click_show(current_li.find(".moreSelectBtn"),{"编辑计算_YZY_edit_calculation":null,"度量_YZY_measure":["计数_YZY_pop_count_all","求和_YZY_pop_total","平均值_YZY_pop_mean","最大值_YZY_pop_max","最小值_YZY_pop_min"],"同比_YZY_compared":null,"环比_YZY_linkBack":null,"移除对比_YZY_deleteCompared":null,"移除_YZY_deleting":null})
@@ -3190,14 +3206,16 @@
 
 													break;
 												case "drop_row_view":
-
+													if($(ui.item).find(".color_icon_wrap").length > 0){
+														$(ui.item).find(".color_icon_wrap").remove();
+													}
 													if($(ui.item).find(".drop_main").hasClass("peterMouse") && $(ui.item).find(".peterMouse").length > 1 && ui.sender != null){
 														if($(this).find($(ui.item)).length > 0){
 															$(".peterMouse").removeClass("clickActive");
 															$(".peterMouse[datavalue='0']").addClass("clickActive");
 															saveDrillCount = [];
 															saveDrillDownDict = {};
-															saveDrillDownTemp = {};															
+															saveDrillDownTemp = {};
 															peterDrillDown();
 															deleteDrillFun();
 														}
@@ -3237,6 +3255,9 @@
 													break;
 
 												case "drop_col_view":
+													if($(ui.item).find(".color_icon_wrap").length > 0){
+														$(ui.item).find(".color_icon_wrap").remove();
+													}
 													if($(ui.item).find(".drop_main").hasClass("peterMouse") && $(ui.item).find(".peterMouse").length > 1 && ui.sender != null){
 														if($(this).find($(ui.item)).length > 0){
 															$(".peterMouse").removeClass("clickActive");
@@ -3968,6 +3989,7 @@
 				 	window.onbeforeunload = function(){
 				    	loc_storage.removeItem("allTable_specialSelection");
 				  		loc_storage.removeItem("allTable_notWorkedColumns");
+				  		loc_storage.removeItem(current_cube_name);
 				  	}
 
 
@@ -3979,6 +4001,7 @@
 				event.stopPropagation();
 				if($(".peterMouse").length > 1){
 						editView_change_color("默认_YZY_-1_YZY_个");
+						getNodrillIndex();
 						saveDrillDownTemp[$(".clickActive").find("span").text()] =  {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
 						saveDrillDownDict[$(".clickActive").find("span").text()] = [];
 						$(".peterMouse").parents(".annotation_text").find("li").each(function(index,ele){
@@ -3986,9 +4009,9 @@
 								saveDrillCount.push(dirllConditions.length + index);
 								saveDrillDownDict[$(".clickActive").find("span").text()] = saveDrillDownDict[$(".clickActive").find("span").text()] || [];
 								saveDrillDownDict[$(".clickActive").find("span").text()].push($(ele).find(".drop_main span").attr("datatype")+"_YZYPD_"+ index);
-								
+
 							}
-							
+
 						})
 						if($(".peterMouse").parents(".annotation_text").find(".noPerter").length > 0){
 

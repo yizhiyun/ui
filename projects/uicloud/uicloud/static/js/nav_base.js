@@ -487,7 +487,7 @@ $(function(){
 		})
 
 		//右侧筛选器显示
-		rightFilterListDraw();
+		// rightFilterListDraw();
 
 	}
 
@@ -1137,7 +1137,8 @@ function drillDownClick(theElement,peter){
 			if(peter == "peter"){
 					if(onlyGetDrillDown){
 						saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
-					}
+					 getNodrillIndex();
+          }
 					editView_change_color("默认_YZY_-1_YZY_个");
 					if($(".peterMouse").parents(".annotation_text").find(".noPerter").length > 0){
 
@@ -1182,6 +1183,64 @@ function drillDownClick(theElement,peter){
 	
 }
 
+function statementsClickDrill(element,toDrill){
+  clickDrill =false;
+  $(element).parents(".new_view_content").attr("clickcount",$(element).parent("li").attr("datavalue"));
+  freePostData = JSON.parse(JSON.stringify($(element).data("viewHandleFun")));
+  $(element).parents(".new_view_content").attr("showText",toDrill["showType"][$(element).parent("li").attr("datavalue")].split("_YZYPD_")[0]);
+  drag_row_column_data_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["viewdata"];
+  drag_measureCalculateStyle_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["calculateStyle"];
+  currentColorGroupName_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["dragViewStyle"].split("_YZY_")[0];
+  normalUnitValue_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["dragViewStyle"].split("_YZY_")[1];
+  valueUnitValue_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["dragViewStyle"].split("_YZY_")[2];
+  var clickLoding = echarts.getInstanceByDom($(".new_view_main[_echarts_instance_="+$(element).parents(".new_view_content").find(".new_view_main").attr("_echarts_instance_")+"]").get(0));
+  clickLoding.showLoading({
+      text: '数据获取中',
+       color: '#c23531',
+       textColor: '#000',
+       maskColor: 'rgba(255, 255, 255, 0.8)',
+       zlevel: 0
+  });
+  eval($(element).data("viewHandleType"));
+}
+
+
+
+
+//视图库上下钻添加事件
+function statementsAddClickFunction(element,toDrill,drillHandle){
+      $(element).addClass("drillToClick").data("drillData",drillHandle).data("drillEvery",JSON.stringify(toDrill["saveDrillDownTemp"])).attr("clickcount",0).data("showtype",toDrill["showType"]).data("drillDownCount",toDrill["drillElementCount"]).data("drillElementPost",toDrill["saveEveryViewPostData"]);
+      $(element).append($("<div class='drillDownState'><ul><li class='statementsAll' datavalue='0'><p>全部</p></li></ui></div>"));
+      $(element).find(".drillDownState ul .statementsAll p").unbind("click");
+      $(element).find(".drillDownState ul .statementsAll p").click(function(event){
+        event.stopPropagation();
+        $(this).parents(".drillDownState").find("ul li").hide();
+        statementsClickDrill($(this),toDrill);
+      })
+      for(var i = 0; i < allKeys(toDrill["saveDrillDownTemp"]).length - 1;i++){
+        $(element).find(".drillDownState ul").append($("<li datavalue="+(i+1)+"><img src='/static/statements/img/jt.png' alt='jt'><p>"+allKeys(toDrill["saveDrillDownTemp"])[i]+"</p></li>"));
+      }
+     $(element).find(".drillDownState ul li p").eq(1).unbind("click");
+     $(element).find(".drillDownState ul li p").eq(1).click(function(event){
+        event.stopPropagation();
+        if(allKeys(toDrill["saveDrillDownTemp"]).length == 2 || $(element).find(".drillDownState ul li").eq(2).css("display") == "none"){
+          return;
+        }
+        $(this).parents(".drillDownState").find("ul li:gt("+$(this).parent("li").attr("datavalue")+")").hide();
+        statementsClickDrill($(this),toDrill);
+      })
+}
+
+
+//视图覆盖存在上下钻操作清除
+function clickStatementsDrillFunction(element,editChangeView){
+  if(allKeys(JSON.parse(editChangeView["drilldowndata"])["saveDrillDownTemp"]).length <= 0 && $(element).hasClass("drillToClick") && $(element).find(".drillDownState").length > 0){
+    $(element).removeClass("drillToClick").removeData(["drillData","drillDownCount","drillElementPost","drillEvery","showtype"]).removeAttr("clickcount showtext");
+    $(element).find(".drillDownState").remove();
+  }
+}
+
+
 
 //视图修改编辑修改方法
 function changeEditViewFunction(editChangeView){
@@ -1201,6 +1260,7 @@ function changeEditViewFunction(editChangeView){
 	saveDashboardPostData[statementsViewToChangeNum] = objectDeepCopy(editChangeView["handledatapost"]);
 	statements_tonghuanbi_arr[statementsViewToChangeNum] = objectDeepCopy(editChangeView["sequential"]);
 	statements_current_cube_name = objectDeepCopy(editChangeView["tablename"]);
+  clickStatementsDrillFunction($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]"),editChangeView);
 	//获取对应容器的class
 	var getClassContent = $("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").split(" ").splice($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").attr("class").split(" ").length -2);
 	if(editChangeView["viewtype"] == "showTable_by_dragData()"){
@@ -1224,7 +1284,8 @@ function changeEditViewFunction(editChangeView){
 			$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").html("");
 		}
 		if(allKeys(JSON.parse(editChangeView["drilldowndata"])["saveDrillDownTemp"]).length > 0){
-			console.log("abcd")
+			$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").addClass("drillToClick");
+      statementsAddClickFunction($("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]"),JSON.parse(editChangeView["drilldowndata"]),editChangeView["handledatapost"]);
 		}
 		$("#pageStatementsModule #right_folder_show_are .view_folder_show_area ul li[viewId="+editChangeView["id"]+"]").find(".new_view_main").removeClass().addClass("new_view_main clear "+getClassContent[0]+" "+getClassContent[1]+"");
 		$("#pageStatementsModule .view_show_handle[viewId="+editChangeView["id"]+"]").removeClass().addClass("view_show_handle clear");

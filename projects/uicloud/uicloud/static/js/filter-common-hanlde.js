@@ -259,6 +259,7 @@ $(function(){
 		localStoragedeleteData($("#filter-model #user-filter-select").data("tableInfo"),activeLi.index());
 		activeLi.remove();
 		getCurrentTableFilterData(tableInfo);
+		$("#user-filter-select").hide();
 		if(finishCallBackFun){
 			finishCallBackFun(false);
 		}
@@ -271,14 +272,17 @@ $(function(){
 			$(".maskLayer").hide();
 
 		})
-
+		loc_storage.removeItem("allTable_specialSelection");
+		checkedHandle =true;
 
 	});
 	// 编辑--取消的时候
 	$("#filter-model #user-filter-select .close").click(function(event){
 		event.stopPropagation();
 		$("#filter-model #user-filter-select").hide();
-		$(".maskLayer").hide();
+		if($("#user-filter-select").css("display") == "none"){
+			$(".maskLayer").hide();
+		}
 	});
 	/*end---------编辑-选择字段的时候-筛选器*/
 
@@ -302,6 +306,7 @@ $(function(){
 		}
 		$("#filter-model #fileds-content-select").hide();
 		$("#filter-model #user-filter-select").css("opacity",1);
+
 	});
 
 	//确定按钮
@@ -316,13 +321,18 @@ $(function(){
 	$("#filter-model .screeningWasher .common-head .close").click(function(event){
 		event.stopPropagation();
 		$(this).parents(".screeningWasher").eq(0).hide();
-		$(".maskLayer").hide();
+		if($("#user-filter-select").css("display") == "none"){
+			$(".maskLayer").hide();
+		}
+		
 	});
 	// 点击每个筛选器上的取消按钮的时候
 	$("#filter-model .screeningWasher .common-filer-footer .cancleBtn").click(function(event){
 		event.stopPropagation();
 		$(this).parents(".screeningWasher").eq(0).hide();
-		$(".maskLayer").hide();
+		if($("#user-filter-select").css("display") == "none"){
+			$(".maskLayer").hide();
+		}
 	});
 
 	//点击每个筛选器上的确定按钮的时候
@@ -332,6 +342,8 @@ $(function(){
 		var filterID = $(this).parents(".screeningWasher").eq(0).attr("id");
 			// 取出所有条件 处理数据
 		screeningWasher_did_finish_filter_handle_data_fun(filterID);
+		loc_storage.removeItem("allTable_specialSelection");
+		checkedHandle =true;
 	});
 
 
@@ -914,13 +926,21 @@ function contidon_value_change_fun(){
 			}
 			content_select_max = repeat_record.length;
 		}else if(filter_from_in == "dashBoard"){
+			var freeCheckCountHandle = 0;
 			for(var i =0;i < filterNeedAllData[field].length;i++){
 				if(i >= dataNumberControl){
 					break;
 				}
 				var theData = filterNeedAllData[field][i];
-				var li = $("<li><label><input type='checkbox' checked='checked'/><span class='val'>"+theData+"</span></label></li>");
+				var li = $("<li><label><input type='checkbox'/><span class='val'>"+theData+"</span></label></li>");
 				li.find("input").attr("value",theData);
+				if($.inArray(theData,checkSelectConditionDict[field]) == -1){
+					li.find("input").prop("checked",true);
+				}else{
+					freeCheckCountHandle++;
+					li.find("input").prop("checked",false);
+					$("#filter-model #contentChooser #common #selectAllInCommon").attr("checked",false);
+				}
 				$("#filter-model #contentChooser #common .detailSearchData .dataList").append(li);
 									// 每个复选框绑定事件
 					li.find("input").change(function(){
@@ -948,7 +968,9 @@ function contidon_value_change_fun(){
 			content_select_max = filterNeedAllData[field].length;
 		}
 
-
+		if(freeCheckCountHandle == 0){
+			$("#filter-model #contentChooser #common #selectAllInCommon").prop("checked",true);
+		}
 		//搜索
 		Search($("#filter-model #contentChooser .contentChooser_body #common .outer input"),"val",$("#filter-model #contentChooser .common-fold-module #common .detailSearchData .dataList"),"filter");
 		
@@ -988,7 +1010,7 @@ function contidon_value_change_fun(){
 		if(isEdit){
 			content_select_count = filterConditions.commonSelected.length;
 		}else{
-			content_select_count = content_select_max;
+			content_select_count = content_select_max - freeCheckCountHandle;
 		}
 		if(isEdit){
 			if(filterConditions.allSelectFlag){
@@ -1060,7 +1082,12 @@ function contidon_value_change_fun(){
 //				userSelect_num.find("#modeOption").prop("disabled","true");
 //			}
 //			userSelect_num.comboSelect();
-			var sliderValues = [data.min,data.max];
+			if(checkSelectConditionDict[field] != undefined && checkSelectConditionDict[field].length > 0){
+				var sliderValues = [freeHandleCheckData[field].min(),freeHandleCheckData[field].max()];
+			}else{
+				var sliderValues = [data.min,data.max];
+			}
+			
 			if(isEdit){
 				sliderValues = [filterConditions["sliderMinValue"],filterConditions["sliderMaxValue"]];
 			}
@@ -1084,8 +1111,8 @@ function contidon_value_change_fun(){
 				filter_ele.find(".number-filter-body #value-range-box .value-input-box .scalesInput-box .min-value-input").val(filterConditions["sliderMinValue"]);
 				filter_ele.find(".number-filter-body #value-range-box .value-input-box .scalesInput-box .max-value-input").val(filterConditions["sliderMaxValue"]);
 			}else{
-				$("#number-filter  #value-range-box .value-input-box .min-value-input").eq(0).val(data.min);
-				$("#number-filter  #value-range-box .value-input-box .max-value-input").eq(0).val(data.max);
+				$("#number-filter  #value-range-box .value-input-box .min-value-input").eq(0).val(sliderValues[0]);
+				$("#number-filter  #value-range-box .value-input-box .max-value-input").eq(0).val(sliderValues[1]);
 			}
 
 		});
@@ -1271,11 +1298,11 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 
 		/*处理常规内容*/
 		if(SelectAllBtn.get(0).checked && eliminateBtn.get(0).checked) {
-			var index = conditionFilter_record[tableInfo]["common"].hasObject("columnName", column_name);
+			var index = conditionFilter_record[tableInfo]["common"].hasObject("columnName", "`" +column_name+ "`");
 			if(index == -1) {
 				var filter = {
 					"type": "isin",
-					"columnName": column_name,
+					"columnName": "`"+column_name+"`",
 					"value": []
 				}
 				conditionFilter_record[tableInfo]["common"].push(filter);
@@ -1288,7 +1315,7 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 		}
 
 		function common_data_hanlde(is_eliminate) {
-			var index = conditionFilter_record[tableInfo]["common"].hasObject("columnName", column_name);
+			var index = conditionFilter_record[tableInfo]["common"].hasObject("columnName", "`" +column_name+ "`");
 			var selectValue = [];
 			var checkBoxs;
 			if(is_eliminate) {
@@ -1302,7 +1329,7 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 			if(index == -1) {
 				var filter = {
 					"type": "isin",
-					"columnName": column_name,
+					"columnName": "`" +column_name+ "`",
 					"value": selectValue
 				};
 				conditionFilter_record[tableInfo]["common"].push(filter);
@@ -1376,12 +1403,12 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 			relation_value = Number(relation_value);
 		}
 		if(relation_value) {
-			var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [logic_relation, column_name]);
+			var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [logic_relation, "`" +column_name+ "`"]);
 
 			if(index == -1) {
 				var filter = {
 					"type": logic_relation,
-					"columnName": column_name,
+					"columnName": "`" +column_name+ "`",
 					"value": relation_value
 				};
 				conditionFilter_record[tableInfo]["condition"].push(filter);
@@ -1393,11 +1420,11 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 		var sliderMinValue = $("#number-filter  #value-range-box .value-input-box .min-value-input").eq(0).val();
 		var sliderMaxValue = $("#number-filter  #value-range-box .value-input-box .max-value-input").eq(0).val();
 		if(sliderMinValue != $("#number-filter .number-filter-body  .slider-common-setting .value-slider-box .range-flag .min-value-flag").html()) {
-			var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [">=", column_name]);
+			var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [">=", "`" +column_name+ "`"]);
 			if(index == -1) {
 				var filter = {
 					"type": ">=",
-					"columnName": column_name,
+					"columnName":  "`" +column_name+ "`",
 					"value": sliderMinValue
 				};
 				conditionFilter_record[tableInfo]["condition"].push(filter);
@@ -1406,11 +1433,11 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 			}
 		}
 		if(sliderMaxValue != $("#number-filter .number-filter-body  .slider-common-setting .value-slider-box .range-flag .max-value-flag").html()) {
-			var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], ["<=", column_name]);
+			var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], ["<=", "`" +column_name+ "`"]);
 			if(index == -1) {
 				var filter = {
 					"type": "<=",
-					"columnName": column_name,
+					"columnName":  "`" +column_name+ "`",
 					"value": sliderMaxValue
 				};
 				conditionFilter_record[tableInfo]["condition"].push(filter);
@@ -1434,11 +1461,11 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 				}
 				value = columnDataInfo.allNum[itemValue];
 
-				var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], ["<=", column_name]);
+				var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], ["<=", "`" +column_name+ "`"]);
 				if(index == -1) {
 					var filter = {
 						"type": "<=",
-						"columnName": column_name,
+						"columnName":  "`" +column_name+ "`",
 						"value": value
 					};
 					conditionFilter_record[tableInfo]["condition"].push(filter);
@@ -1453,11 +1480,11 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 					itemValue = columnDataInfo.len - 1;
 				}
 				value = columnDataInfo.allNum[columnDataInfo.len - 1 - itemValue];
-				var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [">=", column_name]);
+				var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [">=", "`" +column_name+ "`"]);
 				if(index == -1) {
 					var filter = {
 						"type": ">=",
-						"columnName": column_name,
+						"columnName":  "`" +column_name+ "`",
 						"value": value
 					};
 					conditionFilter_record[tableInfo]["condition"].push(filter);
@@ -1477,11 +1504,11 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 		startDate = startDate.replace(/\//g,"-");
 		var endDate = dateValueArr[1];
 		endDate =endDate.replace(/\//g,"-");
-		var start_index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [">=", column_name]);
+		var start_index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [">=", "`" +column_name+ "`"]);
 		if(start_index == -1) {
 			var filter = {
 						"type": ">=",
-						"columnName": column_name,
+						"columnName":  "`" +column_name+ "`",
 						"value": startDate,
 						"datatype":"date"
 			};
@@ -1490,11 +1517,11 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 			conditionFilter_record[tableInfo]["condition"][start_index]["value"] = startDate ;
 		}
 
-		var end_index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], ["<=", column_name]);
+		var end_index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], ["<=", "`" +column_name+ "`"]);
 		if(end_index == -1){
 			var filter = {
 						"type": "<=",
-						"columnName": column_name,
+						"columnName":  "`" +column_name+ "`",
 						"value": endDate,
 						"datatype":"date"
 			};
@@ -1644,6 +1671,7 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 	conditionFilter_record[tableInfo]["common"] = [];
 	conditionFilter_record[tableInfo]["condition"] = [];
 	conditionFilter_record[tableInfo]["dateCondition"]=[];
+
 	for(var i = 0;i < arr.length;i++){
 		var obj = arr[i];
 		if(filterColumnArr &&  filterColumnArr.indexOf(obj.column) != -1){
@@ -1652,11 +1680,11 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 		if(obj.type == "contentChooser"){
 			 var common = null;
 			if(obj.allSelectFlag && obj.deleteFlag){
-			 common = {"type": "isin","columnName": obj.column,"value": []}
+			 common = {"type": "isin","columnName":"`"+obj.column+"`","value": []}
 			}else if(!obj.allSelectFlag && !obj.deleteFlag){
-			  common = {"type": "isin","columnName": obj.column,"value": obj.commonSelected}
+			  common = {"type": "isin","columnName":"`"+obj.column+"`","value": obj.commonSelected}
 			}else if(!obj.allSelectFlag && obj.deleteFlag){
-			  common = {"type": "isnotin","columnName": obj.column,"value": obj.commonSelected}
+			  common = {"type": "isnotin","columnName": "`"+obj.column+"`","value": obj.commonSelected}
 			}
 			if(common){
 				conditionFilter_record[tableInfo]["common"].push(common);
@@ -1672,8 +1700,8 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 				conditionFilter_record[tableInfo]["condition"].push(filter);
 			}
 		}else if(obj.type == "number-filter"){
-			var filter1 = {"type":">=","columnName":obj.column,"value":obj.sliderMinValue}
-			var filter2 = {"type":"<=","columnName":obj.column,"value":obj.sliderMaxValue}
+			var filter1 = {"type":">=","columnName":"`"+obj.column+"`","value":obj.sliderMinValue}
+			var filter2 = {"type":"<=","columnName":"`"+obj.column+"`","value":obj.sliderMaxValue}
 			if(obj.bottomConidtion){
 				if(obj.bottomConidtion.type == ">="){
 					filter1.value = obj.bottomConidtion.value;
@@ -1691,8 +1719,8 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 			startDate = startDate.replace(/\//g,"-");
 			var endDate = dateValueArr[1];
 			endDate =endDate.replace(/\//g,"-");
-			var filter1 = {"type":">=","columnName":obj.column,"value":startDate,"datatype":"date"}
-			var filter2 = {"type":"<=","columnName":obj.column,"value":endDate,"datatype":"date"}
+			var filter1 = {"type":">=","columnName":"`"+obj.column+"`","value":startDate,"datatype":"date"}
+			var filter2 = {"type":"<=","columnName":"`"+obj.column+"`","value":endDate,"datatype":"date"}
 			conditionFilter_record[tableInfo]["dateCondition"].push(filter1);
 			conditionFilter_record[tableInfo]["dateCondition"].push(filter2);
 		}

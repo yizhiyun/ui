@@ -164,6 +164,7 @@ def getTableViaSpark(request, tableName, modeName):
                            "reason": data.replace("False", "", 1)}
                 return JsonResponse(failObj, status=400)
             elif data.startswith("{"):
+                logger.info(data)
                 data = json.loads(data)
                 data = addColType(curUserName, tableName, data)
 

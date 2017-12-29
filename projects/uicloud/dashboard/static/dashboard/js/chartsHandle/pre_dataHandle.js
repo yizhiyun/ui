@@ -26,9 +26,9 @@ Array.prototype.XMsort = function(propertyNameArray){
 	this.sort(createComparisonFunction);
 }
 var customCalculate = {}
-var preAllData = null;
 var handleDataPost = {};
-
+var freeHandleDiData = {};
+var freeHandleCheckData = {};
 // 定义一个对象用来记录拖拽的度量是否需要计算同比或者环比
 // var
 function strMatch(str, startStr, item) {
@@ -107,12 +107,23 @@ function twoDateDistance(dateStr1,dateStr2){
 	return parseInt(Math.abs(date1-date2) / (1000 * 60 * 60 * 24));
 }
 
+//判断数组里是否含有已有的对象
+Array.prototype.hasAllObject = function(obj){
+	for(var i = 0; i < this.length;i++){
+		if(equalCompare(this[i],obj)){
+			return true;
+		}
+	}
+	return false;
+}
+
 
 // needColumns暂时未用到
 function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
 	if(oldViewToShow){
 		handleDataPost = editViewPostData;
 	}else{
+		var dimensionality_array = objectDeepCopy(dimensionality_array);
 		var filterNotWorkArr = getColumnFilterNotWorkedColumns(current_cube_name);
 		getCurrentTableFilterData(current_cube_name,filterNotWorkArr);
 
@@ -121,12 +132,14 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	  conditions = conditions.concat(conditionFilter_record[current_cube_name]["dateCondition"]);
 
 
-		var checkSelectConditionDict = getSelectionCondtion(current_cube_name);
+		checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 		for(var key in checkSelectConditionDict){
 			var valuesArr = checkSelectConditionDict[key];
 			if(valuesArr && valuesArr.length >0 && filterNotWorkArr.indexOf(key) == -1){
-				var filter = {"type":"isnotin","columnName":key,"value":valuesArr};
-				conditions.push(filter);
+				var filter = {"type":"isnotin","columnName":"`"+key+"`","value":valuesArr};
+				if(!conditions.hasAllObject(filter)){
+					conditions.push(filter);
+				}
 			}
 		}
 		if(dirllConditions && dirllConditions.length > 0){
@@ -138,11 +151,14 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 					continue;
 				}
 				if(obj.currentField != "全部" && obj.currentValue != "全部"){
-					conditions.push({"type":"=","columnName":obj.currentField,"value":obj.currentValue});
+					conditions.push({"type":"=","columnName": "`"+ obj.currentField + "`","value":obj.currentValue});
 				}
 			}
 		}
 
+		dimensionality_array.forEach(function(item,index){
+			dimensionality_array[index] = "`"+item+"`";
+		});
 		var groupby = dimensionality_array;
 		var basic_opration = ["sum(","max(","min(","avg(","count("];
 		var basic_names = ["求和(","最大值(","最小值(","平均值(","计数("];
@@ -239,15 +255,15 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	}
 	
 	
-
-
 	if(equalCompare(recordConditon,handleDataPost) && preAllData){
 		handleSuccessFunction(preAllData);
+		rightFilterListDraw();
 		oldViewToShow =false;
 		if($(".clickActive") != undefined && $(".clickActive").length > 0){
 			if($(".drillDownHandle").length > 0){
 				return;
 			}
+			getNodrillIndex();
 			saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
 			saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
 		}else{
@@ -258,6 +274,104 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		return;
 	}
 
+
+//遍历操作过后返回的数据
+function forDataFunctionPost(handleData,saveArr,drill){
+	if((dirllConditions && dirllConditions.length > 0) || drill == "over"){
+		for(var z = 0; z < handleDataPost["expressions"]["groupby"].length;z++){
+		if(saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")] == undefined){
+				saveArr[handleDataPost["	"]["groupby"][z].replace(/\`/g,"")] = [];
+				for(var j = 0; j < handleData.length;j++){
+					var aData = handleData[j];
+					if($.inArray(String(aData[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")]),saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")]) == -1){
+						saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")].push(String(aData[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")]));
+					}
+					
+				}
+			
+		}
+	}
+	}
+
+	if(drill == "drill"){
+		rightFilterListDraw();
+	}
+}
+
+
+
+//点击下钻维度展示的更新数据 保持同步
+function clickDrillChangeDiFunction(handleData){
+	//记录处理后的数据
+	freeHandleDiData = {};
+	forDataFunctionPost(handleData,freeHandleDiData,"drill");
+}
+
+//复选框取消获取数据
+function deleteCheckFunction(preHandleDataCheck,fun,text,countArr){
+	var checkHandleValue = [];
+	for(var i = 0; i < preHandleDataCheck.length;i++){
+		var freeViewD = preHandleDataCheck[i];
+		if(freeViewD[fun] == text){
+			for(var j = 0; j < countArr.length; j++){
+				if(countArr[j] != fun){
+					if($.inArray(countArr[j]+"_YZY_"+freeViewD[countArr[j]],checkHandleValue) == -1){
+						checkHandleValue.push(countArr[j]+"_YZY_"+freeViewD[countArr[j]]);
+					}
+					
+				}
+			}
+			
+		}
+
+	}
+	return checkHandleValue;
+}
+
+
+//点击复选框处理多维度的显示问题
+function checkHandleFunction(checkData){
+	freeHandleCheckData = {};
+	forDataFunctionPost(checkData,freeHandleCheckData,"over");
+	// $("#sizer_content .filter_body_div .table_field_list .field_detail_list li input").prop("checked",false);
+	for(checkView in freeHandleCheckData){
+		if(checkSelectConditionDict[checkView] == undefined){
+			checkSelectConditionDict[checkView] = [];
+		}
+		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+checkView.replace(/\./g,"YZY")).find(".field_detail_list li").each(function(index,ele){
+			if($.inArray($(ele).attr("checkvalue"),freeHandleCheckData[checkView]) == -1){
+				$(ele).find("input").eq(0).prop("checked",false);
+				var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue"));
+				var handleValue = deleteCheckFunction(preHandleDataCheck,checkView,$(ele).attr("checkvalue"),allKeys(freeHandleCheckData)).join("_YZYPD_");
+				$(ele).attr("checkWithCount",handleValue);
+				if(index == -1){
+					checkSelectConditionDict[checkView].push($(ele).attr("checkvalue"));
+				}
+				
+			}else{
+				$(ele).find("input").eq(0).prop("checked",true);
+				var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue"));
+				if(index != -1){
+					checkSelectConditionDict[checkView].splice(index,1);
+					if($(ele).attr("checkwithcount") != undefined && $(ele).attr("checkwithcount") != ""){
+
+						for(var z = 0; z < $(ele).attr("checkwithcount").split("_YZYPD_").length; z++){
+							checkSelectConditionDict[$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]].splice(checkSelectConditionDict[$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]].indexOf($(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]),1);
+							$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0].replace(/\./g,"YZY")).find(".field_detail_list li[checkvalue="+$(ele).parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]+"]").find("input").eq(0).prop("checked",true);
+							$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0].replace(/\./g,"YZY")).find(".field_detail_list li[checkvalue="+$(ele).parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]+"]").removeAttr("checkwithcount");
+						}
+						$(ele).removeAttr("checkwithcount");
+					}
+				}
+			}
+		})
+
+	}
+	saveSelectionCondtion(current_cube_name,checkSelectConditionDict);
+
+}
+
+
 	$.ajax({
 		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
 		type:"post",
@@ -266,28 +380,36 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		async: true,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
-//			console.log("startSend");
+			console.log(handleDataPost);
 		},
 		success:function(data){
 			if(data.status == "success"){
-				
+				var freeHandlePostFun = objectDeepCopy(recordConditon);
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
-				oldViewToShow =false;
+				oldViewToShow = false;
+				if(checkedHandle){
+					checkHandleFunction(data.results.data);
+					checkedHandle = false;
+				}
 				if($(".clickActive") != undefined && $(".clickActive").length > 0){
 					if($(".drillDownHandle").length > 0){
 						return;
 					}
 					saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
 					saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
+					getNodrillIndex();
+					// clickDrillChangeDiFunction(data.results.data);
 				}else{
+					
 					saveEveryViewPostData = {};
 					drillElementCount = {};
 				}
 
-
-				
+				if(freeHandlePostFun == null || !equalCompare(freeHandlePostFun["expressions"]["groupby"],handleDataPost["expressions"]["groupby"])){
+					clickDrillChangeDiFunction(data.results.data);
+				}
 
 			}
 		}

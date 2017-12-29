@@ -54,6 +54,7 @@ function one_de_one_me_handle (chart_type_need) {
 	$("#main").css({
 			"display":"block"
 	});
+	
 	var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
 	if(!mycharts){
 	mycharts = 	echarts.init($("#main").get(0));
@@ -105,6 +106,9 @@ function one_de_one_me_handle (chart_type_need) {
 			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
 		}
 	}
+
+	$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content #main").find("div").eq(0).add($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content #main").find("div").eq(0).children("canvas")).css("height","100%");
+	mycharts.resize();
 
 	 // 一个维度一个度量
 	function waterWall_generate_fun(){
@@ -850,6 +854,7 @@ function many_de_many_me_handle(chart_type_need){
 			"display":"block",
 	});
 
+
 	//释放图表实例
 
 	var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
@@ -859,8 +864,6 @@ function many_de_many_me_handle(chart_type_need){
 
 	var all_dimensionality = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));
 	var all_measure = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]));
-
-
 
 	mycharts.off("dblclick");
 	mycharts.on("dblclick",function(params){
@@ -927,6 +930,8 @@ function many_de_many_me_handle(chart_type_need){
 		}
 	}
 
+	$("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content #main").find("div").eq(0).add($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area #view_show_area_content #main").find("div").eq(0).children("canvas")).css("height","100%");
+	mycharts.resize();
 
 	var last_dimensionaity = all_dimensionality[all_dimensionality.length - 1];
 
@@ -3136,7 +3141,6 @@ function comparisonStrip_generate_fun(){
 
 				//清除上一个图形的图例
 				mycharts.clear();
-
 				//使用刚指定的配置项和数据显示图标
 				mycharts.setOption(option);
 				spinner.stop();
@@ -3514,7 +3518,7 @@ function drillDownCommonFunction(params,allDimensionality,tempSplitView,drillFie
 
 		if(currentChatType == "radarChart" && params.componentType == "radar"){
 			 aDrillcondtion = {"currentField":radarDiemension,"currentValue":params.name,"drillField":drillField};
-			dirllConditions.push(aDrillcondtion);
+			 dirllConditions.push(aDrillcondtion);
 		
 		}else{
 				for(var i = 0 ; i < allDimensionality.length; i++){
@@ -3578,6 +3582,7 @@ function drillDownCommonFunction(params,allDimensionality,tempSplitView,drillFie
 			//记录当前上钻的数据
 			drillDownClick(this,freeTemp);
 		})
+
 		switch_chart_handle_fun();
 
 

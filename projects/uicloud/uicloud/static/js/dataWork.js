@@ -9,28 +9,28 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 	}
 	var exprlist = [
 					{
-						"alias":"min","exprstr":"min("+field+")"
+						"alias":"min","exprstr":"min(`"+field+"`)"
 					},
 					{
-						"alias":"max","exprstr":"max("+field+")"
+						"alias":"max","exprstr":"max(`"+field+"`)"
 					},
 					{
-						"alias":"averge","exprstr":"avg("+field+")"
+						"alias":"averge","exprstr":"avg(`"+field+"`)"
 					},
 					{
-						"alias":"len","exprstr":"count("+field+")"
+						"alias":"len","exprstr":"count(`"+field+"`)"
 					}
 				];
 	if(fieldtype == "dateType"){
 				 exprlist = [
 					{
-						"alias":"min","exprstr":"min("+field+")"
+						"alias":"min","exprstr":"min(`"+field+"`)"
 					},
 					{
-						"alias":"max","exprstr":"max("+field+")"
+						"alias":"max","exprstr":"max(`"+field+"`)"
 					},
 					{
-						"alias":"len","exprstr":"count("+field+")"
+						"alias":"len","exprstr":"count(`"+field+"`)"
 					}
 				];
 			}

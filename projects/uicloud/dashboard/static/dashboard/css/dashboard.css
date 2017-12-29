@@ -256,6 +256,11 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box .ui-datepicker-trigger,#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box .ui-datepicker-trigger{vertical-align: middle;}
 
 #sizer_content .filter_body_div{font-size: 10px;margin-top: 5px;}
+#sizer_content .filter_body_div .table_field_list li .field_header_div{cursor:pointer;}
+#sizer_content .filter_body_div .table_field_list li .field_detail_list li{height: 23px;line-height: 23px;}
+#sizer_content .filter_body_div .table_field_list li .field_detail_list li label{float: left;width: 100%;}
+#sizer_content .filter_body_div .table_field_list li .field_detail_list li label input{float:left;margin-top: 5px;cursor:pointer;}
+#sizer_content .filter_body_div .table_field_list li .field_detail_list li label span{float: left;cursor:pointer;}
 #sizer_content .filter_body_div p {height:20px;line-height: 20px;border-top: 1px solid #DEDEDE;}
 /*#sizer_content .filter_body_div p.cubeTableName{font-size: 12px;text-indent: 10px;}*/
 #sizer_content .filter_body_div ul.table_field_list li .field_header_div{position: relative;height: 23px;}
@@ -270,7 +275,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv:hover{background: #dedede;border-radius: 2px;}
 #sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv:hover .filterSelectImgDiv{display: inline-block;}
 #sizer_content .filter_body_div ul.table_field_list li .fieldWholeDiv:hover .filterDetailImgDiv{display: inline-block;}
-#sizer_content .filter_body_div ul.table_field_list li ul.field_detail_list li{margin-left: 25px;padding-top: 5px;}
+#sizer_content .filter_body_div ul.table_field_list li ul.field_detail_list li{margin-left: 25px;}
 #sizer_content .filter_body_div ul.table_field_list li ul.field_detail_list li span.filedContentName{margin-left: 5px;}
 #sizer_content .filter_body_div ul.table_field_list li .filterBox{border: 1px solid #DEDEDE;border-radius: 2px;margin-left: 10px;width: 178px;height: 120px;display: none;}
 #sizer_content .filter_body_div ul.table_field_list li .filterBox p.detail_logo{text-indent: 10px;height: 21px;border-bottom: 1px solid #DEDEDE;line-height: 21px;font-size: 10px;}
@@ -315,7 +320,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #project_style .module_style .valueUnit .content span.active{color: white;background: #0d53a4;}
 
 /*下钻展示*/
-#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow{font-size: 12px;margin-left: 0.75rem;max-width:100%;height:18;line-height:18px;margin-top:12px;overflow-x:auto;display: none}
+#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow{font-size: 12px;margin-left: 0.75rem;max-width:100%;height:18px;line-height:18px;margin-top:12px;overflow-x:auto;display: none}
 #pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li{float: left;line-height: 18px}
 #pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li img{float: left;margin: 3px 10px 0px}
 #pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li p{cursor: pointer;float: left;}

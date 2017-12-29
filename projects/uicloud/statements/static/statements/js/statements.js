@@ -834,28 +834,6 @@
 		}
 
 
-		function statementsClickDrill(element,toDrill){
-			clickDrill =false;
-			$(element).parents(".new_view_content").attr("clickcount",$(element).parent("li").attr("datavalue"));
-			freePostData = JSON.parse(JSON.stringify($(element).data("viewHandleFun")));
-			$(element).parents(".new_view_content").attr("showText",toDrill["showType"][$(element).parent("li").attr("datavalue")].split("_YZYPD_")[0]);
-			drag_row_column_data_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["viewdata"];
-			drag_measureCalculateStyle_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["calculateStyle"];
-			currentColorGroupName_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["dragViewStyle"].split("_YZY_")[0];
-			normalUnitValue_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["dragViewStyle"].split("_YZY_")[1];
-			valueUnitValue_arr[$(element).data("viewHandleCount")] = objectDeepCopy($(element).data("viewHandleData"))["dragViewStyle"].split("_YZY_")[2];
-			var clickLoding = echarts.getInstanceByDom($(".new_view_main[_echarts_instance_="+$(element).parents(".new_view_content").find(".new_view_main").attr("_echarts_instance_")+"]").get(0));
-			clickLoding.showLoading({
-				  text: '数据获取中',
-					 color: '#c23531',
-					 textColor: '#000',
-					 maskColor: 'rgba(255, 255, 255, 0.8)',
-					 zlevel: 0
-			});
-			eval($(element).data("viewHandleType"));
-		}
-
-
 			//获取当前容器的图例
 			 // gridster = $(".gridster ul").gridster().data('gridster');
 
@@ -996,26 +974,7 @@
 				}
 
 				if(toDrill["saveDrillDownTemp"] != undefined){
-					$(".new_view_content").eq(count).addClass("drillToClick").data("drillData",drillHandle).data("drillEvery",JSON.stringify(toDrill["saveDrillDownTemp"])).attr("clickcount",0).data("showtype",toDrill["showType"]).data("drillDownCount",toDrill["drillElementCount"]).data("drillElementPost",toDrill["saveEveryViewPostData"]);
-					$(".new_view_content").eq(count).append($("<div class='drillDownState'><ul><li class='statementsAll' datavalue='0'><p>全部</p></li></ui></div>"));
-					$(".new_view_content").eq(count).find(".drillDownState ul .statementsAll").unbind("click");
-					$(".new_view_content").eq(count).find(".drillDownState ul .statementsAll p").click(function(event){
-						event.stopPropagation();
-						$(this).parents(".drillDownState").find("ul li").hide();
-						statementsClickDrill($(this),toDrill);
-					})
-					for(var i = 0; i < allKeys(toDrill["saveDrillDownTemp"]).length - 1;i++){
-						$(".new_view_content").eq(count).find(".drillDownState ul").append($("<li datavalue="+(i+1)+"><img src='/static/statements/img/jt.png' alt='jt'><p>"+allKeys(toDrill["saveDrillDownTemp"])[i]+"</p></li>"));
-					}
-					$(".new_view_content").eq(count).find(".drillDownState ul li p").eq(1).unbind("click");
-					$(".new_view_content").eq(count).find(".drillDownState ul li p").eq(1).click(function(event){
-						event.stopPropagation();
-						if(allKeys(toDrill["saveDrillDownTemp"]).length == 2 || $(".new_view_content").eq(count).find(".drillDownState ul li").eq(2).css("display") == "none"){
-							return;
-						}
-						$(this).parents(".drillDownState").find("ul li:gt("+$(this).parent("li").attr("datavalue")+")").hide();
-						statementsClickDrill($(this),toDrill);
-					})
+					statementsAddClickFunction($(".new_view_content").eq(count),toDrill,drillHandle);
 				}
 				
 				// if(!hide_show_if){
@@ -1023,7 +982,7 @@
 				// }
 				$(".new_view_content").eq(count).attr("viewId",viewId);
 
-				$(".new_view_content").find("."+viewshow_class+"").css("height",$("."+viewshow_class+"").parent().height()-30 + "px").data("view_num_or",view_num_or);
+				$(".new_view_content").find("."+viewshow_class+"").css("height",$("."+viewshow_class+"").parent().height()-30 + "px").data("view_num_or",view_num_or).css("top","30px");
 
 				$("."+viewshow_class+"").parent().find(".textarea").css("width",$("."+viewshow_class+"").parent().width()-18 + "px");
 				$(".new_view_content .new_view_right_icon .add_css_img").each(function(index,ele){
@@ -1594,13 +1553,13 @@
 													var freeViewChangeDataState = $(ele).find(".new_view_main").attr("class").match(/\d+/g);
 													if($(ele).find(".edit_table").length > 0){
 														$(ele).find(".new_view_main").removeClass().addClass("new_view_main clear new_view_table bbv"+show_table_arr_one[0]+"view_show_class"+index+" view_handle_count"+index+"");
-														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]).removeClass().addClass("view_show_handle clear view_handle_table");
+														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]-1).removeClass().addClass("view_show_handle clear view_handle_table");
 													}else if($(ele).find(".cardInfo").length > 0){
 														$(ele).find(".new_view_main").removeClass().addClass("new_view_main clear new_view_indexPage bbv"+show_table_arr_one[0]+"view_show_class"+index+" view_handle_count"+index+"");
-														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]).removeClass().addClass("view_show_handle clear view_handle_indexPage");
+														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]-1).removeClass().addClass("view_show_handle clear view_handle_indexPage");
 													}else{
 														$(ele).find(".new_view_main").removeClass().addClass("new_view_main clear bbv"+show_table_arr_one[0]+"view_show_class"+index+" view_handle_count"+index+"");
-														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]).removeClass().addClass("view_show_handle clear");
+														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]-1).removeClass().addClass("view_show_handle clear");
 													}
 													viewshow_class_arr.push("bbv" + show_table_arr_one[0]+"view_show_class"+index);
 													$(ele).attr("data-value",index);
@@ -1609,9 +1568,9 @@
 														$(ele).find(".new_view_table_name").text("视图"+(index+1));
 														
 														var freeChangeNameHave = JSON.parse(JSON.stringify($(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]).find(".small_view_text").text()));
-														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]).find(".small_view_text").text("视图"+(index+1));
-														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]).data("save_view_class","view_handle_count"+index);
-														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]).data("data_result_content",$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]).data("data_result_content").replace(preTextState,"视图"+(index+1)));
+														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]-1).find(".small_view_text").text("视图"+(index+1));
+														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]-1).data("save_view_class","view_handle_count"+index);
+														$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]-1).data("data_result_content",$(".statement_li").eq(freeViewChangeDataState[0]-1).find(".view_show_handle").eq(freeViewChangeDataState[1]-1).data("data_result_content").replace(preTextState,"视图"+(index+1)));
 														changNameToChangeDashboard(freeViewChangeDataState,freeChangeNameHave,"视图"+(index+1),"noDelete");
 													}
 												})

@@ -8,6 +8,8 @@ var clickDrill = true;
 var count = 0;
 var array = [];
 
+var oneClickLoading = true;
+var manyClickLoading = true;
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
 function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCount) {
@@ -29,12 +31,24 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 
 	mycharts.off("click");
 	mycharts.on("click",function(params){
-		clickDrillStatementsFunction(params,$(params.event.event.target).parents(".new_view_content"),JSON.parse(JSON.stringify(storeNum_toview)),JSON.parse(JSON.stringify(viewshow_class)))
+			if(oneClickLoading){
+				oneClickLoading = false;
+				clickDrillStatementsFunction(params,$(params.event.event.target).parents(".new_view_content"),JSON.parse(JSON.stringify(storeNum_toview)),JSON.parse(JSON.stringify(viewshow_class)));
+			}
+			setTimeout(function(){oneClickLoading = true;},500)
 	});
  	var need_handle_measureName = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["measure"]))[0];
  	var need_handle_dimensionalityName = specialRemoveDataTypeHandle(drag_row_column_data_arr[storeNum_toview]["row"]["dimensionality"].concat(drag_row_column_data_arr[storeNum_toview]["column"]["dimensionality"]))[0];
  	
-
+	if(mycharts._loadingFX == undefined){
+		mycharts.showLoading({
+			 text: '数据获取中',
+				 color: '#c23531',
+				 textColor: '#000',
+				 maskColor: 'rgba(255, 255, 255, 0.8)',
+				 zlevel: 0
+		});
+	}
  	
 	 // 一个维度一个度量
 	function waterWall_generate_fun(storeNum_toview){
@@ -45,22 +59,15 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 		}
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				  text: '数据获取中',
-  				  color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 			var dimensionality_need_show = [];
 			var measure_need_show = [];
 			var measure_help_show =[];
 			var count_help = 0;
 			for(var i =0 ; i < data.length;i++){
 				var aData = data[i];
-				var value = aData[drag_measureCalculateStyle[need_handle_measureName]];
+				var value = aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]];
 				dimensionality_need_show.push(aData[need_handle_dimensionalityName]);
-				measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"tongbi":aData["同比"+drag_measureCalculateStyle[need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle[need_handle_measureName]]});
+				measure_need_show.push({"value":value / allValueUnitDict[valueUnitValue],"originValue":value,"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]]});
 				measure_help_show.push({"value":count_help / allValueUnitDict[valueUnitValue],"originValue":count_help});
 				count_help += value;
 			}
@@ -84,7 +91,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 					  }
 				],
 			    legend:{
-			   	 	data:[drag_measureCalculateStyle[need_handle_measureName]],
+			   	 	data:[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],
 			   	 	left:"center",
 			   	 	// bottom:40,
 			   	 	// bottom:dimensionality_need_show.length > 15 ? 40 : 20,
@@ -230,7 +237,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 						data:measure_help_show
 			        },
 			        {
-			            name: drag_measureCalculateStyle[need_handle_measureName],
+			            name: drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName],
 			            type: 'bar',
 			            stack: '总量',
 			            label: {
@@ -254,7 +261,6 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			
 				//清除上一个图例
 				mycharts.clear();
-				
 			setTimeout(function (){
                 mycharts.hideLoading();
                 mycharts.setOption(option);
@@ -275,13 +281,6 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				  text: '数据获取中',
-  				  color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 			var dimensionality_need_show = [];
 			var measure_need_show = [];
 			for (var i = 0; i < data.length;i++) {
@@ -410,13 +409,6 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 		}
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				 text: '数据获取中',
-  				 color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 			var dimensionality_need_show = [];
 			var  measure_need_show = [];
 			for(var i = 0;i < data.length;i++){
@@ -607,13 +599,6 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 		}
  		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				 text: '数据获取中',
-  				 color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 				var dimensionality_need_show = [];
 				var measure_need_show = [];
 				var measure_help_show =[];
@@ -889,10 +874,22 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 
 	mycharts.off("click");
 	mycharts.on("click",function(params){
-		clickDrillStatementsFunction(params,$(params.event.event.target).parents(".new_view_content"),JSON.parse(JSON.stringify(storeNum_toview)),JSON.parse(JSON.stringify(viewshow_class)))
+		if(manyClickLoading){
+			manyClickLoading = false;
+			clickDrillStatementsFunction(params,$(params.event.event.target).parents(".new_view_content"),JSON.parse(JSON.stringify(storeNum_toview)),JSON.parse(JSON.stringify(viewshow_class)));
+		}
+		setTimeout(function(){manyClickLoading = true;},500)
 	});
 
-
+	if(mycharts._loadingFX == undefined){
+		mycharts.showLoading({
+			 text: '数据获取中',
+				 color: '#c23531',
+				 textColor: '#000',
+				 maskColor: 'rgba(255, 255, 255, 0.8)',
+				 zlevel: 0
+		});
+	}
 	
 	// console.log(drag_row_column_data_arr[storeNum_toview])
 
@@ -908,13 +905,6 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 		}
 			var tempSaveClassName = viewshow_class;
 			reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				 text: '数据获取中',
-  				 color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 				var option = {
 					title:[{
 					text:"折线图",
@@ -1017,7 +1007,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 				};
 				var measure_show_data_arr = [];
 				var dimensionality_show_data_arr = [];
-				var  valueMax = data[0][drag_measureCalculateStyle[all_measure[0]]];
+				var  valueMax = data[0][drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]];
 				
 				for(var i = 0; i < data.length;i++){
 					var aData = data[i];
@@ -1027,8 +1017,8 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 					}
 					for(var measure_i = 0;measure_i < all_measure.length;measure_i++){
 						var aMeasure = all_measure[measure_i];
-						if(valueMax < aData[drag_measureCalculateStyle[aMeasure]]){
-							valueMax = aData[drag_measureCalculateStyle[aMeasure]];
+						if(valueMax < aData[drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]]){
+							valueMax = aData[drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]];
 						}
 						if(!measure_show_data_arr[measure_i]){
 							measure_show_data_arr[measure_i] = [{"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]]/allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]],"dirllInfo":{"currentField":last_dimensionaity,"currentValue":aData[last_dimensionaity]},"theDimeInfo":theDimeInfo,"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][aMeasure]],"measureName":aMeasure}];
@@ -1157,9 +1147,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 			            yAxisIndex: [0],
 			    			}
 				]
-				
-				
-				
+
 				//清除上一个图例
 				mycharts.clear();
 				
@@ -1182,13 +1170,6 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		}
 			var tempSaveClassName = viewshow_class;
 			reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				 text: '数据获取中',
-  				 color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 				var measure_show_data = [];
 				var dimensionality_show_data = [];
 				for (var i = 0;i < data.length;i++) {
@@ -1545,13 +1526,6 @@ function comparisonStrip_generate_fun(storeNum_toview){
  		var  chartTile = {"number_bar":"堆积柱状图","number_liner":"堆积条形图","percentage_bar":"百分比堆积柱","percentage_liner":"百分比堆积条形"}
 
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				 text: '数据获取中',
-  				 color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 				var measureName = all_measure[0];
 				var needMeasureData = data;
 				var dimensionality_arr= []; // 各个维度的数组,绘制图形需要使用
@@ -2021,15 +1995,6 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			(function(index){
 				var need_dimensionality = all_dimensionality.slice(0,index+1);
 				reporting_measure_Hanlde(need_dimensionality,all_measure,null,storeNum_toview,function(data){
-					mycharts.showLoading({
-						 text: '数据获取中',
-							 color: '#c23531',
-							 textColor: '#000',
-							 maskColor: 'rgba(255, 255, 255, 0.8)',
-							 zlevel: 0
-					});
-					
-	
 					for(var j = 0;j < data.length;j++){
 						var aData = data[j];
 						var name = "";
@@ -2247,13 +2212,6 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		}
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				 text: '数据获取中',
-  				 color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 			var series = [];
 			var dimensionality_show_data = [];
 			var needXais = [];
@@ -2552,13 +2510,6 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		};
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				 text: '数据获取中',
-  				 color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 			var series = [];
 			var dimensionality_show_data = [];
 			var needYais = [];
@@ -2891,13 +2842,6 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		}
 		var tempSaveClassName = viewshow_class;
 		reporting_measure_Hanlde(all_dimensionality,all_measure,null,storeNum_toview,function(data){
-			mycharts.showLoading({
-				 text: '数据获取中',
-  				 color: '#c23531',
- 				 textColor: '#000',
- 				 maskColor: 'rgba(255, 255, 255, 0.8)',
- 				 zlevel: 0
-			});
 			radarDiemension = all_dimensionality[0];
 			var indicator = [];
 			var series = [{"name":all_measure.join("/"),"type":"radar","data":[]}];
@@ -3017,7 +2961,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		        triggerEvent:true,
 		        name:{
 		        	formatter:function(params){
-	         			count++;		
+	         			count++;
 	         			if(data.length > 20){
 	         				if(count % 3 == 0){
 	         					return params;
@@ -3102,46 +3046,58 @@ function comparisonStrip_generate_fun(storeNum_toview){
 
 
 
-//点击下钻
-function clickDrillStatementsFunction(params,element,storeNum_toview){
-	
-	if(!$(element).hasClass("drillToClick") || $(element).attr("clickcount") >= allKeys(JSON.parse($(element).data("drillEvery"))).length-1) return;
-	if($(element).attr("clickcount") == 0){
-		freePostData = JSON.parse($(element).data("drillData"));
-	}
-	var freeShowType = $(element).data("showtype");
-
-	var freeDrillCount = $(element).data("drillDownCount")[freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[0]];
-
-	var freeDrillPost = $(element).data("drillElementPost");
-	//判断单维度和多维度获取点击的value
-	if(params.data.theDimeInfo == undefined || params.data.theDimeInfo.length == 1){
-		var statementsValue = objectDeepCopy(params.name);
-	}else{
-		if(freeDrillCount == undefined){
-			var statementsValue =objectDeepCopy( params.data.theDimeInfo[0]);
-		}else{
-			var statementsValue = objectDeepCopy(params.data.theDimeInfo[freeDrillCount]);
-		}
+	//点击下钻
+	function clickDrillStatementsFunction(params,element,storeNum_toview){
 		
-	}
+		if(!$(element).hasClass("drillToClick") || $(element).attr("clickcount") >= allKeys(JSON.parse($(element).data("drillEvery"))).length-1) return;
+		if($(element).attr("clickcount") == 0){
+			freePostData = JSON.parse($(element).data("drillData"));
+		}
+		var freeShowType = $(element).data("showtype");
 
-	var freeType = JSON.parse($(element).data("drillEvery"));
-	
-	$(element).find(".drillDownState ul li p").eq(Number($(element).attr("clickcount"))).data("viewHandleFun",JSON.parse(JSON.stringify(freePostData))).data("viewHandleType","reporting_"+freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[1].replace(/\)/,","+storeNum_toview+",'"+$(element).find(".new_view_main").attr("_echarts_instance_"))+"')").data("viewHandleData",JSON.parse(JSON.stringify(freeType[freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[0]]["viewdata"]))).data("viewHandleCount",JSON.parse(JSON.stringify(storeNum_toview)));
-	$(element).attr("clickcount",Number($(element).attr("clickcount"))+1);
-	var freeCount = Number($(element).attr("clickcount"));
-	$(element).find(".drillDownState ul li p").eq(freeCount).text(statementsValue);
-	$(element).find(".drillDownState ul li:lt("+(freeCount+1)+")").show();
-	$(element).attr("showText",freeShowType[freeCount].split("_YZYPD_")[0]);
-	if(freeDrillPost[freeShowType[freeCount].split("_YZYPD_")[0]] != undefined){
-		var tempShowHandleData = JSON.parse(JSON.stringify( freeDrillPost[freeShowType[freeCount].split("_YZYPD_")[0]]));
-		tempShowHandleData["conditions"] = JSON.parse(JSON.stringify(freePostData))["conditions"];
-		tempShowHandleData["conditions"].push({"columnName":freeShowType[freeCount-1].split("_YZYPD_")[0],"type":"=","value":statementsValue})
-		freePostData = JSON.parse(JSON.stringify(tempShowHandleData));
-	}
-	drag_row_column_data_arr[storeNum_toview] = JSON.parse(JSON.stringify(freeType[freeShowType[freeCount].split("_YZYPD_")[0]]["viewdata"]));
-	clickDrill =false;
-	eval("reporting_"+freeShowType[freeCount].split("_YZYPD_")[1].replace(/\)/,","+storeNum_toview+",'"+$(element).find(".new_view_main").attr("_echarts_instance_"))+"')");
+		var freeDrillCount = $(element).data("drillDownCount")[freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[0]];
 
-	}
+		var freeDrillPost = $(element).data("drillElementPost");
+		//判断单维度和多维度获取点击的value
+		if(params.data.theDimeInfo == undefined || params.data.theDimeInfo.length == 1){
+			var statementsValue = objectDeepCopy(params.name);
+		}else{
+			if(freeDrillCount == undefined){
+				var statementsValue =objectDeepCopy( params.data.theDimeInfo[0]);
+			}else{
+				var statementsValue = objectDeepCopy(params.data.theDimeInfo[freeDrillCount]);
+			}
+			
+		}
+
+		var freeType = JSON.parse($(element).data("drillEvery"));
+		
+		$(element).find(".drillDownState ul li p").eq(Number($(element).attr("clickcount"))).data("viewHandleFun",JSON.parse(JSON.stringify(freePostData))).data("viewHandleType","reporting_"+freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[1].replace(/\)/,","+storeNum_toview+",'"+$(element).find(".new_view_main").attr("_echarts_instance_"))+"')").data("viewHandleData",JSON.parse(JSON.stringify(freeType[freeShowType[Number($(element).attr("clickcount"))].split("_YZYPD_")[0]]))).data("viewHandleCount",JSON.parse(JSON.stringify(storeNum_toview)));
+		$(element).attr("clickcount",Number($(element).attr("clickcount"))+1);
+		var freeCount = Number($(element).attr("clickcount"));
+		$(element).find(".drillDownState ul li p").eq(freeCount).text(statementsValue);
+		$(element).find(".drillDownState ul li:lt("+(freeCount+1)+")").show();
+		$(element).attr("showText",freeShowType[freeCount].split("_YZYPD_")[0]);
+		if(freeDrillPost[freeShowType[freeCount].split("_YZYPD_")[0]] != undefined){
+			var tempShowHandleData = JSON.parse(JSON.stringify( freeDrillPost[freeShowType[freeCount].split("_YZYPD_")[0]]));
+			tempShowHandleData["conditions"] = JSON.parse(JSON.stringify(freePostData))["conditions"];
+			tempShowHandleData["conditions"].push({"columnName":freeShowType[freeCount-1].split("_YZYPD_")[0],"type":"=","value":statementsValue})
+			freePostData = JSON.parse(JSON.stringify(tempShowHandleData));
+		}
+		drag_row_column_data_arr[storeNum_toview] = objectDeepCopy(freeType[freeShowType[freeCount].split("_YZYPD_")[0]]["viewdata"]);
+		drag_measureCalculateStyle_arr[storeNum_toview] = objectDeepCopy(freeType[freeShowType[freeCount].split("_YZYPD_")[0]]["calculateStyle"]);
+		currentColorGroupName_arr[storeNum_toview] = objectDeepCopy(freeType[freeShowType[freeCount].split("_YZYPD_")[0]]["dragViewStyle"]).split("_YZY_")[0];
+		normalUnitValue_arr[storeNum_toview] = objectDeepCopy(freeType[freeShowType[freeCount].split("_YZYPD_")[0]]["dragViewStyle"]).split("_YZY_")[1];
+		valueUnitValue_arr[storeNum_toview] = objectDeepCopy(freeType[freeShowType[freeCount].split("_YZYPD_")[0]]["dragViewStyle"]).split("_YZY_")[2];
+		clickDrill =false;
+		var clickLoding = echarts.getInstanceByDom($(".new_view_main[_echarts_instance_="+$(element).find(".new_view_main").attr("_echarts_instance_")+"]").get(0));
+		clickLoding.showLoading({
+			  text: '数据获取中',
+				  color: '#c23531',
+				 textColor: '#000',
+				 maskColor: 'rgba(255, 255, 255, 0.8)',
+				 zlevel: 0
+		});
+		eval("reporting_"+freeShowType[freeCount].split("_YZYPD_")[1].replace(/\)/,","+storeNum_toview+",'"+$(element).find(".new_view_main").attr("_echarts_instance_"))+"')");
+
+		}
