@@ -10,11 +10,11 @@ def setupLoggingSparkCode():
     """
 
     return '''
-    # set up logging to spark-excutedby-livy.log
+    # set up logging to spark-executedby-livy.log
     def setupLogging():
         import logging
 
-        logpath = '/opt/spark/logs/spark-excutedby-livy.log'
+        logpath = '/opt/spark/logs/spark-executedby-livy.log'
         logger = logging.getLogger("sparkExecutedBylivy")
 
         # Set level of logger source.  Use debug for development time options, then bump it up
@@ -180,7 +180,7 @@ def filterDataFrameSparkCode():
         columnList = "*"
         logger.debug(u"tableDict:{0}".format(tableDict))
         if 'columns' in tableDict.keys():
-            columnList = list(tableDict['columns'].keys())
+            columnList = ["`{0}`".format(colit1) for colit1 in list(tableDict['columns'].keys())]
             logger.debug(u"columnList:{0}".format(columnList))
             inDataFrame=inDataFrame.select(columnList)
 

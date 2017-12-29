@@ -62,8 +62,8 @@ def executeSpark(sparkCode,
     statementsUrl = sessionUrl + '/statements'
     sparkCodesReq = requests.post(
         statementsUrl, data=json.dumps(runData), headers=headers)
-    logger.debug("Request a livy job. sparkCodesReq:{0}, headers:{1}".format(
-        sparkCodesReq.json(), sparkCodesReq.headers))
+    # logger.debug("Request a livy job. sparkCodesReq:{0}, headers:{1}".format(
+    #     sparkCodesReq.json(), sparkCodesReq.headers))
 
     resultReqJson = getReqFromDesiredReqState(host + sparkCodesReq.headers['location'],
                                               desiredState=checkDesiredState,
@@ -157,7 +157,7 @@ def getOutputColumns(jsonData):
 
         # check if the generated new table exists the same column name.
         for colName in columnList:
-            fullColName = "{0}.{1}.{2}".format(dbName, tableName, colName)
+            fullColName = "{0}_{1}_{2}".format(dbName, tableName, colName)
             if colName in outputColumnsList:
                 # if fullColName in outputColumnsList:
                 #     logger.error("There are two columns with the same database, table and columns. \
@@ -256,6 +256,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     import sys
     import traceback
     import json
+    import pyspark
     ''' + setupLoggingSparkCode() + getDataFrameFromSourceSparkCode() + '''
     def writeDataFrame(jsonStr, savedPathUrl, mode='overwrite', partitionBy=None, maxRowCount=False):
         """
@@ -268,6 +269,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         if not newDF:
             return False
 
+        newDF.persist(storageLevel=pyspark.StorageLevel.MEMORY_ONLY)
         # get user information, especially username.
 
         # shorten the partition num.
@@ -280,6 +282,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             newDF.coalesce(1).write.parquet(savedPathUrl, mode=mode)
         else:
             newDF.write.parquet(savedPathUrl, mode=mode)
+        newDF.unpersist()
         return True
 
     def generateNewDataFrame(jsonData, maxRowCount=10000, userName="myfolder", rootFolder="/users"):
@@ -322,7 +325,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             removedColsDict = {}
             if "removedColumns" in jsonData["outputs"].keys():
                 for item in jsonData["outputs"]["removedColumns"]:
-                    (db, table, col) = item.split(".")
+                    (db, table, col) = item.split(".", maxsplit=2)
                     dbTable = "{0}.{1}".format(db, table)
                     if dbTable in removedColsDict.keys():
                         removedColsDict[dbTable].append(col)
@@ -354,15 +357,14 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 return False
 
             outputDf = joinDF(sortedRelList, dfDict)
+            logger.debug("outputDf columns: {0}".format(outputDf.columns))
             if outputDf is None:
                 return False
 
             # rename the new dataframe.
-            for key, newCol in jsonData["outputs"]['columnRenameMapping'].items():
-                oldCol = key.replace('.', '_')
-                outputDf = outputDf.withColumnRenamed(oldCol, newCol)
+            for oldCol, newCol in jsonData["outputs"]['columnRenameMapping'].items():
+                outputDf = outputDf.withColumnRenamed(oldCol.replace('.', '_', 2), newCol)
         except KeyError as e:
-            print("Mapping key {0} not found.".format(e.message))
             logger.error("KeyError Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
             return False
         except Exception:
@@ -434,8 +436,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         for dbTable in dfDict.keys():
             for colItem in dfDict[dbTable].columns:
                 dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(
-                    colItem,
-                    u"{0}_{1}".format(dbTable.replace('.', '_'), colItem))
+                    colItem, u"{0}_{1}".format(dbTable.replace(".", "_", 1), colItem))
 
         # TBD, this mapping need to be researched again for the details.
         # joinType must be one of below
@@ -467,8 +468,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             # print(dfDict[fromDbTable].printSchema())
             # print(dfDict[toDbTable].printSchema())
             for mapit in columnMapList:
-                fromCol = u"{0}_{1}".format(fromDbTable.replace('.', '_'), mapit["fromCol"])
-                toCol = u"{0}_{1}".format(toDbTable.replace('.', '_'), mapit["toCol"])
+                fromCol = u"`{0}_{1}`".format(fromDbTable.replace('.', '_', 1), mapit["fromCol"])
+                toCol = u"`{0}_{1}`".format(toDbTable.replace('.', '_', 1), mapit["toCol"])
                 logger.debug(u"fromCol: {0}, toCol: {1}".format(fromCol, toCol))
                 cond.append(dfDict[fromDbTable][fromCol] == dfDict[toDbTable][toCol])
 
