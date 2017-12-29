@@ -25,12 +25,19 @@
 			"index":null // 拖拽的下标。。可能暂时不用
 		};
 
+		var arr = [];
+		var count = 0;
+
+		var nameArr = [];
+		var newArr = [];
+
 
 		//存放仪表板处理过的数据JSON
 
 		var saveDashboardPostData = [];
 		//图表显示的区域
 		var viewshow_class = null,
+
 
 		viewshow_class_arr =[],
 		//记录每个表的名称
@@ -122,6 +129,24 @@
 
 					opp.toolbox[0].show = false;
 
+					//雷达图缩小调整
+					if(opp.radar){
+						// console.log(opp.radar[0].indicator);
+						if(opp.radar[0].indicator.length > 20){		
+							opp.radar[0].name.formatter = function(params){
+								// console.log(params);
+								count++;
+		         				if(count % 5 == 0){
+		         					return params;
+		         				}else{
+		         					arr.push(params);
+		         					return '';
+		         				}
+							}
+						}
+					}
+
+
 					for(var i = 0; i < opp.series.length;i++){
 						if(opp.series[i].label != undefined){
 
@@ -141,15 +166,62 @@
 					for(var j = 0; j < opp.xAxis.length; j++){
 						// opp.xAxis[j].axisTick.interval = 2;
 						// opp.xAxis[j].axisLabel.interval = 2;
-						opp.xAxis[j].axisTick.interval = function(index,value){return !/^YZYPD/.test(value)};
-						opp.xAxis[j].axisLabel.interval = function(index,value){return !/^YZYPD/.test(value)};
+						if(opp.xAxis[j].data){
+							var len = opp.xAxis[j].data.length;
+							opp.xAxis[j].axisTick.interval = function(index,value){
+								if(index % 2 == 0 && len > 10) {
+									return !/^YZYPD/.test(value);
+								}else if(len < 10){
+									return value;
+								}else{
+									return '';
+								}
+
+							};
+							opp.xAxis[j].axisLabel.interval = function(index,value){
+								if(index % 2 == 0 && len > 10) {
+									return !/^YZYPD/.test(value);
+								}else if(len < 10){
+									return value;
+								}else{
+									return '';
+								}
+							};
+						}else{
+							opp.xAxis[j].axisTick.interval = function(index,value){return !/^YZYPD/.test(value)};
+							opp.xAxis[j].axisLabel.interval = function(index,value){return !/^YZYPD/.test(value)};
+						}
 					}
+
 
 					for(var z = 0; z < opp.yAxis.length; z++){
 						// opp.yAxis[z].axisTick.interval = 2;
 						// opp.yAxis[z].axisLabel.interval = 2;
-						opp.yAxis[z].axisTick.interval = function(index,value){return !/^YZYPD/.test(value)};
-						opp.yAxis[z].axisLabel.interval = function(index,value){return !/^YZYPD/.test(value)};
+						// console.log(opp.yAxis);
+
+						if(opp.yAxis[z].data){
+							var len = opp.yAxis[z].data.length;
+							opp.yAxis[z].axisTick.interval = function(index,value){
+								if(index % 2 == 0 && len > 10) {
+									return !/^YZYPD/.test(value)
+								}else if(len < 10){
+									return value;
+								}else{
+									return '';
+								}};
+							opp.yAxis[z].axisLabel.interval = function(index,value){
+								if(index % 2 == 0 && len > 10) {
+									return !/^YZYPD/.test(value)
+								}else if(len < 10){
+									return value;
+								}else{
+									return '';
+								}
+							};
+						}else{
+							opp.yAxis[z].axisTick.interval = function(index,value){return !/^YZYPD/.test(value)};
+							opp.yAxis[z].axisLabel.interval = function(index,value){return !/^YZYPD/.test(value)};
+						}
 					}
 
 					myChartsChange.setOption(opp);
@@ -164,6 +236,22 @@
 				var myChartsChange = echarts.getInstanceByDom($(ele).get(0));
 				var opp = myChartsChange.getOption();
 				opp.toolbox[0].show = true;
+
+				if(opp.radar){
+						// console.log(opp.radar[0].indicator);
+						if(opp.radar[0].indicator.length > 20){		
+							opp.radar[0].name.formatter = function(params){
+								// console.log(params);
+								count++;
+		         				if(count % 3 == 0){
+		         					return params;
+		         				}else{
+		         					arr.push(params);
+		         					return '';
+		         				}
+							}
+						}
+					}
 
 				for(var i = 0; i < opp.series.length;i++){
 					if(opp.series[i].label != undefined){

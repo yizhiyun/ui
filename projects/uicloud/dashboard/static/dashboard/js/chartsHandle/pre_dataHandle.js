@@ -246,7 +246,6 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		handleDataPost = {
 			"conditions":conditions,
 		};
-
 		if(expressions["exprlist"] && expressions["exprlist"].length > 0){
 			expressions["groupby"]  = groupby;
 			expressions["orderby"] = groupby;
@@ -255,6 +254,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	}
 	
 	
+
 	if(equalCompare(recordConditon,handleDataPost) && preAllData){
 		handleSuccessFunction(preAllData);
 		rightFilterListDraw();
@@ -270,9 +270,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 			saveEveryViewPostData = {};
 			drillElementCount = {};
 		}
-		
-		return;
-	}
+
 
 
 //遍历操作过后返回的数据
@@ -378,14 +376,18 @@ function checkHandleFunction(checkData){
 		dataType:"json",
 		contentType: "application/json; charset=utf-8",
 		async: true,
+		// async:false,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
 			console.log(handleDataPost);
 		},
 		success:function(data){
 			if(data.status == "success"){
+
 				var freeHandlePostFun = objectDeepCopy(recordConditon);
+
 				preAllData = data.results.data;
+				// console.log(preAllData);
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
 				oldViewToShow = false;
@@ -410,6 +412,7 @@ function checkHandleFunction(checkData){
 				if(freeHandlePostFun == null || !equalCompare(freeHandlePostFun["expressions"]["groupby"],handleDataPost["expressions"]["groupby"])){
 					clickDrillChangeDiFunction(data.results.data);
 				}
+
 
 			}
 		}

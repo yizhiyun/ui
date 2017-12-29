@@ -29,6 +29,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 	}
 	
 
+	
 	mycharts.off("click");
 	mycharts.on("click",function(params){
 			if(oneClickLoading){
@@ -95,7 +96,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			   	 	left:"center",
 			   	 	// bottom:40,
 			   	 	// bottom:dimensionality_need_show.length > 15 ? 40 : 20,
-			   	 	bottom:dimensionality_need_show.length > 15 ? "8%" : "4%" ,
+			   	 	bottom:dimensionality_need_show.length > 15 ? "8%" : "6%" ,
 			   	 	width:"60%",
 
 			    },
@@ -110,11 +111,20 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			     formatter: function (params) {
 
 			         var tar;
-			         if (params[1].value != '-') {
-			             tar = params[1];
-			         }
-			         else {
-			             tar = params[0];
+			         // if (params[1].value != '-') {
+			         //     tar = params[1];
+			         // }
+			         // else {
+			         //     tar = params[0];
+			         // }
+			         if(params[1]){
+			         	if(params[1].value != '-'){
+			         		tar = params[1];
+			         	}else{
+			         		tar = params[0];
+			         	}
+			         }else{
+			         	return ;
 			         }
 					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p>";
 			         var needValue = tar.value;
@@ -148,8 +158,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			        // left:50,
 			        // bottom:dimensionality_need_show.length > 15 ? 120 : 80
 			        left:30,
-			        bottom:dimensionality_need_show.length > 15 ? "25%" : "15%",
-			        top:25
+			        bottom:dimensionality_need_show.length > 15 ? "22%" : "20%",
+			        top:"10%"
 			        // bottom:120
 			    },
 			    toolbox: {
@@ -351,7 +361,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 					legend: {
 						type: 'scroll',
 						left: 'center',
-						bottom:"5%",
+						bottom:"6%",
 						data: dimensionality_need_show,
 						width:"60%",
 					},
@@ -360,7 +370,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 						name: drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName],
 						type: "pie",
 						radius: "65%",
-						center: ["50%", "43%"],
+						center: ["50%", "42%"],
 						data: measure_need_show,
 						label: {
 			                normal: {
@@ -469,7 +479,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 					left: 'center',
 					// bottom:40,
 					// bottom:dimensionality_need_show.length > 15 ? 40 : 20,
-					bottom:dimensionality_need_show.length > 15 ? "8%" : "4%",
+					bottom:dimensionality_need_show.length > 15 ? "8%" : "6%",
 					width:"60%",
 				},
 				toolbox: {
@@ -492,8 +502,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			        left:30,
 			        // bottom:120
 					// bottom:dimensionality_need_show.length > 15 ? 120 : 80,
-					bottom:dimensionality_need_show.length > 15 ? "25%" : "15%",
-					top:25
+					bottom:dimensionality_need_show.length > 15 ? "22%" : "20%",
+					top:"10%"
 			    },
 				xAxis:[
 					{
@@ -635,7 +645,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 				    		left:"center",
 				    		// bottom:40,
 					  		// bottom:dimensionality_need_show.length > 15 ? 40 : 20,
-					  		bottom:dimensionality_need_show.length > 15 ? "8%" : "4%",
+					  		bottom:dimensionality_need_show.length > 15 ? "8%" : "6%",
 				    		width:"60%",
 				    },
 				    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
@@ -663,11 +673,20 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			    	 extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					 formatter: function (params) {
 			         var tar;
-			         if (params[1].value != '-') {
-			             tar = params[1];
-			         }
-			         else {
-			             tar = params[0];
+			         // if (params[1].value != '-') {
+			         //     tar = params[1];
+			         // }
+			         // else {
+			         //     tar = params[0];
+			         // }
+			         if(params[1]){
+			         	if(params[1].value  != '-'){
+			         		tar = params[1];
+			         	}else{
+			         		tar = params[0];
+			         	}
+			         }else{
+			         	return ;
 			         }
 			         var needValue = tar.value;
 					 if(normalUnitValue != -1){
@@ -718,8 +737,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			      		  left:30,
 			      		  // bottom:120
 					  	// bottom:dimensionality_need_show.length > 15 ? 120 : 80
-					  	bottom:dimensionality_need_show.length > 15 ? "22%" : "15%",
-					  	top:25
+					  	bottom:dimensionality_need_show.length > 15 ? "20%" : "18%",
+					  	top:"8%"
 
 			  		  },
 				      dataZoom:[
@@ -973,7 +992,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 	    			legend: {
 	       		 	data:commonLegend,
 	       		 	left:"center",
-	       		 	bottom:"5%",
+	       		 	bottom:"6%",
 	       		 	width:"60%",
 	    			},
 	    		// 	 grid: {
@@ -1031,27 +1050,27 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 						if(!dimensionality_show_data_arr[dimensionality_i]){
 							dimensionality_show_data_arr[dimensionality_i] = [aData[aDimensionality]];
 						}else{
-							//dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+							dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
 
-							var index = dimensionality_show_data_arr[dimensionality_i].indexOf(aData[aDimensionality]);
-							if(index == -1){
-								dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
-							}else if(index != -1){
-								if(all_dimensionality[dimensionality_show_data_arr.length - 1] != all_dimensionality[dimensionality_i]){
-									var lastVal = dimensionality_show_data_arr[dimensionality_i][dimensionality_show_data_arr[dimensionality_i].length-1];
-									if(/YZYPD/.test(lastVal)){
-										lastVal = lastVal.split("YZYPD")[1];
-									}
-									if(lastVal == aData[aDimensionality]){
-									// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
-										dimensionality_show_data_arr[dimensionality_i].push("YZYPD" + aData[aDimensionality]);
-									}else{
-										dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
-									}
-								}else{
-									dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
-								}
-							}
+							// var index = dimensionality_show_data_arr[dimensionality_i].indexOf(aData[aDimensionality]);
+							// if(index == -1){
+							// 	dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+							// }else if(index != -1){
+							// 	if(all_dimensionality[dimensionality_show_data_arr.length - 1] != all_dimensionality[dimensionality_i]){
+							// 		var lastVal = dimensionality_show_data_arr[dimensionality_i][dimensionality_show_data_arr[dimensionality_i].length-1];
+							// 		if(/YZYPD/.test(lastVal)){
+							// 			lastVal = lastVal.split("YZYPD")[1];
+							// 		}
+							// 		if(lastVal == aData[aDimensionality]){
+							// 		// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+							// 			dimensionality_show_data_arr[dimensionality_i].push("YZYPD" + aData[aDimensionality]);
+							// 		}else{
+							// 			dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+							// 		}
+							// 	}else{
+							// 		dimensionality_show_data_arr[dimensionality_i].push(aData[aDimensionality]);
+							// 	}
+							// }
 						}
 					}
 				}
@@ -1060,7 +1079,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 					var obj = {
 						name:all_dimensionality[i],
 						nameLocation:"start",
-						nameGap:25,
+						nameGap:15,
 						nameRotate:-15,
 						type: 'category',
 						boundaryGap:false,
@@ -1071,7 +1090,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 							fontSize:10,
 							interval:0,
 							color:"black",
-							interval:function(index,value){return !/^YZYPD/.test(value)}
+							interval:function(index,value){return !/^YZYPD/.test(value)},
 						},
 
 						gridIndex:dimensionality_show_data_arr.length - 1 - i
@@ -1080,10 +1099,10 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 					var aGrid = {
 						containLabel:true,
 					}
-					aGrid["left"] = "5%";
-					aGrid["bottom"] = 65 + 40 * i;
+					aGrid["left"] = "7%";
+					aGrid["bottom"] = 60 + 30 * i;
 					// aGrid["bottom"] = "23%";
-					aGrid["top"] = 25;
+					aGrid["top"] = "8%";
 					if(i != dimensionality_show_data_arr.length - 1){
 						aGrid["tooltip"] = {show:false};
 					}
@@ -1205,7 +1224,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						left:"center",
 						// bottom:40,
 					  	// bottom:dimensionality_show_data.length > 15 ? 40 : 20,
-					  	bottom:dimensionality_show_data.length > 15 ? "5%" : "8%",
+					  	bottom:dimensionality_show_data.length > 15 ? "9%" : "6%",
 						width:"60%",
 						textStyle: {
 							color: '#00000',
@@ -1259,48 +1278,39 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					grid: [{
 						show: false,
 						left: '4%',
-						// top: 60,
-						// bottom: 120,
-					  	// bottom:dimensionality_show_data.length > 15 ? 120 : 80,
-					  	bottom:dimensionality_show_data.length > 15 ? "18%" : "22%",
-					  	top:dimensionality_show_data.length > 15 ? 15 : 25,
+					  	bottom:dimensionality_show_data.length > 14 ? "25%" : "20%",
+						top:"6%",
 						containLabel: true,
-						width: '49%',
+						width: '47%',
 					}, {
 						show: false,
 						left: '51%',
-						// top: 80,
-						// bottom: 120,
-					  	// bottom:dimensionality_show_data.length > 15 ? 120 : 80,
-					  	bottom:dimensionality_show_data.length > 15 ? "18%" : "22%",
-					  	top:dimensionality_show_data.length > 15 ? 40 : 50,
+					  	bottom:dimensionality_show_data.length > 14 ? "25%" : "20%",
+					  	top:"12%",
 						width: '0%',
 					}, {
 						show: false,
 						right: '4%',
-						// top: 60,
-						// bottom: 120,
-					  	// bottom:dimensionality_show_data.length > 15 ? 120 : 80,
-					  	bottom:dimensionality_show_data.length > 15 ? "20%" : "22%",
-					  	top:dimensionality_show_data.length > 15 ? 15 : 25,
+					  	bottom:dimensionality_show_data.length > 14 ? "25%" : "20%",
+						top:"6%",
 						containLabel: true,
-						width: '49%',
+						width: '47%',
 					}, ],
 					xAxis: [{
 						gridIndex: 0,
 						type: 'value',
 						inverse: true,
+						splitNumber:4,
+						// minInterval:4,
 						axisLine: {
 							show: false,
 						},
 						axisTick: {
 							show: false,
-							interval:2
 						},
 						position: 'top',
 						 axisLabel: {
 						     show: true,
-						     interval:2,
 						     textStyle: {
 						         color: '#B2B2B2',
 						         fontSize: 12,
@@ -1313,23 +1323,23 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					}, {
 						gridIndex: 2,
 						type: 'value',
+						splitNumber:3,
+						// minInterval:4,
 						axisLine: {
 							show: false,
 						},
 						axisTick: {
 							show: false,
-							interval:2
 						},
 						position: 'top',
 						axisLabel: {
 							show: true,
-							interval:2,
 							textStyle: {
 								color: '#B2B2B2',
 								fontSize: 12,
 							},
 						},
-					}, ],
+					}],
 				
 					yAxis: [{
 							gridIndex: 0,
@@ -1367,7 +1377,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 								show: true,
 								textStyle: {
 									color: '#9D9EA0',
-									fontSize: 12,
+									fontSize: 11,
 								},
 				
 							},
@@ -1610,7 +1620,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					legend:{
 						data:[drag_measureCalculateStyle_arr[storeNum_toview][measureName]],
 						left:'center',
-						bottom:"5%",
+						bottom:"8%",
 						width:"60%",
 					},
 					 grid: [],
@@ -1778,7 +1788,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					// nameLocation:"end",
 					// nameGap:25,
 					// nameRotate:25,
-					nameGap:30,
+					nameGap:15,
 					nameRotate:15,
 					type: 'category',
 					axisTick:{
@@ -1789,7 +1799,13 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						color:"black",
 						rotate:25,
 						fontSize:10,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						formatter:function(value){
+							if(value.length > 3){
+								value = value.substring(0,3) + '...';
+							}
+							return value;
+						}
 					},
 					data:need_show_dimensionality_arr[k],
 					gridIndex:need_show_dimensionality_arr.length - 1 - k,
@@ -1838,8 +1854,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 
 					}
 					aGrid["left"] = "5%";
-					aGrid["bottom"] = 70 + 40*k;
-					aGrid["top"] = 25;
+					aGrid["bottom"] = 60 + 35*k;
+					aGrid["top"] = "6%";
 
 
 				}else{
@@ -1880,10 +1896,10 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					aGrid["containLabel"] = false;
 					// aGrid["left"] =  60 + 70*k;
 
-					aGrid["left"] =  70 + 70*k;
+					aGrid["left"] =  70 + 45*k;
 
-					aGrid["bottom"] = "25%";
-					aGrid["top"] = 25;
+					aGrid["bottom"] = "28%";
+					aGrid["top"] = "10%";
 
 				}
 				if(k != need_show_dimensionality_arr.length - 1){
@@ -2003,7 +2019,6 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						for(var k =0;k < need_dimensionality.length;k++){
 							name += aData[need_dimensionality[k]] +"_YZYPD_"; 
 							// console.log(name);
-
 						}
 
 						//关系图报错dataIndex 有重复节点或id解决方法
@@ -2015,8 +2030,6 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							}
 							// console.log(str);
 						}
-
-
 			
 						
 						if(categorys.hasObject("name",aData[need_dimensionality[0]]) == -1){
@@ -2104,7 +2117,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				legend:[{
 					data:categorys,
 					left:"center",
-					bottom:"5%",
+					bottom:"6%",
 					width:"60%",
 					type:'scroll',
 				}],
@@ -2271,32 +2284,33 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					if(!dimensionality_show_data[k]){
 						dimensionality_show_data[k] = [aData[all_dimensionality[k]]];
 					}else{
-						var index = dimensionality_show_data[k].indexOf(aData[all_dimensionality[k]]);
-						if(index == -1){
-							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-						}else if(index != -1){
-							// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-							//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-							// if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
-							// 	dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-							// }else{
-							// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-							// }
-							if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
-								var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
-								if(/YZYPD/.test(lastVal)){
-									lastVal = lastVal.split("YZYPD")[1];
-								}
-								if(lastVal == aData[all_dimensionality[k]]){
-								// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
-									dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-								}else{
-									dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-								}
-							}else{
-								dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-							}
-						}	
+						dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// var index = dimensionality_show_data[k].indexOf(aData[all_dimensionality[k]]);
+						// if(index == -1){
+						// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// }else if(index != -1){
+						// 	// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+						// 	//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// 	// if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+						// 	// 	dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+						// 	// }else{
+						// 	// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// 	// }
+						// 	if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+						// 		var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
+						// 		if(/YZYPD/.test(lastVal)){
+						// 			lastVal = lastVal.split("YZYPD")[1];
+						// 		}
+						// 		if(lastVal == aData[all_dimensionality[k]]){
+						// 		// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+						// 			dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+						// 		}else{
+						// 			dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// 		}
+						// 	}else{
+						// 		dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// 	}
+						// }	
 					}
 				}
 			}
@@ -2317,9 +2331,16 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					},
 					axisLabel:{
 						color:"black",
-						rotate:25,
+						rotate:15,
 						fontSize:10,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						formatter:function(value){
+							if(value == 'undefined'){
+								return '';
+							}else{
+								return value;
+							}
+						}
 					},
 					position:"bottom",
 					"data":dimensionality_show_data[i],
@@ -2329,8 +2350,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					containLabel:true,
 				}
 				aGrid["left"] = "5%";
-				aGrid["bottom"] = 70 + 40*(dimensionality_show_data.length - 1 - i);
-				aGrid["top"] = 25;		
+				aGrid["bottom"] = 60 + 30*(dimensionality_show_data.length - 1 - i);
+				aGrid["top"] = "5%";		
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
 					var obj = {
@@ -2435,8 +2456,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			   legend: {
 			        data: commonLegend,
 					left:"center",
-					bottom:"7%",
-					width:"60%",
+					bottom:"8%",
+					width:"90%",
 			    },
 			    	color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 			    dataZoom:[
@@ -2570,32 +2591,33 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					if(!dimensionality_show_data[k]){
 						dimensionality_show_data[k] = [aData[all_dimensionality[k]]];
 					}else{
-						var index = dimensionality_show_data[k].indexOf(aData[all_dimensionality[k]]);
-						if(index == -1){
-							dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-						}else if(index != -1){
-							// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-							//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-							// if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
-							// 	dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-							// }else{
-							// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-							// }
-							if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
-								var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
-								if(/YZYPD/.test(lastVal)){
-									lastVal = lastVal.split("YZYPD")[1];
-								}
-								if(lastVal == aData[all_dimensionality[k]]){
-								// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
-									dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
-								}else{
-									dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-								}
-							}else{
-								dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
-							}
-						}	
+						dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// var index = dimensionality_show_data[k].indexOf(aData[all_dimensionality[k]]);
+						// if(index == -1){
+						// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// }else if(index != -1){
+						// 	// dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+						// 	//dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// 	// if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+						// 	// 	dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+						// 	// }else{
+						// 	// 	dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// 	// }
+						// 	if(all_dimensionality[dimensionality_show_data.length - 1] != all_dimensionality[k]){
+						// 		var lastVal = dimensionality_show_data[k][dimensionality_show_data[k].length-1];
+						// 		if(/YZYPD/.test(lastVal)){
+						// 			lastVal = lastVal.split("YZYPD")[1];
+						// 		}
+						// 		if(lastVal == aData[all_dimensionality[k]]){
+						// 		// if(dimensionality_show_data[k][dimensionality_show_data[k].length-1] == aData[all_dimensionality[k]]){
+						// 			dimensionality_show_data[k].push("YZYPD"+ aData[all_dimensionality[k]]);
+						// 		}else{
+						// 			dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// 		}
+						// 	}else{
+						// 		dimensionality_show_data[k].push(aData[all_dimensionality[k]]);
+						// 	}
+						// }	
 					}
 				}
 			}
@@ -2636,6 +2658,9 @@ function comparisonStrip_generate_fun(storeNum_toview){
 							if(value.length > 3){
 								value = value.substring(0,3) + '...';
 							}
+							if(value == 'und...'){
+								return '';
+							}
 							return value;
 						}
 					},
@@ -2656,15 +2681,15 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					show:false,
 					
 				}
-				aGrid["left"] = 70 + i * (60 + i);
+				aGrid["left"] = 60 + i * (48 + i);
 				// aGrid["left"] = 150 + i * 60;
 				// if(maxLength > 0){
 				// 	aGrid["left"] = 80 + (maxLength * 5) + i * (maxLength * 5 + 60);
 				// }else{
 				// 	aGrid["left"] = 100 + i * (60 + i);
 				// }
-				aGrid["bottom"] = "20%";	
-				aGrid["top"] = 25;
+				aGrid["bottom"] = "25%";	
+				aGrid["top"] = "10%";
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
 				}
@@ -2764,8 +2789,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    legend: {
 			        data: commonLegend,
 			        left:"center",
-			        bottom:"5%",
-			        width:"60%",
+			        bottom:"6%",
+			        width:"90%",
 			    },
 			    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 				toolbox: {
@@ -2933,7 +2958,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		    	type: 'scroll',
 		    	orient: 'vertical',
 		        bottom:50,
-		        top:"5%",
+		        top:0,
 		        right:"5%",
 		        data: commonLegend,
 		        // left:"center",
@@ -2957,11 +2982,14 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			},
 		    radar: [{
 		        // shape: 'circle',
+		        center:["50%","48%"],
+		        radius:"75%",
 		        indicator:indicator,
 		        triggerEvent:true,
 		        name:{
 		        	formatter:function(params){
 	         			count++;
+
 	         			if(data.length > 20){
 	         				if(count % 3 == 0){
 	         					return params;

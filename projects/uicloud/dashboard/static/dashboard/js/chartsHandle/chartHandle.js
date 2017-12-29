@@ -160,14 +160,23 @@ function one_de_one_me_handle (chart_type_need) {
 			     backgroundColor:'rgba(255,255,255,0.95)',
 			     extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			     formatter: function (params) {
-
+			     	// console.log(params);
 			         var tar;
-			         if (params[1].value != '-') {
-			             tar = params[1];
-			         }
-			         else {
-			             tar = params[0];
-			         }
+			         // if (params[1].value != '-') {
+			         //     tar = params[1];
+			         // }
+			         // else {
+			         //     tar = params[0];
+			         // }
+			        if(params[1]){
+			        	if(params[1].value != '-'){
+			        		tar = params[1];
+			        	}else{
+			        		tar = params[0];
+			        	}
+			        }else{
+			        	return ;
+			        }
 					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p>";
 			         var needValue = tar.value;
 			         if(normalUnitValue != -1){
@@ -672,12 +681,22 @@ function one_de_one_me_handle (chart_type_need) {
 				     backgroundColor:'rgba(255,255,255,0.95)',
 			    		 extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 					 formatter: function (params) {
+					 	// console.log(params);
 			         var tar;
-			         if (params[1].value != '-') {
-			             tar = params[1];
-			         }
-			         else {
-			             tar = params[0];
+			         // if (params[1].value != '-') {
+			         //     tar = params[1];
+			         // }
+			         // else {
+			         //     tar = params[0];
+			         // }
+			         if(params[1]){
+			         	if(params[1].value != '-'){
+			         		tar = params[1];
+			         	}else{
+			         		tar = params[0];
+			         	}
+			         }else{
+			         	return ;
 			         }
 			         var needValue = tar.value;
 					 if(normalUnitValue != -1){
@@ -1805,7 +1824,13 @@ function comparisonStrip_generate_fun(){
 						color:"black",
 						rotate:25,
 						fontSize:10,
-						interval:function(index,value){return !/^YZYPD/.test(value)}
+						interval:function(index,value){return !/^YZYPD/.test(value)},
+						formatter:function(value){
+							if(value.length > 3){
+								value = value.substring(0,3) + '...';
+							}
+							return value;
+						}
 					},
 					data:need_show_dimensionality_arr[k],
 					gridIndex:need_show_dimensionality_arr.length - 1 - k,
@@ -2001,18 +2026,30 @@ function comparisonStrip_generate_fun(){
 		var need_all_link = [];
 		var count = 0;
 		var theDimeInfo = [];
+		var arr = [];
 		for(var i =0;i < all_dimensionality.length;i++){
 			(function(index){
 				var need_dimensionality = all_dimensionality.slice(0,index+1);
 				measure_Hanlde(need_dimensionality,all_measure,null,function(data){
 					for(var j = 0;j < data.length;j++){
 						// console.log(data.length);
+						// var theDimeInfo = [];
 						var aData = data[j];
 						var name = "";
+						var str = "";
 						for(var k =0;k < need_dimensionality.length;k++){
 							name += aData[need_dimensionality[k]] +"_YZYPD_";
 							// console.log(name);
 						}
+
+						if(arr[arr.length-1] != name){
+							arr.push(name);
+							for(var l=0;l<arr.length;l++){
+								str = arr[l];
+							}
+						}
+
+
 						if(categorys.hasObject("name",aData[need_dimensionality[0]]) == -1){
 							categorys.push({"name":aData[need_dimensionality[0]]});
 						}
@@ -2037,7 +2074,8 @@ function comparisonStrip_generate_fun(){
 						var aNode = {
 							"value":aData[drag_measureCalculateStyle[all_measure[0]]]/allValueUnitDict[valueUnitValue],
 							"originValue":aData[drag_measureCalculateStyle[all_measure[0]]],
-							"name":name,
+							// "name":name,
+							"name":str,
 							"fixed":false,
 							"draggable":true,
 							"category":categorys.hasObject("name",aData[need_dimensionality[0]]),
@@ -2071,7 +2109,10 @@ function comparisonStrip_generate_fun(){
 
 						}
 						// console.log(aNode);
-						need_all_nodes.push(aNode);
+						// need_all_nodes.push(aNode);
+						if(aNode["name"] != ''){
+							need_all_nodes.push(aNode);
+						}
 					}
 					count++;
 					if(count == all_dimensionality.length){
@@ -2309,16 +2350,13 @@ function comparisonStrip_generate_fun(){
 						// rotate:45,
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
-						// formatter:function(value,index)  
-      //                           {  
-      //                               debugger  
-      //                               if (index % 2 != 0) {  
-      //                                   return '\n\n' + value;  
-      //                               }  
-      //                               else {  
-      //                                   return value;  
-      //                               }  
-      //                           }  
+						formatter:function(value){
+							if(value == 'undefined'){
+								return '';
+							}else{
+								return value;
+							}
+						}
 					},
 					position:"bottom",
 					"data":dimensionality_show_data[i],
@@ -2861,7 +2899,8 @@ function comparisonStrip_generate_fun(){
 				var theDimeData = [];
 				for(var k = 0;k < all_dimensionality.length;k++){
 					theDimeInfo.push(aData[all_dimensionality[k]]);	
-					// console.log(theDimeInfo);				
+					// console.log(theDimeInfo);
+					// console.log(theDimeInfo);	
 				}
 				for(var j = 0;j < all_measure.length;j++){ // 计算出series
 					if(valueMax < aData[drag_measureCalculateStyle[all_measure[j]]]){
@@ -2920,16 +2959,15 @@ function comparisonStrip_generate_fun(){
 						}
 
 					}
+					
 				}
 			}
-
 
 
 			
 			for(var i = 0;i < dimensionality_show_data.length;i++){
 				// console.log(dimensionality_show_data);
 				// console.log(dimensionality_show_data[i]);
-
 
 				var aY = {
 					"show":true,
@@ -2941,8 +2979,9 @@ function comparisonStrip_generate_fun(){
 					axisTick:{
 						inside:false,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
-						// length:dimensionality_show_data.length == 1 ? 0 : 80 + i,
-						// length: /^YZYPD/.test(dimensionality_show_data[i])? 0 : 80 + i,
+						// length:i == 0 ? 60 * dimensionality_show_data.length : 5,
+						// length:dimensionality_show_data.length == 1 ? 5 : 60 + i,
+						// length: /^YZYPD/.test(dimensionality_show_data[i])? 0 : 60 + i,
 						// length:i == dimensionality_show_data.length-1 ? 60 * i + i : 0,
           				// lineStyle: {color: '#ccc'}   
 					},
@@ -2955,7 +2994,10 @@ function comparisonStrip_generate_fun(){
        						if(value.length > 3){
 								value = value.substring(0,3) + '...';
 							}
-							//console.log(value);
+							// console.log(value);
+							if(value == 'und...'){
+								return '';
+							}
 							return value;
        					}
 
@@ -2980,7 +3022,7 @@ function comparisonStrip_generate_fun(){
 					containLabel:false,
 					show:false,
 				}
-				aGrid["left"] = 70 + i * (60 + i);
+				aGrid["left"] = 100 + i * (60 + i);
 				aGrid["bottom"] = 120;
 
 

@@ -145,6 +145,7 @@
 				var preAllData = null;
 				
 				var preHandleDataCheck = null;
+
 				//保存视图触发事件
 				function save_btn_fun(){
 					$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -629,15 +630,19 @@
 
 					$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
 
+					//记录操作，把index存入data，对其进行存取
+
 					// 撤销
 					// $("#prev").click(function(){
-					// 	$(window).history.back(-1);
+						
 					// })
 
 					// // 下一步
 					// $("#next").click(function(){
-
+						
 					// })
+
+					
 
 					//视图清空 页面初始化
 					function empty_viem_init(change_or_click){
