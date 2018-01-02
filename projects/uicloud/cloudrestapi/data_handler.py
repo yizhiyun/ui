@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import logging
 import requests
@@ -253,6 +254,7 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
     logger.debug("jsonStr:{0}".format(jsonStr))
 
     return '''
+    # -*- coding: utf-8 -*-
     import sys
     import traceback
     import json
@@ -524,7 +526,9 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
     filterJson = json.dumps(filterJson, ensure_ascii=True)
     logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
 
-    sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + \
+    sparkCode = '''
+    # -*- coding: utf-8 -*-
+    ''' + specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + \
         aggDataFrameSparkCode() + splitColumnSparkCode() + '''
     def getTableInfo( url, mode, filterJson='{}', maxRowCount=1000):
         """
@@ -534,7 +538,9 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
         dframe1 = spark.read.parquet(url)
 
         outputDict = {}
-        logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
+        logger.debug("filterJson:{0}, type:{1}".format(
+                     filterJson.encode(encoding="utf-8"),
+                     type(filterJson)))
         filterJson = json.loads(filterJson, encoding='utf-8')
         if len(filterJson) > 0:
             dframe1 = filterDF(dframe1, filterJson)
@@ -550,9 +556,10 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
         if mode == 'all' or mode == 'data':
             outputDict['data'] = []
             for rowItem in dframe1.collect():
-                # logger.debug("rowItem.asDict(): {0}".format(rowItem.asDict()))
+                # logger.debug("rowItem.asDict(): {0}".format(str(rowItem.asDict()).encode(encoding="utf-8")))
                 outputDict['data'].append(rowItem.asDict())
         logger.debug("outputDict length: {0}".format(len(outputDict)))
+        # logger.debug("outputDict: {0}".format(outputDict.encode(encoding="utf-8")))
         return json.dumps(outputDict, cls = SpecialDataTypesEncoder)
     ''' + '''
     print(getTableInfo('{0}', '{1}', """{2}""", {3}))
@@ -596,12 +603,17 @@ def convertCsvToParquetSparkCode(uploadedCsvList, csvOpts={}, hdfsHost="spark-ma
     uploadedCsvs = str(uploadedCsvList).encode(encoding="utf-8", errors='strict')
     logger.debug("csvOpts:{0}, uploadedCsvs:{1}".format(csvOpts, uploadedCsvs))
 
-    sparkCode = setupLoggingSparkCode() + '''
+    sparkCode = '''
+    # -*- coding: utf-8 -*-
     import traceback
     import json
     import sys
     import re
     import pyspark.sql.utils as utils
+
+
+    ''' + setupLoggingSparkCode() + '''
+
 
     def convertCsvToParquet(csvUrl, parquetUrl, csvOpts={}):
         """
@@ -667,9 +679,11 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
     filterJson = json.dumps(filterJson, ensure_ascii=True)
     logger.debug("rootUrl: {0}, filterJson: {1}, type: {2}".format(rootUrl, filterJson, type(filterJson)))
 
-    sparkCode = specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + \
-        splitColumnSparkCode() + aggDataFrameSparkCode() + '''
+    sparkCode = '''
+    # -*- coding: utf-8 -*-
     import json
+    ''' + specialDataTypesEncoderSparkCode() + setupLoggingSparkCode() + filterDataFrameSparkCode() + \
+        splitColumnSparkCode() + aggDataFrameSparkCode() + '''
 
 
     def getSpecUploadedTable( rootUrl, fileTable, mode, filterJson='{}', maxRowCount=1000):
@@ -683,7 +697,7 @@ def getSpecUploadedTableSparkCode(fileTable, userName="myfolder", mode="all",
         logger.debug(u"csvUrl:{0}".format(csvUrl))
         dframe1 = spark.read.csv(csvUrl, header=True, inferSchema=True).limit(maxRowCount)
 
-        logger.debug("filterJson:{0}, type:{1}".format(filterJson, type(filterJson)))
+        logger.debug("filterJson:{0}, type:{1}".format(filterJson.encode(encoding="utf-8"), type(filterJson)))
         filterJson = json.loads(filterJson, encoding="utf-8")
         if len(filterJson) > 0:
             dframe1 = filterDF(dframe1, filterJson)

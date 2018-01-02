@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 
 # Get an instance of a logger
@@ -178,7 +179,7 @@ def filterDataFrameSparkCode():
         """
         """
         columnList = "*"
-        logger.debug(u"tableDict:{0}".format(tableDict))
+        logger.debug(u"tableDict:{0}".format(str(tableDict).encode(encoding="utf-8")))
         if 'columns' in tableDict.keys():
             columnList = ["`{0}`".format(colit1) for colit1 in list(tableDict['columns'].keys())]
             logger.debug(u"columnList:{0}".format(columnList))
@@ -236,7 +237,7 @@ def aggDataFrameSparkCode():
         """
         """
 
-        logger.debug(u"tableDict:{0}".format(tableDict))
+        logger.debug(u"tableDict:{0}".format(str(tableDict).encode(encoding="utf-8")))
         if "expressions" in tableDict.keys():
             expresDict = tableDict["expressions"]
             exprlist = [F.expr(exprItem["exprstr"]).alias(exprItem["alias"]) for exprItem in expresDict["exprlist"]]
@@ -436,7 +437,7 @@ def splitColumnSparkCode():
     '''
     return '''
     def splitColumn(inDF, jsonData):
-        logger.debug(u"jsonData:{0}".format(jsonData))
+        logger.debug(u"jsonData:{0}".format(str(jsonData).encode(encoding="utf-8")))
         if "customized" in jsonData.keys():
             import pyspark.sql.types as T
             arrlenFunc = F.udf(lambda arr: len(arr), T.IntegerType())
