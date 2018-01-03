@@ -164,8 +164,16 @@ def getOutputColumns(jsonData):
                 #     logger.error("There are two columns with the same database, table and columns. \
                 #         fullColName: {0}".format(fullColName))
                 #     return False
-                curTableColumnList.append(fullColName)
-                outputColumnsDict[fullColName] = fullColName
+                if fullColName not in outputColumnsList:
+                    curTableColumnList.append(fullColName)
+                    outputColumnsDict[fullColName] = fullColName
+                else:
+                    i = 1
+                    while("{0}_{1}".format(fullColName, i) in outputColumnsList):
+                        i += 1
+                    newColName = "{0}_{1}".format(fullColName, i)
+                    curTableColumnList.append(newColName)
+                    outputColumnsDict[fullColName] = newColName
             else:
                 curTableColumnList.append(colName)
                 outputColumnsDict[fullColName] = colName
@@ -364,9 +372,27 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                 return False
 
             # rename the new dataframe.
-            for oldCol, newCol in jsonData["outputs"]['columnRenameMapping'].items():
-                outputDf = outputDf.withColumnRenamed(oldCol.replace('.', '_', 2), newCol)
+            colsMap = jsonData["outputs"]['columnRenameMapping']
+            oldColsList = list(colsMap.keys())
+            step = 0
+            maxSteps = 2 * len(oldColsList) + 1
+            while(len(oldColsList)>0 and step < maxSteps):
+                step += 1
+                oldCol = oldColsList.pop(0)
+                newCol = colsMap[oldCol]
+                if newCol in oldColsList:
+                    oldColsList.append(oldCol)
+                else:
+                    # logger.debug("oldCol: {0}, newCol: {1}".format(oldCol.replace('.', '_', 2), newCol))
+                    outputDf = outputDf.withColumnRenamed(oldCol.replace('.', '_', 2), newCol)
+            if(step >= maxSteps):
+                logger.warn("Some columns cannot be renamed. oldColsList: {0}".format(oldColsList))
+            # for oldCol, newCol in jsonData["outputs"]['columnRenameMapping'].items():
+            #     # logger.debug("oldCol: {0}, newCol: {1}".format(oldCol.replace('.', '_', 2), newCol))
+            #     outputDf = outputDf.withColumnRenamed(oldCol.replace('.', '_', 2), newCol)
+            logger.debug("renamed outputDf columns: {0}".format(outputDf.columns))
         except KeyError as e:
+            traceback.print_exc()
             logger.error("KeyError Exception: {0}, Traceback: {1}".format(sys.exc_info(), traceback.format_exc()))
             return False
         except Exception:
@@ -434,9 +460,10 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
         """
 
         # For safety and unification, update all old DataFrame's Columns
-        # with the format of "<dbName>.<tableName>.<columnName>"
+        # with the format of "<dbName>_<tableName>_<columnName>"
         for dbTable in dfDict.keys():
-            for colItem in dfDict[dbTable].columns:
+            sortedCols = sorted(dfDict[dbTable].columns, key=lambda item: len(item.split("_")), reverse=True)
+            for colItem in sortedCols:
                 dfDict[dbTable] = dfDict[dbTable].withColumnRenamed(
                     colItem, u"{0}_{1}".format(dbTable.replace(".", "_", 1), colItem))
 
@@ -467,8 +494,8 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
             columnMapList = relItem['columnMap']
 
             cond = []
-            # print(dfDict[fromDbTable].printSchema())
-            # print(dfDict[toDbTable].printSchema())
+            # logger.debug("{0} table schema: {1}".format(fromDbTable, dfDict[fromDbTable].schema.fields)
+            # logger.debug("{0} table schema: {1}".format(toDbTable, dfDict[toDbTable].schema.fields)
             for mapit in columnMapList:
                 fromCol = u"`{0}_{1}`".format(fromDbTable.replace('.', '_', 1), mapit["fromCol"])
                 toCol = u"`{0}_{1}`".format(toDbTable.replace('.', '_', 1), mapit["toCol"])
@@ -483,7 +510,6 @@ def getGenNewTableSparkCode(jsonData, hdfsHost="spark-master0", port="9000", fol
                     elif fromCol not in repeatedJoinCols:
                         repeatedJoinCols.append(fromCol)
                 else:
-                    # fromCol in joinCols
                     if toCol in joinCols:
                         joinCols.remove(toCol)
                     else:

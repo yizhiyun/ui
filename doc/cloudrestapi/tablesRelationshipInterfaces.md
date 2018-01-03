@@ -137,7 +137,7 @@ The RESTful API Details of Verify those table relationships
 ```
 {
   "status": "success",
-  "columns": [ "column1", "column2", ...],
+  "columns": { "dbname_tablename_col1": "renamed_col1", "dbname_tablename_col2": "renamed_col2", ...},
   "tableAvailable": "true/false"
 }
 ```
