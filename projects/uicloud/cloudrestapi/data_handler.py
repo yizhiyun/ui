@@ -154,31 +154,23 @@ def getOutputColumns(jsonData):
             dbTableList.append(dbTable)
         columnList = list(tables[seq]['columns'].keys())
 
-        curTableColumnList = []
-
         # check if the generated new table exists the same column name.
         for colName in columnList:
             fullColName = "{0}_{1}_{2}".format(dbName, tableName, colName)
             if colName in outputColumnsList:
-                # if fullColName in outputColumnsList:
-                #     logger.error("There are two columns with the same database, table and columns. \
-                #         fullColName: {0}".format(fullColName))
-                #     return False
-                if fullColName not in outputColumnsList:
-                    curTableColumnList.append(fullColName)
-                    outputColumnsDict[fullColName] = fullColName
-                else:
+                if fullColName in outputColumnsList:
                     i = 1
                     while("{0}_{1}".format(fullColName, i) in outputColumnsList):
                         i += 1
                     newColName = "{0}_{1}".format(fullColName, i)
-                    curTableColumnList.append(newColName)
+                    outputColumnsList.append(newColName)
                     outputColumnsDict[fullColName] = newColName
+                else:
+                    outputColumnsList.append(fullColName)
+                    outputColumnsDict[fullColName] = fullColName
             else:
-                curTableColumnList.append(colName)
+                outputColumnsList.append(colName)
                 outputColumnsDict[fullColName] = colName
-
-        outputColumnsList.extend(curTableColumnList)
 
     # check if all columns is available. BTW, it maybe is unnecessary.
     #
@@ -577,7 +569,7 @@ def getTableInfoSparkCode(userName, tableName, mode="all", hdfsHost="spark-maste
         if mode == 'all' or mode == 'schema':
             outputDict['schema'] = []
             for colItem in dframe1.schema.fields:
-                logger.debug("field: {0}, type: {1}".format( colItem.name, colItem.dataType))
+                # logger.debug("field: {0}, type: {1}".format( colItem.name, colItem.dataType))
                 outputDict['schema'].append({"field": colItem.name, "type": str(colItem.dataType)})
         if mode == 'all' or mode == 'data':
             outputDict['data'] = []
