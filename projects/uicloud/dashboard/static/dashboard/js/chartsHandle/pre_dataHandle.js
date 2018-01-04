@@ -119,7 +119,7 @@ Array.prototype.hasAllObject = function(obj){
 
 
 // needColumns暂时未用到
-function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
+function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction,str){
 	if(oldViewToShow){
 		handleDataPost = editViewPostData;
 	}else{
@@ -255,7 +255,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	
 	
 
-	if(equalCompare(recordConditon,handleDataPost) && preAllData){
+	if(equalCompare(recordConditon,handleDataPost) && preAllData && str != undefined){
 		handleSuccessFunction(preAllData);
 		rightFilterListDraw();
 		oldViewToShow =false;
@@ -270,7 +270,8 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 			saveEveryViewPostData = {};
 			drillElementCount = {};
 		}
-
+		return ;
+	}
 
 
 //遍历操作过后返回的数据
@@ -278,7 +279,7 @@ function forDataFunctionPost(handleData,saveArr,drill){
 	if((dirllConditions && dirllConditions.length > 0) || drill == "over"){
 		for(var z = 0; z < handleDataPost["expressions"]["groupby"].length;z++){
 		if(saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")] == undefined){
-				saveArr[handleDataPost["	"]["groupby"][z].replace(/\`/g,"")] = [];
+				saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")] = [];
 				for(var j = 0; j < handleData.length;j++){
 					var aData = handleData[j];
 					if($.inArray(String(aData[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")]),saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")]) == -1){
@@ -379,9 +380,10 @@ function checkHandleFunction(checkData){
 		// async:false,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
-			console.log(handleDataPost);
+			// console.log(handleDataPost);
 		},
 		success:function(data){
+			// console.log(data);
 			if(data.status == "success"){
 
 				var freeHandlePostFun = objectDeepCopy(recordConditon);

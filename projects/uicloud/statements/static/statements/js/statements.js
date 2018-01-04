@@ -132,7 +132,7 @@
 					//雷达图缩小调整
 					if(opp.radar){
 						// console.log(opp.radar[0].indicator);
-						if(opp.radar[0].indicator.length > 20){		
+						if(opp.radar[0].indicator.length > 20 && opp.radar[0].indicator.length < 80){		
 							opp.radar[0].name.formatter = function(params){
 								// console.log(params);
 								count++;
@@ -143,7 +143,29 @@
 		         					return '';
 		         				}
 							}
-						}
+						}else if(opp.radar[0].indicator.length > 80 && opp.radar[0].indicator.length < 400){
+							opp.radar[0].name.formatter = function(params){
+								// console.log(params);
+								count++;
+		         				if(count % 30 == 0){
+		         					return params;
+		         				}else{
+		         					arr.push(params);
+		         					return '';
+		         				}
+							}
+						}else{
+							opp.radar[0].name.formatter = function(params){
+								// console.log(params);
+								count++;
+		         				if(count % 70 == 0){
+		         					return params;
+		         				}else{
+		         					arr.push(params);
+		         					return '';
+		         				}
+							}
+						}	
 					}
 
 
@@ -238,20 +260,42 @@
 				opp.toolbox[0].show = true;
 
 				if(opp.radar){
-						// console.log(opp.radar[0].indicator);
-						if(opp.radar[0].indicator.length > 20){		
-							opp.radar[0].name.formatter = function(params){
-								// console.log(params);
-								count++;
-		         				if(count % 3 == 0){
-		         					return params;
-		         				}else{
-		         					arr.push(params);
-		         					return '';
-		         				}
-							}
+					// console.log(opp.radar[0].indicator);
+					if(opp.radar[0].indicator.length > 20 && opp.radar[0].indicator.length < 80){		
+						opp.radar[0].name.formatter = function(params){
+							// console.log(params);
+							count++;
+	         				if(count % 3 == 0){
+	         					return params;
+	         				}else{
+	         					arr.push(params);
+	         					return '';
+	         				}
+						}
+					}else if(opp.radar[0].indicator.length > 80 && opp.radar[0].indicator.length < 400){
+						opp.radar[0].name.formatter = function(params){
+							// console.log(params);
+							count++;
+	         				if(count % 20 == 0){
+	         					return params;
+	         				}else{
+	         					arr.push(params);
+	         					return '';
+	         				}
+						}
+					}else{
+						opp.radar[0].name.formatter = function(params){
+							// console.log(params);
+							count++;
+	         				if(count % 50 == 0){
+	         					return params;
+	         				}else{
+	         					arr.push(params);
+	         					return '';
+	         				}
 						}
 					}
+				}
 
 				for(var i = 0; i < opp.series.length;i++){
 					if(opp.series[i].label != undefined){
