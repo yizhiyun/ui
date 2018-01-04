@@ -206,7 +206,7 @@ function one_de_one_me_handle (chart_type_need) {
 			 	},
 			    grid: {
 			        containLabel: true,
-			        left:50,
+			        left:80,
 			        bottom:120
 			    },
 			    toolbox: {
@@ -414,6 +414,7 @@ function one_de_one_me_handle (chart_type_need) {
 						label: {
 			                normal: {
 			                    show: dimensionality_need_show.length < 25,
+			                    position:dimensionality_need_show.length < 25 ? 'outside' : 'inside',
 			                    formatter:function(params){
 			                    		if(normalUnitValue != -1){
 			                    			return params.name+":"+params.value.toFixed(normalUnitValue);
@@ -523,7 +524,7 @@ function one_de_one_me_handle (chart_type_need) {
 				},
 				 grid: {
 			        containLabel: true,
-			        left:50,
+			        left:80,
 			        bottom:120
 			    },
 				xAxis:[
@@ -1129,7 +1130,13 @@ function many_de_many_me_handle(chart_type_need){
 							fontSize:10,
 							interval:0,
 							color:"black",
-							interval:function(index,value){return !/^YZYPD/.test(value)}
+							interval:function(index,value){return !/^YZYPD/.test(value)},
+							formatter:function(value){
+								if(value.length > 8){
+									value = value.substring(0,8) + '...';
+								}
+								return value;
+							}
 						},
 						gridIndex:dimensionality_show_data_arr.length - 1 - i
 					}
@@ -1138,7 +1145,7 @@ function many_de_many_me_handle(chart_type_need){
 					}
 					// aGrid["left"] = "10%";
 					// aGrid["bottom"] = 60 + 40* i;
-					aGrid["left"] = "5%";
+					aGrid["left"] = "7%";
 					aGrid["bottom"] = 120 + 40 * i;
 					if(i != dimensionality_show_data_arr.length - 1){
 						aGrid["tooltip"] = {show:false};
@@ -1812,7 +1819,7 @@ function comparisonStrip_generate_fun(){
 					name:need_show_dime_name_arr[k],
 					// nameLocation:"start",
 					// nameLocation:"end",
-					nameGap:30,
+					nameGap:15,
 					// nameRotate:-25,
 					nameRotate:15,
 					type: 'category',
@@ -2118,7 +2125,7 @@ function comparisonStrip_generate_fun(){
 					if(count == all_dimensionality.length){
 						 draw();
 					}
-				});
+				},"graph");
 			})(i);
 		}
 
@@ -2334,7 +2341,7 @@ function comparisonStrip_generate_fun(){
 				var aX = {
 					"show":true,
 					"name":all_dimensionality[i],
-					"nameGap":30,
+					"nameGap":15,
 					"nameLocation":"start",
 					// "nameLocation":"end",
 					"nameRotate":15,
@@ -2351,7 +2358,10 @@ function comparisonStrip_generate_fun(){
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
 						formatter:function(value){
-							if(value == 'undefined'){
+							if(value.length > 8){
+								value = value.substring(0,8) + '...';
+							}
+							if(value == 'undefine...' || value == 'undefined'){
 								return '';
 							}else{
 								return value;
@@ -2365,8 +2375,8 @@ function comparisonStrip_generate_fun(){
 				var aGrid = {
 					containLabel:true,
 				}
-				aGrid["left"] = "5%";
-				aGrid["bottom"] = 120 + 40*(dimensionality_show_data.length - 1 - i);
+				aGrid["left"] = "8%";
+				aGrid["bottom"] = 120 + 45*(dimensionality_show_data.length - 1 - i);
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
 					var obj = {
@@ -3205,8 +3215,8 @@ function radarChart_generate_fun(){
 				}
 			];
 			var recordArr = [];
-			// var arr = [];
-			// var newArr = [];
+			var maxArr = [];
+
 			for(var i =0;i < data.length;i++){
 				var aData = data[i];
 				var max = aData[drag_measureCalculateStyle[all_measure[0]]] / allValueUnitDict[valueUnitValue];
@@ -3225,6 +3235,7 @@ function radarChart_generate_fun(){
 						max  = aData[drag_measureCalculateStyle[all_measure[j]]]/allValueUnitDict[valueUnitValue];
 					}
 				}
+
 				// console.log(data.length);
 
 				var str = "";
@@ -3233,14 +3244,20 @@ function radarChart_generate_fun(){
 					str +=  aData[all_dimensionality[k]] + "-";
 					//console.log(str);
 					var re = str.substring(0,str.length-1);
-					//console.log(re);
+					// console.log(re);
 				}
 
+				var maxVal = (max / allValueUnitDict[valueUnitValue]) * 2;
+				maxArr.push(maxVal);
+				// console.log(maxArr);
+				var maxNum = Math.max.apply(null, maxArr);
+				// console.log(maxNum);
 
 				indicator.push({
 					// "name":aData[all_dimensionality[0]],
 					"name":re,
-					"max":(max/allValueUnitDict[valueUnitValue])*1.2,
+					"max":maxNum,
+					// "max":(max/allValueUnitDict[valueUnitValue])*1.2,
 					"originalMax":max
            	 	});
 
@@ -3347,26 +3364,59 @@ function radarChart_generate_fun(){
 //		        shape: 'circle',
 		        indicator:indicator,
 		        triggerEvent:true,
+		        // radius:data.length > 400 ? '100%' : '80%',
+		        axisLine:{
+		        	show:data.length < 80,
+		        },
+		        splitLine:{
+		        	show:true,
+		        },
 	         	name:{
 	         		formatter:function(params){
-	         			count++;		
-	         			if(data.length > 20){
+	         			count++;	
+	         			if(data.length > 20 && data.length < 80){
 	         				if(count % 3 == 0){
 	         					return params;
 	         				}else{
 	         					array.push(params);
-	         				//	console.log(array);
+	         					return  '';
+	         				}
+	         			}else if(data.length > 80 && data.length < 400){
+	         				if(count % 20 == 0){
+	         					return params;
+	         				}else{
+	         					array.push(params);
+	         					return '';
+	         				}
+	         			}else if(data.length > 400){
+	         				if(count % 50 == 0){
+	         					return params;
+	         				}else{
+	         					array.push(params);
 	         					return '';
 	         				}
 	         			}else{
 	         				return params;
 	         			}
+	         			// if(data.length > 20){
+	         			// 	if(count % 3 == 0){
+	         			// 		return params;
+	         			// 	}else{
+	         			// 		array.push(params);
+	         			// 	//	console.log(array);
+	         			// 		return '';
+	         			// 	}
+	         			// }else{
+	         			// 	return params;
+	         			// }
 	         		}
 	         	},	
 		    }],
 		    "record":recordArr,
 		    series: series
 		};
+		// console.log(option);
+		// console.log(option.series[0].data[0].value);
 		//清除上一个图例
 		mycharts.clear();
 

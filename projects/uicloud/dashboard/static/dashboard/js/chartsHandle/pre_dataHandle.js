@@ -119,7 +119,7 @@ Array.prototype.hasAllObject = function(obj){
 
 
 // needColumns暂时未用到
-function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction){
+function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handleSuccessFunction,str){
 	if(oldViewToShow){
 		handleDataPost = editViewPostData;
 	}else{
@@ -262,7 +262,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	
 	
 
-	if(equalCompare(recordConditon,handleDataPost) && preAllData){
+	if(equalCompare(recordConditon,handleDataPost) && preAllData && str != undefined){
 		handleSuccessFunction(preAllData);
 		rightFilterListDraw();
 		oldViewToShow =false;
@@ -279,7 +279,11 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		}
 
 		return;
-}
+
+	}
+
+
+
 //遍历操作过后返回的数据
 function forDataFunctionPost(handleData,saveArr,drill){
 	if((dirllConditions && dirllConditions.length > 0) || drill == "over" || drill == "dateHandle"){
@@ -408,6 +412,7 @@ function checkHandleFunction(checkData){
 			// console.log(handleDataPost);
 		},
 		success:function(data){
+			// console.log(data);
 			if(data.status == "success"){
 				var freeHandlePostFun = objectDeepCopy(recordConditon);
 

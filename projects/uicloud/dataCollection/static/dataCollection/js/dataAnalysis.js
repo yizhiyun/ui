@@ -1334,6 +1334,16 @@
 
       $("#constructData").click(function(){
           //console.log($(".connectionImg").length);
+           var len = $('div[id^="hdfs"]').length;
+            if(len == 0){
+                  $("#buildDataPanelView .build-body .cube-name-radio .new-cube").addClass("active");
+                  $("#buildDataPanelView .build-body .cube-name-radio .new-cube").css("margin-left","20px");
+                  $("#buildDataPanelView .build-body .cube-name-radio").css("height","22px");
+
+                  $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).show();
+                  $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).hide();
+                  $(".msg").hide();
+            }
           if($(".boxDiv").length != 0){
             if($(".connectionImg").length == $(".boxDiv").length - 1){
                 constructFn();
@@ -1534,13 +1544,34 @@
         }else if ($(ele).hasClass("cover-original-cube")) {
           $("#buildDataPanelView .build-body .cube-name-input-div").eq(0).hide();
           $("#buildDataPanelView .build-body .cube-name-input-div").eq(1).show();
+
+          // if($("#buildDataPanelView .build-body .build-options .more-content-div").css("display") == "none"){
+          //     $(".msg").css("marginTop", "50px");
+          //     $(".build-footer .moreSetting").click(function(){
+          //         $(".msg").css("marginTop", "-2px");
+          //         $("#buildDataPanelView .build-body .build-options .more-content-div").css("paddingTop","0px");
+          //         // $(".build-footer .moreSetting").click(function(){
+          //         //     $(".msg").css("marginTop","50px");
+          //         // })
+          //     })
+          // }
+          $(".msg").css("top",$(".buildDataPanelView").height() - $(".build-footer").height() - 25 + "px");
+
           $(".msg").show();
           var value = $(".cube-name-input-div .lists .combo-select .combo-dropdown .option-selected").html();
-
           $(".cube-name-input-div .lists .combo-select .option-item").click(function(){
-              $(".msg").html($(this).html() + "关联了视图/指标，覆盖会导致视图/指标同时删除！");
+              var l = $(this).html().length;
+              if(l > 6){
+                  $(".msg").html($(this).html().substring(0,6) + "..." + "关联了视图/指标，覆盖会导致视图/指标同时删除！");
+              }else{
+                $(".msg").html($(this).html() + "关联了视图/指标，覆盖会导致视图/指标同时删除！");
+              }
           })
-          $(".msg").html(value + "关联了视图/指标，覆盖会导致视图/指标同时删除！");
+          if(value.length > 6){
+            $(".msg").html(value.substring(0,6) + "..." + "关联了视图/指标，覆盖会导致视图/指标同时删除！");
+          }else{
+            $(".msg").html(value + "关联了视图/指标，覆盖会导致视图/指标同时删除！");
+          }
 
         }
       }

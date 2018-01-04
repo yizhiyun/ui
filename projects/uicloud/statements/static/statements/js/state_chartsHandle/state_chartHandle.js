@@ -375,6 +375,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 						label: {
 			                normal: {
 			                	show:false,
+			                	position:dimensionality_need_show.length < 25 ? 'outside' : 'inside',
 			                    // show:dimensionality_need_show.length < 25,
 			                    formatter:function(params){
 			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
@@ -1091,6 +1092,12 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 							interval:0,
 							color:"black",
 							interval:function(index,value){return !/^YZYPD/.test(value)},
+							formatter:function(value){
+								if(value.length > 8){
+									value = value.substring(0,8) + '...';
+								}
+								return value;
+							}
 						},
 
 						gridIndex:dimensionality_show_data_arr.length - 1 - i
@@ -1788,7 +1795,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					// nameLocation:"end",
 					// nameGap:25,
 					// nameRotate:25,
-					nameGap:15,
+					nameGap:10,
 					nameRotate:15,
 					type: 'category',
 					axisTick:{
@@ -2230,7 +2237,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			var needXais = [];
 			var gridArr = [];
 			var needYais = [{
-			    		show:true,
+			    	show:true,
 			        type: "value",
 			        //name: commonLegend.join("/"),
 			        nameLocation:"middle",
@@ -2335,7 +2342,10 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
 						formatter:function(value){
-							if(value == 'undefined'){
+							if(value.length > 8){
+								value = value.substring(0,8) + '...';
+							}
+							if(value == 'undefined' || value == 'undefine...'){
 								return '';
 							}else{
 								return value;
@@ -2350,7 +2360,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					containLabel:true,
 				}
 				aGrid["left"] = "5%";
-				aGrid["bottom"] = 60 + 30*(dimensionality_show_data.length - 1 - i);
+				aGrid["bottom"] = 60 + 35*(dimensionality_show_data.length - 1 - i);
 				aGrid["top"] = "5%";		
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
@@ -2986,21 +2996,50 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		        radius:"75%",
 		        indicator:indicator,
 		        triggerEvent:true,
+		        axisLine:{
+		        	show:data.length < 80,
+		        },
+		        splitLine:{
+		        	show:true,
+		        },
 		        name:{
 		        	formatter:function(params){
 	         			count++;
-
-	         			if(data.length > 20){
+	         			if(data.length > 20 && data.length < 80){
 	         				if(count % 3 == 0){
 	         					return params;
 	         				}else{
 	         					array.push(params);
-	         				//	console.log(array);
+	         					return  '';
+	         				}
+	         			}else if(data.length > 80 && data.length < 400){
+	         				if(count % 20 == 0){
+	         					return params;
+	         				}else{
+	         					array.push(params);
+	         					return '';
+	         				}
+	         			}else if(data.length > 400){
+	         				if(count % 50 == 0){
+	         					return params;
+	         				}else{
+	         					array.push(params);
 	         					return '';
 	         				}
 	         			}else{
 	         				return params;
 	         			}
+	         			// if(data.length > 20){
+	         			// 	if(count % 3 == 0){
+	         			// 		return params;
+	         			// 	}else{
+	         			// 		array.push(params);
+	         			// 	//	console.log(array);
+	         			// 		return '';
+	         			// 	}
+	         			// }else{
+	         			// 	return params;
+	         			// }
 	         		}
 		        }
 		    }],

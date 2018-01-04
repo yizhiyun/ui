@@ -647,8 +647,6 @@
 
 					$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
 
-					//记录操作，把index存入data，对其进行存取
-
 					// 撤销
 					// $("#prev").click(function(){
 						
@@ -658,8 +656,6 @@
 					// $("#next").click(function(){
 						
 					// })
-
-					
 
 					//视图清空 页面初始化
 					function empty_viem_init(change_or_click){
@@ -2253,6 +2249,7 @@
 						$("#action_box .action_delect_view").unbind("click");
 						$("#action_box .action_delect_view").on("click",function(){
 							empty_viem_init("change");
+							$("#project_chart ul .show_view_success").removeClass("clicked");
 							delete preClickView[$(".auto_show").find("span").text()];
 							// console.log(preClickView);
 						})
