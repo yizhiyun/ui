@@ -55,7 +55,7 @@
 #dataSet .detailDataSetList .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables .tablesList .buildTableTitle{color: #808080;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise{height:23px;line-height:23px;cursor: pointer;width:182px;border-radius: 2px;margin-bottom: 2px;text-indent: 5px;position: relative;}
-#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise .datebaseLise_input{width: 162px;height:23px;border:1px solid #505050;display: none;position: absolute;left: 0;top: 0;background: white;box-sizing: border-box;}
+#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise .datebaseLise_input{height:23px;border:1px solid #505050;display: none;position: absolute;left: 0;top: 0;background: white;box-sizing: border-box;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise:hover{background: #EEEEEE;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .waringFalse{color: red;}
 /*#analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow{margin-top: 5px;}*/
@@ -128,7 +128,7 @@
 
 
 
-.expression_show .mainContent{position: absolute;bottom:0px;left: 0}
+.expression_show .mainContent{position: absolute;top:60px;left: 0px;}
 #tableDataDetailListPanel{position: absolute;border:1px solid #dedede;font-size: 12px;background: white;text-align: center;right: 0;bottom: 0;border-left: 0px;z-index: 300;}
 #tableDataDetailListPanel #closeableDataDetailListPanel{position: absolute;top: 0;z-index: 300;cursor: pointer;}
 #tableDataDetailListPanel .topInfo{height: 60px;border-left: 1px solid #dedede;}

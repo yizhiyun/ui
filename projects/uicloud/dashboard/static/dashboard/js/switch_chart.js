@@ -328,6 +328,7 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 //遍历所有视图按钮给定绘图方法
 		show_btn_change.each(function(index,ele){
 			// show_btn_change.css({"background":"","border":""});
+			$(ele).unbind("click");
 			$(ele).on("click",function(){
 				show_btn_change.removeClass("clicked");
 				show_btn_change.css({"background":"","border":""});

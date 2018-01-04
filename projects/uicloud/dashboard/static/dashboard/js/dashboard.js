@@ -146,6 +146,8 @@
 				
 				var preHandleDataCheck = null;
 
+				var dateClickHandle = false;
+
 				//保存视图触发事件
 				function save_btn_fun(){
 					$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -628,6 +630,21 @@
 
 						leftBar_sizeW_function();
 
+
+
+				        $(window).resize(function(){
+				        	if($("#pageDashboardModule").css("display") == "block"){
+						          leftBar_sizeW_function();
+						          $("#pageDashboardModule #dashboard_content #operational_view .annotation_text .drog_row_list").width($("#drop_row_view").width() * 0.91);
+						          $("#pageDashboardModule #dashboard_content #operational_view #handle_color_text .list_wrap").width($("#drop_row_view").width()*0.91);
+						          $("#pageDashboardModule #dashboard_content #operational_view #handle_color_text .drog_row_list").width($("#drop_row_view").width()*0.91 * 0.85);
+						          if($("#view_show_area #view_show_area_content #view_show_wrap #main").css("display") == "block"){
+						          	var freeEcharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
+						          	freeEcharts.resize();
+						          }
+				        	}
+				        })
+
 					$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
 
 					//记录操作，把index存入data，对其进行存取
@@ -652,11 +669,11 @@
 						$("#operational_view .annotation_text").find("li").remove();
 
 						if(change_or_click == "click"){
-						//选择块恢复默认
-						$('#lateral_title .custom-select').find("option").removeAttr("selected");
-						$('#lateral_title .custom-select').find("option").eq(0).attr("selected","selected");
-						$('#lateral_title .custom-select').comboSelect();
-						load_measurement_module($('#lateral_title .custom-select').val())
+							//选择块恢复默认
+							$('#lateral_title .custom-select').find("option").removeAttr("selected");
+							$('#lateral_title .custom-select').find("option").eq(0).attr("selected","selected");
+							$('#lateral_title .custom-select').comboSelect();
+							load_measurement_module($('#lateral_title .custom-select').val())
 
 						}
 						drag_row_column_data = {
@@ -678,7 +695,7 @@
 						initTable_name();
 						$("#project_chart ul li").data("if_show","").css("border","").css("opacity","0.3");
 
-
+						$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_listf>li").remove();
 
 						drag_measureCalculateStyle = {};
 
@@ -1335,7 +1352,7 @@
 											sessionStorage.removeItem("edit_view_now");
 										}
 
-										empty_viem_init("click");
+										empty_viem_init("change");
 									}
 								}
 							if($.inArray($("#pageDashboardModule #clickWallDelete").data("nowDeleteView"),deleteDataHandleArr) == -1){
@@ -1929,6 +1946,11 @@
 									url:"/cloudapi/v1/tables/" +current_cube+"/schema",
 									type:"post",
 									dataType:"json",
+									// beforeSend:function(){
+									// 	var target =  $("#view_show_wrap").get(0);
+									// 	$(".maskLayer").show();
+	    				// 				spinner.spin(target);
+									// },
 									success:function(data){
 										if (data["status"] == "success") {
 											var cube_all_data = data["results"];
@@ -2086,7 +2108,7 @@
 								$("#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .custom-select").html("");
 								$("#sizer_content .dateSelectDataModule").show();
 								for (var i =0;i < currentSetTableDateFieldArray.length;i++) {
-									var op = $("<option>"+currentSetTableDateFieldArray[i]+"</option>");
+									var op = $("<option value="+currentSetTableDateFieldArray[i]+">"+currentSetTableDateFieldArray[i]+"</option>");
 									$("#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .custom-select").eq(0).append(op);
 								}
 								$("#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .custom-select").eq(0).comboSelect();
@@ -2157,6 +2179,8 @@
 								$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input,#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").change(function(){
 			 					  currentSetTableDateMinDate = $("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val().replace(/\//g,"-");
 			 					  currentSetTableDateMaxDate = $("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val().replace(/\//g,"-");
+			 					  isagainDrawTable = true;
+			 					  dateClickHandle = true;
 			 					  switch_chart_handle_fun();
 								});
 							});

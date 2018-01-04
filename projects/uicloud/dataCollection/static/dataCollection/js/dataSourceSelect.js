@@ -81,6 +81,7 @@ $(function () {
 							changePageTo_navBuildDataView();
 						}else{
 							alert("请检查数据库是否开启");
+							$(".maskLayer").hide();
 						}
 
 					}

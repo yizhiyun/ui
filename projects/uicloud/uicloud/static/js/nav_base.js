@@ -214,7 +214,7 @@ function deleteCookie(){
 			//获取编辑的视图
 			var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
 			var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
-			if(Object.getOwnPropertyNames(result).length == 0 || result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]] == undefined){
+			if(Object.getOwnPropertyNames(result).length <= 1 || result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]] == undefined){
 				sessionStorage.removeItem("edit_view_now");
 			}
 		}
@@ -1363,6 +1363,7 @@ function pallasdaraFunctionNavBtnHandle(){
 						default:
 							break;
 					}
+          $(window).trigger("resize");
 				});
        		}
           }
@@ -1585,4 +1586,26 @@ function toInputStyle(ele){
 
 function toInputStyleBlur(ele){
 	$(ele).css("borderColor","#DEDEDE");
+}
+
+
+Date.prototype.format = function(fmt) {
+     var o = {
+        "M+" : this.getMonth()+1,                 //月份
+        "d+" : this.getDate(),                    //日
+        "h+" : this.getHours(),                   //小时
+        "m+" : this.getMinutes(),                 //分
+        "s+" : this.getSeconds(),                 //秒
+        "q+" : Math.floor((this.getMonth()+3)/3), //季度
+        "S"  : this.getMilliseconds()             //毫秒
+    };
+    if(/(y+)/.test(fmt)) {
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+     for(var k in o) {
+        if(new RegExp("("+ k +")").test(fmt)){
+             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+         }
+     }
+    return fmt;
 }

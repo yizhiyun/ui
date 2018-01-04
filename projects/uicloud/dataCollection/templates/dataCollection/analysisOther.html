@@ -14,7 +14,7 @@
  				<p class="new-cube radio">新建数据表</p>
  			</div>
  			<div class="cube-name-input-div">
- 				<span>数据表名称 : </span><input type="text" placeholder="请输入数据表名称" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)"/>
+ 				<span>数据表名称 : </span><input type="text" placeholder="请输入数据表名称" onfocus="toInputStyle(this)"  onblur="toInputStyleBlur(this)" onkeyup="this.value=this.value.replace(/[^\w\.\/\-]/ig,'')"/>
  			</div>
  			<div class="cube-name-input-div">
  				<span>数据表名称 : </span>

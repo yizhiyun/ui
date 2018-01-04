@@ -190,7 +190,7 @@ function rightFilterListDraw(){
 		li.append(fieldDetailContent_ul);
 		for (var i =0;i < filterNeedAllData[aDemi].length;i++) {
 			var lineItem = filterNeedAllData[aDemi][i];
-			if($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").find("li").length > 1){
+			if($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").find("li").length > 1 || (currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null)){
 				if($.inArray(String(lineItem),freeHandleDiData[aDemi]) == -1){
 					continue;
 				}
@@ -208,13 +208,19 @@ function rightFilterListDraw(){
 			fieldDetailContent_ul.append(detail_li);
 			detail_li.find("input").change(function(event){
 				var column = $(this).parents("li.filterLI").eq(0).data("fieldInfo").split(":")[0];
+				var columnType = $(this).parents("li.filterLI").eq(0).data("fieldInfo").split(":")[1];
 				var columnContent = $(this).parent("label").children("span.filedContentName").html();
 				var arr = checkSelectConditionDict[column];
 				loc_storage.removeItem(current_cube_name);
 				checkedHandle = true;
 				if (this.checked) {
 					if(arr){
-						var index = checkSelectConditionDict[column].indexOf(columnContent);
+						if(columnType.isTypeDate()){
+							var index = checkSelectConditionDict[column].indexOf(columnContent.replace(/T/g," "));
+						}else{
+							var index = checkSelectConditionDict[column].indexOf(columnContent);
+						}
+						
 						if ( index != -1) {
 							checkSelectConditionDict[column].splice(index,1);
 							if($(this).parent().parent().attr("checkwithcount") != undefined && $(this).parent().parent().attr("checkwithcount") != ""){
@@ -240,7 +246,12 @@ function rightFilterListDraw(){
 							return;
 						}
 
-						checkSelectConditionDict[column].push(columnContent);
+						if(columnType.isTypeDate()){
+							checkSelectConditionDict[column].push(columnContent.replace(/T/g," "));
+						}else{
+							checkSelectConditionDict[column].push(columnContent);
+						}
+						
 
 					}
 					

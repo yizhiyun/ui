@@ -311,29 +311,34 @@
 
 		// saveDashboardPostData = [];
 
-		function statementsinit(){
+		function statementsinit(resize){
+			//侧边栏收起按钮top
+			$("#statements_left_bar #statements_left_bar_btn_close").css("top",($("body").height()-$(".topInfo").height())/2 - $("#statements_left_bar_btn_close").height()/2 + "px");
+			right_width_content = $("body").width()-$("#statements_left_bar").position().left - $("#statements_left_bar").width() - $(".leftNav").width();
+			//右侧视图展示区域宽度
+			$("#right_folder_show_are").css("width",right_width_content +"px").css("height",$("body").height() - $(".topInfo").height() + "px");
 
-		//侧边栏收起按钮top
-		$("#statements_left_bar #statements_left_bar_btn_close").css("top",($("body").height()-$(".topInfo").height())/2 - $("#statements_left_bar_btn_close").height()/2 + "px");
-		right_width_content = $("body").width()-$("#statements_left_bar").position().left - $("#statements_left_bar").width() - $(".leftNav").width();
-		//右侧视图展示区域宽度
-		$("#right_folder_show_are").css("width",right_width_content +"px").css("height",$("body").height() - $(".topInfo").height() + "px");
+			//右侧视图展示区域高度
+			$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 54+ "px");
+			if((isOnlyLaod == false || onlyRunOne) && resize  == undefined){
+				//拿到构建报表的数据
+				$.post("/dashboard/getAllData",function(result){
+					ajax_data_post = result;
+					toIfChangeSecond = true;
+					view_out_handle_init(result);
+				})
+			}
 
-		//右侧视图展示区域高度
-		$(".view_folder_show_area").css("height",$("body").height() - $(".topInfo").height() - 54+ "px");
-		if(isOnlyLaod == false || onlyRunOne){
-			//拿到构建报表的数据
-			$.post("/dashboard/getAllData",function(result){
-				ajax_data_post = result;
-				toIfChangeSecond = true;
-				view_out_handle_init(result);
-			})
-		}
-
-		$(".rightConent #statements_left_bar #statements_left_bar_area").height($("body").height()-$(".topInfo").height()-$(".rightConent #statements_left_bar #state_left_bar_title").height());
+			$(".rightConent #statements_left_bar #statements_left_bar_area").height($("body").height()-$(".topInfo").height()-$(".rightConent #statements_left_bar #state_left_bar_title").height());
 		}
 		statementsinit();
 
+        $(window).resize(function(){
+        	if($("#pageStatementsModule").css("display") == "block"){
+        		statementsinit("resize");
+          		gridster_handle();
+        	}
+        })
 		//搜索功能
 		function searchFun(){
 			$("#pageStatementsModule #statements_left_bar #state_left_bar_title #statements_left_search").unbind("click");

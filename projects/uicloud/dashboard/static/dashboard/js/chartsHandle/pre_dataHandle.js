@@ -129,13 +129,20 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 
 		var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
 
-	  conditions = conditions.concat(conditionFilter_record[current_cube_name]["dateCondition"]);
+	  	if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
+	  		conditions.push({"type":">=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMinDate).format("yyyy-MM-dd") + " 00:00:00","datatype":"date"});
+	  		conditions.push({"type":"<=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMaxDate).format("yyyy-MM-dd") + " 23:59:59","datatype":"date"});
+	  	}
 
+	  	conditions = conditions.concat(conditionFilter_record[current_cube_name]["dateCondition"]);
 
 		checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 		for(var key in checkSelectConditionDict){
 			var valuesArr = checkSelectConditionDict[key];
 			if(valuesArr && valuesArr.length >0 && filterNotWorkArr.indexOf(key) == -1){
+				if($("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select option[value="+key+"]").length > 0){
+					valuesArr.forEach(function(v,i){return valuesArr[i] = v.replace(/T/g," ")});
+				}
 				var filter = {"type":"isnotin","columnName":"`"+key+"`","value":valuesArr};
 				if(!conditions.hasAllObject(filter)){
 					conditions.push(filter);
@@ -271,14 +278,14 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 			drillElementCount = {};
 		}
 
-
-
+		return;
+}
 //遍历操作过后返回的数据
 function forDataFunctionPost(handleData,saveArr,drill){
-	if((dirllConditions && dirllConditions.length > 0) || drill == "over"){
+	if((dirllConditions && dirllConditions.length > 0) || drill == "over" || drill == "dateHandle"){
 		for(var z = 0; z < handleDataPost["expressions"]["groupby"].length;z++){
 		if(saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")] == undefined){
-				saveArr[handleDataPost["	"]["groupby"][z].replace(/\`/g,"")] = [];
+				saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")] = [];
 				for(var j = 0; j < handleData.length;j++){
 					var aData = handleData[j];
 					if($.inArray(String(aData[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")]),saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")]) == -1){
@@ -291,7 +298,7 @@ function forDataFunctionPost(handleData,saveArr,drill){
 	}
 	}
 
-	if(drill == "drill"){
+	if(drill == "drill" || drill == "dateHandle"){
 		rightFilterListDraw();
 	}
 }
@@ -302,7 +309,12 @@ function forDataFunctionPost(handleData,saveArr,drill){
 function clickDrillChangeDiFunction(handleData){
 	//记录处理后的数据
 	freeHandleDiData = {};
-	forDataFunctionPost(handleData,freeHandleDiData,"drill");
+	if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
+		forDataFunctionPost(handleData,freeHandleDiData,"dateHandle");
+	}else{
+		forDataFunctionPost(handleData,freeHandleDiData,"drill");
+	}
+	
 }
 
 //复选框取消获取数据
@@ -339,16 +351,30 @@ function checkHandleFunction(checkData){
 		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+checkView.replace(/\./g,"YZY")).find(".field_detail_list li").each(function(index,ele){
 			if($.inArray($(ele).attr("checkvalue"),freeHandleCheckData[checkView]) == -1){
 				$(ele).find("input").eq(0).prop("checked",false);
-				var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue"));
+				if($(ele).parents(".filterLI").data("fieldInfo").split(":")[1].isTypeDate()){
+					var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue").replace(/T/g," "));
+				}else{
+					var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue"));
+				}
+				
 				var handleValue = deleteCheckFunction(preHandleDataCheck,checkView,$(ele).attr("checkvalue"),allKeys(freeHandleCheckData)).join("_YZYPD_");
 				$(ele).attr("checkWithCount",handleValue);
 				if(index == -1){
-					checkSelectConditionDict[checkView].push($(ele).attr("checkvalue"));
+					if($(ele).parents(".filterLI").data("fieldInfo").split(":")[1].isTypeDate()){
+						checkSelectConditionDict[checkView].push($(ele).attr("checkvalue").replace(/T/g," "));
+					}else{
+						checkSelectConditionDict[checkView].push($(ele).attr("checkvalue"));
+					}
+					
 				}
 				
 			}else{
 				$(ele).find("input").eq(0).prop("checked",true);
-				var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue"));
+				if($(ele).parents(".filterLI").data("fieldInfo").split(":")[1].isTypeDate()){
+					var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue").replace(/T/g," "));
+				}else{
+					var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue"));
+				}
 				if(index != -1){
 					checkSelectConditionDict[checkView].splice(index,1);
 					if($(ele).attr("checkwithcount") != undefined && $(ele).attr("checkwithcount") != ""){
@@ -379,11 +405,10 @@ function checkHandleFunction(checkData){
 		// async:false,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
-			console.log(handleDataPost);
+			// console.log(handleDataPost);
 		},
 		success:function(data){
 			if(data.status == "success"){
-
 				var freeHandlePostFun = objectDeepCopy(recordConditon);
 
 				preAllData = data.results.data;
@@ -409,8 +434,9 @@ function checkHandleFunction(checkData){
 					drillElementCount = {};
 				}
 
-				if(freeHandlePostFun == null || !equalCompare(freeHandlePostFun["expressions"]["groupby"],handleDataPost["expressions"]["groupby"])){
+				if(freeHandlePostFun == null || !equalCompare(freeHandlePostFun["expressions"]["groupby"],handleDataPost["expressions"]["groupby"]) || dateClickHandle){
 					clickDrillChangeDiFunction(data.results.data);
+					dateClickHandle = false;
 				}
 
 

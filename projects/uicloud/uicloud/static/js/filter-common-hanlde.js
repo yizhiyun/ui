@@ -931,9 +931,14 @@ function contidon_value_change_fun(){
 				if(i >= dataNumberControl){
 					break;
 				}
+
 				var theData = filterNeedAllData[field][i];
+				if($.inArray(theData,freeHandleDiData[field]) == -1){
+					continue;
+				}
 				var li = $("<li><label><input type='checkbox'/><span class='val'>"+theData+"</span></label></li>");
 				li.find("input").attr("value",theData);
+
 				if($.inArray(theData,checkSelectConditionDict[field]) == -1){
 					li.find("input").prop("checked",true);
 				}else{
@@ -965,7 +970,11 @@ function contidon_value_change_fun(){
 						}
 					}
 			}
-			content_select_max = filterNeedAllData[field].length;
+			if(freeHandleDiData[field] != undefined){
+				content_select_max = freeHandleDiData[field].length;
+			}else{
+				content_select_max = filterNeedAllData[field].length;
+			}
 		}
 
 		if(freeCheckCountHandle == 0){
@@ -1082,11 +1091,11 @@ function contidon_value_change_fun(){
 //				userSelect_num.find("#modeOption").prop("disabled","true");
 //			}
 //			userSelect_num.comboSelect();
-			if(checkSelectConditionDict[field] != undefined && checkSelectConditionDict[field].length > 0){
-				var sliderValues = [freeHandleCheckData[field].min(),freeHandleCheckData[field].max()];
-			}else{
+			// if(checkSelectConditionDict[field] != undefined && checkSelectConditionDict[field].length > 0){
+				// var sliderValues = [freeHandleCheckData[field].min(),freeHandleCheckData[field].max()];
+			// }else{
 				var sliderValues = [data.min,data.max];
-			}
+			// }
 			
 			if(isEdit){
 				sliderValues = [filterConditions["sliderMinValue"],filterConditions["sliderMaxValue"]];
@@ -1140,13 +1149,11 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 	}
 	$("#filter-model #date-filter .date-filter-head span.flag").eq(0).html("   "+field);
 
-	bottom_date_indictor_label_fun(); // 第一次计算相对日期里面的数据
+	//bottom_date_indictor_label_fun(); // 第一次计算相对日期里面的数据
 	// 计算日期范围里面的数据
 	dataHandleWork(filter_from_in,tableInfo,field,"dateType",function(data){
-
 		var backgroundMinDate = new Date(data.min);
 		var backgroundMaxDate = new Date(data.max);
-
 		var defaultMinDate = null;
 		var defaultMaxDate = null;
 		if(isEdit){
@@ -1157,12 +1164,12 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
 		}else{
 			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").val(backgroundMinDate.getFullYear()+"/"+(backgroundMinDate.getMonth()+1)+"/"+backgroundMinDate.getDate());
 			$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").val(backgroundMaxDate.getFullYear()+"/"+(backgroundMaxDate.getMonth()+1)+"/"+backgroundMaxDate.getDate());
-			defaultMinDate = new Date(data.min);
-			defaultMaxDate = new Date(data.max);
+			defaultMinDate = new Date(data.min.replace(/T/g," "));
+			defaultMaxDate = new Date(data.max.replace(/T/g," "));
 		}
 		$("#date-filter #range-date-box .date-slider-box .range-flag .min-date-flag").html(backgroundMinDate.getFullYear()+"/"+(backgroundMinDate.getMonth()+1)+"/"+backgroundMinDate.getDate());
 		$("#date-filter #range-date-box .date-slider-box .range-flag .max-date-flag").html(backgroundMaxDate.getFullYear()+"/"+(backgroundMaxDate.getMonth()+1)+"/"+backgroundMaxDate.getDate());
-
+		bottom_date_indictor_label_fun(); // 第一次计算相对日期里面的数据
 		// 日期范围--日期选择
 		$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.minDate").datepicker({
 			dateFormat:"yy/mm/dd",
@@ -1176,7 +1183,7 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
      		 buttonImageOnly: true
 		});
 		$("#date-filter .date-filter-body #range-date-box .date-input-select-box .input-box input.maxDate").datepicker({
-			dateFormat:"yy/mm/dd",
+			 dateFormat:"yy/mm/dd",
      		 changeYear: true,
      		 minDate:backgroundMinDate,
      		 maxDate:backgroundMaxDate,
@@ -1186,6 +1193,10 @@ function date_screeningWasher_fun(isEdit,filterConditions,savedIndex){
      		 showOn: "both",
      		 buttonImageOnly: true
 		});
+			if($("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).data("uiDateRangeSlider") != undefined){
+				$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).data("uiDateRangeSlider").destroy();
+			}
+			
 			// 滑动条
 			$("#date-filter #range-date-box .date-slider-box .slider-ranage").eq(0).dateRangeSlider({
 				defaultValues:{min:defaultMinDate, max:defaultMaxDate},
@@ -1500,16 +1511,16 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 		savedIndex = $("#filter-model #date-filter").data("savedIndex");
 		column_name = $("#filter-model #date-filter .date-filter-head span.flag").eq(0).html().replace(/\s+/g,"");
 		var dateValueArr  = $("#date-filter p.bottomDateIndictor:visible").html().split(" 至 ");
-		var startDate =  dateValueArr[0];
+		var startDate =  new Date(dateValueArr[0]).format("yyyy-MM-dd");
 		startDate = startDate.replace(/\//g,"-");
-		var endDate = dateValueArr[1];
+		var endDate =   new Date(dateValueArr[1]).format("yyyy-MM-dd");
 		endDate =endDate.replace(/\//g,"-");
 		var start_index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [">=", "`" +column_name+ "`"]);
 		if(start_index == -1) {
 			var filter = {
 						"type": ">=",
 						"columnName":  "`" +column_name+ "`",
-						"value": startDate,
+						"value": startDate + " 00:00:00",
 						"datatype":"date"
 			};
 			conditionFilter_record[tableInfo]["condition"].push(filter);
@@ -1522,7 +1533,7 @@ function screeningWasher_did_finish_filter_handle_data_fun(filterID) {
 			var filter = {
 						"type": "<=",
 						"columnName":  "`" +column_name+ "`",
-						"value": endDate,
+						"value": endDate + " 23:59:59",
 						"datatype":"date"
 			};
 			conditionFilter_record[tableInfo]["condition"].push(filter);
@@ -1656,6 +1667,7 @@ function localStorageGetData(tableInfo){
 }
 function localStoragedeleteData(tableInfo,index){
 	var  filterDataArr  =  localStorageGetData(tableInfo);
+	console.log(filterDataArr)
 	filterDataArr.splice(index,1);
 	window.localStorage.setItem(tableInfo,JSON.stringify(filterDataArr));
 }
@@ -1715,12 +1727,12 @@ function getCurrentTableFilterData(tableInfo,filterColumnArr){
 
 		}else if(obj.type == "date-filter"){
 			var dateValueArr  = obj.indictorText.split(" 至 ");
-			var startDate =  dateValueArr[0];
+			var startDate =  new Date(dateValueArr[0]).format("yyyy-MM-dd");
 			startDate = startDate.replace(/\//g,"-");
-			var endDate = dateValueArr[1];
+			var endDate = new Date(dateValueArr[1]).format("yyyy-MM-dd");
 			endDate =endDate.replace(/\//g,"-");
-			var filter1 = {"type":">=","columnName":"`"+obj.column+"`","value":startDate,"datatype":"date"}
-			var filter2 = {"type":"<=","columnName":"`"+obj.column+"`","value":endDate,"datatype":"date"}
+			var filter1 = {"type":">=","columnName":"`"+obj.column+"`","value":startDate + " 00:00:00","datatype":"date"}
+			var filter2 = {"type":"<=","columnName":"`"+obj.column+"`","value":endDate + " 23:59:59","datatype":"date"}
 			conditionFilter_record[tableInfo]["dateCondition"].push(filter1);
 			conditionFilter_record[tableInfo]["dateCondition"].push(filter2);
 		}

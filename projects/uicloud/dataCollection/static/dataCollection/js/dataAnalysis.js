@@ -213,136 +213,136 @@
       }
 
       function deleteTableData(type){
-      $(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
-      onlyRunOne = true;
-      for( viewTable in preClickView){
-        if(preClickView[viewTable]["tablename"] == type){
-          saveViewTableDataDelete = false;
-          $(".folderview_li_show[title="+viewTable+"] .folderview_li_del_btn").trigger("click");
-          if(loc_storage.getItem("allTable_specialSelection")){
-             var tempSaveTableFiled = JSON.parse(loc_storage.getItem("allTable_specialSelection"));
-              delete tempSaveTableFiled[type+"_specialSelection"];
-              loc_storage.setItem("allTable_specialSelection",JSON.stringify(tempSaveTableFiled));
-          }
-          delete preClickView[viewTable];
-          saveViewShowArr = {};
-          if($.inArray(type,save_data_sum_handle) != -1){
-               save_data_sum_handle.splice($.inArray(type,save_data_sum_handle),1);
-          }
-          if(sessionStorage.getItem("edit_view_now")){
-            if(sessionStorage.getItem("edit_view_now").split(",")[3] == type){
-                sessionStorage.removeItem("edit_view_now");
+          $(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
+          onlyRunOne = true;
+          for( viewTable in preClickView){
+            if(preClickView[viewTable]["tablename"] == type){
+              saveViewTableDataDelete = false;
+              $(".folderview_li_show[title="+viewTable+"] .folderview_li_del_btn").trigger("click");
+              if(loc_storage.getItem("allTable_specialSelection")){
+                 var tempSaveTableFiled = JSON.parse(loc_storage.getItem("allTable_specialSelection"));
+                  delete tempSaveTableFiled[type+"_specialSelection"];
+                  loc_storage.setItem("allTable_specialSelection",JSON.stringify(tempSaveTableFiled));
+              }
+              delete preClickView[viewTable];
+              saveViewShowArr = {};
+              if($.inArray(type,save_data_sum_handle) != -1){
+                   save_data_sum_handle.splice($.inArray(type,save_data_sum_handle),1);
+              }
+              if(sessionStorage.getItem("edit_view_now")){
+                if(sessionStorage.getItem("edit_view_now").split(",")[3] == type){
+                    sessionStorage.removeItem("edit_view_now");
+                }
+              }
+
             }
           }
 
-        }
-      }
-
-      //判断删除相应的指标
-      if($("#dashboard_content #lateral_bar #indicator #index_show ul li").length > 0){
-          // console.log( $("#dashboard_content #lateral_bar #indicator #index_show ul li[tablename="+type+"]"))
-          $("#dashboard_content #lateral_bar #indicator #index_show ul li[tablename="+type+"]").remove();
-      }
+          //判断删除相应的指标
+          if($("#dashboard_content #lateral_bar #indicator #index_show ul li").length > 0){
+              // console.log( $("#dashboard_content #lateral_bar #indicator #index_show ul li[tablename="+type+"]"))
+              $("#dashboard_content #lateral_bar #indicator #index_show ul li[tablename="+type+"]").remove();
+          }
 
       }
 
 
       //csv 集合表 重命名 移除方法
       function tableRemoveChangeName(type,handleType,preName,data){
-      $.ajax({
-      url:"cloudapi/v1/handleHdfsFile/" + type,
-      type:"POST",
-      dataType:"json",
-      contentType:"application/json; charset=utf-8",
-      data:JSON.stringify(handleType),
-      success:function(data){
-      if(handleType["method"] == "delete"){
-       if(handleType["filesource"] == "uploaded"){
-              deleteFileConnection(type);
-              theRecordConnectionShouldShow = "none";
-              decideDataSourceNeedShowFunction();
-              if($("#dataSet .detailDataSetList  li .nowConnectedTables .tablesList").html() == ""){
-                 $("#dataSet .detailDataSetList  li .nowConnectedTables .didBuildImg").css("visibility","hidden");
-              }
-       }else{
-            deleteAlreadyTable(type);
-            //修改侧边栏跳转事件
-            pallasdaraFunctionNavBtnHandle();
+          $.ajax({
+          url:"cloudapi/v1/handleHdfsFile/" + type,
+          type:"POST",
+          dataType:"json",
+          contentType:"application/json; charset=utf-8",
+          data:JSON.stringify(handleType),
+          success:function(data){
+              if(handleType["method"] == "delete"){
+               if(handleType["filesource"] == "uploaded"){
+                      deleteFileConnection(type);
+                      theRecordConnectionShouldShow = "none";
+                      decideDataSourceNeedShowFunction();
+                      if($("#dataSet .detailDataSetList  li .nowConnectedTables .tablesList").html() == ""){
+                         $("#dataSet .detailDataSetList  li .nowConnectedTables .didBuildImg").css("visibility","hidden");
+                      }
+               }else{
+                    deleteAlreadyTable(type);
+                    //修改侧边栏跳转事件
+                    pallasdaraFunctionNavBtnHandle();
 
-            saveAddNewFile = true;
-            saveScameView = false;
-            if_or_load = true;
+                    saveAddNewFile = true;
+                    saveScameView = false;
+                    if_or_load = true;
 
-            if(data["exist"] == "no"){
-              return;
-            }
+                    if(data["exist"] == "no"){
+                      return;
+                    }
 
-            //移除对应的指标 视图 展示
-            deleteTableData(type);
+                    //移除对应的指标 视图 展示
+                    deleteTableData(type);
 
-       }
-      }else{
-
-      if(handleType["filesource"] == "generated"){
-          if(data["status"] == "success"){
-              $("#analysisContainer .mainDragArea .boxDiv[tabletype = 'hdfgTable'] p[title="+preName+"]").text(handleType["newname"]).attr("title",handleType["newname"]);
-              //修改仪表板数据块的展示
-              if(preName == $("#pageDashboardModule #dashboard_content #lateral_bar #lateral_title .combo-select select option[value="+preName+"]").text()){
-                  $("#pageDashboardModule #dashboard_content #lateral_bar #lateral_title .combo-select select option[value="+preName+"]").text(handleType["newname"]).attr("value",handleType["newname"]);
-                  $("#pageDashboardModule #dashboard_content #lateral_bar #lateral_title .combo-select select").comboSelect();
-              }
-              if(current_cube_name == preName){
-                current_cube_name = handleType["newname"];
-              }
-              _cube_all_data[handleType["newname"]] = _cube_all_data[preName];
-              delete _cube_all_data[preName];
-              $("#sizer_content .filter_header_div span.cubeTableName,#sizer_content .filter_body_div p.cubeTableName").text(handleType["newname"]);
-              if($.inArray(preName,save_data_sum_handle) != -1){
-                 save_data_sum_handle[$.inArray(preName,save_data_sum_handle)] = handleType["newname"];
-              }
-              for(viewTableName in preClickView){
-                if(preClickView[viewTableName]["tablename"] == preName){
-                    preClickView[viewTableName]["tablename"] = handleType["newname"];
-                }
-              }
-              if(loc_storage.getItem("allTable_specialSelection")){
-                  var tempSaveTableRename = JSON.parse(loc_storage.getItem("allTable_specialSelection"));
-                  if(tempSaveTableRename[preName + "_specialSelection"]){
-                      tempSaveTableRename[handleType["newname"] + "_specialSelection"]= tempSaveTableRename[preName + "_specialSelection"];
-                      delete tempSaveTableRename[preName + "_specialSelection"];
-                      loc_storage.setItem("allTable_specialSelection",JSON.stringify(tempSaveTableRename));
-                  }
-              }
-              if(sessionStorage.getItem("edit_view_now")){
-                  if(sessionStorage.getItem("edit_view_now").split(",")[3] == preName){
-                    var tempSaveEditStorage = sessionStorage.getItem("edit_view_now").split(",");
-                    tempSaveEditStorage[3] = handleType["newname"];
-                    sessionStorage.setItem("edit_view_now",tempSaveEditStorage.join(","));
-                  }
-                }
-
-                handleChangeItem(preName,handleType["newname"]);
-                $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").children(".datebaseLise_input").hide();
-                $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").children(".datebaseLise_text").text(handleType["newname"]);
-                $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").attr("title",handleType["newname"]);
-                $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .waringFalse").remove();
-                postMaxHeightHandle();
-
-
+               }
              }else{
-                $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").children(".datebaseLise_input").focus();
 
-                if($("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").parent(".tablesList").children(".waringFalse").length == 0){
-                    $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").after($("<p class='waringFalse'>名称已存在 !</p>"));
+              if(handleType["filesource"] == "generated"){
+                  if(data["status"] == "success"){
+                      $("#analysisContainer .mainDragArea .boxDiv[tabletype = 'hdfgTable'] p[title="+preName+"]").text(handleType["newname"]).attr("title",handleType["newname"]);
+                      //修改仪表板数据块的展示
+                      if(preName == $("#pageDashboardModule #dashboard_content #lateral_bar #lateral_title .combo-select select option[value="+preName+"]").text()){
+                          $("#pageDashboardModule #dashboard_content #lateral_bar #lateral_title .combo-select select option[value="+preName+"]").text(handleType["newname"]).attr("value",handleType["newname"]);
+                          $("#pageDashboardModule #dashboard_content #lateral_bar #lateral_title .combo-select select").comboSelect();
+                      }
+                      if(current_cube_name == preName){
+                        current_cube_name = handleType["newname"];
+                      }
+                      _cube_all_data[handleType["newname"]] = _cube_all_data[preName];
+                      delete _cube_all_data[preName];
+                      $("#sizer_content .filter_header_div span.cubeTableName,#sizer_content .filter_body_div p.cubeTableName").text(handleType["newname"]);
+                      if($.inArray(preName,save_data_sum_handle) != -1){
+                         save_data_sum_handle[$.inArray(preName,save_data_sum_handle)] = handleType["newname"];
+                      }
+                      for(viewTableName in preClickView){
+                        if(preClickView[viewTableName]["tablename"] == preName){
+                            preClickView[viewTableName]["tablename"] = handleType["newname"];
+                        }
+                      }
+                      if(loc_storage.getItem("allTable_specialSelection")){
+                          var tempSaveTableRename = JSON.parse(loc_storage.getItem("allTable_specialSelection"));
+                          if(tempSaveTableRename[preName + "_specialSelection"]){
+                              tempSaveTableRename[handleType["newname"] + "_specialSelection"]= tempSaveTableRename[preName + "_specialSelection"];
+                              delete tempSaveTableRename[preName + "_specialSelection"];
+                              loc_storage.setItem("allTable_specialSelection",JSON.stringify(tempSaveTableRename));
+                          }
+                      }
+                      if(sessionStorage.getItem("edit_view_now")){
+                          if(sessionStorage.getItem("edit_view_now").split(",")[3] == preName){
+                            var tempSaveEditStorage = sessionStorage.getItem("edit_view_now").split(",");
+                            tempSaveEditStorage[3] = handleType["newname"];
+                            sessionStorage.setItem("edit_view_now",tempSaveEditStorage.join(","));
+                          }
+                        }
+
+                        handleChangeItem(preName,handleType["newname"]);
+                        $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").children(".datebaseLise_input").hide();
+                        $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").children(".datebaseLise_text").text(handleType["newname"]);
+                        $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").attr("title",handleType["newname"]);
+                        $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .waringFalse").remove();
+                        postMaxHeightHandle();
+
+
+                     }else{
+                        $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").children(".datebaseLise_input").focus();
+
+                        if($("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").parent(".tablesList").children(".waringFalse").length == 0){
+                            $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise[title="+preName+"]").after($("<p class='waringFalse'>名称已存在 !</p>"));
+                        }
+                        postMaxHeightHandle();
+
+                     }
+
+                   }
+                  }
                 }
-                postMaxHeightHandle();
-
-             }
-
-          }
-      }
-      }
-      })
+              })
       }
 
       //连接数据库重命名
@@ -587,38 +587,38 @@
       // var doubleClick = true;
       //已构建数据 数据源 重命名
       function alreadyChangeName(element,eleInput,eleText,postType,dbdata,dbmd){
-      event.stopPropagation();
-      var preName = $(element).find("."+eleText+"").text();
-      $(element).find("."+eleInput+"").show().val($(element).find("."+eleText+"").text()).focus();
-      $(element).find("."+eleInput+"").unbind("input");
-      $(element).find("."+eleInput+"").on("input",function(){
-      this.value=this.value.replace(/[^\w\.\/\-]/ig,'');
-      })
-      $(element).find("."+eleInput+"").unbind("focusout");
-      $(element).find("."+eleInput+"").focusout(function(){
-      // if(doubleClick){
-          doubleClick = false;
-          var downInputName = $(element).find("."+eleInput+"").val();
-          if(downInputName == "" || downInputName == preName){
-            downInputName = preName;
-          }else{
-            if(dbdata == "dbdata"){
-              dbChangeName({"source":dbmd,"newname":downInputName});
-            }else{
-              //ajax post
-              tableRemoveChangeName(preName,{"filesource":postType,"method":"rename","newname":downInputName},preName);
-              return;
-            }
+            event.stopPropagation();
+            var preName = $(element).find("."+eleText+"").text();
+            $(element).find("."+eleInput+"").show().val($(element).find("."+eleText+"").text()).focus().width($(element).width());
+            $(element).find("."+eleInput+"").unbind("input");
+            $(element).find("."+eleInput+"").on("input",function(){
+                this.value=this.value.replace(/[^\w\.\/\-]/ig,'');
+            })
+            $(element).find("."+eleInput+"").unbind("focusout");
+            $(element).find("."+eleInput+"").focusout(function(){
+            // if(doubleClick){
+                doubleClick = false;
+                var downInputName = $(element).find("."+eleInput+"").val();
+                if(downInputName == "" || downInputName == preName){
+                  downInputName = preName;
+                }else{
+                  if(dbdata == "dbdata"){
+                    dbChangeName({"source":dbmd,"newname":downInputName});
+                  }else{
+                    //ajax post
+                    tableRemoveChangeName(preName,{"filesource":postType,"method":"rename","newname":downInputName},preName);
+                    return;
+                  }
 
 
-          }
-          $(element).find("."+eleText+"").text(downInputName);
-          $(element).attr("title",downInputName);
-          $(element).find("."+eleInput+"").hide();
-          $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .waringFalse").remove();
-          // setTimeout(function(){doubleClick = true;},1000)
-          // }
-      })
+                }
+                $(element).find("."+eleText+"").text(downInputName);
+                $(element).attr("title",downInputName);
+                $(element).find("."+eleInput+"").hide();
+                $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .waringFalse").remove();
+                // setTimeout(function(){doubleClick = true;},1000)
+                // }
+            })
       }
 
       // 获取当前已经构建的数据表
@@ -702,7 +702,6 @@
                                 $(".delete_area_ok_btn").unbind("click");
                                 $(".delete_area_ok_btn").on("click",function(event){
                                     event.stopPropagation();
-
                                     tableRemoveChangeName(connectInfoTableName,{"filesource":"generated","method":"delete"},null,data);
                                     $("#delete_area").hide();
                                     $(".maskLayer").hide();
@@ -962,7 +961,9 @@
 
         // 窗口调整的时候
         $(window).resize(function(){
-          ElementAutoSize();
+            if($("#analysisContainer").css("display") == "block"){
+               ElementAutoSize();
+            }
         })
 
         // 左侧边栏拖拽缩小和放大
@@ -1938,9 +1939,6 @@
             });
 
 
-
-
-
         // 给拖拽区域的表格绑定鼠标移入事件
         function dragBoxBindMosueOver(){
           $("#analysisContainer .mainDragArea .boxDiv").unbind("mouseenter");
@@ -2029,63 +2027,63 @@
 
         // 表格详情按钮的点击
         $("#analysisContainer .mainDragArea #dragTableDetailInfo .imgBox").click(function(){
-          //判断弹窗是否展示
-          if($("#connectModalprompt").css("display") == "block"){
-              if($("#connectModalprompt").find(".selectInfoDiv .selectHeader p").eq(0).text() == $(this).parent("#dragTableDetailInfo").attr("record").split("_YZYPD_")[2] || $("#connectModalprompt").find(".selectInfoDiv .selectHeader p").eq(2).text() == $(this).parent("#dragTableDetailInfo").attr("record").split("_YZYPD_")[2])
-              $("#connectModalprompt").hide();
-              tempSaveLineInfo = false;
-          }
-          $(this).siblings(".imgBox").removeClass("active");
-          $(this).addClass("active");
-          var dbInfo = $(this).parent("#dragTableDetailInfo").attr("record");
-          if ($(this).attr("flag") == "detail") {
-            // 再次点击之前点击过的表格
-            if ($("#tableDataDetailListPanel").attr("nowShowTable") == dbInfo) {
-              // 如果当前正在显示,不作出处理
-              if ($("#tableDataDetailListPanel").is(":visible")) {
-                return;
-              }else{
-                $("#tableDataDetailListPanel").show("blind",{"direction":"down"},200);
-                return;
+              //判断弹窗是否展示
+              if($("#connectModalprompt").css("display") == "block"){
+                  if($("#connectModalprompt").find(".selectInfoDiv .selectHeader p").eq(0).text() == $(this).parent("#dragTableDetailInfo").attr("record").split("_YZYPD_")[2] || $("#connectModalprompt").find(".selectInfoDiv .selectHeader p").eq(2).text() == $(this).parent("#dragTableDetailInfo").attr("record").split("_YZYPD_")[2])
+                  $("#connectModalprompt").hide();
+                  tempSaveLineInfo = false;
               }
-            }
+              $(this).siblings(".imgBox").removeClass("active");
+              $(this).addClass("active");
+              var dbInfo = $(this).parent("#dragTableDetailInfo").attr("record");
+              if ($(this).attr("flag") == "detail") {
+                // 再次点击之前点击过的表格
+                if ($("#tableDataDetailListPanel").attr("nowShowTable") == dbInfo) {
+                  // 如果当前正在显示,不作出处理
+                  if ($("#tableDataDetailListPanel").is(":visible")) {
+                    return;
+                  }else{
+                    $("#tableDataDetailListPanel").show("blind",{"direction":"down"},200);
+                    return;
+                  }
+                }
 
-      //      // 记录当前是展示的哪个表格的数据
-              $("#tableDataDetailListPanel").attr("nowShowTable",dbInfo);
-              // 获取相应的表格数据数据
-              dataAnaLysisFilterSuccessFun(true);
+          //      // 记录当前是展示的哪个表格的数据
+                  $("#tableDataDetailListPanel").attr("nowShowTable",dbInfo);
+                  // 获取相应的表格数据数据
+                  dataAnaLysisFilterSuccessFun(true);
 
-          }else if($(this).attr("flag") == "deleteTable"){
+              }else if($(this).attr("flag") == "deleteTable"){
 
-           deleteTableHandleFunction(dbInfo);
+               deleteTableHandleFunction(dbInfo);
 
-          }else if($(this).attr("flag") == "deleteCon"){
-            // 移除线
-              instance.detachAllConnections($(".mainDragArea #"+dbInfo));
+              }else if($(this).attr("flag") == "deleteCon"){
+                // 移除线
+                  instance.detachAllConnections($(".mainDragArea #"+dbInfo));
 
-          }
+              }
         });
 
 
           //移除或刷新关闭页面删除拆分数据
           function remove_splitData(now_click_delete){
-            var post_splitData_arr = {
-              "tables":now_click_delete,
-            };
+              var post_splitData_arr = {
+                "tables":now_click_delete,
+              };
 
-            $.ajax({
-            url:"/dataCollection/deleteTempCol",
-            type:"post",
-            dataType:"json",
-            contentType: "application/json; charset=utf-8",
-            async: true,
-            data:JSON.stringify(post_splitData_arr),
-            success:function(result){
-              if(result["status"] == "success"){
-                  // console.log("删除成功");
+              $.ajax({
+              url:"/dataCollection/deleteTempCol",
+              type:"post",
+              dataType:"json",
+              contentType: "application/json; charset=utf-8",
+              async: true,
+              data:JSON.stringify(post_splitData_arr),
+              success:function(result){
+                if(result["status"] == "success"){
+                    // console.log("删除成功");
+                }
               }
-            }
-        });
+            });
           }
 
         // 创建下方展示的表格详情视图
