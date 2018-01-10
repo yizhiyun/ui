@@ -44,9 +44,7 @@ class DashboardIndexByUser(models.Model):
     drilldowndata = models.CharField(max_length=255)
 
 
-
 class Layout(models.Model):
     username = models.CharField(max_length=32)
     structure = models.CharField(max_length=255)
     tablename = models.CharField(max_length=255)
-
