@@ -544,6 +544,7 @@ function runIndexPage(indexClass){
 								div.append(huanbiAp);
 								// measureDiv.css({"marginLeft":$(".new_view_main").width()/2-measureDiv.width()/2+'px',"marginTop":$(".new_view_main").height()/2-measureDiv.height()/2+'px'})
 
+
 								if(eval(statements_tonghuanbi_arr[indexNum_toview])[0].indexOf(aMeasure) != -1){
 									tongbiAp.show();
 								}
