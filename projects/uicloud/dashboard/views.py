@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
-from django.contrib.auth.decorators import permission_required
+# from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 import sys
 from .models import *

@@ -8,7 +8,7 @@ import shutil
 import traceback
 import pandas as pd
 
-from dashboard.models import DashboardViewByUser, DashboardIndexByUser
+from dashboard.models import DashboardViewByUser, DashboardIndexByUser, Layout
 
 # Get an instance of a logger
 logger = logging.getLogger("uicloud.cloudrestapi.upload")
@@ -196,6 +196,7 @@ def checkOrDeleteView(fileName, username, delete=False, changeName=None):
     '''
     viewList = DashboardViewByUser.objects.filter(tablename=fileName, username=username)
     indexList = DashboardIndexByUser.objects.filter(tablename=fileName, username=username)
+    layoutList = Layout.objects.filter(tablename=fileName, username=username)
 
     if changeName:
         '''
@@ -207,6 +208,9 @@ def checkOrDeleteView(fileName, username, delete=False, changeName=None):
         for index in indexList:
             index.tablename = changeName
             index.save()
+        for layout in layoutList:
+            layout.tablename = changeName
+            layout.save()
 
     else:
         if not delete:
@@ -219,3 +223,5 @@ def checkOrDeleteView(fileName, username, delete=False, changeName=None):
                 view.delete()
             for index in indexList:
                 index.delete()
+            for layout in layoutList:
+                layout.delete()
