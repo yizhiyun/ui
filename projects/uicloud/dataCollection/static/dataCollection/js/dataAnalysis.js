@@ -37,6 +37,8 @@
       //记录是否构建了新的数据集
       var saveAddNewFile = true;
 
+      var saveNewAddViewFun = false;
+
       //记录判断是否重绘scama
       var saveScameView = true;
 
@@ -56,6 +58,9 @@
       var saveViewTableDataDelete = true;
 
       var flag = 0;
+
+      //记录当前删除的数据表
+      var nowDeleteTableView = null;
         /**
        * description : 得到字符串的字节长度;
        * @version 0.2;
@@ -216,28 +221,37 @@
           $(".main .rightConent #pageStatementsModule").data("isFirstInto",true);
           onlyRunOne = true;
           for( viewTable in preClickView){
-            if(preClickView[viewTable]["tablename"] == type){
+            if(preClickView[viewTable] && preClickView[viewTable]["tablename"] == type){
               saveViewTableDataDelete = false;
-              $(".folderview_li_show[title="+viewTable+"] .folderview_li_del_btn").trigger("click");
+              nowDeleteTableView = type;
+              if(_cube_all_data[type]){
+                delete _cube_all_data[type];
+              }
+              
+              if($(".folderview_li_show[title="+viewTable+"]").hasClass("empty_list")){
+                 preClickView[$(".folderview_li_show[title="+viewTable+"]").find("span").text()] = null;
+              }else{
+                 $(".folderview_li_show[title="+viewTable+"]").addClass("statementsDelete");
+              }
+              statementsToView = true;
+              if(sessionStorage.getItem("edit_view_now")){
+                if(sessionStorage.getItem("edit_view_now").split(",")[3] == type){
+                  sessionStorage.removeItem("edit_view_now");
+                }
+              }
               if(loc_storage.getItem("allTable_specialSelection")){
                  var tempSaveTableFiled = JSON.parse(loc_storage.getItem("allTable_specialSelection"));
                   delete tempSaveTableFiled[type+"_specialSelection"];
                   loc_storage.setItem("allTable_specialSelection",JSON.stringify(tempSaveTableFiled));
               }
-              delete preClickView[viewTable];
               saveViewShowArr = {};
               if($.inArray(type,save_data_sum_handle) != -1){
                    save_data_sum_handle.splice($.inArray(type,save_data_sum_handle),1);
               }
-              if(sessionStorage.getItem("edit_view_now")){
-                if(sessionStorage.getItem("edit_view_now").split(",")[3] == type){
-                    sessionStorage.removeItem("edit_view_now");
-                }
-              }
+
 
             }
           }
-
           //判断删除相应的指标
           if($("#dashboard_content #lateral_bar #indicator #index_show ul li").length > 0){
               // console.log( $("#dashboard_content #lateral_bar #indicator #index_show ul li[tablename="+type+"]"))
@@ -268,7 +282,7 @@
                     deleteAlreadyTable(type);
                     //修改侧边栏跳转事件
                     pallasdaraFunctionNavBtnHandle();
-
+                    // $(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/buildData-select.png");
                     saveAddNewFile = true;
                     saveScameView = false;
                     if_or_load = true;
@@ -680,32 +694,32 @@
                               dataType:"json",
                               contentType: "application/json; charset=utf-8",
                               success:function(data){
-                                // console.log(data)
-                                if(data["exist"] == "yes"){
-                                    $(".delete_checked p").text("使用此数据表的视图/指标也同时删除").css("color","#ee3232").css("left","77.5px").show();
-                                }else{
-                                    $(".delete_checked p").hide();
-                                }
-                                $(".connectMoreHanldeList").remove();
-                                  //点击删除弹出框提示内容
-                                $(".delete_area_text h4").text('确定删除 "'+connectInfoTableName+'" 数据表 ?');
-                                $(".delete_area_input").find(".deltete_input_wrap").css("display","none");
-                                // $(".delete_area_input").append("<img src='../static/statements/img/gt_03.png' alt='waring'>");
-                                $(".delete_area_input").find("img").hide();
-                                $("#delete_area").show();
-                                $(".maskLayer").show();
-                                 $("#delete_area_close img").unbind("click");
-                                $("#delete_area_close img").on("click",function(){
-                                  $("#delete_area").css("display","none");
-                                  $(".maskLayer").css("display","none");
-                                })
-                                $(".delete_area_ok_btn").unbind("click");
-                                $(".delete_area_ok_btn").on("click",function(event){
-                                    event.stopPropagation();
-                                    tableRemoveChangeName(connectInfoTableName,{"filesource":"generated","method":"delete"},null,data);
-                                    $("#delete_area").hide();
-                                    $(".maskLayer").hide();
-                                })
+                                  // console.log(data)
+                                  if(data["exist"] == "yes"){
+                                      $(".delete_checked p").text("使用此数据表的视图/指标也同时删除").css("color","#ee3232").css("left","77.5px").show();
+                                  }else{
+                                      $(".delete_checked p").hide();
+                                  }
+                                  $(".connectMoreHanldeList").remove();
+                                    //点击删除弹出框提示内容
+                                  $(".delete_area_text h4").text('确定删除 "'+connectInfoTableName+'" 数据表 ?');
+                                  $(".delete_area_input").find(".deltete_input_wrap").css("display","none");
+                                  // $(".delete_area_input").append("<img src='../static/statements/img/gt_03.png' alt='waring'>");
+                                  $(".delete_area_input").find("img").hide();
+                                  $("#delete_area").show();
+                                  $(".maskLayer").show();
+                                   $("#delete_area_close img").unbind("click");
+                                  $("#delete_area_close img").on("click",function(){
+                                    $("#delete_area").css("display","none");
+                                    $(".maskLayer").css("display","none");
+                                  })
+                                  $(".delete_area_ok_btn").unbind("click");
+                                  $(".delete_area_ok_btn").on("click",function(event){
+                                      event.stopPropagation();
+                                      tableRemoveChangeName(connectInfoTableName,{"filesource":"generated","method":"delete"},null,data);
+                                      $("#delete_area").hide();
+                                      $(".maskLayer").hide();
+                                  })
                               }
                           });
 
@@ -898,6 +912,7 @@
             saveAddNewFile = true;
             saveScameView = false;
             if_or_load = true;
+            saveNewAddViewFun = true;
             $("._jsPlumb_endpoint").css("visibility","hidden");
             $(".rightConent #analysisContainer #tableDataDetailListPanel").css({
               "width":$(".rightConent").width() + "px",
@@ -982,7 +997,7 @@
               $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .dbDataShow .tablesOfaData p,.detailDataSetList li .panelDataShow .panelFileSheetData p").css("width",(ui.size.width-58)+"px");
               $("#dataSet .detailDataSetList  li .didBuildTables .base_search_img").css("margin-left",(ui.size.width-125)+"px");
               $("#analysisContainer .leftSlide #dataSet .detailDataSetList li  .dbDataShow .combo-select").css("width",(ui.size.width-60)+"px")
-              $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise").css("width",(ui.size.width-48)+"px")
+              $("#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise").css("width",(ui.size.width-58)+"px")
                $("#analysisContainer .leftSlide #dataSet .sqlSearch").css("width",(ui.size.width-60)+"px");
             }
           })
@@ -2751,11 +2766,13 @@
             async: true,
             data:JSON.stringify(postFilterCondition),
             beforeSend:function(){
-              var target =  $("body").get(0);
-                      spinner.spin(target);
+                var target =  $("body").get(0);
+                spinner.spin(target);
+                $(".maskLayer").show();
             },
             success:function(data){
               spinner.stop();
+              $(".maskLayer").hide();
               currentTableAllData = data.results.data;
               if(isNeedAllData){
                 if(conditions.length < 1){
@@ -2857,6 +2874,15 @@
                 }
             });
          }
+
+         //清除筛选条件
+         $("#analysisContainer .mainDragArea .boxDiv").each(function(index,ele){
+            deleteATableAllConditions($(ele).attr("id"));
+         })
+
+         if($("#tableDataDetailListPanel").attr("nowshowtable") != undefined){
+            deleteATableAllConditions($("#tableDataDetailListPanel").attr("nowshowtable"))
+         };
 
         }
 

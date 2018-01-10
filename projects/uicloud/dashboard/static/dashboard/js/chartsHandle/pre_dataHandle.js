@@ -27,7 +27,7 @@ Array.prototype.XMsort = function(propertyNameArray){
 }
 var customCalculate = {}
 var handleDataPost = {};
-var freeHandleDiData = {};
+var freeHandleDiData = null;
 var freeHandleCheckData = {};
 // 定义一个对象用来记录拖拽的度量是否需要计算同比或者环比
 // var
@@ -283,10 +283,11 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 	}
 
 
-
 //遍历操作过后返回的数据
-function forDataFunctionPost(handleData,saveArr,drill){
+function forDataFunctionPost(handleData,drill,type){
+	var saveArr = null;
 	if((dirllConditions && dirllConditions.length > 0) || drill == "over" || drill == "dateHandle"){
+		saveArr = {};
 		for(var z = 0; z < handleDataPost["expressions"]["groupby"].length;z++){
 		if(saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")] == undefined){
 				saveArr[handleDataPost["expressions"]["groupby"][z].replace(/\`/g,"")] = [];
@@ -302,9 +303,19 @@ function forDataFunctionPost(handleData,saveArr,drill){
 	}
 	}
 
+	if(type == "clickSelect"){
+		freeHandleDiData = saveArr;
+	}else if(type == "check"){
+		freeHandleCheckData = saveArr;
+	}else{
+		freeHandleDiData = saveArr;
+	}
+
+
 	if(drill == "drill" || drill == "dateHandle"){
 		rightFilterListDraw();
 	}
+
 }
 
 
@@ -312,11 +323,11 @@ function forDataFunctionPost(handleData,saveArr,drill){
 //点击下钻维度展示的更新数据 保持同步
 function clickDrillChangeDiFunction(handleData){
 	//记录处理后的数据
-	freeHandleDiData = {};
+	freeHandleDiData = null;
 	if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
-		forDataFunctionPost(handleData,freeHandleDiData,"dateHandle");
+		forDataFunctionPost(handleData,"dateHandle","clickSelect");
 	}else{
-		forDataFunctionPost(handleData,freeHandleDiData,"drill");
+		forDataFunctionPost(handleData,"drill","none");
 	}
 	
 }
@@ -345,8 +356,8 @@ function deleteCheckFunction(preHandleDataCheck,fun,text,countArr){
 
 //点击复选框处理多维度的显示问题
 function checkHandleFunction(checkData){
-	freeHandleCheckData = {};
-	forDataFunctionPost(checkData,freeHandleCheckData,"over");
+	freeHandleCheckData = null;
+	forDataFunctionPost(checkData,"over","check");
 	// $("#sizer_content .filter_body_div .table_field_list .field_detail_list li input").prop("checked",false);
 	for(checkView in freeHandleCheckData){
 		if(checkSelectConditionDict[checkView] == undefined){
@@ -412,7 +423,6 @@ function checkHandleFunction(checkData){
 			// console.log(handleDataPost);
 		},
 		success:function(data){
-			// console.log(data);
 			if(data.status == "success"){
 				var freeHandlePostFun = objectDeepCopy(recordConditon);
 

@@ -490,61 +490,94 @@
 				function getDeleteData(){
 					var freeHandleDeleteData = [];
 					$(".noDelete").each(function(index,ele){
-						freeHandleDeleteData.push($(ele).find("span").text());
+						if($.inArray($(ele).attr("title"),tempSaveDeleteViewDict["onlyFolder"]) == -1 && $.inArray($(ele).attr("title").split("-")[0],tempSaveDeleteViewDict["onlyFolder"]) == -1){
+							freeHandleDeleteData.push($(ele).find("span").text());
+						}else{
+							$(ele).removeClass("noDelete");
+						}
 					})
 					return freeHandleDeleteData;
 				}
 
-				function dashboardReadySumFunction(isOnlyLoad){
 
+
+				function dashboardReadySumFunction(isOnlyLoad){
+					//删除视图后重新给定默认显示
+					function deleteViewChangeShowFunction(){
+						if(saveViewTableDataDelete == false){
+							if($(".rightConent #dashboard_content #new_view ul li.auto_show").length > 0 && preClickView[$(".rightConent #dashboard_content #new_view ul li.auto_show").attr("title")] != undefined && preClickView[$(".rightConent #dashboard_content #new_view ul li.auto_show").attr("title")]["tablename"] == nowDeleteTableView){
+								empty_viem_init("change");
+							}
+							saveViewTableDataDelete = true;
+						}
+						if($(".rightConent #dashboard_content #new_view ul li.auto_show").length  == 0){
+							$(".rightConent #dashboard_content #new_view ul li[title_change=0]").addClass("auto_show");
+							$(".rightConent #dashboard_content #new_view ul li[title_change=0]").find(".folderview_li_del_btn").css("display","block");
+
+							if(preClickView[$(".rightConent #dashboard_content #new_view ul li[title_change=0]").find(".folderview_li_span").text()] != null){
+								empty_viem_init("change");
+								edit_view_show(null,preClickView[$(".rightConent #dashboard_content #new_view ul li[title_change=0]").find(".folderview_li_span").text()],"noedit","noLocation");
+							}else{
+								empty_viem_init("change");
+							}
+						}
+					}
 					// $("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow").hide();
 
 					//判断在视图库是否删除过视图 使仪表板同步
 					if(statementsToView){
 						deleteDataHandleArr = getDeleteData();
-						$("#dashboard_content #new_view ul .edit_list").not($(".noDelete")).each(function(index,ele){
-							if(tempSaveDeleteViewDict["onlyFolder"] != undefined){
-								if($.inArray($(ele).find("span").text(),tempSaveDeleteViewDict["onlyFolder"]) != -1){
-									$(ele).addClass("statementsDelete");
+						$("#dashboard_content #new_view ul .edit_list").not(".noDelete").each(function(index,ele){
+							//构建数据返回到仪表板
+							if(saveViewTableDataDelete == false && $(".statementsDelete").length > 0){
+								if($(ele).hasClass("statementsDelete")){
 									$(ele).find(".folderview_li_del_btn").trigger("click");
-									if($.inArray($(ele).find("span").text(),deleteDataHandleArr) == -1){
-										delete preClickView[$(ele).find("span").text()];
-									}
-									
+									delete preClickView[$(ele).attr("title")];
+									console.log(preClickView)
 								}
-							}else if(tempSaveDeleteViewDict["onlyParentFolder"] != undefined){
-								for(var i = 0; i < tempSaveDeleteViewDict["onlyParentFolder"].length; i++){
-									if($(ele).find("span").text().split("-")[0] == tempSaveDeleteViewDict["onlyParentFolder"][i]){
+							}
+
+							//视图库返回到仪表板
+							if(tempSaveDeleteViewDict["all"] != undefined && tempSaveDeleteViewDict["all"].length > 0){
+									if($(ele).data("edit_view").split(",")[0] != "default"){
 										$(ele).addClass("statementsDelete");
 										$(ele).find(".folderview_li_del_btn").trigger("click");
-										delete preClickView[$(ele).find("span").text()];
+										delete preClickView[$(ele).attr("title")];
 									}
-								}
-							}else{
-									$(ele).addClass("statementsDelete");
-									$(ele).find(".folderview_li_del_btn").trigger("click");
-									delete preClickView[$(ele).find("span").text()];
+
 							}
+
+							if(tempSaveDeleteViewDict["onlyFolder"] != undefined && tempSaveDeleteViewDict["onlyFolder"].length > 0){
+									if($.inArray($(ele).attr("title"),tempSaveDeleteViewDict["onlyFolder"]) != -1 || $.inArray($(ele).attr("title").split("-")[0],tempSaveDeleteViewDict["onlyFolder"]) != -1){
+										$(ele).addClass("statementsDelete");
+										$(ele).find(".folderview_li_del_btn").trigger("click");
+										delete preClickView[$(ele).attr("title")];
+									}
+							}
+
 
 							if(index == $("#dashboard_content #new_view ul .edit_list").length){
 								$.post("../dashboard/getAllData",function(result){
 									ajax_data_post = result;
-									statementsToView = false;
 								})
 							}
 						})
 
 						$(".noDelete").each(function(index,ele){
 							if($(ele).find("span").text() != $(ele).attr("title")){
+								preClickView[$(ele).find("span").text()] = preClickView[$(ele).attr("title")];
+								delete preClickView[$(ele).attr("title")];
 								$(ele).attr("title",$(ele).find("span").text());
+								
 							}
 						})
 
+						$("#dashboard_content #new_view ul .edit_list").removeClass("noDelete");
+
+						deleteViewChangeShowFunction();
+						tempSaveDeleteViewDict = {};
 						deleteDataHandleArr  = [];
-						if($("#pageDashboardModule").hasClass("handleTrue")){
-							return;
-						}
-						
+						statementsToView = false;
 					}
 
 					
@@ -563,9 +596,13 @@
 										var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
 										var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
 										// 创建数据块
-										if($("#dashboard_content #new_view ul li[prechangename="+have_view_edit[1]+ "-" +have_view_edit[2]+"]").length > 0){
+										if($("#dashboard_content #new_view ul li[tableshowid="+have_view_edit[have_view_edit.length - 1]+"]").length > 0){
 											$("#dashboard_content #new_view ul li").removeClass("auto_show").data("view_btn","true");
-											$("#dashboard_content #new_view ul li[prechangename="+have_view_edit[1]+ "-" +have_view_edit[2]+"]").addClass("auto_show").data("view_btn","false");
+											$("#dashboard_content #new_view ul li[tableshowid="+have_view_edit[have_view_edit.length -1]+"]").addClass("auto_show").data("view_btn","false");
+											if(saveNewAddViewFun){
+												save_data_sum_handle = data["results"];
+												cubeSelectContent_fun(data["results"],have_view_edit[3],"addNewFile");
+											}
 											return;
 										}
 										cubeSelectContent_fun(data["results"],have_view_edit[3]);
@@ -588,7 +625,9 @@
 					}
 
 
-
+				if($("#pageDashboardModule").hasClass("handleTrue")){
+					return;
+				}
 
 				//...................默认给定的样式
 				function leftBar_sizeW_function(){
@@ -664,14 +703,14 @@
 						$("#operational_view .annotation_text").find(".list_wrap").remove();
 						$("#operational_view .annotation_text").find("li").remove();
 
-						if(change_or_click == "click"){
-							//选择块恢复默认
-							$('#lateral_title .custom-select').find("option").removeAttr("selected");
-							$('#lateral_title .custom-select').find("option").eq(0).attr("selected","selected");
-							$('#lateral_title .custom-select').comboSelect();
-							load_measurement_module($('#lateral_title .custom-select').val())
+						// if(change_or_click == "click"){
+						// 	//选择块恢复默认
+						// 	$('#lateral_title .custom-select').find("option").removeAttr("selected");
+						// 	$('#lateral_title .custom-select').find("option").eq(0).attr("selected","selected");
+						// 	$('#lateral_title .custom-select').comboSelect();
+						// 	load_measurement_module($('#lateral_title .custom-select').val())
 
-						}
+						// }
 						drag_row_column_data = {
 							"row":{
 								"dimensionality":[],
@@ -990,27 +1029,23 @@
 									for(folder_view_name in result[folder][folder_view]){
 										if(result[folder][folder_view][folder_view_name]["viewname"] == null){
 											var tableViewName = folder_view +"-"+folder_view_name;
+											var changeViewName = folder_view_name;
 										}else{
 											var tableViewName = folder_view +"-"+result[folder][folder_view][folder_view_name]["viewname"];
+											var changeViewName = result[folder][folder_view][folder_view_name]['viewname'];
 										}
 										preClickView[tableViewName] = result[folder][folder_view][folder_view_name];
 									//显示名称
 										var add_view_post_name = folder_view+"-"+folder_view_name;
 										view_homo_data[add_view_post_name] = result[folder][folder_view][folder_view_name];
-										if(result[folder][folder_view][folder_view_name]["viewname"] != null){
-											var changeViewName = result[folder][folder_view][folder_view_name]['viewname'];
-											var preChangeName = "";
-										}else{
-											var changeViewName = folder_view_name;
-											var preChangeName = folder_view_name;
-										}
+
 										if(view_homo_data[add_view_post_name]["isopen"]){
 											if(sessionStorage.getItem("edit_view_now")){
 												//获取编辑的视图
 												var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
 												var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
 												if(view_homo_data[add_view_post_name]["id"] == result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"]){
-													folder_view_add_show(have_view_edit[1]+"-"+changeViewName,"edit",hava_view_edit_old,result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"],have_view_edit[1]+"-"+preChangeName);
+													folder_view_add_show(have_view_edit[1]+"-"+changeViewName,"edit",hava_view_edit_old,result[have_view_edit[0]][have_view_edit[1]][have_view_edit[2]]["id"]);
 													continue;
 											   }
 											}
@@ -1351,16 +1386,18 @@
 										empty_viem_init("change");
 									}
 								}
-							if($.inArray($("#pageDashboardModule #clickWallDelete").data("nowDeleteView"),deleteDataHandleArr) == -1){
-								delete preClickView[$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")];
-							}
-							//判断是否标签页是否全部删除
-							if($(".rightConent #dashboard_content #new_view ul li").length == 0){
-								preClickView = {};
-								add_view_count = 0;
-								folder_view_add_show("新建视图","old");
-								preClickView["新建视图"] = null;
-							}
+								if($.inArray($("#pageDashboardModule #clickWallDelete").data("nowDeleteView"),deleteDataHandleArr) == -1){
+									if(preClickView[$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")] != undefined){
+										delete preClickView[$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")];
+									}
+								}
+								//判断是否标签页是否全部删除
+								if($(".rightConent #dashboard_content #new_view ul li").length == 0){
+									preClickView = {};
+									add_view_count = 0;
+									folder_view_add_show("新建视图","old");
+									preClickView["新建视图"] = null;
+								}
 					}
 
 					//点击标签页 移除
@@ -1380,7 +1417,7 @@
 							$.post("../dashboard/setSwitch",{"switch":"isopen","id":$(".rightConent #dashboard_content #new_view ul li[title="+$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")+"]").data("tableViewId")},function(result){
 								if(result["status"] == "ok"){
 									var freeDashboardData = $(".rightConent #dashboard_content #new_view ul li[title="+$("#pageDashboardModule #clickWallDelete").data("nowDeleteView")+"]").data("edit_view").split(",");
-									$("#pageStatementsModule .statement_li").eq(freeDashboardData[freeDashboardData.length -2]).find(".view_show_handle").eq(freeDashboardData[freeDashboardData.length -1]).find(".small_view_text").data("setopen",false);
+									$("#pageStatementsModule .statement_li[tableCount="+freeDashboardData[freeDashboardData.length -3]+"]").find(".view_show_handle").eq(freeDashboardData[freeDashboardData.length -2]).find(".small_view_text").data("setopen",false);
 									deleteBtnClickDash(title,view_title_index);
 								}
 							});
@@ -1388,9 +1425,6 @@
 						}else{
 							deleteBtnClickDash(title,view_title_index);
 						}
-
-						
-
 					}
 
 
@@ -1686,7 +1720,7 @@
 					}
 
 					//创建视图标题展示和新建
-					function folder_view_add_show(add_view_name,new_or_old,edit_view_save_data,tableViewId,preChangeName){
+					function folder_view_add_show(add_view_name,new_or_old,edit_view_save_data,tableViewId){
 						var folderview_li = $("<li class='folderview_li_show' title="+add_view_name+"><span class='folderview_li_span'>"+add_view_name+"</span><div class='folderview_li_del_btn'></div></li>");
 						if(new_or_old == "new"){
 							folderview_li.addClass("edit_list").prependTo($(".rightConent #dashboard_content #new_view ul"));
@@ -1698,7 +1732,7 @@
 							folderview_li.addClass("auto_show");
 						}
 						if(new_or_old != "new" && new_or_old != "old"){
-							folderview_li.addClass("edit_list").prependTo($(".rightConent #dashboard_content #new_view ul")).attr("preChangeName",preChangeName);
+							folderview_li.addClass("edit_list").prependTo($(".rightConent #dashboard_content #new_view ul")).attr("tableShowId",tableViewId);
 							$(".rightConent #dashboard_content #new_view ul li").removeClass("auto_show");
 							folderview_li.data("edit_view",edit_view_save_data).addClass("auto_show").data("tableViewId",tableViewId);
 							$("#dashboard_content #action_box #action_box_ul #action_save").css("opacity","1");
@@ -1775,9 +1809,7 @@
 									//判断视图库图形是否有更改
 									var viewWallChange = SecondDict(preClickView[$(this).find("span").text()],ajax_data_post[$(this).data("edit_view").split(",")[0]][$(this).data("edit_view").split(",")[1]][$(this).data("edit_view").split(",")[2]]);
 									if(!viewWallChange){
-
 										edit_view_show(null,preClickView[$(this).find("span").text()],"noedit","noLocation");
-
 										return;
 									}
 
@@ -1798,30 +1830,31 @@
 								var nowViewShow = false;
 							}
 
-
-							$("#pageDashboardModule #clickWallDelete").data("nowViewIf",nowViewShow).data("nowDeleteView",$(this).siblings(".folderview_li_span").text());
+							if($(this).parent().hasClass("statementsDelete")){
+								$("#pageDashboardModule #clickWallDelete").data("nowViewIf",false).data("nowDeleteView",$(this).parents(".folderview_li_show").attr("title"));
+							}else{
+								$("#pageDashboardModule #clickWallDelete").data("nowViewIf",nowViewShow).data("nowDeleteView",$(this).parents(".folderview_li_show").attr("title"));
+							}
+							
 
 							
 							//判断标签页视图是否正在显示
-							if(nowViewShow && $.inArray($(this).siblings(".folderview_li_span").text(),deleteDataHandleArr) == -1){
+							if(nowViewShow && $.inArray($(this).parents(".folderview_li_show").attr("title"),deleteDataHandleArr) == -1){
 								var deleteNowView = realSaveData();
-								preClickView[$(this).siblings(".folderview_li_span").text()] = deleteNowView;
+								preClickView[$(this).parents(".folderview_li_show").attr("title")] = deleteNowView;
 							}
 
 							if($(this).parent().hasClass("edit_list")){
-								var equalView = SecondDict(preClickView[$(this).siblings(".folderview_li_span").text()],ajax_data_post[$(this).parent().data("edit_view").split(",")[0]][$(this).parent().data("edit_view").split(",")[1]][$(this).parent().data("edit_view").split(",")[2]]);
+								var equalView = SecondDict(preClickView[$(this).parents(".folderview_li_show").attr("title")],ajax_data_post[$(this).parent().data("edit_view").split(",")[0]][$(this).parent().data("edit_view").split(",")[1]][$(this).parent().data("edit_view").split(",")[2]]);
 							}else{
 								var equalView = false;
 							}
 
-
-
-							if((preClickView[$(this).siblings(".folderview_li_span").text()] != null && preClickView[$(this).siblings(".folderview_li_span").text()]["viewtype"] != null) && equalView == false && saveViewTableDataDelete){
+							if((preClickView[$(this).parents(".folderview_li_show").attr("title")] != null && preClickView[$(this).parents(".folderview_li_show").attr("title")]["viewtype"] != null) && equalView == false && saveViewTableDataDelete && !$(this).parent().hasClass("statementsDelete")){
 								$("#body_content_shadow,#pageDashboardModule #clickWallDelete").show().data("titleChange",$(this).parent().attr("title"));
-								$("#pageDashboardModule #clickWallDelete .clickWallDelete_viewName").text($(this).siblings(".folderview_li_span").text());
+								$("#pageDashboardModule #clickWallDelete .clickWallDelete_viewName").text($(this).parents(".folderview_li_show").attr("title"));
 							}else{
 								clickViewTo($(this).parent().attr("title"));
-								saveViewTableDataDelete = true;
 							}
 
 						})
@@ -1832,7 +1865,7 @@
 					$("#view_show_wrap").data("table", "false");
 
 					// 数据块选择 创建
-					function cubeSelectContent_fun(build_tables,click_val){
+					function cubeSelectContent_fun(build_tables,click_val,newFile){
 						$('#lateral_title .custom-select').empty();
 						var cube_select = $('#lateral_title .custom-select');
 						for (var i =0; i < build_tables.length;i++) {
@@ -1840,7 +1873,7 @@
 							var op = $("<option value="+val+">"+val+"</option>");
 							if(click_val){
 								if(click_val == val){
-								op.attr("selected","selected");
+									op.attr("selected","selected");
 								}
 							}
 							cube_select.append(op);
@@ -1851,6 +1884,9 @@
 						cube_select.comboSelect();
 
 						if(click_val){
+							if(newFile == "addNewFile"){
+								return;
+							}
 							// 展示维度和度量等
 							load_measurement_module(click_val)
 						}else{
@@ -1864,6 +1900,7 @@
 							$("#pageDashboardModule #dashboard_content #lateral_bar #indicator #index_show ul").html("");
 							event.stopPropagation();
 							if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
+								console.log("c")
 								loc_storage.removeItem(current_cube_name);
 								if_or_load = true;
 								empty_viem_init("change");
@@ -1888,7 +1925,6 @@
 								"exprlist":exprlist,
 							}
 						};
-
 						$.ajax({
 							url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
 							type:"post",
