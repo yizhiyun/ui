@@ -352,12 +352,12 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 								$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 								$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").hide();
 							}
+						var target =  $("#view_show_wrap").get(0);
 						spinner.spin(target);
 						$(".maskLayer").show();
 //						console.log(save_now_show_view_text)
 						eval(save_now_show_view_text.data("show_view_fun"));
-						var target =  $("#view_show_wrap").get(0);
-    					
+						
 						view_name = save_now_show_view_text.data("show_view_fun");
 
 						return;

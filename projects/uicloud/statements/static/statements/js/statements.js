@@ -32,12 +32,15 @@
 		var newArr = [];
 
 
+		//进度条定时器
+	    var loading_inter;
+
+
 		//存放仪表板处理过的数据JSON
 
 		var saveDashboardPostData = [];
 		//图表显示的区域
 		var viewshow_class = null,
-
 
 		viewshow_class_arr =[],
 		//记录每个表的名称
@@ -136,18 +139,29 @@
 							opp.radar[0].name.formatter = function(params){
 								// console.log(params);
 								count++;
-		         				if(count % 5 == 0){
+		         				if(count % 6 == 0){
 		         					return params;
 		         				}else{
 		         					arr.push(params);
 		         					return '';
 		         				}
 							}
-						}else if(opp.radar[0].indicator.length > 80 && opp.radar[0].indicator.length < 400){
+						}else if(opp.radar[0].indicator.length > 80 && opp.radar[0].indicator.length < 200){
 							opp.radar[0].name.formatter = function(params){
 								// console.log(params);
 								count++;
-		         				if(count % 30 == 0){
+		         				if(count % 13 == 0){
+		         					return params;
+		         				}else{
+		         					arr.push(params);
+		         					return '';
+		         				}
+							}
+						}else if(opp.radar[0].indicator.length > 200){
+							opp.radar[0].name.formatter = function(params){
+								// console.log(params);
+								count++;
+		         				if(count % 18 == 0){
 		         					return params;
 		         				}else{
 		         					arr.push(params);
@@ -157,13 +171,7 @@
 						}else{
 							opp.radar[0].name.formatter = function(params){
 								// console.log(params);
-								count++;
-		         				if(count % 70 == 0){
-		         					return params;
-		         				}else{
-		         					arr.push(params);
-		         					return '';
-		         				}
+								return params;
 							}
 						}	
 					}
@@ -194,7 +202,8 @@
 								if(index % 2 == 0 && len > 10) {
 									return !/^YZYPD/.test(value);
 								}else if(len < 10){
-									return value;
+									return !/^YZYPD/.test(value);
+									// return value;
 								}else{
 									return '';
 								}
@@ -204,7 +213,8 @@
 								if(index % 2 == 0 && len > 10) {
 									return !/^YZYPD/.test(value);
 								}else if(len < 10){
-									return value;
+									return !/^YZYPD/.test(value);
+									// return value;
 								}else{
 									return '';
 								}
@@ -219,23 +229,24 @@
 					for(var z = 0; z < opp.yAxis.length; z++){
 						// opp.yAxis[z].axisTick.interval = 2;
 						// opp.yAxis[z].axisLabel.interval = 2;
-						// console.log(opp.yAxis);
 
 						if(opp.yAxis[z].data){
 							var len = opp.yAxis[z].data.length;
 							opp.yAxis[z].axisTick.interval = function(index,value){
 								if(index % 2 == 0 && len > 10) {
-									return !/^YZYPD/.test(value)
+									return !/^YZYPD/.test(value);
 								}else if(len < 10){
-									return value;
+									return !/^YZYPD/.test(value);
+									// return value;
 								}else{
 									return '';
 								}};
 							opp.yAxis[z].axisLabel.interval = function(index,value){
 								if(index % 2 == 0 && len > 10) {
-									return !/^YZYPD/.test(value)
+									return !/^YZYPD/.test(value);
 								}else if(len < 10){
-									return value;
+									return !/^YZYPD/.test(value);
+									// return value;
 								}else{
 									return '';
 								}
@@ -265,18 +276,18 @@
 						opp.radar[0].name.formatter = function(params){
 							// console.log(params);
 							count++;
-	         				if(count % 3 == 0){
+	         				if(count % 4 == 0){
 	         					return params;
 	         				}else{
 	         					arr.push(params);
 	         					return '';
 	         				}
 						}
-					}else if(opp.radar[0].indicator.length > 80 && opp.radar[0].indicator.length < 400){
+					}else if(opp.radar[0].indicator.length > 80 && opp.radar[0].indicator.length < 200){
 						opp.radar[0].name.formatter = function(params){
 							// console.log(params);
 							count++;
-	         				if(count % 20 == 0){
+	         				if(count % 10 == 0){
 	         					return params;
 	         				}else{
 	         					arr.push(params);
@@ -287,7 +298,7 @@
 						opp.radar[0].name.formatter = function(params){
 							// console.log(params);
 							count++;
-	         				if(count % 50 == 0){
+	         				if(count % 15 == 0){
 	         					return params;
 	         				}else{
 	         					arr.push(params);
@@ -377,12 +388,12 @@
 		}
 		statementsinit();
 
-        $(window).resize(function(){
-        	if($("#pageStatementsModule").css("display") == "block"){
-        		statementsinit("resize");
-          		gridster_handle();
-        	}
-        })
+        // $(window).resize(function(){
+        // 	if($("#pageStatementsModule").css("display") == "block"){
+        // 		statementsinit("resize");
+        //   		gridster_handle();
+        // 	}
+        // })
 		//搜索功能
 		function searchFun(){
 			$("#pageStatementsModule #statements_left_bar #state_left_bar_title #statements_left_search").unbind("click");
@@ -1556,6 +1567,8 @@
 		}
 
 
+		
+
 		//视图展示部分功能事件
 		function view_drag_resize_handle(){
 
@@ -1765,7 +1778,7 @@
 							statementsToView = false;
 							$("#project_style .module_style .color_control .otherColorsModule").data("openOrColse","close");
 							// $("#dashboard_content #new_view ul .edit_list").remove();
-							changePageTo_navDashBoardView();
+							changePageTo_navDashBoardView(); 
 						})
 
 						// document点击关闭输入框

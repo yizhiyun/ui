@@ -642,8 +642,14 @@
 						          	var freeEcharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
 						          	freeEcharts.resize();
 						          }
+						          if($("#view_show_area #view_show_area_content #view_show_wrap #card").css("display") == "block"){
+						          		$(".measureDiv").css({"marginLeft":$("#view_show_wrap").actual("width")/2-$(".measureDiv").actual("width")/2+'px',"marginTop":$("#view_show_wrap").actual("height")/2-$(".measureDiv").actual("height")/2+'px'});
+						          }
 				        	}
+
 				        })
+
+
 
 					$("#dashboard_content #view_show_area #view_show_area_content .MoMInfo .monHeader .unitSelectDiv select").comboSelect();
 
@@ -656,6 +662,14 @@
 					// $("#next").click(function(){
 						
 					// })
+
+					//运行更新
+					$("img[alt='update']").click(function(){
+						var target =  $("#view_show_wrap").get(0);
+					    spinner.spin(target);
+					    $(".maskLayer").show();
+					    switch_chart_handle_fun();
+					})
 
 					//视图清空 页面初始化
 					function empty_viem_init(change_or_click){
