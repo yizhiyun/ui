@@ -2469,6 +2469,7 @@
 								post_dict["sequential"] = "null";
 								post_dict["handledatapost"] = "null";
 								post_dict["drilldowndata"] = "null";
+								post_dict["filterconditions"] = "null";
 								$.post("/dashboard/dashboardTableAdd",post_dict,function(result){
 									if(result["status"] == "false"){
 										$(".click_new_folder_input").css("borderColor","red");

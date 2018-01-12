@@ -85,17 +85,16 @@ function rightFilterListDraw(){
 			}else{
 					$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+columnInfoArr[0].replace(/\./g,"YZY")).remove();
 					addAFilterItemFunction(columnInfoArr[0],columnInfoArr[1]);
-					preHandleDataCheck = objectDeepCopy(preAllData);
 				}
 			continue;
 		}else{
 			addAFilterItemFunction(columnInfoArr[0],columnInfoArr[1]);
-			preHandleDataCheck = objectDeepCopy(preAllData);
+
 		}
 	}
 	$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list>li").each(function(index,ele){
 		// if(pureDemiArray != undefined){return false}
-		if(pureDemiArray.indexOf($(ele).data("fieldInfo").split(":")[0]) == -1){
+		if(pureDemiArray.length > 0 && pureDemiArray.indexOf($(ele).data("fieldInfo").split(":")[0]) == -1){
 			$(ele).hide("blind",200,function(){
 				checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 				delete checkSelectConditionDict[$(ele).data("fieldInfo").split(":")[0]];
@@ -162,6 +161,13 @@ function rightFilterListDraw(){
 				list.empty();
 				var arr = localStorageGetData(current_cube_name);
 				var liColumnName = detailBox.parents(".filterLI").eq(0).data("fieldInfo").split(":")[0];
+				if($.inArray(liColumnName,localStorageGetData("allTable_notWorkedColumns")[current_cube_name+"_NotWorkedColumns"]) != -1){
+					$("#sizer_content .filter_body_div ul.table_field_list li .filterBox .bottomHandleDiv .switchDiv img").attr("src","/static/dashboard/img/close.png");
+					$("#sizer_content .filter_body_div ul.table_field_list li .filterBox .bottomHandleDiv .switchDiv").attr("switch","off");
+				}else{
+					$("#sizer_content .filter_body_div ul.table_field_list li .filterBox .bottomHandleDiv .switchDiv img").attr("src","/static/dashboard/img/open.png");
+					$("#sizer_content .filter_body_div ul.table_field_list li .filterBox .bottomHandleDiv .switchDiv").attr("switch","on");
+				}
 				for (var i = 0;i < arr.length;i++) {
 					var obj = arr[i];
 					if(obj.column == liColumnName){
@@ -225,10 +231,9 @@ function rightFilterListDraw(){
 							var index = checkSelectConditionDict[column].indexOf(columnContent);
 						}
 						
-						if ( index != -1) {
+						if (index != -1) {
 							checkSelectConditionDict[column].splice(index,1);
 							if($(this).parent().parent().attr("checkwithcount") != undefined && $(this).parent().parent().attr("checkwithcount") != ""){
-
 								for(var z = 0; z < $(this).parent().parent().attr("checkwithcount").split("_YZYPD_").length; z++){
 									checkSelectConditionDict[$(this).parent().parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]].splice(checkSelectConditionDict[$(this).parent().parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]].indexOf($(this).parent().parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]),1);
 									$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+$(this).parent().parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0].replace(/\./g,"YZY")).find(".field_detail_list li[checkvalue="+$(this).parent().parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]+"]").find("input").eq(0).prop("checked",true);

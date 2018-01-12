@@ -225,7 +225,10 @@
               saveViewTableDataDelete = false;
               nowDeleteTableView = type;
               if(_cube_all_data[type]){
-                delete _cube_all_data[type];
+                 delete _cube_all_data[type];
+              }
+              if(dimiFreeDataHandle[type]){
+                 delete dimiFreeDataHandle[type];
               }
               
               if($(".folderview_li_show[title="+viewTable+"]").hasClass("empty_list")){
@@ -241,8 +244,22 @@
               }
               if(loc_storage.getItem("allTable_specialSelection")){
                  var tempSaveTableFiled = JSON.parse(loc_storage.getItem("allTable_specialSelection"));
+                if(tempSaveTableFiled != null && tempSaveTableFiled[type+"_specialSelection"]){
                   delete tempSaveTableFiled[type+"_specialSelection"];
                   loc_storage.setItem("allTable_specialSelection",JSON.stringify(tempSaveTableFiled));
+
+                }
+              }
+              if(loc_storage.getItem(current_cube_name)){
+                  loc_storage.removeItem(current_cube_name);
+              }
+              
+              if(loc_storage.getItem("allTable_notWorkedColumns")){
+                  var tempSaveTableFiledWork = JSON.parse(loc_storage.getItem("allTable_notWorkedColumns"));
+                  if(tempSaveTableFiledWork != null && tempSaveTableFiledWork[type+"_NotWorkedColumns"]){
+                      delete tempSaveTableFiledWork[type+"_NotWorkedColumns"];
+                      loc_storage.setItem("allTable_notWorkedColumns",JSON.stringify(tempSaveTableFiledWork));
+                  }
               }
               saveViewShowArr = {};
               if($.inArray(type,save_data_sum_handle) != -1){
@@ -308,8 +325,14 @@
                       if(current_cube_name == preName){
                         current_cube_name = handleType["newname"];
                       }
-                      _cube_all_data[handleType["newname"]] = _cube_all_data[preName];
-                      delete _cube_all_data[preName];
+                      if(_cube_all_data[preName]){
+                          _cube_all_data[handleType["newname"]] = _cube_all_data[preName];
+                          delete _cube_all_data[preName];
+                      }
+                      if(dimiFreeDataHandle[preName]){
+                         dimiFreeDataHandle[handleType["newname"]] = dimiFreeDataHandle[preName];
+                         delete dimiFreeDataHandle[preName];
+                      }
                       $("#sizer_content .filter_header_div span.cubeTableName,#sizer_content .filter_body_div p.cubeTableName").text(handleType["newname"]);
                       if($.inArray(preName,save_data_sum_handle) != -1){
                          save_data_sum_handle[$.inArray(preName,save_data_sum_handle)] = handleType["newname"];

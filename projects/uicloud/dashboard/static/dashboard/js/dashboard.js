@@ -147,7 +147,6 @@
 				var preHandleDataCheck = null;
 
 				var dateClickHandle = false;
-
 				//保存视图触发事件
 				function save_btn_fun(){
 					$("#dashboard_content #action_box #action_box_ul #action_save").unbind("click");
@@ -505,8 +504,11 @@
 					//删除视图后重新给定默认显示
 					function deleteViewChangeShowFunction(){
 						if(saveViewTableDataDelete == false){
-							if($(".rightConent #dashboard_content #new_view ul li.auto_show").length > 0 && preClickView[$(".rightConent #dashboard_content #new_view ul li.auto_show").attr("title")] != undefined && preClickView[$(".rightConent #dashboard_content #new_view ul li.auto_show").attr("title")]["tablename"] == nowDeleteTableView){
-								empty_viem_init("change");
+							if($(".rightConent #dashboard_content #new_view ul li.auto_show").length > 0){
+								if((preClickView[$(".rightConent #dashboard_content #new_view ul li.auto_show").attr("title")] == null && $("#view_show_empty").css("display") == "none")|| (preClickView[$(".rightConent #dashboard_content #new_view ul li.auto_show").attr("title")] != undefined && preClickView[$(".rightConent #dashboard_content #new_view ul li.auto_show").attr("title")]["tablename"] == nowDeleteTableView)){
+									empty_viem_init("change");
+								}
+								
 							}
 							saveViewTableDataDelete = true;
 						}
@@ -533,7 +535,6 @@
 								if($(ele).hasClass("statementsDelete")){
 									$(ele).find(".folderview_li_del_btn").trigger("click");
 									delete preClickView[$(ele).attr("title")];
-									console.log(preClickView)
 								}
 							}
 
@@ -597,18 +598,22 @@
 										var have_view_edit = sessionStorage.getItem("edit_view_now").split(",");
 										// 创建数据块
 										if($("#dashboard_content #new_view ul li[tableshowid="+have_view_edit[have_view_edit.length - 1]+"]").length > 0){
+											if(!$("#dashboard_content #new_view ul li[tableshowid="+have_view_edit[have_view_edit.length - 1]+"]").hasClass("auto_show")){
+												edit_view_show(null,preClickView[$("#dashboard_content #new_view ul li[tableshowid="+have_view_edit[have_view_edit.length - 1]+"]").attr("title")],"noedit","noLocation");
+											}
 											$("#dashboard_content #new_view ul li").removeClass("auto_show").data("view_btn","true");
 											$("#dashboard_content #new_view ul li[tableshowid="+have_view_edit[have_view_edit.length -1]+"]").addClass("auto_show").data("view_btn","false");
 											if(saveNewAddViewFun){
 												save_data_sum_handle = data["results"];
 												cubeSelectContent_fun(data["results"],have_view_edit[3],"addNewFile");
 											}
+
 											return;
 										}
 										cubeSelectContent_fun(data["results"],have_view_edit[3]);
 									}else if(Object.getOwnPropertyNames(preClickView).length != 0 && preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()] != null  && preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["viewtype"] != null){
+										edit_view_show(null,preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").attr("title")],"noedit","noLocation");
 
-										cubeSelectContent_fun(data["results"],preClickView[$("#pageDashboardModule #dashboard_content #new_view .auto_show").find(".folderview_li_span").text()]["tablename"]);
 									}else{
 										// 创建数据块
 										cubeSelectContent_fun(data["results"]);
@@ -735,6 +740,10 @@
 								"measure":[]
 							}
 						}
+
+						loc_storage.removeItem("allTable_specialSelection");
+				   		loc_storage.removeItem("allTable_notWorkedColumns");
+				  		loc_storage.removeItem($("#lateral_bar #lateral_title .custom-select").val());
 
 						//清空视图展示区域
 						$("#view_show_wrap #main").hide();
@@ -958,6 +967,12 @@
 
 						current_cube_name = now_title_handle_view["tablename"];
 
+						//是否存在筛选器选项
+						var filterChangeHandle = JSON.parse(now_title_handle_view["filterconditions"]);
+						for(var filterKey in filterChangeHandle){
+							loc_storage.setItem(filterKey,filterChangeHandle[filterKey]);
+						}
+
 						if(JSON.parse(now_title_handle_view["drilldowndata"])["showList"] != undefined&& JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["showList"] != undefined){
 							if(JSON.parse(now_title_handle_view["drilldowndata"])["showList"]["showList"].length > 0){
 								editViewDimenCount = null;
@@ -1053,7 +1068,7 @@
 										var add_view_post_name = folder_view+"-"+folder_view_name;
 										view_homo_data[add_view_post_name] = result[folder][folder_view][folder_view_name];
 
-										if(view_homo_data[add_view_post_name]["isopen"]){
+										// if(view_homo_data[add_view_post_name]["isopen"]){
 											if(sessionStorage.getItem("edit_view_now")){
 												//获取编辑的视图
 												var hava_view_edit_old = sessionStorage.getItem("edit_view_now");
@@ -1065,7 +1080,7 @@
 											}
 											// folder_view_add_show(folder_view+"-"+changeViewName,"new",folder+","+folder_view+","+folder_view_name+","+result[folder][folder_view][folder_view_name]["tablename"],result[folder][folder_view][folder_view_name]["id"]);
 
-									}
+									// }
 
 								}
 							}
@@ -1909,18 +1924,21 @@
 						}
 
 						// 数据选择 select 变化的时候，去获取新的数据
-						// cube_select.unbind("change");
-						cube_select.change(function(event){
+						cube_select.on("change",function(event){
+							event.isPropagationStopped();
+							if($(this).val() == current_cube_name){
+								return;
+							}
 							$("#pageDashboardModule #dashboard_content #lateral_bar #indicator #index_show ul").html("");
 							event.stopPropagation();
 							if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
-								console.log("c")
 								loc_storage.removeItem(current_cube_name);
 								if_or_load = true;
 								empty_viem_init("change");
 								isDisaed = false;
 								saveScameView =true;
 								load_measurement_module(cube_select.val(),"changeData");
+
 							}
 							// $("#pageDashboardModule #dashboard_content #lateral_bar #dimensionality .dimensionality_search").hide();
 							// $("#pageDashboardModule #dashboard_content #lateral_bar #measurement .dimensionality_search").hide();
@@ -1948,8 +1966,11 @@
 							data:JSON.stringify(handleDataPost),
 							beforeSend:function(){
 									var target =  $("#view_show_wrap").get(0);
-									$(".maskLayer").show();
-    								spinner.spin(target);
+    								if(spinner.el == undefined){
+    									spinner.spin(target);
+    									$(".maskLayer").show();
+    								}
+    								
 							},
 							success:function(data){
 								if(data.status == "success"){
@@ -1992,11 +2013,11 @@
 									url:"/cloudapi/v1/tables/" +current_cube+"/schema",
 									type:"post",
 									dataType:"json",
-									// beforeSend:function(){
-									// 	var target =  $("#view_show_wrap").get(0);
-									// 	$(".maskLayer").show();
-	    				// 				spinner.spin(target);
-									// },
+									beforeSend:function(){
+										var target =  $("#view_show_wrap").get(0);
+										$(".maskLayer").show();
+	    								spinner.spin(target);
+									},
 									success:function(data){
 										if (data["status"] == "success") {
 											var cube_all_data = data["results"];

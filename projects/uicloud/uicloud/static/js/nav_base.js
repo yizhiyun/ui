@@ -601,6 +601,9 @@ $(function(){
 			}
 
 			saveNowWallDict["drilldowndata"] = JSON.stringify(tempHandleData);
+      var filterconditionsdata = {"allTable_specialSelection":window.localStorage.getItem("allTable_specialSelection"),"allTable_notWorkedColumns":window.localStorage.getItem("allTable_notWorkedColumns")};
+      filterconditionsdata[current_cube_name] = window.localStorage.getItem(current_cube_name);
+      saveNowWallDict["filterconditions"] = JSON.stringify(filterconditionsdata);
 			saveNowWallDict["tablename"] = current_cube_name;
 			saveNowWallDict["defaultparent"] = "default";
 			saveNowWallDict["calculation"] = JSON.stringify(drag_measureCalculateStyle);

@@ -54,7 +54,8 @@ def getAllDataFunction(username, datatype=None):
                         'customcalculate': tablelist[i].customcalculate,
                         'sequential': tablelist[i].sequential,
                         'handledatapost': tablelist[i].handledatapost,
-                        'drilldowndata' : tablelist[i].drilldowndata
+                        'drilldowndata' : tablelist[i].drilldowndata,
+                        'filterconditions':tablelist[i].filterconditions
                     }
         return context
 
@@ -106,6 +107,7 @@ def dashboardTableAdd(request):
                 table.sequential = jsonData['sequential']
                 table.handledatapost = jsonData['handledatapost']
                 table.drilldowndata = jsonData['drilldowndata']
+                table.filterconditions = jsonData['filterconditions']
                 table.save()
             else:
                 foldername = jsonData['foldername']
@@ -145,7 +147,8 @@ def dashboardTableAdd(request):
                     customcalculate=jsonData['customcalculate'],
                     sequential=jsonData['sequential'],
                     handledatapost=jsonData['handledatapost'],
-                    drilldowndata=jsonData['drilldowndata']
+                    drilldowndata=jsonData['drilldowndata'],
+                    filterconditions=jsonData['filterconditions']
                 )
                 table.save()
 
@@ -434,7 +437,8 @@ def indexAdd(request):
             customcalculate=jsonData['customcalculate'],
             sequential=jsonData['sequential'],
             handledatapost=jsonData['handledatapost'],
-            drilldowndata=jsonData['drilldowndata']
+            drilldowndata=jsonData['drilldowndata'],
+            filterconditions=jsonData['filterconditions']
 
         )
         index.save()
@@ -502,7 +506,8 @@ def indexGet(request):
                             'customcalculate': index.customcalculate,
                             'sequential': index.sequential,
                             'handledatapost': index.handledatapost,
-                            'drilldowndata' : index.drilldowndata
+                            'drilldowndata' : index.drilldowndata,
+                            'filterconditions' : index.filterconditions
                         }
                     }
             except Exception:

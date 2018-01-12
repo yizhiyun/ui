@@ -381,6 +381,8 @@ for(var i = 0 ; i < show_btn_change.length;i++){
 			show_btn_change.eq(i).data("if_show","true").addClass("show_view_success");
 			click_view_icon = true;
 			save_now_show_view_text = show_btn_change.eq(i);
+			show_btn_change.removeClass("clicked");
+			save_now_show_view_text.addClass("clicked").css("opacity",1);
 
 			}
 		}
