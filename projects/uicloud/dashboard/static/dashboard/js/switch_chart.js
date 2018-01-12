@@ -18,7 +18,6 @@ var drawChartTimer = null;
 
 
 function switch_chart_handle_fun(edit_view){
-	
 	if(!edit_view){
 		if(drawChartTimer){
 			clearTimeout(drawChartTimer);
@@ -99,7 +98,7 @@ function beginDrawChart(edit_view){
 
 
 		if((switch_col_di > 0 && switch_col_me > 0 ) || (switch_row_di > 0 && switch_row_me > 0)){
-			show_btn_change.data("if_show","").css("border","").css("opacity","0.5");
+			show_btn_change.data("if_show","").css("border","").css("opacity","0.3");
 
 			//隐藏其他视图
 			$("#main").css("display","none");

@@ -589,7 +589,6 @@
 							dataType:"json",
 							contentType: "application/json; charset=utf-8",
 							success:function(data){
-
 								if (data["status"] == "success") {
 									if(sessionStorage.getItem("edit_view_now")){
 
@@ -623,8 +622,7 @@
 
 								}
 								saveAddNewFile = false;
-							}
-
+							},
 						});
 
 					}
@@ -709,9 +707,9 @@
 
 					//运行更新
 					$("img[alt='update']").click(function(){
-						var target =  $("#view_show_wrap").get(0);
-					    spinner.spin(target);
-					    $(".maskLayer").show();
+						// var target =  $("#view_show_wrap").get(0);
+					 //    spinner.spin(target);
+					 //    $(".maskLayer").show();
 					    switch_chart_handle_fun();
 					})
 
@@ -1974,8 +1972,11 @@
 							},
 							success:function(data){
 								if(data.status == "success"){
-									spinner.stop();
-									$(".maskLayer").hide();
+									//no view stop hide
+									if($("#view_show_empty").css("display") == "block"){
+										spinner.stop();
+										$(".maskLayer").hide();
+									}
 									filterNeedAllData = data.results.data[0];
 
 								}

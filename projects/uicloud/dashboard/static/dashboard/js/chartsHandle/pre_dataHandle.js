@@ -427,6 +427,7 @@ function checkHandleFunction(checkData,handleCount){
 }
 
 
+
 //选择筛选后表格存在行列里都存在维度post多个维度之间的关联
 function filterTableAll(postData,type,checkData,freeHandleCheckData,handleCount){
 	$.ajax({
@@ -450,19 +451,24 @@ function filterTableAll(postData,type,checkData,freeHandleCheckData,handleCount)
 	});
 }
 
+
 	$.ajax({
 		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
 		type:"post",
 		dataType:"json",
 		contentType: "application/json; charset=utf-8",
 		async: true,
-		// async:false,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
 			// console.log(handleDataPost);
+			var target =  $("#view_show_wrap").get(0);
+		    spinner.spin(target);
+		 	$(".maskLayer").show();
 		},
 		success:function(data){
 			if(data.status == "success"){
+				spinner.stop();
+				$(".maskLayer").hide();
 				var freeHandlePostFun = objectDeepCopy(recordConditon);
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
@@ -499,9 +505,8 @@ function filterTableAll(postData,type,checkData,freeHandleCheckData,handleCount)
 				}else{
 					rightFilterListDraw();
 				}
-
-
 			}
-		}
+		},
 	});
+
 }
