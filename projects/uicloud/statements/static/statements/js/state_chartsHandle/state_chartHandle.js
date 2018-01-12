@@ -158,8 +158,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			        // left:50,
 			        // bottom:dimensionality_need_show.length > 15 ? 120 : 80
 			        left:30,
-			        bottom:dimensionality_need_show.length > 15 ? "22%" : "20%",
-			        top:"10%"
+			        bottom:dimensionality_need_show.length > 15 ? "25%" : "20%",
+			        top:"6%"
 			        // bottom:120
 			    },
 			    toolbox: {
@@ -179,7 +179,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
    				},
 
 			    xAxis: {
-			    	name:need_handle_dimensionalityName,
+			    	// name:need_handle_dimensionalityName,
 					nameLocation:"start",
 					nameGap:25,
 					nameRotate:-15,
@@ -191,6 +191,12 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 						fontSize:10,
 						interval:0,
 						color:"black",
+						formatter:function(value){
+							if(value.length > 6){
+								value =  value.substring(0,6) + '...';
+							}
+							return value;
+						}
 						// formatter:function(value)  
       //                          {  
       //                              return value.split("").join("\n");  
@@ -361,7 +367,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 					legend: {
 						type: 'scroll',
 						left: 'center',
-						bottom:"6%",
+						bottom:"9%",
 						data: dimensionality_need_show,
 						width:"60%",
 					},
@@ -370,7 +376,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 						name: drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName],
 						type: "pie",
 						radius: "65%",
-						center: ["50%", "42%"],
+						center: ["50%", "40%"],
 						data: measure_need_show,
 						label: {
 			                normal: {
@@ -508,7 +514,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			    },
 				xAxis:[
 					{
-						name:need_handle_dimensionalityName,
+						// name:need_handle_dimensionalityName,
 						nameLocation:"start",
 						nameGap:25,
 						nameRotate:-15,
@@ -519,8 +525,14 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 							rotate:-15,
 							fontSize:10,
 							interval:0,
-							color:"black"
-					},
+							color:"black",
+							formatter:function(value){
+								if(value.length > 6){
+									value = value.substring(0,6) + '...';
+								}
+								return value;
+							}
+						},
 					}
 				],
 				 dataZoom:[
@@ -727,9 +739,15 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 						axisLabel:{
 							fontSize:10,
 							interval:0,
-							color:"black"
+							color:"black",
+							formatter:function(value){
+								if(value.length > 6){
+									value = value.substring(0,6) + '...';
+								}
+								return value;
+							}
 						},
-						name:need_handle_dimensionalityName,
+						// name:need_handle_dimensionalityName,
 						nameGap:10,
 						nameLocation:"end",
 				    },
@@ -1078,7 +1096,7 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 				var dataZoomXindexArray = [];
 				for(var i = dimensionality_show_data_arr.length - 1;i >= 0;i--){
 					var obj = {
-						name:all_dimensionality[i],
+						// name:all_dimensionality[i],
 						nameLocation:"start",
 						nameGap:15,
 						nameRotate:-15,
@@ -1093,8 +1111,8 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 							color:"black",
 							interval:function(index,value){return !/^YZYPD/.test(value)},
 							formatter:function(value){
-								if(value.length > 8){
-									value = value.substring(0,8) + '...';
+								if(value.length > 6){
+									value = value.substring(0,6) + '...';
 								}
 								return value;
 							}
@@ -1107,9 +1125,9 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 						containLabel:true,
 					}
 					aGrid["left"] = "7%";
-					aGrid["bottom"] = 60 + 30 * i;
-					// aGrid["bottom"] = "23%";
-					aGrid["top"] = "8%";
+					// aGrid["bottom"] = 60 + 30 * i;
+					aGrid["bottom"] = (18 + 10 * i) + '%';
+					aGrid["top"] = "5%";
 					if(i != dimensionality_show_data_arr.length - 1){
 						aGrid["tooltip"] = {show:false};
 					}
@@ -1231,7 +1249,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						left:"center",
 						// bottom:40,
 					  	// bottom:dimensionality_show_data.length > 15 ? 40 : 20,
-					  	bottom:dimensionality_show_data.length > 15 ? "9%" : "6%",
+					  	bottom:dimensionality_show_data.length > 15 ? "7%" : "6%",
 						width:"60%",
 						textStyle: {
 							color: '#00000',
@@ -1285,20 +1303,20 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					grid: [{
 						show: false,
 						left: '4%',
-					  	bottom:dimensionality_show_data.length > 14 ? "25%" : "20%",
+					  	bottom:dimensionality_show_data.length > 14 ? "23%" : "20%",
 						top:"6%",
 						containLabel: true,
 						width: '47%',
 					}, {
 						show: false,
 						left: '51%',
-					  	bottom:dimensionality_show_data.length > 14 ? "25%" : "20%",
+					  	bottom:dimensionality_show_data.length > 14 ? "23%" : "20%",
 					  	top:"12%",
 						width: '0%',
 					}, {
 						show: false,
 						right: '4%',
-					  	bottom:dimensionality_show_data.length > 14 ? "25%" : "20%",
+					  	bottom:dimensionality_show_data.length > 14 ? "23%" : "20%",
 						top:"6%",
 						containLabel: true,
 						width: '47%',
@@ -1791,7 +1809,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 //  坐标轴设置值
 			for (var k = need_show_dimensionality_arr.length - 1;k >= 0;k--){
 				var obj = {
-					name:need_show_dime_name_arr[k],
+					// name:need_show_dime_name_arr[k],
 					// nameLocation:"end",
 					// nameGap:25,
 					// nameRotate:25,
@@ -1861,8 +1879,9 @@ function comparisonStrip_generate_fun(storeNum_toview){
 
 					}
 					aGrid["left"] = "5%";
-					aGrid["bottom"] = 60 + 35*k;
-					aGrid["top"] = "6%";
+					aGrid["bottom"] = (20 + 10 * k) +'%';
+					// aGrid["bottom"] = 60 + 35*k;
+					aGrid["top"] = "5%";
 
 
 				}else{
@@ -1903,10 +1922,10 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					aGrid["containLabel"] = false;
 					// aGrid["left"] =  60 + 70*k;
 
-					aGrid["left"] =  70 + 45*k;
+					aGrid["left"] =  70 + 50 * k;
 
-					aGrid["bottom"] = "28%";
-					aGrid["top"] = "10%";
+					aGrid["bottom"] = "26%";
+					aGrid["top"] = "6%";
 
 				}
 				if(k != need_show_dimensionality_arr.length - 1){
@@ -2325,7 +2344,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			for(var i = 0;i < dimensionality_show_data.length;i++){
 				var aX = {
 					"show":true,
-					"name":all_dimensionality[i],
+					// "name":all_dimensionality[i],
 					"nameGap":30,
 					"nameLocation":"start",
 					// "nameLocation":"end",
@@ -2342,10 +2361,10 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
 						formatter:function(value){
-							if(value.length > 8){
-								value = value.substring(0,8) + '...';
+							if(value.length > 3){
+								value = value.substring(0,3) + '...';
 							}
-							if(value == 'undefined' || value == 'undefine...'){
+							if(value == 'und...'){
 								return '';
 							}else{
 								return value;
@@ -2360,7 +2379,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					containLabel:true,
 				}
 				aGrid["left"] = "5%";
-				aGrid["bottom"] = 60 + 35*(dimensionality_show_data.length - 1 - i);
+				aGrid["bottom"] = (18 + 9 * (dimensionality_show_data.length -1 - i)) + '%';
+				// aGrid["bottom"] = 60 + 35*(dimensionality_show_data.length - 1 - i);
 				aGrid["top"] = "5%";		
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
@@ -2649,7 +2669,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				// var maxLength = Math.max.apply(null, arr);
 				var aY = {
 					"show":true,
-					"name":all_dimensionality[i],
+					// "name":all_dimensionality[i],
 					"nameGap":10,
 					"nameRotate":15,
 					"nameLocation":"end",
@@ -2691,7 +2711,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 					show:false,
 					
 				}
-				aGrid["left"] = 60 + i * (48 + i);
+				aGrid["left"] = 70 + i * (47 + i);
 				// aGrid["left"] = 150 + i * 60;
 				// if(maxLength > 0){
 				// 	aGrid["left"] = 80 + (maxLength * 5) + i * (maxLength * 5 + 60);
@@ -2699,7 +2719,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 				// 	aGrid["left"] = 100 + i * (60 + i);
 				// }
 				aGrid["bottom"] = "25%";	
-				aGrid["top"] = "10%";
+				aGrid["top"] = "8%";
 				if(i != dimensionality_show_data.length - 1){
 					aGrid["tooltip"] = {show:false}
 				}
@@ -2881,6 +2901,7 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			var indicator = [];
 			var series = [{"name":all_measure.join("/"),"type":"radar","data":[]}];
 			var recordArr = [];
+			var maxArr = [];
 			for(var i =0;i < data.length;i++){
 				var aData = data[i];
 				var max = aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]];
@@ -2899,22 +2920,47 @@ function comparisonStrip_generate_fun(storeNum_toview){
 						max  = aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[j]]]/allValueUnitDict[valueUnitValue_arr[storeNum_toview]];
 					}
 				}
+				// var str = "";
+				// for(var k=0;k<all_dimensionality.length;k++){
+				// 	// console.log(all_dimensionality[k],aData[all_dimensionality[k]]);
+				// 	if(aData[all_dimensionality[k]].length > 3){
+				// 		aData[all_dimensionality[k]] = aData[all_dimensionality[k]].substring(0,3) + '...';
+				// 	}
+				// 	str +=  aData[all_dimensionality[k]] + "-";
+				// 	//console.log(str);
+				// 	var re = str.substring(0,str.length-1);
+				// 	//console.log(re);
+					
+				// }
+
+				var maxVal = (max / allValueUnitDict[valueUnitValue]) * 1.2;
+				maxArr.push(maxVal);
+				// console.log(maxArr);
+			}
+
+			var maxNum = Math.max.apply(null, maxArr);
+
+			for(var i=0;i<data.length;i++){
+				var aData = data[i];
+				var max = aData[drag_measureCalculateStyle_arr[storeNum_toview][all_measure[0]]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]];
+				
 				var str = "";
 				for(var k=0;k<all_dimensionality.length;k++){
-					// console.log(all_dimensionality[k],aData[all_dimensionality[k]]);
+					if(aData[all_dimensionality[k]].length > 3 && all_dimensionality.length > 1){
+						aData[all_dimensionality[k]] = aData[all_dimensionality[k]].substring(0,3) + '...';
+					}
 					str +=  aData[all_dimensionality[k]] + "-";
-					//console.log(str);
-					var re = str.substring(0,str.length-1);
-					//console.log(re);
-					
+					var re = str.substring(0,str.length-1);		
 				}
+
 				indicator.push({
-					// "name":aData[all_dimensionality[0]],
 					"name":re,
-					"max":(max/allValueUnitDict[valueUnitValue])*1.2,
+					"max":maxNum,
 					"originalMax":max
            	 	});
 			}
+
+
 			
 		var option = {
 		    title: [{
@@ -2967,9 +3013,9 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		    legend: {
 		    	type: 'scroll',
 		    	orient: 'vertical',
-		        bottom:50,
+		        // bottom:60,
 		        top:0,
-		        right:"5%",
+		        right:"3%",
 		        data: commonLegend,
 		        // left:"center",
 		        width:"60%"
@@ -2997,7 +3043,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		        indicator:indicator,
 		        triggerEvent:true,
 		        axisLine:{
-		        	show:data.length < 80,
+		        	show:true
+		        	// show:data.length < 80,
 		        },
 		        splitLine:{
 		        	show:true,
@@ -3006,21 +3053,21 @@ function comparisonStrip_generate_fun(storeNum_toview){
 		        	formatter:function(params){
 	         			count++;
 	         			if(data.length > 20 && data.length < 80){
-	         				if(count % 3 == 0){
+	         				if(count % 4 == 0){
 	         					return params;
 	         				}else{
 	         					array.push(params);
 	         					return  '';
 	         				}
-	         			}else if(data.length > 80 && data.length < 400){
-	         				if(count % 20 == 0){
+	         			}else if(data.length > 80 && data.length < 200){
+	         				if(count % 10 == 0){
 	         					return params;
 	         				}else{
 	         					array.push(params);
 	         					return '';
 	         				}
-	         			}else if(data.length > 400){
-	         				if(count % 50 == 0){
+	         			}else if(data.length > 200){
+	         				if(count % 15 == 0){
 	         					return params;
 	         				}else{
 	         					array.push(params);

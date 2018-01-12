@@ -147,7 +147,8 @@ function one_de_one_me_handle (chart_type_need) {
 			    legend:{
 			   	 	data:[drag_measureCalculateStyle[need_handle_measureName]],
 			   	 	left:"center",
-			   	 	bottom:40,
+			   	 	// bottom:40,
+			   	 	bottom:'6%',
 			   	 	width:"60%",
 
 			    },
@@ -207,7 +208,8 @@ function one_de_one_me_handle (chart_type_need) {
 			    grid: {
 			        containLabel: true,
 			        left:80,
-			        bottom:120
+			        // bottom:120
+			        bottom:'18%',
 			    },
 			    toolbox: {
 			        show: true,
@@ -226,7 +228,7 @@ function one_de_one_me_handle (chart_type_need) {
    				},
 
 			    xAxis: {
-			    	name:need_handle_dimensionalityName,
+			    	// name:need_handle_dimensionalityName,
 					nameLocation:"start",
 					nameGap:25,
 					nameRotate:-15,
@@ -400,7 +402,8 @@ function one_de_one_me_handle (chart_type_need) {
 					legend: {
 						type: 'scroll',
 						left: 'center',
-						bottom:40,
+						// bottom:40,
+						bottom:'6%',
 						data: dimensionality_need_show,
 						width:"60%",
 					},
@@ -409,7 +412,7 @@ function one_de_one_me_handle (chart_type_need) {
 						name: drag_measureCalculateStyle[need_handle_measureName],
 						type: "pie",
 						radius: "65%",
-						center: ["50%", "40%"],
+						center: ["50%", "45%"],
 						data: measure_need_show,
 						label: {
 			                normal: {
@@ -504,7 +507,8 @@ function one_de_one_me_handle (chart_type_need) {
 				legend:{
 					data:[drag_measureCalculateStyle[need_handle_measureName]],
 					left: 'center',
-					bottom:40,
+					// bottom:40,
+					bottom:'6%',
 					width:"60%",
 				},
 				toolbox: {
@@ -525,11 +529,12 @@ function one_de_one_me_handle (chart_type_need) {
 				 grid: {
 			        containLabel: true,
 			        left:80,
-			        bottom:120
+			        // bottom:120
+			        bottom:'18%'
 			    },
 				xAxis:[
 					{
-						name:need_handle_dimensionalityName,
+						// name:need_handle_dimensionalityName,
 						nameLocation:"start",
 						nameGap:25,
 						nameRotate:-15,
@@ -655,7 +660,8 @@ function one_de_one_me_handle (chart_type_need) {
 				    legend:{
 				    		data:[drag_measureCalculateStyle[need_handle_measureName]],
 				    		left:"center",
-				    		bottom:40,
+				    		// bottom:40,
+				    		bottom:'6%',
 				    		width:"60%",
 				    },
 				    color:allColorsDict[currentColorGroupName],
@@ -739,14 +745,15 @@ function one_de_one_me_handle (chart_type_need) {
 							interval:0,
 							color:"black"
 						},
-						name:need_handle_dimensionalityName,
+						// name:need_handle_dimensionalityName,
 						nameGap:10,
 						nameLocation:"end",
 				    },
 				    grid: {
 			      		  containLabel: true,
 			      		  left:50,
-			      		  bottom:120
+			      		  // bottom:120
+			      		  bottom:'18%'
 			  		  },
 				      dataZoom:[
 			    			{
@@ -1030,7 +1037,8 @@ function many_de_many_me_handle(chart_type_need){
 	    			legend: {
 	       		 	data:commonLegend,
 	       		 	left:"center",
-	       		 	bottom:40,
+	       		 	// bottom:40,
+	       		 	bottom:'6%',
 	       		 	width:"60%",
 	    			},
 	    			grid: [],
@@ -1118,7 +1126,7 @@ function many_de_many_me_handle(chart_type_need){
 				var dataZoomXindexArray = [];
 				for(var i = dimensionality_show_data_arr.length - 1;i >= 0;i--){
 					var obj = {
-						name:all_dimensionality[i],
+						// name:all_dimensionality[i],
 						nameLocation:"start",
 						nameGap:25,
 						nameRotate:-15,
@@ -1132,8 +1140,8 @@ function many_de_many_me_handle(chart_type_need){
 							color:"black",
 							interval:function(index,value){return !/^YZYPD/.test(value)},
 							formatter:function(value){
-								if(value.length > 8){
-									value = value.substring(0,8) + '...';
+								if(value.length > 6){
+									value = value.substring(0,6) + '...';
 								}
 								return value;
 							}
@@ -1144,9 +1152,9 @@ function many_de_many_me_handle(chart_type_need){
 						containLabel:true,
 					}
 					// aGrid["left"] = "10%";
-					// aGrid["bottom"] = 60 + 40* i;
+					// aGrid["bottom"] = 100 + 40 * i;
+					aGrid["bottom"] = (18 + 8* i)+'%';
 					aGrid["left"] = "7%";
-					aGrid["bottom"] = 120 + 40 * i;
 					if(i != dimensionality_show_data_arr.length - 1){
 						aGrid["tooltip"] = {show:false};
 					}
@@ -1210,7 +1218,7 @@ function many_de_many_me_handle(chart_type_need){
 
 
 				//清除上一个图例
-				// mycharts.clear();
+				mycharts.clear();
 				// console.log(option)
 
 				mycharts.setOption(option);
@@ -1257,7 +1265,8 @@ function comparisonStrip_generate_fun(){
 					legend: {
 						data: commonLegend,
 						left:"center",
-						bottom:40,
+						// bottom:40,
+						bottom:'6%',
 						width:"60%",
 						textStyle: {
 							color: '#00000',
@@ -1313,7 +1322,8 @@ function comparisonStrip_generate_fun(){
 						left: '4%',
 						top: 60,
 						// bottom: 60,
-						bottom:120,
+						// bottom:120,
+						bottom:'18%',
 						containLabel: true,
 						width: '46%',
 					}, {
@@ -1321,14 +1331,16 @@ function comparisonStrip_generate_fun(){
 						left: '50.5%',
 						top: 80,
 						// bottom: 60,
-						bottom:120,
+						// bottom:120,
+						bottom:'18%',
 						width: '0%',
 					}, {
 						show: false,
 						right: '4%',
 						top: 60,
 						// bottom: 60,
-						bottom:120,
+						// bottom:120,
+						bottom:'18%',
 						containLabel: true,
 						width: '46%',
 					}, ],
@@ -1652,7 +1664,8 @@ function comparisonStrip_generate_fun(){
 					legend:{
 						data:[drag_measureCalculateStyle[measureName]],
 						left:'center',
-						bottom:40,
+						// bottom:40,
+						bottom:'6%',
 						width:"60%",
 					},
 					 grid: [],
@@ -1816,7 +1829,7 @@ function comparisonStrip_generate_fun(){
 			for (var k = need_show_dimensionality_arr.length - 1;k >= 0;k--){
 
 				var obj = {
-					name:need_show_dime_name_arr[k],
+					// name:need_show_dime_name_arr[k],
 					// nameLocation:"start",
 					// nameLocation:"end",
 					nameGap:15,
@@ -1833,8 +1846,8 @@ function comparisonStrip_generate_fun(){
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
 						formatter:function(value){
-							if(value.length > 3){
-								value = value.substring(0,3) + '...';
+							if(value.length > 6){
+								value = value.substring(0,6) + '...';
 							}
 							return value;
 						}
@@ -1888,7 +1901,8 @@ function comparisonStrip_generate_fun(){
 					// aGrid["left"] = "10%";
 					// aGrid["bottom"] = 60 + 40*k;
 					aGrid["left"] = "5%";
-					aGrid["bottom"] = 120 + 40 * k;
+					aGrid["bottom"] = (18 + 8 * k) + '%';
+					// aGrid["bottom"] = 120 + 40 * k;
 
 
 				}else{
@@ -1931,9 +1945,9 @@ function comparisonStrip_generate_fun(){
 					// aGrid["left"] =  170 + 70*k;
 					// aGrid["bottom"] = 60;
 
-					aGrid["left"] =  120 + 70*k;
-
-					aGrid["bottom"] = 120;
+					aGrid["left"] =  120 + 80*k;
+					aGrid["bottom"] = '18%';
+					// aGrid["bottom"] = 120;
 
 				}
 				if(k != need_show_dimensionality_arr.length - 1){
@@ -2148,7 +2162,8 @@ function comparisonStrip_generate_fun(){
 				legend:[{
 					data:categorys,
 					left:"center",
-					bottom:40,
+					// bottom:40,
+					bottom:'6%',
 					type:'scroll',
 					width:"60%",
 				}],
@@ -2340,7 +2355,7 @@ function comparisonStrip_generate_fun(){
 			for(var i = 0;i < dimensionality_show_data.length;i++){
 				var aX = {
 					"show":true,
-					"name":all_dimensionality[i],
+					// "name":all_dimensionality[i],
 					"nameGap":15,
 					"nameLocation":"start",
 					// "nameLocation":"end",
@@ -2358,10 +2373,10 @@ function comparisonStrip_generate_fun(){
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
 						formatter:function(value){
-							if(value.length > 8){
-								value = value.substring(0,8) + '...';
+							if(value.length > 6){
+								value = value.substring(0,6) + '...';
 							}
-							if(value == 'undefine...' || value == 'undefined'){
+							if(value == 'undefi...'){
 								return '';
 							}else{
 								return value;
@@ -2376,7 +2391,8 @@ function comparisonStrip_generate_fun(){
 					containLabel:true,
 				}
 				aGrid["left"] = "8%";
-				aGrid["bottom"] = 120 + 45*(dimensionality_show_data.length - 1 - i);
+				// aGrid["bottom"] = 120 + 45*(dimensionality_show_data.length - 1 - i);
+				aGrid["bottom"] = (18 + 9 * (dimensionality_show_data.length - 1 - i)) + '%';
 				if(i >0){
 					aGrid["tooltip"] = {show:false}
 					var obj = {
@@ -2481,7 +2497,8 @@ function comparisonStrip_generate_fun(){
 			   legend: {
 			        data: commonLegend,
 					left:"center",
-					bottom:40,
+					// bottom:40,
+					bottom:'6%',
 					width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName],
@@ -2981,11 +2998,13 @@ function comparisonStrip_generate_fun(){
 
 				var aY = {
 					"show":true,
-					"name":all_dimensionality[i],
+					// "name":all_dimensionality[i],
 					"nameGap":10,
 					"nameRotate":15,
 					"nameLocation":"end",
 					"type":"category",
+					// "nameGap":50,
+					// "nameLocation":"middle",
 					axisTick:{
 						inside:false,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
@@ -3001,11 +3020,11 @@ function comparisonStrip_generate_fun(){
 						fontSize:10,
 						interval:function(index,value){return !/^YZYPD/.test(value)},
        					formatter:function(value){
-       						if(value.length > 3){
-								value = value.substring(0,3) + '...';
+       						if(value.length > 6){
+								value = value.substring(0,6) + '...';
 							}
 							// console.log(value);
-							if(value == 'und...'){
+							if(value == 'undefi...'){
 								return '';
 							}
 							return value;
@@ -3032,8 +3051,10 @@ function comparisonStrip_generate_fun(){
 					containLabel:false,
 					show:false,
 				}
-				aGrid["left"] = 100 + i * (60 + i);
-				aGrid["bottom"] = 120;
+				aGrid["left"] = 120 + 80 * i;           //6
+				// aGrid["left"] = 100 + i * (60 + i);       //3
+				// aGrid["bottom"] = 120;
+				aGrid["bottom"] = '20%';
 
 
 				if(i != dimensionality_show_data.length - 1){
@@ -3136,7 +3157,8 @@ function comparisonStrip_generate_fun(){
 			        data: commonLegend,
 			        left:"center",
 			        // bottom:0,
-			        bottom:40,
+			        // bottom:40,
+			        bottom:'6%',
 			        width:"60%",
 			    },
 			    	color:allColorsDict[currentColorGroupName],
@@ -3236,47 +3258,48 @@ function radarChart_generate_fun(){
 					}
 				}
 
-				// console.log(data.length);
+				// var str = "";
+				// for(var k=0;k<all_dimensionality.length;k++){
+				// 	// console.log(all_dimensionality[k],aData[all_dimensionality[k]]);
+				// 	str +=  aData[all_dimensionality[k]] + "-";
+				// 	//console.log(str);
+				// 	var re = str.substring(0,str.length-1);
+				// 	// console.log(re);
+				// }
+
+				var maxVal = (max / allValueUnitDict[valueUnitValue]) * 1.2;
+				maxArr.push(maxVal);
+				// console.log(maxArr);
+				// var maxNum = Math.max.apply(null, maxArr);
+				// console.log(maxNum);
+
+				// indicator.push({
+				// 	// "name":aData[all_dimensionality[0]],
+				// 	"name":re,
+				// 	"max":maxNum,
+				// 	// "max":(max/allValueUnitDict[valueUnitValue])*1.2,
+				// 	"originalMax":max
+    //        	 	});
+
+			}
+
+			var maxNum = Math.max.apply(null, maxArr);
+
+			for(var i=0;i<data.length;i++){
+				var aData = data[i];
+				var max = aData[drag_measureCalculateStyle[all_measure[0]]] / allValueUnitDict[valueUnitValue];
 
 				var str = "";
 				for(var k=0;k<all_dimensionality.length;k++){
-					// console.log(all_dimensionality[k],aData[all_dimensionality[k]]);
 					str +=  aData[all_dimensionality[k]] + "-";
-					//console.log(str);
 					var re = str.substring(0,str.length-1);
-					// console.log(re);
 				}
 
-				var maxVal = (max / allValueUnitDict[valueUnitValue]) * 2;
-				maxArr.push(maxVal);
-				// console.log(maxArr);
-				var maxNum = Math.max.apply(null, maxArr);
-				// console.log(maxNum);
-
 				indicator.push({
-					// "name":aData[all_dimensionality[0]],
 					"name":re,
 					"max":maxNum,
-					// "max":(max/allValueUnitDict[valueUnitValue])*1.2,
 					"originalMax":max
            	 	});
-
-
-    		// 	if(data.length < 20){
-    		// 		indicator.push({
-						// // "name":aData[all_dimensionality[0]],
-						// "name":re,
-						// "max":(max/allValueUnitDict[valueUnitValue])*1.2,
-						// "originalMax":max
-	     //       	 	});
-    		// 	}else{
-    		// 		indicator.push({
-    		// 			"name":val,
-						// "max":(max/allValueUnitDict[valueUnitValue])*1.2,
-						// "originalMax":max
-	     //       	 	});
-    		// 	}
-
 			}
 
 
@@ -3338,8 +3361,10 @@ function radarChart_generate_fun(){
 		    	type: 'scroll',
 		    	orient: 'vertical',
 		        right:70,
-		        top:40,
-		        bottom:50,
+		        // top:40,
+		        // bottom:50,
+		        top:'6%',
+		        bottom:'8%',
 		        data: commonLegend,
 		        // left:"center",
 		        width:"60%", 
@@ -3366,7 +3391,8 @@ function radarChart_generate_fun(){
 		        triggerEvent:true,
 		        // radius:data.length > 400 ? '100%' : '80%',
 		        axisLine:{
-		        	show:data.length < 80,
+		        	show:true
+		        	// show:data.length < 80,
 		        },
 		        splitLine:{
 		        	show:true,
@@ -3375,21 +3401,21 @@ function radarChart_generate_fun(){
 	         		formatter:function(params){
 	         			count++;	
 	         			if(data.length > 20 && data.length < 80){
-	         				if(count % 3 == 0){
+	         				if(count % 4 == 0){
 	         					return params;
 	         				}else{
 	         					array.push(params);
 	         					return  '';
 	         				}
-	         			}else if(data.length > 80 && data.length < 400){
-	         				if(count % 20 == 0){
+	         			}else if(data.length > 80 && data.length < 200){
+	         				if(count % 10 == 0){
 	         					return params;
 	         				}else{
 	         					array.push(params);
 	         					return '';
 	         				}
-	         			}else if(data.length > 400){
-	         				if(count % 50 == 0){
+	         			}else if(data.length > 200){
+	         				if(count % 15 == 0){
 	         					return params;
 	         				}else{
 	         					array.push(params);
@@ -3415,8 +3441,8 @@ function radarChart_generate_fun(){
 		    "record":recordArr,
 		    series: series
 		};
-		// console.log(option);
 		// console.log(option.series[0].data[0].value);
+		// console.log(option);
 		//清除上一个图例
 		mycharts.clear();
 

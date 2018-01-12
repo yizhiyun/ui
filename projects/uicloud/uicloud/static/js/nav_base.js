@@ -1303,6 +1303,7 @@ function changeEditViewFunction(editChangeView){
 
 
 function pallasdaraFunctionNavBtnHandle(){
+  var saveBuildDataFilter = null;
 	// 获取当前可用的导航选项
 //	var arr = navBtnAbleAndDisablegetHandle();
 	$.ajax({
@@ -1352,9 +1353,12 @@ function pallasdaraFunctionNavBtnHandle(){
 							break;
 						case "navBuildDataViewBtn":
 							$(".main .rightConent #pageDashboardModule").data("isFirstInto",false);
+              filterNeedAllData = objectDeepCopy(saveBuildDataFilter);
 							changePageTo_navBuildDataView();
 							break;
 						case "navDashBoardViewBtn":
+              //记录构建数据界面的filterNeedAllData
+              saveBuildDataFilter = objectDeepCopy(filterNeedAllData);
 							changePageTo_navDashBoardView();
 							break;
 						case "navReporttingViewBtn":
@@ -1374,7 +1378,12 @@ function pallasdaraFunctionNavBtnHandle(){
 }
 
 function buildDataFunction_able(){
-	$(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/buildData-able.png");
+  if($("#analysisContainer").css("display") == "block"){
+    $(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/buildData-select.png");
+  }else{
+    $(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/buildData-able.png");
+  }
+	
 	$(".container .main .leftNav #navBuildDataViewBtn").removeClass("disableFlag");
 	$(".container .main .leftNav #navBuildDataViewBtn").addClass("ableFlag");
 }
@@ -1493,7 +1502,7 @@ function hidenSomeElementsWhenChangePage(){
 	$("#connectDataBaseInfo").hide();
 	$(".rightConent #dataSourceConnectSelectDiv #dataList").hide();
 	$(".rightConent #analysisContainer .leftSlide #analysis_dataList").hide();
-	$("#user-filter-select").hide();
+	$("#user-filter-select").add($("#fileds-content-select,#contentChooser,#number-filter,#date-filter,#date-filter")).hide();
 	// $("#sizer_content").hide();
 }
 
