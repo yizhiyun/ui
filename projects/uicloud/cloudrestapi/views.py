@@ -5,6 +5,7 @@ from .mllib_handler import *
 from .upload import *
 from .addColType import *
 from dataCollection.gxmHandleClass.Singleton import Singleton
+from dashboard.checkView import *
 from django.http import JsonResponse, HttpResponse
 
 import json
