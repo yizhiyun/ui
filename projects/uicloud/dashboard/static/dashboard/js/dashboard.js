@@ -533,7 +533,7 @@
 								if($(ele).hasClass("statementsDelete")){
 									$(ele).find(".folderview_li_del_btn").trigger("click");
 									delete preClickView[$(ele).attr("title")];
-									console.log(preClickView)
+									// console.log(preClickView)
 								}
 							}
 
@@ -588,7 +588,6 @@
 							dataType:"json",
 							contentType: "application/json; charset=utf-8",
 							success:function(data){
-
 								if (data["status"] == "success") {
 									if(sessionStorage.getItem("edit_view_now")){
 
@@ -618,8 +617,7 @@
 
 								}
 								saveAddNewFile = false;
-							}
-
+							},
 						});
 
 					}
@@ -704,9 +702,9 @@
 
 					//运行更新
 					$("img[alt='update']").click(function(){
-						var target =  $("#view_show_wrap").get(0);
-					    spinner.spin(target);
-					    $(".maskLayer").show();
+						// var target =  $("#view_show_wrap").get(0);
+					 //    spinner.spin(target);
+					 //    $(".maskLayer").show();
 					    switch_chart_handle_fun();
 					})
 
@@ -1914,7 +1912,7 @@
 							$("#pageDashboardModule #dashboard_content #lateral_bar #indicator #index_show ul").html("");
 							event.stopPropagation();
 							if($(this).val() && now_build_tables.indexOf($(this).val()) != -1){
-								console.log("c")
+								// console.log("c")
 								loc_storage.removeItem(current_cube_name);
 								if_or_load = true;
 								empty_viem_init("change");
@@ -1953,8 +1951,11 @@
 							},
 							success:function(data){
 								if(data.status == "success"){
-									spinner.stop();
-									$(".maskLayer").hide();
+									//no view stop hide
+									if($("#view_show_empty").css("display") == "block"){
+										spinner.stop();
+										$(".maskLayer").hide();
+									}
 									filterNeedAllData = data.results.data[0];
 
 								}

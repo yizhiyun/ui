@@ -411,22 +411,28 @@ function checkHandleFunction(checkData){
 }
 
 
+
+
 	$.ajax({
 		url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
 		type:"post",
 		dataType:"json",
 		contentType: "application/json; charset=utf-8",
 		async: true,
-		// async:false,
 		data:JSON.stringify(handleDataPost),
 		beforeSend:function(){
 			// console.log(handleDataPost);
+			var target =  $("#view_show_wrap").get(0);
+		    spinner.spin(target);
+		 	$(".maskLayer").show();
 		},
 		success:function(data){
 			if(data.status == "success"){
+				spinner.stop();
+				$(".maskLayer").hide();
 				var freeHandlePostFun = objectDeepCopy(recordConditon);
-
 				preAllData = data.results.data;
+				
 				// console.log(preAllData);
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
@@ -453,9 +459,8 @@ function checkHandleFunction(checkData){
 					clickDrillChangeDiFunction(data.results.data);
 					dateClickHandle = false;
 				}
-
-
 			}
-		}
+		},
 	});
+
 }
