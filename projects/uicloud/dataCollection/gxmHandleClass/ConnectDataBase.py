@@ -197,7 +197,7 @@ class ConnectDataBase():
 
                 elif condType in [">", ">=", "=", "<=", "<", "!="]:
                     if 'datatype' in condIt.keys() and condIt['datatype'] == 'date' and self.dbPaltName == 'oracle':
-                        oracleToDate += "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
+                        oracleToDate += "and {0} {1} to_date('{2}', 'yyyy-mm-dd hh24:mi:ss') ".format(
                             condIt['columnName'], condType, condIt["value"]
                         ) + oraclestr
 
