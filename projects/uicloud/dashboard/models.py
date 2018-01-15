@@ -29,6 +29,7 @@ class DashboardViewByUser(models.Model):
     drilldowndata = models.CharField(max_length=255)
     filterconditions = models.CharField(max_length=255)
 
+
 class DashboardIndexByUser(models.Model):
     username = models.CharField(max_length=32)
     row = models.CharField(max_length=255)
@@ -43,6 +44,7 @@ class DashboardIndexByUser(models.Model):
     handledatapost = models.CharField(max_length=255)
     drilldowndata = models.CharField(max_length=255)
     filterconditions = models.CharField(max_length=255)
+
 
 class Layout(models.Model):
     username = models.CharField(max_length=32)

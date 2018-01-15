@@ -182,6 +182,8 @@ class ConnectDataBase():
         if 'conditions' in jsonData.keys():
             for condIt in jsonData['conditions']:
                 if 'columnName' in condIt.keys():
+                    if condIt['columnName'].startswith('`') or condIt['columnName'].endswith('`'):
+                        condIt['columnName'] = condIt['columnName'][1:-1]
                     condIt['columnName'] = self.turnCols([condIt['columnName']], coldickey)[0].split('  as  ')[0]
 
                 if 'limit' == condIt['type']:
