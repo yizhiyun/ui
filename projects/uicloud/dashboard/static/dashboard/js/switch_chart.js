@@ -35,7 +35,7 @@ function beginDrawChart(edit_view){
 	var target =  $("#view_show_wrap").get(0);
     spinner.spin(target);
     $(".maskLayer").show();
-	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0))){
+	if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)) && !handleChangeCol){
 			echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
 		}
 	$("#dashboard_content #view_show_area #view_show_area_content  .drillUpAndDrillDownSelection").hide();
@@ -74,7 +74,9 @@ function beginDrawChart(edit_view){
 			view_init();
 			//隐藏其他视图
 			$("#main").css("display","none");
-			$("#view_show_empty").show();
+			$("#sizer_content").hide();
+			$("#sizer_content .filter_body_div .table_field_list").empty();
+			$("#view_show_empty").add($("#sizer_mpt")).show();
 			$("#view_show_area #view_show_area_content .tableView_name h4").html("添加表标题");
 			$("#view_show_area #view_show_area_content .tableView_name").css("color","#B4B4B4").hide();
 			save_now_show_view_text =  null;

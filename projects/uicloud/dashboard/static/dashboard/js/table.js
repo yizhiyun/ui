@@ -358,6 +358,7 @@ function showTable_by_dragData(){
 				// 直接显示
 				spinner.stop();
 				$(".maskLayer").hide();
+				rightFilterListDraw();
 			}else if(isRowDemiEqual && isColumnDemiEqual){
 				measureNeedDraw(function(){
 					spinner.stop();
@@ -396,7 +397,7 @@ function showTable_by_dragData(){
 					}
 				});
 			}
-
+			
 		}
 
 		// spinner.stop();

@@ -27,12 +27,19 @@ Array.prototype.XMsort = function(propertyNameArray){
 }
 var customCalculate = {}
 var handleDataPost = {};
-var freeHandleDiData = null;
 var freeHandleCheckData = {};
 //使用筛选器后获取所有数据的关联
 var dimiFreeDataHandle = {};
 
 var handleValue = null;
+
+var freeToPost = null;
+
+var onlyClickDrill = null;
+
+var handleChangeCol = false;
+
+var saveManyDataHandle = null;
 // 定义一个对象用来记录拖拽的度量是否需要计算同比或者环比
 // var
 function strMatch(str, startStr, item) {
@@ -142,6 +149,9 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 
 		checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 		for(var key in checkSelectConditionDict){
+			if(dirllConditions && $.inArray(key,specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]))) == -1){
+				continue;
+			}
 			var valuesArr = checkSelectConditionDict[key];
 			if(valuesArr && valuesArr.length >0 && filterNotWorkArr.indexOf(key) == -1){
 				if($("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select option[value="+key+"]").length > 0){
@@ -264,17 +274,29 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		}
 	}
 
-	if(equalCompare(recordConditon,handleDataPost) && preAllData && str != undefined){
+	if((equalCompare(recordConditon,handleDataPost) && preAllData) || (equalCompare(recordConditon,handleDataPost) && preAllData && str != undefined)  || handleChangeCol){
+
+		if(handleChangeCol){
+			if(equalCompare(recordConditon,handleDataPost)){
+				spinner.stop();
+				$(".maskLayer").hide();
+				return;
+			}
+			commonChangeClickBtn(preAllData);
+			handleChangeCol = false;
+			return;
+		}
+
 		handleSuccessFunction(preAllData);
 		rightFilterListDraw();
 		oldViewToShow =false;
 		if($(".clickActive") != undefined && $(".clickActive").length > 0){
-			if($(".drillDownHandle").length > 0){
-				return;
+			if($(".drillDownHandle").length == 0){
+				getNodrillIndex();
+				saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
+				saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
 			}
-			getNodrillIndex();
-			saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
-			saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
+
 		}else{
 			saveEveryViewPostData = {};
 			drillElementCount = {};
@@ -288,7 +310,7 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 //遍历操作过后返回的数据
 function forDataFunctionPost(handleData,drill,type,handleCount){
 	var saveArr = null;
-	if((dirllConditions && dirllConditions.length > 0) || drill == "over" || drill == "dateHandle"){
+	if((dirllConditions && dirllConditions.length > 0) || drill == "over"){
 		saveArr = {};
 		for(var z = 0; z < handleCount.length;z++){
 		if(saveArr[handleCount[z].replace(/\`/g,"")] == undefined){
@@ -305,34 +327,16 @@ function forDataFunctionPost(handleData,drill,type,handleCount){
 	}
 	}
 
-	if(type == "clickSelect"){
-		freeHandleDiData = saveArr;
-	}else if(type == "check"){
+	if(type == "check"){
 		freeHandleCheckData = saveArr;
-	}else{
-		freeHandleDiData = saveArr;
+	}else if(type == "dataChange"){
+		saveManyDataHandle = saveArr;
 	}
 
-
-	if(drill == "drill" || drill == "dateHandle"){
-		rightFilterListDraw();
-	}
 
 }
 
 
-
-//点击下钻维度展示的更新数据 保持同步
-function clickDrillChangeDiFunction(handleData,handleCount){
-	//记录处理后的数据
-	freeHandleDiData = null;
-	if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
-		forDataFunctionPost(handleData,"dateHandle","clickSelect",handleCount);
-	}else{
-		forDataFunctionPost(handleData,"drill","none",handleCount);
-	}
-	
-}
 
 //复选框取消获取数据
 function deleteCheckFunction(preHandleDataCheck,fun,text,countArr){
@@ -356,35 +360,25 @@ function deleteCheckFunction(preHandleDataCheck,fun,text,countArr){
 }
 
 function commonHeaderFunction(checkView,freeHandleCheckData){
-		for(checkView in freeHandleCheckData){
-		if(checkSelectConditionDict[checkView] == undefined){
-			checkSelectConditionDict[checkView] = [];
+	for(checkView in freeHandleCheckData){
+		checkSelectConditionDict[checkView] = objectDeepCopy(filterNeedAllData[checkView]);
+		if($("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+checkView.replace(/\./g,"YZY")).data("fieldInfo").split(":")[1].isTypeDate()){
+			checkSelectConditionDict[checkView].forEach(function(v,i){
+				checkSelectConditionDict[checkView][i] = checkSelectConditionDict[checkView][i].replace(/T/g," ");
+			})
 		}
 		$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+checkView.replace(/\./g,"YZY")).find(".field_detail_list li").each(function(index,ele){
 			if($.inArray($(ele).attr("checkvalue"),freeHandleCheckData[checkView]) == -1){
 				$(ele).find("input").eq(0).prop("checked",false);
-				if($(ele).parents(".filterLI").data("fieldInfo").split(":")[1].isTypeDate()){
-					var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue").replace(/T/g," "));
-				}else{
-					var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue"));
-				}
 
 				handleValue = deleteCheckFunction(dimiFreeDataHandle[current_cube_name],checkView,$(ele).attr("checkvalue"),allKeys(freeHandleCheckData)).join("_YZYPD_");
 				$(ele).attr("checkWithCount",handleValue);
-
-				if(index == -1){
-					if($(ele).parents(".filterLI").data("fieldInfo").split(":")[1].isTypeDate()){
-						checkSelectConditionDict[checkView].push($(ele).attr("checkvalue").replace(/T/g," "));
-					}else{
-						checkSelectConditionDict[checkView].push($(ele).attr("checkvalue"));
-					}
-					
-				}
-				
 			}else{
 				$(ele).find("input").eq(0).prop("checked",true);
 				if($(ele).parents(".filterLI").data("fieldInfo").split(":")[1].isTypeDate()){
 					var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue").replace(/T/g," "));
+				}else if($(ele).parents(".filterLI").data("fieldInfo").split(":")[1].isTypeNumber()){
+					var index = checkSelectConditionDict[checkView].indexOf(eval($(ele).attr("checkvalue")));
 				}else{
 					var index = checkSelectConditionDict[checkView].indexOf($(ele).attr("checkvalue"));
 				}
@@ -393,9 +387,12 @@ function commonHeaderFunction(checkView,freeHandleCheckData){
 					if($(ele).attr("checkwithcount") != undefined && $(ele).attr("checkwithcount") != ""){
 
 						for(var z = 0; z < $(ele).attr("checkwithcount").split("_YZYPD_").length; z++){
-							checkSelectConditionDict[$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]].splice(checkSelectConditionDict[$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]].indexOf($(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]),1);
-							$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0].replace(/\./g,"YZY")).find(".field_detail_list li[checkvalue="+$(ele).parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]+"]").find("input").eq(0).prop("checked",true);
-							$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0].replace(/\./g,"YZY")).find(".field_detail_list li[checkvalue="+$(ele).parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]+"]").removeAttr("checkwithcount");
+							if(checkSelectConditionDict[$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]] != undefined){
+								checkSelectConditionDict[$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]].splice(checkSelectConditionDict[$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0]].indexOf($(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]),1);
+								$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0].replace(/\./g,"YZY")).find(".field_detail_list li[checkvalue="+$(ele).parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]+"]").find("input").eq(0).prop("checked",true);
+								$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+$(ele).attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[0].replace(/\./g,"YZY")).find(".field_detail_list li[checkvalue="+$(ele).parent().attr("checkwithcount").split("_YZYPD_")[z].split("_YZY_")[1]+"]").removeAttr("checkwithcount");								
+							}
+
 						}
 						$(ele).removeAttr("checkwithcount");
 					}
@@ -418,6 +415,11 @@ function checkHandleFunction(checkData,handleCount){
 	// $("#sizer_content .filter_body_div .table_field_list .field_detail_list li input").prop("checked",false);
 	if(dimiFreeDataHandle[current_cube_name] == undefined){
 		var postData = {};
+		if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
+			postData["conditions"] = [];
+			postData["conditions"].push({"type":">=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMinDate).format("yyyy-MM-dd") + " 00:00:00","datatype":"date"});
+			postData["conditions"].push({"type":"<=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMaxDate).format("yyyy-MM-dd") + " 23:59:59","datatype":"date"});
+		}
 		filterTableAll(postData,"all",checkData,freeHandleCheckData,handleCount);
 	}else{
 		commonHeaderFunction(checkData,freeHandleCheckData,handleCount);
@@ -442,7 +444,7 @@ function filterTableAll(postData,type,checkData,freeHandleCheckData,handleCount)
 			if(data.status == "success"){
 				if(type == "only"){
 					checkHandleFunction(data.results.data,objectDeepCopy(postData["expressions"]["groupby"]));
-				}else{
+				}else if(type == "all"){
 					dimiFreeDataHandle[current_cube_name] = data.results.data;
 					commonHeaderFunction(checkData,freeHandleCheckData,handleCount);
 				}
@@ -450,6 +452,52 @@ function filterTableAll(postData,type,checkData,freeHandleCheckData,handleCount)
 		}
 	});
 }
+
+
+function commonChangeClickBtn(data){
+				if(!freeHandleCheck){
+					checkedHandle = false;
+				}
+				if(checkedHandle){
+					var checkHanleFree = "true";
+					if(drag_row_column_data["column"]["dimensionality"].length > 0 && drag_row_column_data["row"]["dimensionality"].length > 0){
+						var postData = objectDeepCopy(handleDataPost);
+						postData["expressions"]["orderby"] = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));
+						postData["expressions"]["groupby"] = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));	
+						filterTableAll(postData,"only");
+					}else{
+						checkHandleFunction(data,objectDeepCopy(handleDataPost["expressions"]["groupby"]));
+					}
+					checkedHandle = false;
+					freeHandleCheck = false;
+				}
+				
+				if($(".clickActive") != undefined && $(".clickActive").length > 0){
+					if($(".drillDownHandle").length == 0){
+						saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
+						saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
+						getNodrillIndex();
+					}
+
+				}else{
+					
+					saveEveryViewPostData = {};
+					drillElementCount = {};
+				}
+
+				if($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li").length > 1 && checkHanleFree != "true" && (onlyClickDrill == null || dirllConditions.length != onlyClickDrill.length)){
+					getFilterAllData(conditions);
+					onlyClickDrill = objectDeepCopy(dirllConditions);
+					spinner.stop();
+					$(".maskLayer").hide();
+					return;
+				}
+
+				rightFilterListDraw();
+				spinner.stop();
+				$(".maskLayer").hide();
+}
+
 
 
 	$.ajax({
@@ -467,44 +515,14 @@ function filterTableAll(postData,type,checkData,freeHandleCheckData,handleCount)
 		},
 		success:function(data){
 			if(data.status == "success"){
-				spinner.stop();
-				$(".maskLayer").hide();
+
 				var freeHandlePostFun = objectDeepCopy(recordConditon);
 				preAllData = data.results.data;
 				recordConditon = objectDeepCopy(handleDataPost);
 				handleSuccessFunction(data.results.data);
 				oldViewToShow = false;
-				if(checkedHandle){
-					if(drag_row_column_data["column"]["dimensionality"].length > 0 && drag_row_column_data["row"]["dimensionality"].length > 0){
-						var postData = objectDeepCopy(handleDataPost);
-						postData["expressions"]["orderby"] = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));
-						postData["expressions"]["groupby"] = specialRemoveDataTypeHandle(drag_row_column_data["row"]["dimensionality"].concat(drag_row_column_data["column"]["dimensionality"]));	
-						filterTableAll(postData,"only");
-					}else{
-						checkHandleFunction(data.results.data,objectDeepCopy(handleDataPost["expressions"]["groupby"]));
-					}
-					checkedHandle = false;
-				}
-				if($(".clickActive") != undefined && $(".clickActive").length > 0){
-					if($(".drillDownHandle").length > 0){
-						return;
-					}
-					saveEveryViewPostData[$(".clickActive").find("span").text()] = objectDeepCopy(handleDataPost);
-					saveDrillDownTemp[$(".clickActive").find("span").text()] = {"viewdata":JSON.parse(JSON.stringify(drag_row_column_data)),"viewType":save_now_show_view_text.attr("id"),"calculateStyle":objectDeepCopy(drag_measureCalculateStyle),"dragViewStyle":objectDeepCopy(currentColorGroupName)+"_YZY_"+objectDeepCopy(normalUnitValue)+"_YZY_"+objectDeepCopy(valueUnitValue)};
-					getNodrillIndex();
-					// clickDrillChangeDiFunction(data.results.data);
-				}else{
-					
-					saveEveryViewPostData = {};
-					drillElementCount = {};
-				}
+				commonChangeClickBtn(data.results.data);
 
-				if(freeHandlePostFun == null || !equalCompare(freeHandlePostFun["expressions"]["groupby"],handleDataPost["expressions"]["groupby"]) || dateClickHandle){
-					clickDrillChangeDiFunction(data.results.data,objectDeepCopy(handleDataPost["expressions"]["groupby"]));
-					dateClickHandle = false;
-				}else{
-					rightFilterListDraw();
-				}
 			}
 		},
 	});

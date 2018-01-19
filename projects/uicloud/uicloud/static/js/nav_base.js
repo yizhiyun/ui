@@ -160,7 +160,7 @@ function peterDrillDown(){
 }
 
 
-
+var saveDashfilterNeedAllData = null;
 
 function inputSearch(ele,activeClass,showContent,md){
     //报表弹窗筛选功能
@@ -238,6 +238,67 @@ function inputSelector(element) {
  if (element.checked)
    return [element.name, element.value];
 }
+
+function getFilterAllData(conditions){
+      var exprlist = [];
+      if(_cube_all_data[current_cube_name] == undefined) return;
+      for(var i = 0;i < _cube_all_data[current_cube_name].schema.length;i++ ){
+        var aSchema = _cube_all_data[current_cube_name].schema[i];
+        var obj = {"alias":aSchema["field"],"exprstr":"collect_set(`"+aSchema["field"]+"`)"};
+        exprlist.push(obj);
+      }
+      var handleDataPost = {
+        "expressions":{
+          "exprlist":exprlist,
+        }
+      };
+      if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
+        handleDataPost["conditions"] = [];
+        handleDataPost["conditions"].push({"type":">=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMinDate).format("yyyy-MM-dd") + " 00:00:00","datatype":"date"});
+          handleDataPost["conditions"].push({"type":"<=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMaxDate).format("yyyy-MM-dd") + " 23:59:59","datatype":"date"});
+      }else{
+        delete handleDataPost["conditions"];
+      }
+      if(handleDataPost["conditions"] != undefined){
+        if(conditions != undefined){
+          handleDataPost["conditions"] = handleDataPost["conditions"].concat(conditions);
+        }
+      }else{
+        handleDataPost["conditions"] = conditions;
+      }
+      $.ajax({
+        url:"/cloudapi/v1/tables/" +current_cube_name+"/data",
+        type:"post",
+        dataType:"json",
+        contentType: "application/json; charset=utf-8",
+        async: true,
+        data:JSON.stringify(handleDataPost),
+        beforeSend:function(){
+            var target =  $("#view_show_wrap").get(0);
+              if(spinner.el == undefined){
+                spinner.spin(target);
+                $(".maskLayer").show();
+              }
+        },
+        success:function(data){
+          if(data.status == "success"){
+            //no view stop hide
+            if($("#view_show_empty").css("display") == "block" || conditions != undefined){
+              spinner.stop();
+              $(".maskLayer").hide();
+            }
+            filterNeedAllData = data.results.data[0];
+            saveDashfilterNeedAllData = data.results.data[0];
+            if(conditions != undefined){
+              rightFilterListDraw("drill");
+            }
+
+          }
+        }
+      })
+}
+
+
 
 function input(element) {
   switch (element.type.toLowerCase()) {
@@ -1182,6 +1243,10 @@ function drillDownClick(theElement,peter){
 
 				onlyGetDrillDown = true;
 			}
+
+      loc_storage.removeItem("allTable_specialSelection");
+      loc_storage.removeItem("allTable_notWorkedColumns");
+      loc_storage.removeItem($("#lateral_bar #lateral_title .custom-select").val());
 			switch_chart_handle_fun();
 	
 }
@@ -1362,7 +1427,9 @@ function pallasdaraFunctionNavBtnHandle(){
 						case "navDashBoardViewBtn":
               //记录构建数据界面的filterNeedAllData
               saveBuildDataFilter = objectDeepCopy(filterNeedAllData);
+              filterNeedAllData = saveDashfilterNeedAllData;
 							changePageTo_navDashBoardView();
+
 							break;
 						case "navReporttingViewBtn":
 							changePageTo_navReporttingView(true);

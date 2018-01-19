@@ -58,12 +58,39 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 		}else{
 			postUrl = "/dataCollection/filterTable/data"
 		 	var dbArr = tableInfo.split("_YZYPD_");
+			var freeexprlist = [
+							{
+								"alias":"min","exprstr":"min("+field+")"
+							},
+							{
+								"alias":"max","exprstr":"max("+field+")"
+							},
+							{
+								"alias":"averge","exprstr":"avg("+field+")"
+							},
+							{
+								"alias":"len","exprstr":"count("+field+")"
+							}
+						];
+			if(fieldtype == "dateType"){
+						 freeexprlist = [
+							{
+								"alias":"min","exprstr":"min("+field+")"
+							},
+							{
+								"alias":"max","exprstr":"max("+field+")"
+							},
+							{
+								"alias":"len","exprstr":"count("+field+")"
+							}
+						];
+					}
 				handleDataPost = {
 				 "source":dbArr[0],
 	    			"database":dbArr[1],
 	    			"tableName":dbArr[2],
 				 "expressions":{
-					"exprlist":exprlist
+					"exprlist":freeexprlist
 					}
 			 	}
 		}

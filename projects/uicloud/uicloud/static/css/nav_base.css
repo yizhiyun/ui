@@ -1,5 +1,9 @@
 @import url("reset.css");
 html,body{height:100%;min-width: 1000px;color: #202020;}
+::-webkit-scrollbar{width: 8px;height:8px;padding: 0px}
+::-webkit-scrollbar-button{display: block;width: 0px;height: 0px;}
+::-webkit-scrollbar-thumb{background: #e2e2e2;border-radius: 1px;}
+::-webkit-scrollbar-track{background: #f4f4f4;border-radius: 1px;}
 input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px white inset;
 }

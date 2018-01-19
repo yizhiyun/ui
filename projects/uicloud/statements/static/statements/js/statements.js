@@ -117,7 +117,11 @@
 
 		tempSaveDeleteViewDict = {},
 
-		statementListCount = 0;
+		statementListCount = 0,
+
+		folderTimeOut = null,
+
+		onlyFolderTimeOut = null;
 		//容器不同修改视图展示
 		function elementContent(ele,option){
 			if(option != null){
@@ -1346,8 +1350,8 @@
 
 				viewshow_class_arr =[];
 
-				if(now_click_ele.parent().parent().parent().hasClass("state_folder")){
-					now_view_folder = now_click_ele.parent().parent().parent().find(".state_folder_content").find(".view_show_name_save").text();
+				if(now_click_ele.parent().parent().parent().hasClass("statementListWrap")){
+					now_view_folder = now_click_ele.parents(".state_folder").find(".state_folder_content").find(".view_show_name_save").text();
 				}else{
 					now_view_folder = "default";
 				}
@@ -1826,10 +1830,18 @@
 				$(".view_fun_content").not($(".cookie_handle_view .view_fun_content")).data("if_click","");
 				$(".rightConent #statements_left_bar #statements_left_bar_area").unbind("click");
 				$(".rightConent #statements_left_bar #statements_left_bar_area").on("click",function(e){
-						if($(e.target).hasClass("view_fun_content") && $(e.target).data("if_click") == ""){
-							user_handle_change_cookie($(e.target));
-							$(".view_fun_content").data("if_click","");
-							$(e.target).data("if_click","true");
+						if($(e.target).hasClass("view_fun_content")){
+							if($(e.target).data("if_click") == ""){
+								user_handle_change_cookie($(e.target));
+								$(".view_fun_content").data("if_click","");
+								$(e.target).data("if_click","true");
+							}else{
+								clearTimeout(onlyFolderTimeOut);
+								onlyFolderTimeOut = setTimeout(function(){
+									$(e.target).parents(".statement_li").find(".click_tra_statement").trigger("click");
+								},300)
+								
+							}
 						}
 
 						if(($(e.target).parent().hasClass("view_show_handle") && $(e.target).parent().parent().parent().find(".view_fun_content").data("if_click") == "")){
@@ -1862,6 +1874,12 @@
 				$("."+content_ele+"").each(function(index,ele){
 				$(ele).find(".view_show_name_save").unbind("dblclick");
 				$(ele).find(".view_show_name_save").dblclick(function(){
+					if($(ele).hasClass("state_folder_content")){
+						clearTimeout(folderTimeOut);
+					}else{
+						clearTimeout(onlyFolderTimeOut);
+					}
+					
 					//记录之前的名字
 					pre_changeName = $(ele).find(".view_show_name_save").text();
 					change_name_btn(pre_changeName,$(ele),"view_show_name_save",index);
@@ -2081,7 +2099,7 @@
 					folder_name_arr.push(erv_data);
 
 					if(erv_data != "default"){
-							    var folder = $("<div class='state_folder'><div class='state_folder_content'><img src=../static/statements/img/folder.png  class='click_folder'/><div class='view_show_name_save'>"+erv_data+"</div><div class='view_show_img_content'><img src=../static/statements/img/delete1.png  class='click_delete'/></div></div></div>");
+							    var folder = $("<div class='state_folder'><div class='state_folder_content'><img src=../static/statements/img/folder.png  class='click_folder'/><div class='view_show_name_save'>"+erv_data+"</div><div class='view_show_img_content'><img src=../static/statements/img/delete1.png  class='click_delete'/></div></div><div class='statementListWrap'></div></div>");
 								folder.prependTo($("#statements_left_bar_area"));
 								folder.find(".state_folder_content").find(".view_show_name_save").data("record_name",erv_data);
 								folder.find(".view_show_name_save").css("width","103px");
@@ -2114,7 +2132,7 @@
 											oDiv.find(".view_fun_content").data("if_click","true");
 											folder.addClass("have_view_content");
 										}
-										oDiv.appendTo(folder);
+										oDiv.appendTo(folder.find(".statementListWrap"));
 										oDiv.find(".view_fun_content").data("record_name",small_view_show);
 										oDiv.find(".view_fun_content").parent().parent().addClass("floder_view_wrap");
 										$(".state_folder_content").find(".click_tra_floder").remove();
@@ -2287,7 +2305,6 @@
 				}
 
 
-
 				if(table_show_hide == false){
 					$(".view_show_handle").unbind("mouseenter mouseleave");
 				}
@@ -2299,15 +2316,19 @@
 
 			//点击收起放下
 			//文件夹
-			$(".click_tra_floder").each(function(index,ele){
-				$(ele).on("click",function(){
-					$(ele).parent().parent().find(".statement_li").toggle("blind",200,function(){
-						if($(ele).parent().parent().find(".statement_li").css("display") == "none"){
-						$(ele).attr("src","../static/statements/img/left_40.png");
-						}else{
-						$(ele).attr("src","../static/statements/img/left_35.png");
+			$(".state_folder_content").each(function(index,ele){
+				$(ele).on("click",function(event){
+					if($(event.target).hasClass("click_delete") || $(event.target).hasClass("view_show_img_content")) return;
+					clearTimeout(folderTimeOut);
+					folderTimeOut = setTimeout(function(){
+						$(ele).parent().find(".statementListWrap").toggle("blind",200,function(){
+							if($(ele).parent().find(".statementListWrap").css("display") == "none"){
+								$(ele).find(".click_tra_floder").attr("src","../static/statements/img/left_40.png");
+							}else{
+								$(ele).find(".click_tra_floder").attr("src","../static/statements/img/left_35.png");
 						}
-					});
+					 });
+					},300);
 
 				})
 			})
@@ -2322,8 +2343,6 @@
 						$(ele).attr("src","../static/statements/img/left_35.png");
 						}
 					});
-
-
 				})
 			})
 
@@ -2413,14 +2432,14 @@
 
 								new_folder.find(".view_show_name_save").addClass("floder_content").data("record_name",folder_name_cs);
 
-						}else{
+					}else{
 
 								var menu_folder_name = folder_name_sum(text,menu_folder_name_arr);
 
 								$(".click_new_folder_input").val(menu_folder_name);
 
 								new_folder.find(".view_show_name_save").addClass("view_fun_content").data("record_name",menu_folder_name);
-						}
+					}
 
 					//点击btn创建文件夹
 					$("#statements_left_bar_area").find(".click_new_folder_input").unbind("focusout")
@@ -2545,7 +2564,6 @@
 					accept:$(".view_fun_content").not($(ele).find(".view_fun_content")),
 					drop:function(event,ui){
 						loc_storage.setItem("now_add_view",$(ui.draggable).text());
-						console.log($(ui.draggable).parents(".statement_li").find(".view_show_handle"))
 						$.post("/dashboard/RelevanceFolder",{"foldername":loc_storage.getItem("now_add_view"),"parentfoldername":$(ele).find(".state_folder_content").find(".view_show_name_save").text()},function(result){
 							if(loc_storage.getItem("now_add_view") == $(".cookie_handle_view .statement_li_content .view_fun_content").text()){
 								$(".right_if_have_parentfolder").css("display","block");

@@ -6,7 +6,7 @@
 	var currentNeedAllFields = null;
 	var tableInfo;// 当前操作的表名字
 	var didSelectColumn = null;
-	var dataNumberControl = 100;
+	var dataNumberControl = 1000;
 	// 编辑筛选器出现
 	function editFilterViewShow_fun(from,successFun){
 			$(".maskLayer").show();
@@ -300,6 +300,7 @@
 			if($("#pageDashboardModule").css("display") == "block"){
 				loc_storage.removeItem("allTable_specialSelection");
 				checkedHandle =true;
+				freeHandleCheck = true;
 			}
 
 
@@ -319,6 +320,7 @@
 		$("#filter-model #fileds-content-select .close").add("#filter-model #fileds-content-select .common-filer-footer .cancleBtn").click(function(){
 			$("#filter-model #fileds-content-select").hide();
 			$("#filter-model #user-filter-select").css("opacity",1);
+			$(".maskLayer").hide();
 		});
 		// 确定按钮点击的时候
 		$("#filter-model #fileds-content-select .confirmBtn").click(function(){
@@ -373,6 +375,7 @@
 
 			loc_storage.removeItem("allTable_specialSelection");
 			checkedHandle =true;
+			freeHandleCheck = true;
 		});
 
 
@@ -906,6 +909,7 @@
 				size_of_screeningWasher_fun();
 				var repeat_record = [];
 				content_select_count = 0;
+				freeCheckCountHandle = 0;
 				// 清空
 				$("#filter-model #contentChooser #common .detailSearchData .dataList").empty();
 
@@ -966,11 +970,9 @@
 					}
 
 					var theData = filterNeedAllData[field][i];
-					if(freeHandleDiData != null){
-						if($.inArray(theData,freeHandleDiData[field]) == -1){
-								continue;
-						}
-					}
+					// if($("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list li."+field.replace(/\./g,"YZY")).find(".field_detail_list li[checkvalue="+theData+"]").length == 0){
+					// 	continue;
+					// }
 					var li = $("<li><label><input type='checkbox'/><span class='val'>"+theData+"</span></label></li>");
 					li.find("input").attr("value",theData);
 
@@ -1005,13 +1007,9 @@
 							}
 						}
 				}
-				if(freeHandleDiData != null){
-					if(freeHandleDiData[field] != undefined){
-						content_select_max = freeHandleDiData[field].length;
-					}
-				}else{
-					content_select_max = filterNeedAllData[field].length;
-				}
+
+				content_select_max = filterNeedAllData[field].length;
+
 			}
 
 			if (isEdit) {
@@ -1442,20 +1440,20 @@
 							conditionFilter_record[tableInfo]["condition"][index]["value"] = value;
 						}
 					} else if(relation == "isnull" || relation == "isnotnull") {
-						var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [relation, field]);
+						var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [relation, "`"+field+"`"]);
 						if(index == -1) {
 							var filter = {
 								"type": relation,
-								"columnName": field
+								"columnName": "`"+field+"`"
 							};
 							conditionFilter_record[tableInfo]["condition"].push(filter);
 						}
 					} else {
-						var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [relation, field]);
+						var index = conditionFilter_record[tableInfo]["condition"].isHasObjects(["type", "columnName"], [relation, "`"+field+"`"]);
 						if(index == -1) {
 							var filter = {
 								"type": relation,
-								"columnName": field,
+								"columnName": "`"+field+"`",
 								"value": value
 							};
 							conditionFilter_record[tableInfo]["condition"].push(filter);
@@ -1778,7 +1776,11 @@
 					if(con.relation == "limit"){
 						 filter = {"type":"limit","value":con.value}
 					}else{
-						filter = {"type":con.relation,"value":con.value,"columnName":con.field}
+						filter = {"type":con.relation,"value":con.value,"columnName":"`"+con.field+"`"}
+						if($("#analysisContainer").css("display") == "block" && $("#tableDataDetailListPanel .mainContent table thead th[showValue="+con.field+"]").attr("showType") == "DATE"){
+							filter["datatype"] = "date";
+							filter["columnName"] = con.field;
+						}
 					}
 					conditionFilter_record[tableInfo]["condition"].push(filter);
 				}

@@ -200,7 +200,7 @@ class ConnectDataBase():
                         oracleToDate += "and to_char({0}, 'yyyy-mm-dd hh:mm:ss') {1} '{2}' ".format(
                             condIt['columnName'], condType, condIt["value"]
                         ) + oraclestr
-                        logger.error(oracleToDate)
+                        # logger.error(oracleToDate)
 
                     else:
                         filtersql += "and {0} {1} '{2}' ".format(condIt['columnName'], condType, condIt["value"])

@@ -69,8 +69,8 @@ function one_de_one_me_handle (chart_type_need) {
 	mycharts.on("dblclick",function(params){
 		params.event.event.stopPropagation();
 		clearTimeout(timeout);
-
 		chartAPartDidClickedFunction(params,[need_handle_dimensionalityName]);
+		
 	});
 
 	//单击下钻
@@ -114,6 +114,9 @@ function one_de_one_me_handle (chart_type_need) {
 	function waterWall_generate_fun(){
 
 		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+			if(data.length == 0){
+				return;
+			}			
 			var dimensionality_need_show = [];
 			var measure_need_show = [];
 			var measure_help_show =[];
@@ -332,6 +335,9 @@ function one_de_one_me_handle (chart_type_need) {
 
 
 		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+			if(data.length == 0){
+				return;
+			}			
 			var dimensionality_need_show = [];
 			var measure_need_show = [];
 			for (var i = 0; i < data.length;i++) {
@@ -451,6 +457,9 @@ function one_de_one_me_handle (chart_type_need) {
 	function area_generate_fun (argument) {
 
 		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+			if(data.length == 0){
+				return;
+			}			
 			var dimensionality_need_show = [];
 			var  measure_need_show = [];
 			for(var i = 0;i < data.length;i++){
@@ -627,6 +636,9 @@ function one_de_one_me_handle (chart_type_need) {
  function gantt_generate_fun(){
 
 		measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
+			if(data.length == 0){
+				return;
+			}				
 				var dimensionality_need_show = [];
 				var measure_need_show = [];
 				var measure_help_show =[];
@@ -965,7 +977,9 @@ function many_de_many_me_handle(chart_type_need){
 	// 1、折线图
 	function polyLine_generate_fun(){
 			measure_Hanlde(all_dimensionality,all_measure,null,function(data){
-
+			if(data.length == 0){
+				return;
+			}
 				var option = {
 					title:[{
 					text:"折线图",
@@ -1233,6 +1247,9 @@ function many_de_many_me_handle(chart_type_need){
 function comparisonStrip_generate_fun(){
 
 			measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			if(data.length == 0){
+				return;
+			}				
 				var measure_show_data = [];
 				var dimensionality_show_data = [];
 				for (var i = 0;i < data.length;i++) {
@@ -1573,7 +1590,9 @@ function comparisonStrip_generate_fun(){
  		var  chartTile = {"number_bar":"堆积柱状图","number_liner":"堆积条形图","percentage_bar":"百分比堆积柱","percentage_liner":"百分比堆积条形"}
 
 			measure_Hanlde(all_dimensionality,all_measure,null,function(data){
-				
+			if(data.length == 0){
+				return;
+			}				
 				var measureName = all_measure[0];
 				var needMeasureData = data;
 				var dimensionality_arr= []; // 各个维度的数组,绘制图形需要使用
@@ -2052,6 +2071,9 @@ function comparisonStrip_generate_fun(){
 			(function(index){
 				var need_dimensionality = all_dimensionality.slice(0,index+1);
 				measure_Hanlde(need_dimensionality,all_measure,null,function(data){
+					if(data.length == 0){
+						return;
+					}
 					for(var j = 0;j < data.length;j++){
 						// console.log(data.length);
 						// var theDimeInfo = [];
@@ -2259,6 +2281,9 @@ function comparisonStrip_generate_fun(){
 	function histogram_generate_fun(){
 
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			if(data.length == 0){
+				return;
+			}
 			var series = [];
 			var dimensionality_show_data = [];
 			var needXais = [];
@@ -2899,6 +2924,9 @@ function comparisonStrip_generate_fun(){
 	// 条形图
 	function barChart_generate_fun(){
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			if(data.length == 0){
+				return;
+			}
 			var series = [];
 			var dimensionality_show_data = [];
 			var needYais = [];
@@ -3227,6 +3255,9 @@ function comparisonStrip_generate_fun(){
 //雷达图:
 function radarChart_generate_fun(){
 		measure_Hanlde(all_dimensionality,all_measure,null,function(data){
+			if(data.length == 0){
+				return;
+			}
 			radarDiemension = all_dimensionality[0];
 			var indicator = [];
 			var series = [
@@ -3542,12 +3573,14 @@ function colorsPanelDidSelectedColor(){
 //设置面板，设置了单位（保留了几位小数)
 function normalUnitDidChangeValue(){
 	var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
+	if(mycharts == undefined) return;
 	var op = mycharts.getOption();
 	mycharts.setOption(op);
 }
 // 设置面板，设置了值单位
 function valueUnitDidChangedValue(){
 	var mycharts = echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0));
+	if(mycharts == undefined) return;
 	var op = mycharts.getOption();
 	op.title[1].text = "单位: "+valueUnitValue;
 
@@ -3651,7 +3684,6 @@ function drillDownCommonFunction(params,allDimensionality,tempSplitView,drillFie
 
 		}
 
-
 		if(peter == "peter" && saveDrillDownTemp[$(".clickActive").find("span").text()] != undefined){
 			editView_change_color("默认_YZY_-1_YZY_个");
 			drag_row_column_data = objectDeepCopy(saveDrillDownTemp[$(".clickActive").find("span").text()]["viewdata"]);
@@ -3700,7 +3732,9 @@ function drillDownCommonFunction(params,allDimensionality,tempSplitView,drillFie
 			//记录当前上钻的数据
 			drillDownClick(this,freeTemp);
 		})
-
+		loc_storage.removeItem("allTable_specialSelection");
+   		loc_storage.removeItem("allTable_notWorkedColumns");
+  		loc_storage.removeItem($("#lateral_bar #lateral_title .custom-select").val());
 		switch_chart_handle_fun();
 
 
