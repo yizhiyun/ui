@@ -41,9 +41,16 @@ function manyTable(storeClass){
 
 	var storeNum_toview = storeClass.match(/\d+/g)[1];
 
-	var target =  $("."+storeClass+"").get(0);
+	// var target =  $("."+storeClass+"").get(0);
 
-  	spinner.spin(target);
+ //  	spinner.spin(target);
+ 	$("."+storeClass+"").append("<div class=tl><div class=loader></div><div class=sm>数据获取中</div></div>");
+	if($(".tl").css("display") == 'block'){
+		$("."+storeClass+"").css("opacity","0.8");
+	}
+	if($("."+storeClass+"").find(".tl").length > 1){
+		$("."+storeClass+"").find("div").remove(".tl:not(:first)");
+	}
 
   	emptyAllTable();
 	// 绘制行数据
@@ -292,7 +299,7 @@ function manyTable(storeClass){
 						if(finish){
 							finish();
 						}
-				});
+				},storeClass);
 			}
 		}
 		function rowNeedDraw(finish){
@@ -302,10 +309,12 @@ function manyTable(storeClass){
 			 	function_draw_row_data(data);
 			 	layout_table_size();
 				// spinner.stop(target);
+				$("."+storeClass+"").find("div").remove(".tl");
+
 			 	 if(finish){
 			 	 	finish();
 			 	 }
-				});
+				},storeClass);
 			}else{
 				var rowLeftTable = $("."+storeClass+" .left_row_container table").eq(0);
 				rowLeftTable.find("thead tr").empty();
@@ -324,10 +333,12 @@ function manyTable(storeClass){
 		 	 	function_draw_column_data(data);
 		 	 	layout_table_size();
 				// spinner.stop(target);
+				$("."+storeClass+"").find("div").remove(".tl");
+
 		 	 	 if(finish){
 		 	 	 	finish();
 		 	 	 }
-		 		 });
+		 		 },storeClass);
 			}else{
 				$("."+storeClass+" .top_column_container .column_data_list tbody").empty();
 				if(finish){
@@ -337,7 +348,8 @@ function manyTable(storeClass){
 		}
 		function spinnerIsNeedStopFunction(){
 			if(isRowFinished && isColumnFinished){
-				spinner.stop();
+				// spinner.stop();
+				$("."+storeClass+"").find("div").remove(".tl");
 			}
 		}
 		$("."+storeClass+"").show();
@@ -360,22 +372,26 @@ function manyTable(storeClass){
 		}else{
 			if(isRowDemiEqual && isColumnDemiEqual&&isMeasureEqual&&isCalculateMeasureEqual&&isCustomCalculateStyleEqual){
 				// 直接显示
-				spinner.stop(target);
+				// spinner.stop(target);
+				$("."+storeClass+"").find("div").remove(".tl");
 			}else if(isRowDemiEqual && isColumnDemiEqual){
 				measureNeedDraw(function(){
-					spinner.stop();
+					// spinner.stop();
+				$("."+storeClass+"").find("div").remove(".tl");
 				});
 			}else if(!isRowDemiEqual && isColumnDemiEqual){
 				rowNeedDraw(function(){
 					measureNeedDraw(function(){
-						spinner.stop();
+						// spinner.stop();
+						$("."+storeClass+"").find("div").remove(".tl");
 					});
 				});
 
 			}else if(isRowDemiEqual && !isColumnDemiEqual){
 				columnNeedDraw(function(){
 					measureNeedDraw(function(){
-						spinner.stop();
+						// spinner.stop();
+						$("."+storeClass+"").find("div").remove(".tl");
 					});
 				});
 
@@ -455,8 +471,18 @@ function reporting_col_card(saveIndexPage){
 
 function runIndexPage(indexClass){
 				indexClass = indexClass;
-				var target =  $("."+indexClass+"").get(0);
-    			spinner.spin(target);
+				
+				// var target =  $("."+indexClass+"").get(0);
+    // 			spinner.spin(target);
+    			// $("."+indexClass+"").append("<div class=loader></div>");
+				$("."+indexClass+"").find(".right_module .content_body").append("<div class=lf><div class=loader></div><div class=sm>数据获取中</div></div>");
+				if($(".lf").css("display") == 'block'){
+					$("new_view_main").css("opacity","0.8");
+				}
+				if($("."+indexClass+"").find(".right_module .content_body .lf").length > 1){
+					$("."+indexClass+"").find(".right_module .content_body div").remove(".lf:not(:first)");
+				}
+
 				var indexNum_toview = indexClass.match(/\d+/g)[1];
 				$("."+indexClass+"").show();
 				$("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body").html("");
@@ -466,14 +492,14 @@ function runIndexPage(indexClass){
 
 					// $("#text_table_need_show").hide();
 					// $("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
-					$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv").remove();
+					$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv1").remove();
 					var allMeasure = specialRemoveDataTypeHandle(drag_row_column_data_arr[indexNum_toview]["row"]["measure"].concat(drag_row_column_data_arr[indexNum_toview]["column"]["measure"]));
 					var needAllData = data;
 					for(var i = 0;i < needAllData.length;i++){
 						//console.log(needAllData);
 						var aData = needAllData[i];
 						//console.log(aData);
-						var measureDiv = $("<div class='measureDiv'></div>");
+						var measureDiv = $("<div class='measureDiv1'></div>");
 						//console.log(allMeasure.length);
 						$("."+indexClass+"").find(".right_module .content_body .session_data_list_for_body").append(measureDiv);
 
@@ -497,7 +523,7 @@ function runIndexPage(indexClass){
 									var MeasureInfo = $(this).data("measureInfo");
 									var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0)
 									if(eval(statements_tonghuanbi_arr[indexNum_toview])[0].indexOf(MeasureInfo) != -1){
-											$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv .cardInfo").hide();
+											$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv1 .cardInfo").hide();
 											$(compareDiv).show();
 											compareDiv.find("p.compareP").show();
 											if($(this).hasClass('p0')){
@@ -507,7 +533,7 @@ function runIndexPage(indexClass){
 											}
 									}
 									if(eval(statements_tonghuanbi_arr[indexNum_toview])[1].indexOf(MeasureInfo) != -1){
-										$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv .cardInfo").hide();
+										$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv1 .cardInfo").hide();
 										$(compareDiv).show();
 										compareDiv.find("p.linkP").show();
 										if($(this).hasClass('p0')){
@@ -522,7 +548,7 @@ function runIndexPage(indexClass){
 									event.stopPropagation();
 									var MeasureInfo = $(this).data("measureInfo");
 									var compareDiv = $(this).siblings(".cardInfo."+MeasureInfo).eq(0);
-									$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv .cardInfo").hide();
+									$("."+indexClass+" .right_module .content_body .session_data_list_for_body .measureDiv1 .cardInfo").hide();
 									compareDiv.find("p").hide();
 								});
 
@@ -561,9 +587,10 @@ function runIndexPage(indexClass){
 							measureDiv.append(br);
 						}
 						}
-						spinner.stop(target);
+						// spinner.stop(target);
+						$("div").remove(".lf");
 					}
-				});
+				},indexClass);
 	}
 
 
