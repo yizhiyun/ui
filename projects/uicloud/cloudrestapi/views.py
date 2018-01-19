@@ -542,9 +542,7 @@ def handleHdfsFile(request, fileName):
         rs = handleFileFromHdfs(fileName, rootFolder, jsonData=jsonData)
 
         if not rs:
-            return JsonResponse({"status": "failed", "reason": "there is no this file!"})
-        elif rs == 'new_name_used':
-            return JsonResponse({"status": "failed", "reason": "new_name_used!"})
+            return JsonResponse({"status": "failed", "reason": "please see the logs for details"})
         return JsonResponse({'status': 'success'})
 
 

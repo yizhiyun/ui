@@ -2689,29 +2689,29 @@
         })
 
       // 隐藏按钮的功能
-      $("#tableDataDetailListPanel #hiddenEle").mousedown(function(event){
-        event.stopPropagation();
-        $(this).children("img").eq(0).attr("src","/../../../static/dataCollection/images/tableDataDetail/handle_35.png");
+      // $("#tableDataDetailListPanel #hiddenEle").mousedown(function(event){
+      //   event.stopPropagation();
+      //   $(this).children("img").eq(0).attr("src","/../../../static/dataCollection/images/tableDataDetail/handle_35.png");
 
-      });
-      $("#tableDataDetailListPanel #hiddenEle").mouseup(function(event){
-        $(this).children("img").eq(0).attr("src","/../../../static/dataCollection/images/tableDataDetail/handle_33.png");
-        event.stopPropagation();
+      // });
+      // $("#tableDataDetailListPanel #hiddenEle").mouseup(function(event){
+      //   $(this).children("img").eq(0).attr("src","/../../../static/dataCollection/images/tableDataDetail/handle_33.png");
+      //   event.stopPropagation(); 
 
-        if (currentHandleColOrRowEles) {
-        // 当前正在操作的表格---
-        var dbInfo =  $("#tableDataDetailListPanel").attr("nowShowTable");
-        // 当前正在操作的字段
-        var field = currentHandleColOrRowEles.eq(0).children("span").html();
-        $(".mainDragArea #" +dbInfo + " .fields li span:contains(" + field+")").prev("input").trigger("click");
+      //   if (currentHandleColOrRowEles) {
+      //   // 当前正在操作的表格---
+      //   var dbInfo =  $("#tableDataDetailListPanel").attr("nowShowTable");
+      //   // 当前正在操作的字段
+      //   var field = currentHandleColOrRowEles.eq(0).children("span").html();
+      //   $(".mainDragArea #" +dbInfo + " .fields li span:contains(" + field+")").prev("input").trigger("click");
 
-        // 显示“隐藏内容的按钮” 可以进行点击了
-        setshowHiddenEles_btn_notSelected();
-        // 隐藏
-        currentHandleColOrRowEles.hide("blind",{"direction":"left"},300);
-        }
+      //   // 显示“隐藏内容的按钮” 可以进行点击了
+      //   setshowHiddenEles_btn_notSelected();
+      //   // 隐藏
+      //   currentHandleColOrRowEles.hide("blind",{"direction":"left"},300);
+      //   }
 
-      });
+      // });
 
       // 显示隐藏按钮的功能
       $("#tableDataDetailListPanel .topInfo  #showHiddenEles").click(function(event){

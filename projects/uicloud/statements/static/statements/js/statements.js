@@ -134,7 +134,7 @@
 			if($(ele).height() < 320 || $(ele).width() < 400){
 		            var myChartsChange = echarts.getInstanceByDom($(ele).get(0));
 					var opp = myChartsChange.getOption();
-
+z
 					opp.toolbox[0].show = false;
 
 					//雷达图缩小调整

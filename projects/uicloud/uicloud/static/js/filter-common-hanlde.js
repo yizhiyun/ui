@@ -1,5 +1,5 @@
 	/*筛选器的处理*/
-	var conditionFilter_record = {};// 存储某个表格的帅选条件
+	var conditionFilter_record = {};// 存储某个表格的筛选条件
 	var filterNeedAllData = null; // 筛选器需要全部的表格数据
 	var filter_from_in = null; // “buildData” "dashBoard",主要为了区分筛选器从哪进入
 	var finishCallBackFun = null; // 筛选完成之后回调的函数
@@ -378,6 +378,9 @@
 			freeHandleCheck = true;
 		});
 
+		$("#fileds-content-select .common-filer-footer .confirmBtn").click(function(){
+			$("#number-filter .number-filter-body .radiosBtns .userInput_box input").val("");
+		})
 
 		// 全选按钮
 		$("#filter-model #contentChooser #common #selectAllInCommon").change(function(event){
