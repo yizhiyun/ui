@@ -663,7 +663,7 @@
 						$("#sizer_place").height($("#lateral_bar").height()-20);
 						$("#sizer_place #sizer_mpt").css("marginTop",$("#sizer").height()/2 - $("#sizer_place #sizer_mpt").height()/2 + "px");
 
-						$("#sizer_content .filter_body_div").height($("#sizer_place").height()-$("#sizer_content .filter_header_div").height());
+						$("#sizer_content .filter_body_div").height($("#sizer_place").height()-$("#sizer_content .filter_header_div").height() - $("#sizer_content .dateSelectDataModule").height());
 
 						$("#dashboard_content #new_view ul li").each(function(index,ele){
 							if($(ele).attr("title") != $(ele).find("span").text()){
@@ -1932,6 +1932,7 @@
 								// console.log("c")
 								loc_storage.removeItem(current_cube_name);
 								if_or_load = true;
+								checkedHandle = false;
 								empty_viem_init("change");
 								isDisaed = false;
 								saveScameView =true;
@@ -2134,8 +2135,10 @@
 								});
 								sizeWrapModuleDateHandleFunction();
 								showSizeWrapModule_function();
+								console.log($("#sizer_place").height()-$("#sizer_content .filter_header_div").height() - $("#sizer_content .dateSelectDataModule").height())
 								$("#sizer_content .filter_body_div").height($("#sizer_place").height()-$("#sizer_content .filter_header_div").height() - $("#sizer_content .dateSelectDataModule").height());
 							}else{
+								console.log($("#sizer_place").height()-$("#sizer_content .filter_header_div").height())
 								$("#sizer_content .filter_body_div").height($("#sizer_place").height()-$("#sizer_content .filter_header_div").height());
 								$("#sizer_content .dateSelectDataModule").hide();
 								showProjectModule_function();
