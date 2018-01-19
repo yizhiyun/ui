@@ -182,6 +182,8 @@ class ConnectDataBase():
         if 'conditions' in jsonData.keys():
             for condIt in jsonData['conditions']:
                 if 'columnName' in condIt.keys():
+                    if condIt['columnName'].startswith('`') and condIt['columnName'].endswith('`'):
+                        condIt['columnName'] = condIt['columnName'][1:-1]
                     condIt['columnName'] = self.turnCols([condIt['columnName']], coldickey)[0].split('  as  ')[0]
 
                 if 'limit' == condIt['type']:
@@ -195,9 +197,10 @@ class ConnectDataBase():
 
                 elif condType in [">", ">=", "=", "<=", "<", "!="]:
                     if 'datatype' in condIt.keys() and condIt['datatype'] == 'date' and self.dbPaltName == 'oracle':
-                        oracleToDate += "and {0} {1} to_date('{2}', 'yyyy-mm-dd') ".format(
+                        oracleToDate += "and to_char({0}, 'yyyy-mm-dd hh:mm:ss') {1} '{2}' ".format(
                             condIt['columnName'], condType, condIt["value"]
                         ) + oraclestr
+                        logger.error(oracleToDate)
 
                     else:
                         filtersql += "and {0} {1} '{2}' ".format(condIt['columnName'], condType, condIt["value"])

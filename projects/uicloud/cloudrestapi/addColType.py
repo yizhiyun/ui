@@ -15,7 +15,7 @@ def handleType(ctype):
     '''
     strList = ['text', 'varchar', 'char', 'tinytext', 'mediumtext', 'longtext', 'binary',
                'varbinary', 'tinyblob', 'blob', 'mediumblob', 'longblob', 'enum', 'set',
-               'StringType', 'BinaryType']
+               'StringType', 'BinaryType', 'string']
 
     intList = ['int', 'tinyint', 'smallint', 'mediumint', 'bigint', 'decimal', 'float',
                'double', 'real', 'bit', 'serial', 'BooleanType', 'DecimalType', 'DoubleType',

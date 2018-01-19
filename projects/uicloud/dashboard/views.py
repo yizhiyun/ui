@@ -54,8 +54,8 @@ def getAllDataFunction(username, datatype=None):
                         'customcalculate': tablelist[i].customcalculate,
                         'sequential': tablelist[i].sequential,
                         'handledatapost': tablelist[i].handledatapost,
-                        'drilldowndata' : tablelist[i].drilldowndata,
-                        'filterconditions':tablelist[i].filterconditions
+                        'drilldowndata': tablelist[i].drilldowndata,
+                        'filterconditions': tablelist[i].filterconditions
                     }
         return context
 

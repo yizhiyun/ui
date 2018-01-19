@@ -87,7 +87,13 @@ def uploadToHdfs(fileDict, hdfsHost="spark-master0", nnPort="50070", rootFolder=
     upload file into hdfs server.
     fileDict["tables"]'s item has the format of <rootFolder>/<parentFolder>/<fileName>, e.g. /tmp/csv/test/test1
     """
-    client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
+    try:
+        client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
+    except Exception:
+        logger.error("Exception: {0}, Traceback: {1}"
+                     .format(sys.exc_info(), traceback.format_exc()))
+        return False
+
     if len(fileDict["tables"]) == 0:
         logger.warn("There is no tables in the fileDict.")
         return False
@@ -125,7 +131,12 @@ def handleFileFromHdfs(fileName, rootFolder, jsonData={}, userName='myfolder', h
     '''
     remove or rename the file from hdfs
     '''
-    client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
+    try:
+        client = pyhdfs.HdfsClient(hosts="{0}:{1}".format(hdfsHost, nnPort))
+    except Exception:
+        logger.error("Exception: {0}, Traceback: {1}"
+                     .format(sys.exc_info(), traceback.format_exc()))
+        return False
 
     if not jsonData:
         '''
@@ -181,11 +192,13 @@ def renameHdfsFile(client, folderUri, newname, username=None):
     '''
     newFolderUri = "{0}/{1}".format(os.path.split(folderUri)[0], newname)
     if client.exists(newFolderUri):
-        return 'new_name_used'
+        logger.error("hdfs rename error: this new_name is used")
+        return False
     if client.exists(folderUri):
         client.rename(folderUri, newFolderUri)
         if username:
             checkOrDeleteView(os.path.split(folderUri)[1], username, changeName=newname)
         return True
     else:
+        logger.error("hdfs rename error: there is no this file")
         return False
