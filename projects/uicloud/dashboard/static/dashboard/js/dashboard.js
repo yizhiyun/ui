@@ -2135,10 +2135,8 @@
 								});
 								sizeWrapModuleDateHandleFunction();
 								showSizeWrapModule_function();
-								console.log($("#sizer_place").height()-$("#sizer_content .filter_header_div").height() - $("#sizer_content .dateSelectDataModule").height())
 								$("#sizer_content .filter_body_div").height($("#sizer_place").height()-$("#sizer_content .filter_header_div").height() - $("#sizer_content .dateSelectDataModule").height());
 							}else{
-								console.log($("#sizer_place").height()-$("#sizer_content .filter_header_div").height())
 								$("#sizer_content .filter_body_div").height($("#sizer_place").height()-$("#sizer_content .filter_header_div").height());
 								$("#sizer_content .dateSelectDataModule").hide();
 								showProjectModule_function();

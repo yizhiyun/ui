@@ -877,7 +877,6 @@
                 },
                 success:function(result){
                   if(result["status"] == "success"){
-                      console.log(result)
                       var gather_table_schema = result["results"]["schema"];
                       currentTableAllData = result["results"]["data"];
                       filterNeedAllData = result["results"]["data"];

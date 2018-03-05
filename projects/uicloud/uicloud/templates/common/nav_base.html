@@ -5,11 +5,13 @@
     <title>Pallasdata Desktop</title>
     {% load static %}
     <script src={%static "js/jquery.min.js"%} type="text/javascript" charset="utf-8"></script>
-      <script src={%static "js/httpSafe.js"%} type="text/javascript" charset="utf-8"></script>
+    <script src={% static "js/datatables.min.js"%} type="text/javascript" charset="utf-8"></script>
+     <script src={%static "js/httpSafe.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={%static "js/jquery-ui.min.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={%static "js/jquery.combo.select.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={% static "js/spin.min.js"%} type="text/javascript" charset="utf-8"></script>
     <script src={% static "js/nav_base.js"%} type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href={% static "css/datatables.min.css" %} />
     <link rel="stylesheet" type="text/css" href={%static "css/jquery-ui.min.css" %}/>
     <link rel="stylesheet" type="text/css" href={%static "css/combo.select.css" %}/>
     <link rel="stylesheet" href={% static "css/nav_base.css" %} />

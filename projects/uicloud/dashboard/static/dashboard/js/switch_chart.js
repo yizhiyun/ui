@@ -74,7 +74,10 @@ function beginDrawChart(edit_view){
 			view_init();
 			//隐藏其他视图
 			$("#main").css("display","none");
-			$("#sizer_content").hide();
+			if(currentSetTableDateFieldArray.length == 0){
+				$("#sizer_content").hide();
+			}
+			
 			$("#sizer_content .filter_body_div .table_field_list").empty();
 			$("#view_show_empty").add($("#sizer_mpt")).show();
 			$("#view_show_area #view_show_area_content .tableView_name h4").html("添加表标题");

@@ -88,9 +88,9 @@ function generateMeasureExpression(originExpression,dateName,dateMin,dateMax){
             var temp2 = str.substring(needChange[0],needChange[1]);
 						if(rs[0] == "count("){
 							temp1 = temp1.replace(/count\(/,"sum(");
-							result += temp1 + "if(datediff("+dateName+","+"'"+dateMin+"'"+")>0 and datediff("+dateName+","+"'"+dateMax+"'"+")<0"+","+1+","+0+"))";
+							result += temp1 + "if(datediff("+dateName+","+"'"+dateMin+"'"+")>=0 and datediff("+dateName+","+"'"+dateMax+"'"+")<=0"+","+1+","+0+"))";
 						}else{
-							result += temp1 + "if(datediff("+dateName+","+"'"+dateMin+"'"+")>0 and datediff("+dateName+","+"'"+dateMax+"'"+")<0"+","+temp2+","+0+"))";
+							result += temp1 + "if(datediff("+dateName+","+"'"+dateMin+"'"+")>=0 and datediff("+dateName+","+"'"+dateMax+"'"+")<=0"+","+temp2+","+0+"))";
 						}
 
             str = str.substring(needChange[1]+1);
