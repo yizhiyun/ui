@@ -86,10 +86,10 @@ function rightFilterListDraw(){
 			addAFilterItemFunction(columnInfoArr[0],columnInfoArr[1]);
 
 		}
-	}
+	}	
 	$("#dashboard_content #sizer_place #sizer_content .filter_body_div .table_field_list>li").each(function(index,ele){
 		// if(pureDemiArray != undefined){return false}
-		if(pureDemiArray.length > 0 && pureDemiArray.indexOf($(ele).data("fieldInfo").split(":")[0]) == -1){
+		if(pureDemiArray.length > 0 && $(ele).data("fieldInfo") != undefined && pureDemiArray.indexOf($(ele).data("fieldInfo").split(":")[0]) == -1){
 			$(ele).hide("blind",200,function(){
 				checkSelectConditionDict = getSelectionCondtion(current_cube_name);
 				delete checkSelectConditionDict[$(ele).data("fieldInfo").split(":")[0]];

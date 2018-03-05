@@ -96,7 +96,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #drop_row_view .drog_row_list,#drop_col_view .drog_row_list{line-height: 23px;margin:5px auto 0;list-style: none;border-radius: 2px;}
 #drop_row_view .drop_main,#drop_col_view .drop_main{width: 94%;float: none;box-sizing: content-box;}
 #drop_row_view .drog_row_list .perterWallContent,#drop_col_view .drog_row_list .perterWallContent{display: none}
-.downImgContent{width: 15px;height: 23px;float: left;text-align: center;margin-right: 5px;display: none}
+.downImgContent{width: 7%;height: 23px;float: left;text-align: center;margin-right: 5px;display: none}
 #drop_row_view .threeView,#drop_col_view .threeView{display: inherit;visibility: hidden;}
 .downImgContent img{vertical-align: middle;display: inline !important;}
 #drop_row_view .drog_row_list .perterWallContentList,#drop_col_view .drog_row_list .perterWallContentList{height:23px;width: 94%;padding: 0px 5px;margin-top: 5px;border:1px solid #DEDEDE;color: #000;border-radius: 2px;cursor:pointer;}
