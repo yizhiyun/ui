@@ -281,41 +281,27 @@ function dahboardSetting_function(){
 
 	$("#warningPanelSetting .common-filter-footer .cancleBtn").unbind("click");
 	$("#warningPanelSetting .common-filter-footer .cancleBtn").bind("click",function(){
-		$(".maskLayer").hide();
+		// $(".maskLayer").hide();
 		$("#warningPanelSetting").hide();
 		$("#warningPanel").css("z-index","1000").show();
 	})
 	$("#warningPanelSetting .common-filter-footer .confirmBtn").unbind("click");
 	$("#warningPanelSetting .common-filter-footer .confirmBtn").bind("click",function(){
-		$(".maskLayer").hide();
-
+		// $(".maskLayer").hide();
 		var yujingName = $("#warningPanelSetting .warning-body .warning-name-input-div input").val().replace(/\s/g,"");
 
 		
 		yjSaveHandleArr[yujingName] = {"name":yujingName,"colName":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .fieldSelctDiv .combo-select select").val(),"handle":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .conditionSelectDiv .combo-select select").val(),"handleValue":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .detailConditionDiv input").val()};
 
+		$("#warningPanelSetting").hide();
+		$("#warningPanel .warning-body .warning-addArea .add-lists").css({"padding":"10px 10px 0px 10px"});
+		$("#warningPanel .warning-body .warning-addArea .add-lists").append("<li>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></li>");
+		$("#warningPanel").css("z-index","1000").show();
+
 		$("#yujing-show .yujing-lists").append("<p dataValue="+yujingName+">"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></p>");
 
 
-		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").unbind("click");
-		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").bind("click",function(){
-			$("#warningPanelSetting").show();
-		})
-		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").unbind("click");
-		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").bind("click",function(){
-			$(this).parent().remove();
-			if($(this).parent().length == 0){
-				$(this).parent().parent().empty();
-				$("#yujing-show .yujing-lists").empty();
-				$(".container .topInfo #loginInfo img.alert").attr("src","../static/statements/img/yujing_icon_03.png");
-				$(".container .topInfo #yujing-bg .msg-lists").empty();
-			}else{
-				$(".container .topInfo #yujing-bg .msg-lists").find("li:last").remove();
-				$("#yujing-show .yujing-lists").find("p:last").remove();
-			}
-		})
-
-
+		$("#yujing-show .yujing-lists .yj-edit img").unbind("click");
 		$("#yujing-show .yujing-lists .yj-edit img").click(function(){
 			yjInit();
 			editYjHandle(this);
