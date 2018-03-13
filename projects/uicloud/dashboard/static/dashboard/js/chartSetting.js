@@ -152,5 +152,77 @@ function dahboardSetting_function(){
 			valueUnitDidChangedValue();
 		}
 	});
-	
+
+	//预警
+	$("#yujing-show .yujing-add .add").unbind("click");
+	$("#yujing-show .yujing-add .add").on("click",function(){
+		$(".maskLayer").show();
+		$("#warningPanel").css("z-index","1000").show();
+		$("#warningPanel .close").click(function(){
+			$(".maskLayer").hide();
+			$("#warningPanel").hide();
+		})
+	})
+
+	$("#warningPanel .common-filter-footer .cancleBtn").click(function(){
+		$(".maskLayer").hide();
+		$("#warningPanel").hide();
+	})
+	$("#warningPanel .common-filter-footer .confirmBtn").click(function(){
+		$("#warningPanel").hide();
+		if($(".add-lists").find("li")){
+			$(".view_folder_show_area .new_view_content .new_view_title .new_view_yujing img").attr("src","../static/statements/img/yujing_icon_show_03.png");
+			$(".container .topInfo #loginInfo img.alert").attr("src","../static/statements/img/yujing_icon_new_03.png");
+			var len = $("#warningPanel .add-lists li").length;
+			for(var i=0;i<len;i++){
+			    var listItem = "<li><div class='dot'></div><div class='msg-right'><div class='msg-note'>消息通知</div><div class='msg-time'>2018-03-10</div></div></li>"
+			    $(".container .topInfo #yujing-bg .msg-lists").append(listItem);  
+			}
+		}
+	})
+	$("#warningPanel .warning-body .add-warning").click(function(){
+		$(".maskLayer").show();
+		$("#warningPanel").hide();
+		$("#warningPanelSetting").css("z-index","1000").show();
+		$("#warningPanelSetting .warning-body .warning-name-input-div input").val(" ");
+	})
+
+	$("#warningPanelSetting .close").click(function(){
+		$(".maskLayer").hide();
+		$("#warningPanelSetting").hide();
+	})
+	$("#warningPanelSetting .common-filter-footer .cancleBtn").click(function(){
+		$(".maskLayer").hide();
+		$("#warningPanelSetting").hide();
+		$("#warningPanel").css("z-index","1000").show();
+	})
+
+	$("#warningPanelSetting .common-filter-footer .confirmBtn").click(function(){
+		$(".maskLayer").hide();
+		var yujingName = $("#warningPanelSetting .warning-body .warning-name-input-div input").val();
+
+		
+		$("#warningPanelSetting").hide();
+		$("#warningPanel .warning-body .warning-addArea .add-lists").css({"padding":"10px 10px 0px 10px"});
+		$("#warningPanel .warning-body .warning-addArea .add-lists").append("<li>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></li>");
+		$("#warningPanel").css("z-index","1000").show();
+		$("#yujing-show .yujing-lists").append("<p>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></p>");
+
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").click(function(){
+			$("#warningPanelSetting").show();
+		})
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").click(function(){
+			$(this).parent().remove();
+		})
+
+		$("#yujing-show .yujing-lists .yj-edit img").click(function(){
+			$("#warningPanelSetting").show();
+		})
+		$("#yujing-show .yujing-lists .yj-del img").click(function(){
+			$(this).parent().parent().remove();
+		})
+
+	})
+
+	$("#warningPanelSetting .warning-time select").comboSelect();
 }

@@ -167,8 +167,102 @@
 		</div>
 	</div>
 
+	<!-- 预警弹框 -->
+	<div id="warningPanel" style="display: none;">
+		<div class="topline"></div>
+		<div class="common-head">
+			<span class="logo">预警</span>
+			<div class="close">
+				<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+			</div>
+		</div>
+		<div class="warning-body">
+			<div class="warning-addArea">
+				<ul class="add-lists"></ul>
+				<a href="javascript:void(0)" class="add-warning">添加预警</a>
+			</div>
+			<div class="warning-message">当前无预警，请添加，当数据触发预警条件后，自动推送消息</div>
+		</div>
+		<div class="empty" style="height:50px;background: transparent;"></div>
+		<div class="common-filter-footer">
+			<a href="javascript:void(0)" class="cancleBtn">取消</a>
+			<a href="javascript:void(0)" class="confirmBtn">确定</a>
+		</div>
+	</div>
 
-
+	<!-- 预警设置弹框 -->
+	<div id="warningPanelSetting" style="display: none;">
+		<div class="topline"></div>
+		<div class="common-head">
+			<span class="logo">条件设置</span>
+			<div class="close">
+				<img src={% static "images/contentFilter/X_33.png" %} alt="" title="关闭" />
+			</div>
+		</div>
+		<div class="warning-body">
+			<div class="warning-name-input-div">
+				<span>预警名称</span>
+				<input type="text">
+			</div>
+			<div class="warning-setting">
+				<span>满足下列条件触发预警</span>
+				<div class="warning-setting-area">
+					<div class="scrollBody-box">
+					<div class="line-condition first-line-condition">
+						<div class="fieldSelctDiv">
+							<select class="field-selct custom-select"></select>
+						</div>
+						<div class="conditionSelectDiv">
+							<select class="condition-selct custom-select">
+								<option value="=" data="=">等于</option>
+								<option value="!=" data="!=">不等于</option>
+								<option value="包含" data="contains">包含</option>
+								<option value="不包含" data="notcontains">不包含</option>
+								<option value="开头是" data="startswith">开头是</option>
+								<option value="开头不是" data="notstartswith">开头不是</option>
+								<option value="结尾是" data="endswith">结尾是</option>
+								<option value="结尾不是" data="notendswith">结尾不是</option>
+								<option value="为空" data="isnull">为空</option>
+								<option value="非空" data="isnotnull">非空</option>
+								<option value="前N个" data="limit">前N个</option>>
+							</select>
+						</div>
+						<div class="detailConditionDiv">
+							<select class="detail-condition  custom-select valueShow"></select>
+							<label class="flagUserInputLabel"><span>N=</span><input type="text" class="valueShow"/></label>
+							<label class="simpleUserInputLabel"><input type="text" class="valueShow"/></label>
+					
+						</div>
+						<div class="close">
+							<!-- <img src={% static "images/contentFilter/X_33.png" %} alt="关闭"> -->
+						</div>
+					</div>
+					<img src={%static "dataCollection/images/add.png" %} alt="" class="add"/>
+				</div>
+				</div>
+			</div>
+			<div class="warning-time">
+				<span>预警时间：</span>
+				<span class="everyday">每日</span>
+				<div class="timeSelect">
+					<select name="" id="">
+						<option value="12:00">12:00</option>
+						<option value="08:00">08:00</option>
+						<option value="10:00">10:00</option>
+						<option value="14:00">14:00</option>
+						<option value="16:00">16:00</option>
+						<option value="18:00">18:00</option>
+						<option value="20:00">20:00</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="empty" style="height:50px;background: transparent;"></div>
+		<div class="common-filter-footer">
+			<a href="javascript:void(0)" class="cancleBtn">取消</a>
+			<a href="javascript:void(0)" class="confirmBtn">确定</a>
+		</div>
+	</div>
 
 
 

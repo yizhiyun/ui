@@ -251,26 +251,73 @@
 .cube-name-input-div .lists .combo-select{width:250px;border:none;}
 .cube-name-input-div .lists .combo-select .combo-dropdown input{width:280px;border:none;}
 
+#warningPanel{width:400px;background:white;border-radius:5px;font-size:12px;position:absolute;box-shadow:0px 3px 5px 0px rgba(0,49,98,0.08);
+	left:505px;
+	top:243px;
+}
+#warningPanel .common-filter-footer{height: 50px;position: absolute;bottom: 0;width: 100%;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;}
+#warningPanel .common-filter-footer a{width: 70px;height: 30px;position: absolute;border-radius: 2px;line-height: 30px;text-align: center;box-sizing: border-box;}
+#warningPanel .common-filter-footer .cancleBtn{top: 10px;right: 110px;border: 1px solid #0d53a4;color: #0d53a4;}
+#warningPanel .common-filter-footer .confirmBtn{background: #0D53A4;color: white;right: 20px;top: 10px;border: 1px solid #0D53A4;}
+#warningPanel .warning-body{padding-top:15px;border-top: 1px solid #DEDEDE;}
+#warningPanel .warning-body .warning-addArea{width:360px;height:160px;margin-left:20px;background:#f5f5f5;overflow-y:auto;}
+#warningPanel .warning-body .warning-message{padding-top:10px;margin-left:20px;color:#808080;}
+#warningPanel .warning-body .warning-addArea a{display:inline-block;margin:5px 10px;}
+#warningPanel .warning-body .warning-addArea .add-lists li{margin-bottom:10px;height:26px;line-height:26px;}
+#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit,.yj-del{float:right;cursor:pointer;}
+#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit{width:26px;height:26px;}
+#warningPanel .warning-body .warning-addArea .add-lists li .yj-del{width:26px;height:26px;text-align: center;padding-top: 6px;}
+
+
+#warningPanelSetting{width:400px;background:white;border-radius:5px;font-size:12px;position:absolute;box-shadow:0px 3px 5px 0px rgba(0,49,98,0.08);
+	left:505px;
+	top:243px;
+}
+#warningPanelSetting .common-filter-footer{height: 50px;position: absolute;bottom: 0;width: 100%;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;}
+#warningPanelSetting .common-filter-footer a{width: 70px;height: 30px;position: absolute;border-radius: 2px;line-height: 30px;text-align: center;box-sizing: border-box;}
+#warningPanelSetting .common-filter-footer .cancleBtn{top: 10px;right: 110px;border: 1px solid #0d53a4;color: #0d53a4;}
+#warningPanelSetting .common-filter-footer .confirmBtn{background: #0D53A4;color: white;right: 20px;top: 10px;border: 1px solid #0D53A4;}
+#warningPanelSetting .warning-body{padding-top:10px;border-top: 1px solid #DEDEDE;color:#808080;}
+#warningPanelSetting .warning-body .warning-name-input-div{margin-left: 20px;}
+#warningPanelSetting .warning-body .warning-name-input-div input{height: 21px;border: 1px solid #dedede;text-indent: 5px;width: 300px;border-radius: 2px;margin-left: 10px;}
+#warningPanelSetting .warning-body .warning-setting{margin-left: 20px;padding-top:10px;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area{width:360px;height:100px;margin-top: 10px;margin-bottom: 10px;background: #f5f5f5;}
+#warningPanelSetting .warning-body .warning-time{margin-left: 20px;}
+#warningPanelSetting .warning-body .warning-time .everyday{color:#333;}
+#warningPanelSetting .warning-body .warning-time .combo-select{width:100px;display: inline-block;}
 
 
 
 
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box{overflow-y: auto;height:100px;padding-right: 20px;position: relative;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition{position: relative;height: 53px;margin-top: 10px;}
 
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition{margin-top: 10px;height: 23px;}
 
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .relation_and_or_div{height: 20px;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .relation_and_or_div span{float: left;width: 20px;height: 20px;border-radius: 50%;background: #b4b4b4;color: white;text-align: center;line-height: 20px;/*cursor: pointer;*/}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .relation_and_or_div span.active{background: #0d53a4;}
+/*#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .relation_and_or_div span.or{margin-left: 10px;}*/
 
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .fieldSelctDiv{position: absolute;width: 120px;left: 10px;top: 30px;height: 23px;background: white;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .fieldSelctDiv{top: 0;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .conditionSelectDiv{position: absolute;width: 80px;left: 140px;top: 30px;height: 23px;background: white;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .conditionSelectDiv{top: 0;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .detailConditionDiv{position: absolute;width: 110px;left: 230px;top: 30px;height: 23px;background: white;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .detailConditionDiv{top: 0;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .detailConditionDiv .flagUserInputLabel{position: absolute;width: 100%;height: 100%;display: none;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .detailConditionDiv .flagUserInputLabel span{width: 28px;height: 100%;display: inline-block;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .detailConditionDiv .flagUserInputLabel input{border: 1px solid #dedede;border-radius: 2px;width:90px;height: 100%;}
 
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .detailConditionDiv .simpleUserInputLabel{position: absolute;width: 100%;height: 100%;border: 1px solid #dedede;border-radius: 2px;display: none;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .detailConditionDiv .simpleUserInputLabel input{width: 100%;height: 100%;}
 
-
-
-
-
-
-
-
-
-
-
-
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .close{position: absolute;width: 20px;left: 340px;top: 30px;height: 23px;line-height: 23px;text-align: right;cursor: pointer;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .close{top: 0;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .combo-select input{padding:5px;}
+#warningPanelSetting .warning-body .warning-setting .warning-setting-area .add{position: absolute;right:3px;top:18px;}
+#warningPanelSetting .warning-body .warning-time .timeSelect .combo-select input{padding:5px;}
+#warningPanelSetting .warning-body .warning-time .timeSelect{width:110px;margin-left: 10px;display: inline-block;}
 
 
 
