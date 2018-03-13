@@ -289,7 +289,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 /*设计样式*/
 /*#project_style{width: 100%;height:280px;}*/
-#project_style{border-top: 1px solid #dedede;}
+#project_style{border-top: 1px solid #dedede;padding-bottom: 10px;}
 #project_style .module_style p.title{font-size: 14px;color: #808080;padding-left: 10px;padding-top: 10px;}
 #project_style .module_style .color_control{margin-top: 10px;font-size: 10px;}
 #project_style .module_style span.colorCube{width: 20px;height: 20px;border-radius: 2px;margin-left: 5px;float: left;}
@@ -431,3 +431,12 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 #project_chart ul .clicked{border:1px solid rgb(13,83,164);background: white;}
 
 #pageDashboardModule #dashboard_content #lateral_bar #dimensionality,#measurement,#indicator,#parameter{min-height:133.75px;}
+
+#yujing-show{border-top:1px solid #dedede;}
+#yujing-show .title{font-size: 14px;color: #808080;padding-left: 10px;padding-top: 10px;display: inline-block;}
+#yujing-show .yujing-add{display: inline-block;}
+#yujing-show .yujing-add a{font-size: 12px;margin-left: 110px;}
+#yujing-show .yujing-lists p{margin-bottom:10px;height:26px;line-height:26px;margin-left: 11px;padding-top: 10px;font-size: 12px;}
+#yujing-show .yujing-lists p .yj-edit,.yj-del{float:right;cursor:pointer;}
+#yujing-show .yujing-lists p .yj-edit{width:26px;height:26px;}
+#yujing-show .yujing-lists p .yj-del{width:26px;height:26px;text-align: center;padding-top: 4px;padding-right: 5px;}

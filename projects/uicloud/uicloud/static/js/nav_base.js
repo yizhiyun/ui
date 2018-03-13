@@ -1,6 +1,6 @@
 /**
  * Created by guoxiaomin on 2017/6/14.
- */
+ */ 
 (function(doc,win){
 	window.onload = function(){
 		win.onresize = function(){
@@ -1437,6 +1437,8 @@ function pallasdaraFunctionNavBtnHandle(){
 						default:
 							break;
 					}
+
+          showyujingCard();
           $(window).trigger("resize");
 				});
        		}
@@ -1448,6 +1450,7 @@ function pallasdaraFunctionNavBtnHandle(){
 }
 
 function buildDataFunction_able(){
+    showyujingCard();
   if($("#analysisContainer").css("display") == "block"){
     $(".container .main .leftNav #navBuildDataViewBtn").find("img").attr("src","/static/images/buildData-select.png");
   }else{
@@ -1458,12 +1461,14 @@ function buildDataFunction_able(){
 	$(".container .main .leftNav #navBuildDataViewBtn").addClass("ableFlag");
 }
 function dashBoradFunction_able(){
+  showyujingCard();
 	$(".container .main .leftNav #navDashBoardViewBtn").find("img").attr("src","/static/images/dashboard-able.png");
 	$(".container .main .leftNav #navDashBoardViewBtn").removeClass("disableFlag");
 	$(".container .main .leftNav #navDashBoardViewBtn").addClass("ableFlag");
 
 }
 function reporttingFunction_abale(){
+  showyujingCard();
 	$(".container .main .leftNav #navReporttingViewBtn").find("img").attr("src","/static/images/statements-able.png");
 	$(".container .main .leftNav #navReporttingViewBtn").removeClass("disableFlag");
 	$(".container .main .leftNav #navReporttingViewBtn").addClass("ableFlag");
@@ -1483,7 +1488,6 @@ function changePageTo_DataBaseAndPanleFileConnectionView(){
 	$(".container .main .leftNav #navDataBaseAndPanleFileConnectionViewBtn").find("img").attr("src","/static/images/connect-select.png");
 	$(".main .rightConent .pageModuleNav").hide();
 	$(".main .rightConent #dataSourceConnectSelectDiv").show();
-
 
 
 }
@@ -1574,6 +1578,25 @@ function hidenSomeElementsWhenChangePage(){
 	$(".rightConent #analysisContainer .leftSlide #analysis_dataList").hide();
 	$("#user-filter-select").add($("#fileds-content-select,#contentChooser,#number-filter,#date-filter,#date-filter")).hide();
 	// $("#sizer_content").hide();
+}
+
+function showyujingCard(){
+   if($(".container #baseTopInfo #loginInfo img.alert").attr("src") == '../static/statements/img/yujing_icon_new_03.png'){
+    $(".container #baseTopInfo #loginInfo img.alert").mouseenter(function(){
+      $(".container .topInfo #yujing-title .all").css("color","#5ea7ff");
+      $(".container .topInfo #yujing-bg").show();
+    })
+    $(".container #baseTopInfo #loginInfo img.alert").mouseleave(function(){
+      $(".container .topInfo #yujing-bg").hide();
+    })
+  }else{
+    $(".container #baseTopInfo #loginInfo img.alert").mouseenter(function(){
+      $(".container .topInfo #yujing-bg").show();
+    })
+    $(".container #baseTopInfo #loginInfo img.alert").mouseleave(function(){
+      $(".container .topInfo #yujing-bg").hide();
+    })
+  }
 }
 
 // 进行判断,如果已经显示弹窗并点击的时候隐藏

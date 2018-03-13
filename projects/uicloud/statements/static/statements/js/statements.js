@@ -1117,14 +1117,14 @@ z
 				 	view_data_info["data-sizey"] = view_location["size_y"];
 				 }
 				if(view_type == "showTable_by_dragData()"){
-						gridster.add_widget("<li class='new_view_content right_view_table' data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main new_view_table clear "+viewshow_class+" view_handle_count"+count+"'><div class='edit_table'><div class='right_module' style='display: inline-block;'> <div class='top_column_container' style='display: inline-block'><p class='top_column_name'></p><table class='column_data_list' cellspacing='0' cellpadding='0'><tbody></tbody></table></div><div class='content_body'><ul id='data_list_for_body'></ul></div></div><div class='left_row_container'><table cellspacing='0' cellpadding='0'><thead><tr></tr></thead><tbody></tbody></table></div></div></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='160'>"+view_note+"</textarea></div></li>", view_data_info["data-sizex"],view_data_info["data-sizey"]);
+						gridster.add_widget("<li class='new_view_content right_view_table' data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_yujing add_css_img'><img src='../static/statements/img/yujing_icon_03.png' title='预警' style='margin:3px 0 0 3px;'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main new_view_table clear "+viewshow_class+" view_handle_count"+count+"'><div class='edit_table'><div class='right_module' style='display: inline-block;'> <div class='top_column_container' style='display: inline-block'><p class='top_column_name'></p><table class='column_data_list' cellspacing='0' cellpadding='0'><tbody></tbody></table></div><div class='content_body'><ul id='data_list_for_body'></ul></div></div><div class='left_row_container'><table cellspacing='0' cellpadding='0'><thead><tr></tr></thead><tbody></tbody></table></div></div></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='160'>"+view_note+"</textarea></div></li>", view_data_info["data-sizex"],view_data_info["data-sizey"]);
 						textAreaHandle(view_location,count,view_data_info);
 				}else if(view_type == "col_card()"){
-						gridster.add_widget("<li class='new_view_content indexPage' data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main clear new_view_indexPage "+viewshow_class+" view_handle_count"+count+"'><div class='right_module'><div class='content_body'><ul class='session_data_list_for_body'></ul></div></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='60'>"+view_note+"</textarea></div></li>",view_data_info["data-sizex"],view_data_info["data-sizey"]);
+						gridster.add_widget("<li class='new_view_content indexPage' data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_yujing add_css_img'><img src='../static/statements/img/yujing_icon_03.png' title='预警' style='margin:3px 0 0 3px;'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main clear new_view_indexPage "+viewshow_class+" view_handle_count"+count+"'><div class='right_module'><div class='content_body'><ul class='session_data_list_for_body'></ul></div></div></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='60'>"+view_note+"</textarea></div></li>",view_data_info["data-sizex"],view_data_info["data-sizey"]);
 						textAreaHandle(view_location,count,view_data_info);
 						$(".new_view_content").find("."+viewshow_class+"").find(".right_module").css("marginTop",($("."+viewshow_class+"").parent().height()-30)/2 - 80 + "px");
 				}else{
-						gridster.add_widget("<li class='new_view_content'  data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main clear "+viewshow_class+" view_handle_count"+count+"'></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='60'>"+view_note+"</textarea></div></li>",view_data_info["data-sizex"],view_data_info["data-sizey"]);
+						gridster.add_widget("<li class='new_view_content'  data-value="+count+"><header class='new_view_title'><div class='new_view_table_name'>"+right_view_show+"</div><div class='new_view_right_icon'><div class='new_view_hide add_css_img'><img src='../static/statements/img/hide.png' alt='show_or_hide' title='隐藏视图'></div><div class='new_view_yujing add_css_img'><img src='../static/statements/img/yujing_icon_03.png' title='预警' style='margin:3px 0 0 3px;'></div><div class='new_view_tille_know add_css_img'><img src='../static/statements/img/title.png' alt='title' title='标题'></div><div class='new_view_edit add_css_img'><img src='../static/statements/img/edit.png' alt='edit' title='编辑'></div><div class='new_view_remarks add_css_img'><img src='../static/statements/img/remarks.png' alt='remarks' title='备注'></div><div class='new_view_delete add_css_img'><img src='../static/statements/img/delete1.png' alt='delete' title='删除视图'></div></div></header><div class='new_view_main clear "+viewshow_class+" view_handle_count"+count+"'></div><div class='textarea'><textarea class='table_view_textarea' placeholder='仅对次视图增加文案备注说明不做任何图表改变' maxlength='60'>"+view_note+"</textarea></div></li>",view_data_info["data-sizex"],view_data_info["data-sizey"]);
 						textAreaHandle(view_location,count,view_data_info);
 				}
 
@@ -1778,6 +1778,74 @@ z
 							// $("#dashboard_content #new_view ul .edit_list").remove();
 							changePageTo_navDashBoardView(); 
 						})
+
+
+						//视图预警功能
+						$(ele).find(".new_view_yujing").unbind("click");
+						$(ele).find(".new_view_yujing").on("click",function(){
+							$(".maskLayer").show();
+							$("#warningPanel").css("z-index","1000").show();
+							$("#warningPanel .close").click(function(){
+								$(".maskLayer").hide();
+								$("#warningPanel").hide();
+							})
+							$("#warningPanel .common-filter-footer .cancleBtn").click(function(){
+								$(".maskLayer").hide();
+								$("#warningPanel").hide();
+							})
+							$("#warningPanel .common-filter-footer .confirmBtn").click(function(){
+								$("#warningPanel").hide();
+								if($("#warningPanel .warning-body .warning-addArea .add-lists").find("li")){
+									$(".view_folder_show_area .new_view_content .new_view_title .new_view_yujing img").attr("src","../static/statements/img/yujing_icon_show_03.png");
+									$(".container .topInfo #loginInfo img.alert").attr("src","../static/statements/img/yujing_icon_new_03.png");
+									// var len = $("#warningPanel .add-lists li").length;
+									// for(var i=0;i<len;i++){
+									    var listItem = "<li><div class='dot'></div><div class='msg-right'><div class='msg-note'>消息通知</div><div class='msg-time'>2018-03-10</div></div></li>"
+									    $(".container .topInfo #yujing-bg .msg-lists").append(listItem);  
+									// }
+								}
+							})
+							$("#warningPanel .warning-body .add-warning").click(function(){
+								$(".maskLayer").show();
+								$("#warningPanel").hide();
+								$("#warningPanelSetting").css("z-index","1000").show();
+								$("#warningPanelSetting .warning-body .warning-name-input-div input").val(" ");
+							})
+
+							$("#warningPanelSetting .close").click(function(){
+								$(".maskLayer").hide();
+								$("#warningPanelSetting").hide();
+							})
+							$("#warningPanelSetting .common-filter-footer .cancleBtn").click(function(){
+								$(".maskLayer").hide();
+								$("#warningPanelSetting").hide();
+								$("#warningPanel").css("z-index","1000").show();
+							})
+
+							$("#warningPanelSetting .common-filter-footer .confirmBtn").click(function(){
+								$(".maskLayer").hide();
+								var yujingName = $("#warningPanelSetting .warning-body .warning-name-input-div input").val();
+
+								
+								$("#warningPanelSetting").hide();
+								$("#warningPanel .warning-body .warning-addArea .add-lists").css({"padding":"10px 10px 0px 10px"});
+								$("#warningPanel .warning-body .warning-addArea .add-lists").append("<li>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></li>");
+								$("#warningPanel").css("z-index","1000").show();
+								$("#yujing-show .yujing-lists").append("<p>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></p>");
+
+								$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").click(function(){
+									$("#warningPanelSetting").show();
+								})
+								$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").click(function(){
+									$(this).parent().remove();
+								})
+
+							})
+
+							$("#warningPanelSetting .warning-time select").comboSelect();
+						})
+
+
 
 						// document点击关闭输入框
 					// $(document).on("click",function(e){

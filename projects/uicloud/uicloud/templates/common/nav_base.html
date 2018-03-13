@@ -24,11 +24,32 @@
 			<div id="loginInfo">
 				<img class="userHead child" src={% static "images/nav_icon_user.png" %}></img>
 				<span class="userName child">医智云</span>
-          <div class="child sepreate"></div>
-				<img src={% static "images/nav_icon_06.png" %} class="message child"/>
+          		<div class="child sepreate"></div>
+				<!-- <img src={% static "images/nav_icon_06.png" %} class="message child"/> -->
+				<img src={%static "images/yujing_icon_03.png" %} alt="" class="alert child" />
+
 				<img src={%static "images/nav_icon_08.png" %} alt="" class="question child" />
 				<span class="changeUser child">切换账号</span>
 				<!--<img src={%static "images/X_11.png" %} class="close child"/>-->
+			</div>
+
+			<div id="yujing-bg">
+				<img src={%static "images/sanjiao_03.png" %} alt="" class='xsj'>
+				<div id="yujing-card">
+					<div id="yujing-title">
+						<span class='read'>全部标为已读</span>
+						<span class='all'>查看全部</span>
+					</div>
+					<ul class="msg-lists">
+						<!-- <li>
+							<div class='dot'></div>
+							<div class='msg-right'>
+								<div class="msg-note">消息通知</div>
+								<div class="msg-time">2018-03-10</div>
+							</div>
+						</li> -->
+					</ul>
+				</div>
 			</div>
 		</div>
 		<div class="main">
