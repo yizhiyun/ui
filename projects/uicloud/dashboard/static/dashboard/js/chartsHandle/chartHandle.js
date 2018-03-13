@@ -139,7 +139,7 @@ function one_de_one_me_handle (chart_type_need,drill) {
     measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,function(data){
       if(data.length == 0){
         return;
-      }     
+      }
       var dimensionality_need_show = [];
       var measure_need_show = [];
       var measure_help_show =[];
@@ -3477,9 +3477,12 @@ function comparisonStrip_generate_fun(){
                     leftDiv+=aP;
                   }
                   leftDiv+="<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
-                  for(var k = 0;k < params.data.theDimeInfo.length;k++){
+                  if(params.data.theDimeInfo != undefined){
+                    for(var k = 0;k < params.data.theDimeInfo.length;k++){
                      rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.data.theDimeInfo[k]+"</p>";
+                  	}              	
                   }
+
                   rightDiv+= "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
                   var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
                    var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";

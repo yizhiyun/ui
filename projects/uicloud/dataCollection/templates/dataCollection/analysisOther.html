@@ -214,24 +214,16 @@
 						</div>
 						<div class="conditionSelectDiv">
 							<select class="condition-selct custom-select">
+								<option value=">" data=">">大于</option>
+								<option value="<" data="<">小于</option>
 								<option value="=" data="=">等于</option>
 								<option value="!=" data="!=">不等于</option>
-								<option value="包含" data="contains">包含</option>
-								<option value="不包含" data="notcontains">不包含</option>
-								<option value="开头是" data="startswith">开头是</option>
-								<option value="开头不是" data="notstartswith">开头不是</option>
-								<option value="结尾是" data="endswith">结尾是</option>
-								<option value="结尾不是" data="notendswith">结尾不是</option>
-								<option value="为空" data="isnull">为空</option>
-								<option value="非空" data="isnotnull">非空</option>
-								<option value="前N个" data="limit">前N个</option>>
+								<option value="<=" data="<=">小于等于</option>
+								<option value=">=" data=">=">大于等于</option>
 							</select>
 						</div>
 						<div class="detailConditionDiv">
-							<select class="detail-condition  custom-select valueShow"></select>
-							<label class="flagUserInputLabel"><span>N=</span><input type="text" class="valueShow"/></label>
-							<label class="simpleUserInputLabel"><input type="text" class="valueShow"/></label>
-					
+								<input type="text" class="spinner" name="value" value="0">
 						</div>
 						<div class="close">
 							<!-- <img src={% static "images/contentFilter/X_33.png" %} alt="关闭"> -->

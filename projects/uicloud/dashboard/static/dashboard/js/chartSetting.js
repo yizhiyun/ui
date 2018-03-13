@@ -33,6 +33,9 @@ var normalUnitValue = -1;
 var valueUnitValue = "个";
 
 
+//预警
+var yjSaveHandleArr = {};
+
 function dahboardSetting_function(){
 	// 设置默认的颜色
 	$("#project_style .module_style .color_control .selectedColors span").each(function(index,ele){
@@ -155,7 +158,9 @@ function dahboardSetting_function(){
 
 	//预警
 	$("#yujing-show .yujing-add .add").unbind("click");
-	$("#yujing-show .yujing-add .add").on("click",function(){
+	$("#yujing-show .yujing-add .add").on("click",function(event){
+		event.stopPropagation();
+		yjInit();
 		$(".maskLayer").show();
 		$("#warningPanel").css("z-index","1000").show();
 		$("#warningPanel .close").click(function(){
@@ -164,11 +169,76 @@ function dahboardSetting_function(){
 		})
 	})
 
+	// 预警初始化
+	function yjInit(){
+		$("#warningPanelSetting .warning-body .warning-name-input-div input").val("");
+		$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .detailConditionDiv input").val("0");
+	}
+
+	//预警线
+	function yjLineDraw(yjSaveHandleArr){
+		//获取展示图形的实例
+		var mycharts_yj = echarts.getInstanceByDom($("#main").get(0));
+
+		var tempEcharts = mycharts_yj.getOption();
+
+		var tempDictHandleDate = [];
+
+		for(var iKey in yjSaveHandleArr){
+			var aDate = yjSaveHandleArr[iKey];
+			tempDictHandleDate.push({"name":aDate.name,"xAxis":aDate.handleValue})
+		}
+
+		var tempDictHandleYj = {
+		label: {
+                normal: {
+                    show: true,
+                    position: 'end',
+                    formatter:"{b} {c}"
+                }
+            },
+            lineStyle: {
+                normal: {
+                    color: '#FF0000'
+                }
+            },
+            symbol: 'none',
+            data:tempDictHandleDate,
+        };
+
+
+        tempEcharts.series[0]["markLine"] = tempDictHandleYj;
+		mycharts_yj.setOption(tempEcharts);
+	}
+
+	//编辑预警
+	function editYjHandle(ele){
+		var tempDate = yjSaveHandleArr[$(ele).parent().parent("p").attr("dataValue")];
+		$("#warningPanelSetting .warning-body .warning-name-input-div input").val(tempDate.name);
+		$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .detailConditionDiv input").val(tempDate.handleValue);
+		$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .fieldSelctDiv .option-item").each(function(index,ele){
+			if($(ele).attr("title") == tempDate.colName){
+				$(ele).trigger("click");
+			}
+		})
+
+
+		$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .conditionSelectDiv .option-item").each(function(index,ele){
+			if($(ele).attr("title") == tempDate.handle){
+				$(ele).trigger("click");
+			}
+		})
+		
+		// $("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .line-condition .fieldSelctDiv .option-item").trigger("click");
+	}
+
 	$("#warningPanel .common-filter-footer .cancleBtn").click(function(){
 		$(".maskLayer").hide();
 		$("#warningPanel").hide();
 	})
 	$("#warningPanel .common-filter-footer .confirmBtn").click(function(){
+		yjLineDraw(yjSaveHandleArr);
+		$(".maskLayer").hide()
 		$("#warningPanel").hide();
 		if($(".add-lists").find("li")){
 			$(".view_folder_show_area .new_view_content .new_view_title .new_view_yujing img").attr("src","../static/statements/img/yujing_icon_show_03.png");
@@ -176,13 +246,24 @@ function dahboardSetting_function(){
 			var len = $("#warningPanel .add-lists li").length;
 			for(var i=0;i<len;i++){
 			    var listItem = "<li><div class='dot'></div><div class='msg-right'><div class='msg-note'>消息通知</div><div class='msg-time'>2018-03-10</div></div></li>"
-			    $(".container .topInfo #yujing-bg .msg-lists").append(listItem);  
+			    $(".container .topInfo #yujing-bg .msg-lists").append(listItem);
 			}
 		}
 	})
-	$("#warningPanel .warning-body .add-warning").click(function(){
+	$("#warningPanel .warning-body .add-warning").unbind("click");
+	$("#warningPanel .warning-body .add-warning").click(function(event){
+		event.stopPropagation();
 		$(".maskLayer").show();
+		
 		$("#warningPanel").hide();
+		$(".warning-setting-area .fieldSelctDiv .custom-select").html("");
+		var need_handle_yj_measureName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]))	;
+		for(var i = 0; i < need_handle_yj_measureName.length;i++){
+			var yjOption = "<option value="+drag_measureCalculateStyle[need_handle_yj_measureName[i]]+">"+drag_measureCalculateStyle[need_handle_yj_measureName[i]]+"</option>"
+			$(".warning-setting-area .fieldSelctDiv .custom-select").append(yjOption);
+		}
+		var spinner = $( ".spinner" ).spinner();
+		$(".warning-setting-area .fieldSelctDiv .custom-select").comboSelect();
 		$("#warningPanelSetting").css("z-index","1000").show();
 		$("#warningPanelSetting .warning-body .warning-name-input-div input").val(" ");
 	})
@@ -192,21 +273,26 @@ function dahboardSetting_function(){
 		$("#warningPanelSetting").hide();
 	})
 	$("#warningPanelSetting .common-filter-footer .cancleBtn").click(function(){
-		$(".maskLayer").hide();
+		// $(".maskLayer").hide();
 		$("#warningPanelSetting").hide();
 		$("#warningPanel").css("z-index","1000").show();
 	})
 
-	$("#warningPanelSetting .common-filter-footer .confirmBtn").click(function(){
-		$(".maskLayer").hide();
-		var yujingName = $("#warningPanelSetting .warning-body .warning-name-input-div input").val();
+	$("#warningPanelSetting .common-filter-footer .confirmBtn").unbind("click");
+	$("#warningPanelSetting .common-filter-footer .confirmBtn").click(function(event){
+		event.stopPropagation();
+
+		// $(".maskLayer").hide();
+		var yujingName = $("#warningPanelSetting .warning-body .warning-name-input-div input").val().replace(/\s/g,"");
 
 		
+		yjSaveHandleArr[yujingName] = {"name":yujingName,"colName":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .fieldSelctDiv .combo-select select").val(),"handle":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .conditionSelectDiv .combo-select select").val(),"handleValue":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .detailConditionDiv input").val()};
+
 		$("#warningPanelSetting").hide();
 		$("#warningPanel .warning-body .warning-addArea .add-lists").css({"padding":"10px 10px 0px 10px"});
 		$("#warningPanel .warning-body .warning-addArea .add-lists").append("<li>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></li>");
 		$("#warningPanel").css("z-index","1000").show();
-		$("#yujing-show .yujing-lists").append("<p>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></p>");
+		$("#yujing-show .yujing-lists").append("<p dataValue="+yujingName+">"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></p>");
 
 		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").click(function(){
 			$("#warningPanelSetting").show();
@@ -216,7 +302,16 @@ function dahboardSetting_function(){
 		})
 
 		$("#yujing-show .yujing-lists .yj-edit img").click(function(){
-			$("#warningPanelSetting").show();
+			yjInit();
+			editYjHandle(this);
+			$(".warning-setting-area .fieldSelctDiv .custom-select").html("");
+			var need_handle_yj_measureName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]))	;
+			for(var i = 0; i < need_handle_yj_measureName.length;i++){
+				var yjOption = "<option value="+drag_measureCalculateStyle[need_handle_yj_measureName[i]]+">"+drag_measureCalculateStyle[need_handle_yj_measureName[i]]+"</option>"
+				$(".warning-setting-area .fieldSelctDiv .custom-select").append(yjOption);
+			}
+			$(".warning-setting-area .fieldSelctDiv .custom-select").comboSelect();
+			$("#warningPanelSetting,.maskLayer").show();
 		})
 		$("#yujing-show .yujing-lists .yj-del img").click(function(){
 			$(this).parent().parent().remove();

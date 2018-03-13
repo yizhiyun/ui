@@ -744,6 +744,8 @@
 							}
 						}
 
+						$("#yujing-show").hide();
+
 						//清空视图展示区域
 						$("#view_show_wrap #main").hide();
 						$("#view_show_wrap #text_table_need_show").hide();

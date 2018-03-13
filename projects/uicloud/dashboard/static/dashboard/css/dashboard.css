@@ -432,7 +432,7 @@ center;line-height: 20px;margin-left: 7px;margin-right: 0px;cursor: pointer;}
 
 #pageDashboardModule #dashboard_content #lateral_bar #dimensionality,#measurement,#indicator,#parameter{min-height:133.75px;}
 
-#yujing-show{border-top:1px solid #dedede;}
+#yujing-show{border-top:1px solid #dedede;display: none}
 #yujing-show .title{font-size: 14px;color: #808080;padding-left: 10px;padding-top: 10px;display: inline-block;}
 #yujing-show .yujing-add{display: inline-block;}
 #yujing-show .yujing-add a{font-size: 12px;margin-left: 110px;}
