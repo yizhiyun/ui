@@ -239,7 +239,7 @@ function inputSelector(element) {
    return [element.name, element.value];
 }
 
-function getFilterAllData(conditions){
+function getFilterAllData(conditions,dataChange){
       var exprlist = [];
       if(_cube_all_data[current_cube_name] == undefined) return;
       for(var i = 0;i < _cube_all_data[current_cube_name].schema.length;i++ ){
@@ -253,10 +253,18 @@ function getFilterAllData(conditions){
         }
       };
       if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
+        if(new Date(currentSetTableDateMinDate).getTime() > new Date(currentSetTableDateMaxDate).getTime()){
+          var tempDate = currentSetTableDateMinDate;
+          currentSetTableDateMinDate = currentSetTableDateMaxDate;
+          currentSetTableDateMaxDate = tempDate;
+        }
         handleDataPost["conditions"] = [];
         handleDataPost["conditions"].push({"type":">=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMinDate).format("yyyy-MM-dd") + " 00:00:00","datatype":"date"});
           handleDataPost["conditions"].push({"type":"<=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMaxDate).format("yyyy-MM-dd") + " 23:59:59","datatype":"date"});
       }else{
+        delete handleDataPost["conditions"];
+      }
+      if(dataChange == "dataChange"){
         delete handleDataPost["conditions"];
       }
       if(handleDataPost["conditions"] != undefined){
@@ -294,6 +302,10 @@ function getFilterAllData(conditions){
             }
 
           }
+        },
+        error:function(){
+              spinner.stop();
+              $(".maskLayer").hide();
         }
       })
 }
@@ -861,8 +873,8 @@ function md_click_show(ele,data_dict){
 							if(editMeasureCalculateView_isFirstShow){
 								editMeasureCalculateView_isFirstShow = false;
 								CodeMirror.velocityContext = "sum avg max min count";  //提取到外部，方便从后台获取数据
-//								      CodeMirror.velocityCustomizedKeywords = "server.ip server.cache software.conf software.version software.tags.count";
-							      	editor = CodeMirror.fromTextArea($("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea").get(0), {
+//								    CodeMirror.velocityCustomizedKeywords = "server.ip server.cache software.conf software.version software.tags.count";
+                      editor = CodeMirror.fromTextArea($("#editMeasureCalculateView .edit_measure_body .calculate_input_box .arithmeticInputTextArea").get(0), {
 							        lineNumbers: true,
 							        extraKeys: {"Ctrl": "autocomplete"},
 							        mode: "text/javascript",
@@ -871,6 +883,7 @@ function md_click_show(ele,data_dict){
 							        autoCloseBrackets: true,
 							        lineWrapping:true
 							      });
+
 							      editor.on('keypress', function() {
 							          editor.showHint();  //满足自动触发自动联想功能
 							      });
@@ -927,6 +940,7 @@ function md_click_show(ele,data_dict){
 						$("#editMeasureCalculateView .edit_measure_body .clearInputBtn").unbind("click");
 						$("#editMeasureCalculateView .edit_measure_body .clearInputBtn").click(function(event){
 							event.stopPropagation();
+              editor.setValue("");
 							$("#editMeasureCalculateView .edit_measure_body #measure_show_title").val("");
 							$("#editMeasureCalculateView .edit_measure_body .cm-variable").text("");
 						})
@@ -1668,6 +1682,22 @@ function toInputStyleBlur(ele){
 }
 
 
+Array.prototype.max = function() {  
+    return Math.max.apply({}, this);  
+}  
+      
+Array.prototype.min = function() {  
+    return Math.min.apply({}, this);  
+} 
+
+
+Array.prototype.arrSum = function(){
+    var s = 0;
+    for (var i=this.length-1; i>=0; i--) {
+        s += this[i];
+    }
+    return s;
+}
 Date.prototype.format = function(fmt) {
      var o = {
         "M+" : this.getMonth()+1,                 //月份

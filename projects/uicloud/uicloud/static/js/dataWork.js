@@ -2,7 +2,7 @@ var numberColumn_needValueInfo = {}; // 某个表格的数值类型列，需要�
 var copyCurrentTableData = null; // 对当前 table 数据的一份拷贝
 // fieldtype 为数字 numberType 、日期、dateType 俩种类型
 // handleType:数据构建之前和之后  buildData,dashboard
-function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
+function dataHandleWork(handleType,tableInfo,field,fieldtype,finish,change){
 	if(numberColumn_needValueInfo[tableInfo] && numberColumn_needValueInfo[tableInfo][field] && currentSetTableDateMinDate == null && currentSetTableDateMaxDate == null){
 		 finish(numberColumn_needValueInfo[tableInfo][field]);
 		return;
@@ -48,7 +48,7 @@ function dataHandleWork(handleType,tableInfo,field,fieldtype,finish){
 	 }else{
 		if(handleType == "dashBoard"){
 			postUrl = "/cloudapi/v1/tables/" +tableInfo+"/data";
-			if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
+			if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null && change == undefined){
 				var conditions = [];
 	  			conditions.push({"type":">=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMinDate).format("yyyy-MM-dd") + "00:00:00","datatype":"date"});
 	  			conditions.push({"type":"<=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMaxDate).format("yyyy-MM-dd") + "23:59:59","datatype":"date"});				

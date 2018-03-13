@@ -88,9 +88,9 @@ function generateMeasureExpression(originExpression,dateName,dateMin,dateMax){
             var temp2 = str.substring(needChange[0],needChange[1]);
 						if(rs[0] == "count("){
 							temp1 = temp1.replace(/count\(/,"sum(");
-							result += temp1 + "if(datediff("+dateName+","+"'"+dateMin+"'"+")>=0 and datediff("+dateName+","+"'"+dateMax+"'"+")<=0"+","+1+","+0+"))";
+							result += temp1 + "if(datediff("+dateName+","+"'"+dateMin.replace(/\//g,"-")+"'"+")>=0 and datediff("+dateName+","+"'"+dateMax.replace(/\//g,"-")+"'"+")<=0"+","+1+","+0+"))";
 						}else{
-							result += temp1 + "if(datediff("+dateName+","+"'"+dateMin+"'"+")>=0 and datediff("+dateName+","+"'"+dateMax+"'"+")<=0"+","+temp2+","+0+"))";
+							result += temp1 + "if(datediff("+dateName+","+"'"+dateMin.replace(/\//g,"-")+"'"+")>=0 and datediff("+dateName+","+"'"+dateMax.replace(/\//g,"-")+"'"+")<=0"+","+temp2+","+0+"))";
 						}
 
             str = str.substring(needChange[1]+1);
@@ -141,6 +141,11 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		var conditions = conditionFilter_record[current_cube_name]["common"].concat(conditionFilter_record[current_cube_name]["condition"]);
 
 	  	if(currentSetTableDateMinDate != null && currentSetTableDateMaxDate != null){
+	  		if(new Date(currentSetTableDateMinDate).getTime() > new Date(currentSetTableDateMaxDate).getTime()){
+	  			var tempDate = currentSetTableDateMinDate;
+	  			currentSetTableDateMinDate = currentSetTableDateMaxDate;
+	  			currentSetTableDateMaxDate = tempDate;
+	  		}
 	  		conditions.push({"type":">=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMinDate).format("yyyy-MM-dd") + " 00:00:00","datatype":"date"});
 	  		conditions.push({"type":"<=","columnName":"`" + $("#sizer_content .dateSelectDataModule .fieldSelectPart .fieldSelect-box .combo-select select").val() + "`","value":new Date(currentSetTableDateMaxDate).format("yyyy-MM-dd") + " 23:59:59","datatype":"date"});
 	  	}

@@ -1967,11 +1967,13 @@
 									url:"/cloudapi/v1/tables/" +current_cube+"/schema",
 									type:"post",
 									dataType:"json",
-									// beforeSend:function(){
-									// 	var target =  $("#view_show_wrap").get(0);
-									// 	$(".maskLayer").show();
-	    				// 				spinner.spin(target);
-									// },
+									beforeSend:function(){
+										var target =  $("#view_show_wrap").get(0);
+										 if(spinner.el == undefined){
+							                spinner.spin(target);
+							                $(".maskLayer").show();
+							              }
+									},
 									success:function(data){
 										if (data["status"] == "success") {
 											var cube_all_data = data["results"];
@@ -2072,9 +2074,6 @@
 							})
 
 
-
-
-
 						if(getIndexNameDict[current_cube_name] != undefined && getIndexNameDict[current_cube_name].length > 0 && $("#dashboard_content #lateral_bar #indicator #index_show ul .index_li").length == 0){
 							
 							for(var i =0;i < getIndexNameDict[current_cube_name].length;i++){
@@ -2112,9 +2111,6 @@
 					}
 
 
-
-
-
 				//初始化表标题
 				function initTable_name(){
 						$("#view_show_area #view_show_area_content .tableView_name h4").html("添加表标题");
@@ -2131,7 +2127,10 @@
 								}
 								$("#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .custom-select").eq(0).comboSelect();
 								$("#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .custom-select").eq(0).change(function(event){
-										sizeWrapModuleDateHandleFunction();
+										$(".startDateInput-box").html("").append("<input  type='text' class='startDateInput' />");
+										$(".endDateInput-box").html("").append("<input  type='text' class='endDateInput' />");
+										sizeWrapModuleDateHandleFunction("change");
+
 								});
 								sizeWrapModuleDateHandleFunction();
 								showSizeWrapModule_function();
@@ -2144,14 +2143,16 @@
 							}
 					}
 					// 默认显示一个月的时间
-					function sizeWrapModuleDateHandleFunction(){
+					function sizeWrapModuleDateHandleFunction(change){
 							var theSelect = $("#sizer_content .dateSelectDataModule .fieldSelectPart>.fieldSelect-box .custom-select").eq(0);
 							currentSetTableDateFieldName = theSelect.val();
 							dataHandleWork("dashBoard",current_cube_name,theSelect.val(),"dateType",function(data){
+
 								var backgroundMinDate = new Date(data.min);
 								var backgroundMaxDate = new Date(data.max);
 								var backgroundMaxDate_year = backgroundMaxDate.getFullYear();
 								var backgroundMaxDate_month = backgroundMaxDate.getMonth();
+								var backgroundMaxDate_day = backgroundMaxDate.getDate();
 
 								var today = new Date();
 								var today_year = today.getFullYear();
@@ -2164,10 +2165,11 @@
 									defaultMaxDate = new Date(today_year,today_month,getDaysInOneMonth(today_year,today_month));
 								}else{
 									defaultMinDate = new Date(backgroundMaxDate_year,backgroundMaxDate_month,1);
-									defaultMaxDate = new Date(backgroundMaxDate_year,backgroundMaxDate_month,getDaysInOneMonth(backgroundMaxDate_year,backgroundMaxDate_month));
+									defaultMaxDate = new Date(backgroundMaxDate_year,backgroundMaxDate_month,backgroundMaxDate_day);
 								}
-								$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val(formatDate(defaultMinDate));
-								$("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val(formatDate(defaultMaxDate));
+								$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val(formatDate(defaultMinDate).replace(/-/g,"/"));
+								$("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val(formatDate(defaultMaxDate).replace(/-/g,"/"));
+								
 								// 开始日期
 								$("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").datepicker({
 									dateFormat:"yy/mm/dd",
@@ -2178,7 +2180,7 @@
 										 buttonImage:"/static/images/contentFilter/calendar.png",
 										 buttonText:"选择开始日期",
 										 showOn: "both",
-										 buttonImageOnly: true
+										 buttonImageOnly: true,
 								});
 
 								// 结束日期
@@ -2189,13 +2191,21 @@
 										 maxDate:backgroundMaxDate,
 										 defaultDate:defaultMaxDate,
 										 buttonImage:"/static/images/contentFilter/calendar.png",
-										 buttonText:"选择开始日期",
+										 buttonText:"选择结束日期",
 										 showOn: "both",
 										 buttonImageOnly: true
 									});
 								currentSetTableDateMinDate = $("#sizer_content .dateSelectDataModule .startDatePart>.startDateInput-box input").val();
 								currentSetTableDateMaxDate = $("#sizer_content .dateSelectDataModule .endDatePart>.endDateInput-box input").val();
-								getFilterAllData();
+
+								if(change == undefined){
+									getFilterAllData();
+								}else{
+									isagainDrawTable = true;
+									switch_chart_handle_fun();
+									getFilterAllData();
+								}
+								
 								if(!if_or_load){
 									empty_viem_init("change");
 									//视图编辑修改
@@ -2210,7 +2220,7 @@
 			 					  switch_chart_handle_fun();
 			 					  getFilterAllData();
 								});
-							});
+							},change);
 					}
 
 					function showProjectModule_function(){
@@ -2229,7 +2239,7 @@
 						$("#sizer_wrap .sizer_line").css("background", "#0d53a4");
 						$("#sizer_content").show();
 						$("#project_chart").hide();
-						if($(".drog_row_list").length < 1 && currentSetTableDateFieldArray.length  < 1) {
+						if($(".drog_row_li st").length < 1 && currentSetTableDateFieldArray.length  < 1) {
 							$("#sizer_mpt").show();
 							$("#view_show_empty").show();
 							initTable_name();
@@ -3733,10 +3743,10 @@
 
 
 			//设计视图icon
-				var project_icon = [["文本表","1或多个维度","1或多个度量","show_table"],["指标卡","0个维度","1或2个度量","show_card"],["饼图","1个维度","1个度量","show_cake"],["折线图","1个维度","1或多个度量","show_polyline"], ["柱状图","0或多个维度","1或多个度量","show_histogram"],["堆积柱状图","2或3个维度","1个度量","show_storehis"], ["瀑布图","1个维度","1个度量","show_waterfall"],["百分比堆积柱状图","2或3个维度","1个度量","show_percontrasth"], ["条形图","0或多个维度","1或多个度量","show_bar"], ["堆积条形图","2或3个维度","1个度量","show_storebar"], ["对比条形图","1个维度","2个度量","show_contrastbar"], ["百分比堆积条形图","2或3个维度","1个度量","prestorebar"], ["面积图","1个维度","1个度量","show_area"], ["范围图","1个维度","1个度量","show_scale"],["甘特图","1个维度","1个度量","show_gantt"],["雷达图","1或多个维度","1或多个度量","show_randar"], ["树状图","2或多个维度","1个度量","show_treemap"]];
+				var project_icon = [["文本表","1或多个维度","1或多个度量","show_table"],["指标卡","0个维度","1或2个度量","show_card"],["饼图","1个维度","1个度量","show_cake"],["折线图","1个维度","1或多个度量","show_polyline"], ["柱状图","0或多个维度","1或多个度量","show_histogram"],["堆积柱状图","2或3个维度","1个度量","show_storehis"], ["瀑布图","1个维度","1个度量","show_waterfall"],["百分比堆积柱状图","2或3个维度","1个度量","show_percontrasth"], ["条形图","0或多个维度","1或多个度量","show_bar"], ["堆积条形图","2或3个维度","1个度量","show_storebar"], ["对比条形图","1个维度","2个度量","show_contrastbar"], ["百分比堆积条形图","2或3个维度","1个度量","prestorebar"], ["面积图","1个维度","1个度量","show_area"], ["范围图","1个维度","1个度量","show_scale"],["甘特图","1个维度","1个度量","show_gantt"],["雷达图","1或多个维度","1或多个度量","show_randar"], ["树状图","2或多个维度","1个度量","show_treemap"],["地图","1个维度","1个度量","show_addressmap"]];
 
 				//图表对应生成的视图
-				var save_show_click_change_das = ["showTable_by_dragData()","col_card()","one_de_one_me_handle('cake')","many_de_many_me_handle('polyline')","many_de_many_me_handle('histogram')","many_de_many_me_handle('number_bar')","one_de_one_me_handle('waterWall')","many_de_many_me_handle('percentage_bar')","many_de_many_me_handle('barChart')","many_de_many_me_handle('number_liner')","many_de_many_me_handle('comparisonStrip')","many_de_many_me_handle('percentage_liner')","one_de_one_me_handle('area')","one_de_one_me_handle('scale')","one_de_one_me_handle('gantt')","many_de_many_me_handle('radarChart')","many_de_many_me_handle('reliationTree')"];
+				var save_show_click_change_das = ["showTable_by_dragData()","col_card()","one_de_one_me_handle('cake')","many_de_many_me_handle('polyline')","many_de_many_me_handle('histogram')","many_de_many_me_handle('number_bar')","one_de_one_me_handle('waterWall')","many_de_many_me_handle('percentage_bar')","many_de_many_me_handle('barChart')","many_de_many_me_handle('number_liner')","many_de_many_me_handle('comparisonStrip')","many_de_many_me_handle('percentage_liner')","one_de_one_me_handle('area')","one_de_one_me_handle('scale')","one_de_one_me_handle('gantt')","many_de_many_me_handle('radarChart')","many_de_many_me_handle('reliationTree')","one_de_one_me_handle('addressMap')"];
 
 
 
