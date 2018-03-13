@@ -275,12 +275,11 @@ input::-webkit-input-placeholder{
 #checkboxFourinput[type=checkbox] {visibility: hidden;}
 
 .container .topInfo #yujing-bg{position: relative;top:0;left:0;display: none;}
-.container .topInfo #yujing-card{width:200px;height:240px;background:white;position: absolute;top:16px;right:35px;z-index:1000;}
+.container .topInfo #yujing-card{width:200px;height:240px;background:white;position: absolute;top:16px;right:35px;z-index:1000;overflow-y:auto;}
 .container .topInfo .xsj{position: absolute;right:130px;top:10px;}
 #yujing-title span{display: inline-block;font-size: 12px;padding:10px;color:#808080;}
-#yujing-title .all{margin-left: 35px;}
+#yujing-title .all{margin-left: 30px;}
 #yujing-card .msg-lists li{height:45px;/*border:1px solid;*/}
 /*#yujing-card .msg-lists li .dot{width:10px;height:40px;margin-left: 10px;display: inline-block;border:1px solid;text-align: center;}*/
 #yujing-card .msg-lists li .dot{width:8px;height:8px;background: #5ea7ff;border-radius: 50%;display: inline-block;margin:15px 5px 15px 10px;}
 #yujing-card .msg-lists li .msg-right{width:150px;height:20px;padding:5px;/*border:1px solid red;*/display:inline-block;font-size:12px;}
-#yujing-card .msg-lists li:hover{background:#e7e7e7;}

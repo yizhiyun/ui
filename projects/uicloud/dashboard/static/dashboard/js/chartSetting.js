@@ -155,7 +155,7 @@ function dahboardSetting_function(){
 
 	//预警
 	$("#yujing-show .yujing-add .add").unbind("click");
-	$("#yujing-show .yujing-add .add").on("click",function(){
+	$("#yujing-show .yujing-add .add").bind("click",function(){
 		$(".maskLayer").show();
 		$("#warningPanel").css("z-index","1000").show();
 		$("#warningPanel .close").click(function(){
@@ -163,63 +163,81 @@ function dahboardSetting_function(){
 			$("#warningPanel").hide();
 		})
 	})
-
-	$("#warningPanel .common-filter-footer .cancleBtn").click(function(){
+	$("#warningPanel .common-filter-footer .cancleBtn").unbind("click");
+	$("#warningPanel .common-filter-footer .cancleBtn").bind("click",function(){
 		$(".maskLayer").hide();
 		$("#warningPanel").hide();
 	})
-	$("#warningPanel .common-filter-footer .confirmBtn").click(function(){
+	$("#warningPanel .common-filter-footer .confirmBtn").unbind("click");
+	$("#warningPanel .common-filter-footer .confirmBtn").bind("click",function(){
 		$("#warningPanel").hide();
 		if($(".add-lists").find("li")){
 			$(".view_folder_show_area .new_view_content .new_view_title .new_view_yujing img").attr("src","../static/statements/img/yujing_icon_show_03.png");
 			$(".container .topInfo #loginInfo img.alert").attr("src","../static/statements/img/yujing_icon_new_03.png");
-			var len = $("#warningPanel .add-lists li").length;
-			for(var i=0;i<len;i++){
-			    var listItem = "<li><div class='dot'></div><div class='msg-right'><div class='msg-note'>消息通知</div><div class='msg-time'>2018-03-10</div></div></li>"
-			    $(".container .topInfo #yujing-bg .msg-lists").append(listItem);  
-			}
+		    var listItem = "<li><div class='dot'></div><div class='msg-right'><div class='msg-note'>消息通知</div><div class='msg-time'>2018-03-14</div></div></li>"
+		    $(".container .topInfo #yujing-bg .msg-lists").append(listItem);  
 		}
 	})
-	$("#warningPanel .warning-body .add-warning").click(function(){
+	$("#warningPanel .warning-body .add-warning").unbind("click");
+	$("#warningPanel .warning-body .add-warning").bind("click",function(){
 		$(".maskLayer").show();
 		$("#warningPanel").hide();
 		$("#warningPanelSetting").css("z-index","1000").show();
 		$("#warningPanelSetting .warning-body .warning-name-input-div input").val(" ");
 	})
-
-	$("#warningPanelSetting .close").click(function(){
+	$("#warningPanelSetting .close").unbind("click");
+	$("#warningPanelSetting .close").bind("click",function(){
 		$(".maskLayer").hide();
 		$("#warningPanelSetting").hide();
 	})
-	$("#warningPanelSetting .common-filter-footer .cancleBtn").click(function(){
+	$("#warningPanelSetting .common-filter-footer .cancleBtn").unbind("click");
+	$("#warningPanelSetting .common-filter-footer .cancleBtn").bind("click",function(){
 		$(".maskLayer").hide();
 		$("#warningPanelSetting").hide();
 		$("#warningPanel").css("z-index","1000").show();
 	})
-
-	$("#warningPanelSetting .common-filter-footer .confirmBtn").click(function(){
+	$("#warningPanelSetting .common-filter-footer .confirmBtn").unbind("click");
+	$("#warningPanelSetting .common-filter-footer .confirmBtn").bind("click",function(){
 		$(".maskLayer").hide();
 		var yujingName = $("#warningPanelSetting .warning-body .warning-name-input-div input").val();
-
-		
 		$("#warningPanelSetting").hide();
 		$("#warningPanel .warning-body .warning-addArea .add-lists").css({"padding":"10px 10px 0px 10px"});
 		$("#warningPanel .warning-body .warning-addArea .add-lists").append("<li>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></li>");
 		$("#warningPanel").css("z-index","1000").show();
-		$("#yujing-show .yujing-lists").append("<p>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></p>");
+		$("#yujing-show .yujing-lists").append("<p><span class='name'>"+yujingName+"</span><span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></p>");
 
-		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").click(function(){
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").unbind("click");
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").bind("click",function(){
 			$("#warningPanelSetting").show();
 		})
-		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").click(function(){
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").unbind("click");
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").bind("click",function(){
 			$(this).parent().remove();
+			if($(this).parent().length == 0){
+				$(this).parent().parent().empty();
+				$("#yujing-show .yujing-lists").empty();
+				$(".container .topInfo #loginInfo img.alert").attr("src","../static/statements/img/yujing_icon_03.png");
+				$(".container .topInfo #yujing-bg .msg-lists").empty();
+			}else{
+				$(".container .topInfo #yujing-bg .msg-lists").find("li:last").remove();
+				$("#yujing-show .yujing-lists").find("p:last").remove();
+			}
 		})
-
-		$("#yujing-show .yujing-lists .yj-edit img").click(function(){
+		$("#yujing-show .yujing-lists .yj-edit img").unbind("click");
+		$("#yujing-show .yujing-lists .yj-edit img").bind("click",function(){
 			$("#warningPanelSetting").show();
 		})
-		$("#yujing-show .yujing-lists .yj-del img").click(function(){
+		$("#yujing-show .yujing-lists .yj-del img").unbind("click");
+		$("#yujing-show .yujing-lists .yj-del img").bind("click",function(){
 			$(this).parent().parent().remove();
+			if($("#yujing-show .yujing-lists p").length == 0){
+				$("#warningPanel .warning-body .warning-addArea .add-lists").empty();
+				$(".container .topInfo #loginInfo img.alert").attr("src","../static/statements/img/yujing_icon_03.png");
+				$(".container .topInfo #yujing-bg .msg-lists").empty();
+			}else{
+				$(".container .topInfo #yujing-bg .msg-lists").find("li:last").remove();
+				$("#warningPanel .warning-body .warning-addArea .add-lists").find("li:last").remove();
+			}
 		})
 
 	})
