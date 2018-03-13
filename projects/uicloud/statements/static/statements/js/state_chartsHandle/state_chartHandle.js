@@ -12,7 +12,7 @@ var oneClickLoading = true;
 var manyClickLoading = true;
 // 一个维度一个度量处理函数
 // chart_type_need:waterWall,cake
-function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCount) {
+function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCount,drill) {
 	if(freeCount != undefined){
 		var mycharts = echarts.getInstanceByDom($(".new_view_main[_echarts_instance_="+freeCount+"]").get(0));
 	}else{
@@ -32,6 +32,27 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 	
 	mycharts.off("click");
 	mycharts.on("click",function(params){
+		    //地图
+		    if(params.seriesType == "map"){
+		    	if(params.name == "临清市"){
+					if(mycharts._loadingFX == undefined){
+						mycharts.showLoading({
+							 text: '数据获取中',
+								 color: '#c23531',
+								 textColor: '#000',
+								 maskColor: 'rgba(255, 255, 255, 0.8)',
+								 zlevel: 0
+						});
+					}
+		    		if(params.color != "rgba(222,222,222,1)"){
+		    			address_map_fun(storeNum_toview,"drill");
+		    		}else{
+						address_map_fun(storeNum_toview);
+		    		}
+		    	}
+		    	return;
+		    }		
+
 			if(oneClickLoading){
 				oneClickLoading = false;
 				clickDrillStatementsFunction(params,$(params.event.event.target).parents(".new_view_content"),JSON.parse(JSON.stringify(storeNum_toview)),JSON.parse(JSON.stringify(viewshow_class)));
@@ -87,7 +108,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 					  	// bottom:40,
 					  	textStyle:{
 					  		fontSize:14,
-					  		color:allColorsDict[currentColorGroupName][0]
+					  		color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
 					  	}
 					  }
 				],
@@ -100,7 +121,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			   	 	width:"60%",
 
 			    },
-			    color:allColorsDict[currentColorGroupName],
+			    color:allColorsDict[currentColorGroupName_arr[storeNum_toview]],
 			 	tooltip : {
 			     trigger: 'axis',
 			     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -128,8 +149,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			         }
 					var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p>";
 			         var needValue = tar.value;
-			         if(normalUnitValue != -1){
-			         	needValue = needValue.toFixed(normalUnitValue);
+			         if(normalUnitValue_arr[storeNum_toview] != -1){
+			         	needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 			         }
 			         var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
 
@@ -262,8 +283,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			                    // show:dimensionality_need_show.length < 25 ,
 			                    position: 'top',
 			                    formatter:function(params){
-			                    		if(normalUnitValue != -1){
-			                    			return params.value.toFixed(normalUnitValue);
+			                    		if(normalUnitValue_arr[storeNum_toview] != -1){
+			                    			return params.value.toFixed(normalUnitValue_arr[storeNum_toview]);
 			                    		}
 			                    		return params.value;
 			                    }
@@ -287,6 +308,308 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 		});
 	}
 
+
+
+	// 地图
+  function address_map_fun(storeNum_toview,drillChange){
+	if(statements_tonghuanbi_arr[storeNum_toview] != undefined && statements_tonghuanbi_arr[storeNum_toview].length > 0){
+		var tempThData = JSON.parse(statements_tonghuanbi_arr[storeNum_toview]);
+		showTongbiMeasureArray = tempThData[0];
+		showHuanbiMeasureArray = tempThData[1];
+	}
+
+	var tempSaveClassName = viewshow_class;
+    reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
+      if(data.length == 0){
+        return;
+      }
+      var markPointData = [];
+      var measure_need_show = [];
+      var addressDateMax = [];
+      for (var i = 0; i < data.length;i++) {
+        var aData = data[i];
+        var mapIndex = i;
+        if(mapIndex > 9){
+        	mapIndex = i - 10;
+        }
+
+        // measure_need_show.push({"name":aData[need_handle_dimensionalityName],"value":aData[drag_measureCalculateStyle[need_handle_measureName]] / allValueUnitDict[valueUnitValue],"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"originValue":aData[drag_measureCalculateStyle[need_handle_measureName]],"tongbi":aData["同比"+drag_measureCalculateStyle[need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle[need_handle_measureName]]});
+        addressDateMax.push(aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]]);
+      	markPointData.push({"name":aData[need_handle_dimensionalityName],"coord":[Number(qingshuiIP[aData[need_handle_dimensionalityName]].split(",")[0]),Number(qingshuiIP[aData[need_handle_dimensionalityName]].split(",")[1])],"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]] > 0 ? aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]] : 0,"itemStyle":{"normal":{"color":"rgba("+hex2Rgb(allColorsDict[currentColorGroupName_arr[storeNum_toview]][mapIndex])+",0.4)","borderColor":allColorsDict[currentColorGroupName_arr[storeNum_toview]][mapIndex]}}})
+      }
+
+    if(drillChange == undefined){
+    	echarts.registerMap(name,liaochengMap);
+    }else{
+    	echarts.registerMap(name,liaocheng);
+    }
+    
+    //清除上一个图例
+    mycharts.clear();
+    linoption = {
+            title: [{
+                text: "地图",
+                left: 'center',
+                show:false
+            },
+            {
+          text: "单位: "+valueUnitValue_arr[storeNum_toview],
+          bottom:40,
+          show:false,
+          textStyle:{
+            fontSize:14,
+            color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
+          }
+      }],
+	    tooltip: {
+	        show: true,
+	        trigger: 'item',
+	        backgroundColor:'rgba(255,255,255,0.95)',
+	        extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
+	        formatter:function(params){
+	          var needValue = params.value;
+	            if(normalUnitValue_arr[storeNum_toview] != -1){
+	               needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
+	            }
+	                var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+	                var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+	                var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+	                var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+	                var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+	                var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+	                if(showTongbiMeasureArray.indexOf(params.data.measureName) != -1){
+	                  leftDiv += leftTongbi;
+	                  rightDiv += rightTongbi;
+	                }
+	                if(showHuanbiMeasureArray.indexOf(params.data.measureName) != -1){
+	                  leftDiv += leftHuanbi;
+	                  rightDiv += rightHuanbi;
+	                }
+	                leftDiv+= "</div>";
+	                rightDiv+= "</div>";
+	                 return leftDiv + rightDiv;
+	        }
+	    },
+
+            visualMap: {
+                min: addressDateMax.min(),
+                max: addressDateMax.max(),
+                left: 'left',
+                top: 'bottom',
+                text: ['高', '低'], // 文本，默认为数值文本
+                calculable: true,
+                show:false,
+                inRange:{
+                  color:["#DEDEDE"],
+                }
+            },
+            toolbox: {
+            show: true,
+            feature: {
+                // dataView: {readOnly: true},
+                restore: {},
+                saveAsImage: {
+                  title:"保存为png"
+                }
+            },
+            orient:"vertical",
+            right:20,
+            top:"middle",
+            itemSize:20,
+            itemGap:30
+            },
+            series: [{
+            	name:drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName],
+                type: 'map',
+                mapType: name,
+                label: {
+                    normal: {
+                  		show:true,
+                  		fontSize:14,
+            			color:"#000"
+                    },
+                    emphasis: {
+                        textStyle: {
+                            color: '#000000'
+                        }
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        borderColor: '#DEDEDE',
+                        areaColor: '#fff',
+
+                    },
+                    emphasis: {
+                        areaColor: '#DEDEDE',
+                        borderWidth: 0
+                    }
+                },
+                animation: false,
+
+                data:[{name:"临清市",value:addressDateMax.arrSum()}],
+               	"markPoint": {
+		            "symbol": "circle",
+		            "symbolSize":function(s){
+		            	return s/addressDateMax.min()*23
+		            },
+		            "animation":true,
+		            "label": {
+		                "normal": {
+		                    "show": true,
+		                    formatter:function(d){
+		                    	return d.name;
+		                    },
+		                    "color":"rgba(0,0,0,1)",
+		                    "fontSize":12,
+		                    // "position":"bottom",
+		                },
+		                "emphasis": {
+		                    show: false,
+		                }
+		            },
+		            "itemStyle": {
+		                "normal": {
+		                    // "color":'rgba(12, 84, 163,0.6)',
+		                    // "borderColor":"rgb(96, 204, 243)",
+		                    "borderWidth":1,
+		                }
+		            },
+		            "data": markPointData
+	        },
+
+	        hoverAnimation: true,
+            }],
+
+        };
+
+         liaooption = {
+
+            title: [{
+                text: "地图",
+                left: 'center',
+                show:false
+            },
+            {
+          text: "单位: "+valueUnitValue_arr[storeNum_toview],
+          bottom:40,
+          show:false,
+          textStyle:{
+            fontSize:14,
+            color:allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]
+          }
+      }],
+            tooltip: {
+	            show: true,
+	            trigger: 'item',
+	            backgroundColor:'rgba(255,255,255,0.95)',
+	            extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
+	            formatter:function(params){
+	              var needValue = params.value;
+	                if(normalUnitValue_arr[storeNum_toview] != -1){
+	                   needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
+	                }
+	                    var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
+	                    var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
+	                    var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
+	                    var leftHuanbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>环比:</p>";
+	                    var rightTongbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.tongbi)*100).toFixed(2)+"%</p>";
+	                    var rightHuanbi = "<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+(Number(params.data.huanbi)*100).toFixed(2)+"%</p>";
+	                    if(showTongbiMeasureArray.indexOf(params.data.measureName) != -1){
+	                      leftDiv += leftTongbi;
+	                      rightDiv += rightTongbi;
+	                    }
+	                    if(showHuanbiMeasureArray.indexOf(params.data.measureName) != -1){
+	                      leftDiv += leftHuanbi;
+	                      rightDiv += rightHuanbi;
+	                    }
+	                    leftDiv+= "</div>";
+	                    rightDiv+= "</div>";
+	                     return leftDiv + rightDiv;
+	            }
+            },
+
+            visualMap: {
+                min: 0,
+                max: addressDateMax.max(),
+                left: 'left',
+                top: 'bottom',
+                text: ['高', '低'], // 文本，默认为数值文本
+                calculable: true,
+                show:false,
+                inRange:{
+                  color:[allColorsDict[currentColorGroupName_arr[storeNum_toview]][9],allColorsDict[currentColorGroupName_arr[storeNum_toview]][0]],
+                }
+            },
+            toolbox: {
+            show: true,
+            feature: {
+                // dataView: {readOnly: true},
+                restore: {},
+                saveAsImage: {
+                  title:"保存为png"
+                }
+            },
+            orient:"vertical",
+            right:20,
+            top:"middle",
+            itemSize:20,
+            itemGap:30
+            },
+            series: [{
+            	name:drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName],
+                type: 'map',
+                mapType: name,
+                label: {
+                    normal: {
+                  		show:true,
+                  		fontSize:14,
+            			color:"#000"
+                    },
+                    emphasis: {
+                        textStyle: {
+                            color: '#000000'
+                        }
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        borderColor: '#000',
+                        areaColor: '#fff',
+
+                    },
+                    emphasis: {
+                        areaColor: '#389BB7',
+                        borderWidth: 0
+                    }
+                },
+                animation: false,
+
+                data:[{name:"临清市",value:addressDateMax.arrSum()},{name:"冠县",value:0},{name:"莘县",value:0},{name:"阳谷县",value:0},{name:"东昌府区",value:0},{name:"东阿县",value:0},{name:"茌平县",value:0},{name:"高唐县",value:0}],
+
+	        hoverAnimation: true,
+            }],
+
+        };
+
+
+      // -------------------------
+	setTimeout(function (){
+        mycharts.hideLoading();
+	    if(drillChange == undefined){
+	    	option = liaooption;
+	    }else{
+	    	option = linoption;
+	   	}
+	   	mycharts.setOption(option);
+       // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
+        elementContent($("."+tempSaveClassName+""),option);
+
+    }, 200)
+
+    });
+  }
+
 	//  饼图
 	function  cake_generate_fun (storeNum_toview) {
 		if(statements_tonghuanbi_arr[storeNum_toview] != undefined){
@@ -302,7 +625,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			for (var i = 0; i < data.length;i++) {
 				var aData = data[i];
 				dimensionality_need_show.push(aData[need_handle_dimensionalityName]);
-				measure_need_show.push({"name":aData[need_handle_dimensionalityName],"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]] / allValueUnitDict[valueUnitValue],"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]]});
+				measure_need_show.push({"name":aData[need_handle_dimensionalityName],"value":aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]] / allValueUnitDict[valueUnitValue_arr[storeNum_toview]],"dirllInfo":{"currentField":need_handle_dimensionalityName,"currentValue":aData[need_handle_dimensionalityName]},"originValue":aData[drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],"tongbi":aData["同比"+drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]],"huanbi":aData["环比"+drag_measureCalculateStyle_arr[storeNum_toview][need_handle_measureName]]});
 			}
 				var option = {
 					title: [{
@@ -327,8 +650,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 						formatter:function (params){
 						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>占比:</p>";
 						  var needValue = params.value;
-						  if(normalUnitValue != -1){
-						  	 needValue = needValue.toFixed(normalUnitValue);
+						  if(normalUnitValue_arr[storeNum_toview] != -1){
+						  	 needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 						  }
 						 var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>"+"<p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.percent+"%</p>";
 						 var leftTongbi = "<p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>同比:</p>";
@@ -457,8 +780,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 					formatter:function(params){
 
 						  var needValue = params[0].value;
-						  if(normalUnitValue != -1){
-						  	 needValue = needValue.toFixed(normalUnitValue);
+						  if(normalUnitValue_arr[storeNum_toview] != -1){
+						  	 needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 						  }
 						  var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[0].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params[0].seriesName+":</span></p>";
 						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params[0].name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
@@ -702,8 +1025,8 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 			         	return ;
 			         }
 			         var needValue = tar.value;
-					 if(normalUnitValue != -1){
-						 needValue = needValue.toFixed(normalUnitValue);
+					 if(normalUnitValue_arr[storeNum_toview] != -1){
+						 needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 					}
 			          var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+need_handle_dimensionalityName+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+tar.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+tar.seriesName+":</span></p>";
 						var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+tar.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
@@ -872,6 +1195,14 @@ case "cake":
   //调用甘特图
   	gantt_generate_fun(storeNum_toview);
   	break;
+  // 地图
+  case "addressMap":
+   if(drill == undefined){
+   	 address_map_fun(storeNum_toview);
+   	}else{
+   	address_map_fun(storeNum_toview,"drill");
+   	}
+    break;
 default:
 
 }
@@ -977,8 +1308,8 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 						}
        					for(var i = 0;i < params.length;i++){
        						var needValue = params[i].value;
-       						if(normalUnitValue != -1){
-					  	 			needValue = needValue.toFixed(normalUnitValue);
+       						if(normalUnitValue_arr[storeNum_toview] != -1){
+					  	 			needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 					 		 		}
        						leftDiv += "<p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params[i].color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params[i].seriesName+":</span></p>";
 									if(i == 0){
@@ -1150,8 +1481,8 @@ function reporting_many_de_many_me_handle(chart_type_need,storeNum_toview,freeCo
 		                    		// }else{
 		                    		// 	return params.value;
 		                    		// }
-		                    		if(normalUnitValue != -1){
-		                    			return params.value.toFixed(normalUnitValue);
+		                    		if(normalUnitValue_arr[storeNum_toview] != -1){
+		                    			return params.value.toFixed(normalUnitValue_arr[storeNum_toview]);
 		                    		}else{
 		                    			return params.value;
 		                    		}
@@ -1278,8 +1609,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    		    extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 						formatter:function(params){
 							var needValue = params.value;
-							  if(normalUnitValue != -1){
-							  	 needValue = needValue.toFixed(normalUnitValue);
+							  if(normalUnitValue_arr[storeNum_toview] != -1){
+							  	 needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 							  }
 			       		  	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'><p style='margin:0;margin-left:12px;padding:0 0 10px 0;height:10px;'>"+all_dimensionality[0]+":</p><p style='padding:0 0 10px 0;height:10px;margin:0;'><span style=width:8px;height:8px;border-radius:50%;display:inline-block;margin-top:2px;line-height:8px;background:"+params.color + "></span>"+"<span style='display:inline-block;margin-left:5px;height:10px;line-height:10px;'>"+params.seriesName+":</span></p>";
 										var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+params.name+"</p><p style='padding:0 0 10px 0;height:10px;margin:0;'>"+needValue+"</p>";
@@ -2449,8 +2780,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    		extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			        formatter:function(params){
 			        		var needValue = params.value;
-								  if(normalUnitValue != -1){
-								  	 needValue = needValue.toFixed(normalUnitValue);
+								  if(normalUnitValue_arr[storeNum_toview] != -1){
+								  	 needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 								  }
 									var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
 									var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";
@@ -2782,8 +3113,8 @@ function comparisonStrip_generate_fun(storeNum_toview){
 			    	   extraCssText: 'box-shadow: 0px 3px 5px 0px rgba(0, 49, 98, 0.2);border:1px solid #eeeeee;border-bottom:0',
 			       formatter:function(params){
 			        		var needValue = params.value;
-								  if(normalUnitValue != -1){
-								  	 needValue = needValue.toFixed(normalUnitValue);
+								  if(normalUnitValue_arr[storeNum_toview] != -1){
+								  	 needValue = needValue.toFixed(normalUnitValue_arr[storeNum_toview]);
 								  }
 				       	 	var leftDiv = "<div style='float:left;color:#808080;font-size:10px;'>";
 									var rightDiv = "<div style='float:left;color:#202020;font-size:10px;padding-left:5px;'>";

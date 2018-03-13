@@ -171,8 +171,11 @@ function beginDrawChart(edit_view){
 	if((switch_col_di == 1 && switch_row_me ==1 && switch_col_me == 0 && switch_row_di == 0 ) || (switch_row_di == 1 && switch_col_me ==1 && switch_row_me ==0 && switch_col_di == 0)){
 		
 		view_init();
-		
+
 		show_btn_change.not($("#show_storehis,#show_percontrasth,#show_storebar,#show_contrastbar,#prestorebar,#show_histogram,#show_bar,#show_treemap,#show_card")).css("opacity","1");
+		if(( drag_row_column_data["row"]["dimensionality"][0] != undefined && drag_row_column_data["row"]["dimensionality"][0].split(":")[0] != "address") || (drag_row_column_data["column"]["dimensionality"][0] != undefined && drag_row_column_data["column"]["dimensionality"][0].split(":")[0] != "address")){
+			$("#show_addressmap").css("opacity","0.3");
+		}
 		//判断是条形图还是柱状图为默认
 		if(switch_col_me > 0){
 			change_view_css("#show_bar");
