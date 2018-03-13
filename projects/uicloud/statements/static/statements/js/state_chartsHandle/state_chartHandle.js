@@ -317,7 +317,6 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 		showTongbiMeasureArray = tempThData[0];
 		showHuanbiMeasureArray = tempThData[1];
 	}
-
 	var tempSaveClassName = viewshow_class;
     reporting_measure_Hanlde([need_handle_dimensionalityName],[need_handle_measureName],null,storeNum_toview,function(data){
       if(data.length == 0){
@@ -346,7 +345,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
     
     //清除上一个图例
     mycharts.clear();
-    linoption = {
+    linoptions = {
             title: [{
                 text: "地图",
                 left: 'center',
@@ -483,7 +482,7 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
 
         };
 
-         liaooption = {
+         liaooptions = {
 
             title: [{
                 text: "地图",
@@ -596,10 +595,11 @@ function reporting_one_de_one_me_handle (chart_type_need,storeNum_toview,freeCou
       // -------------------------
 	setTimeout(function (){
         mycharts.hideLoading();
+        var option = null;
 	    if(drillChange == undefined){
-	    	option = liaooption;
+	    	option = liaooptions;
 	    }else{
-	    	option = linoption;
+	    	option = linoptions;
 	   	}
 	   	mycharts.setOption(option);
        // $("."+tempSaveClassName+"").data("dataShow",option.series.label.normal.show);
