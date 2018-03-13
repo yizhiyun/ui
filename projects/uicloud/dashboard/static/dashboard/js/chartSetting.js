@@ -169,6 +169,7 @@ function dahboardSetting_function(){
 		})
 	})
 
+
 	// 预警初始化
 	function yjInit(){
 		$("#warningPanelSetting .warning-body .warning-name-input-div input").val("");
@@ -239,6 +240,7 @@ function dahboardSetting_function(){
 	$("#warningPanel .common-filter-footer .confirmBtn").click(function(){
 		yjLineDraw(yjSaveHandleArr);
 		$(".maskLayer").hide()
+
 		$("#warningPanel").hide();
 		if($(".add-lists").find("li")){
 			$(".view_folder_show_area .new_view_content .new_view_title .new_view_yujing img").attr("src","../static/statements/img/yujing_icon_show_03.png");
@@ -250,11 +252,15 @@ function dahboardSetting_function(){
 			}
 		}
 	})
+
+
+
 	$("#warningPanel .warning-body .add-warning").unbind("click");
-	$("#warningPanel .warning-body .add-warning").click(function(event){
-		event.stopPropagation();
+	$("#warningPanel .warning-body .add-warning").bind("click",function(){
+
 		$(".maskLayer").show();
-		
+		var listItem = "<li><div class='dot'></div><div class='msg-right'><div class='msg-note'>消息通知</div><div class='msg-time'>2018-03-14</div></div></li>"
+		$(".container .topInfo #yujing-bg .msg-lists").append(listItem);
 		$("#warningPanel").hide();
 		$(".warning-setting-area .fieldSelctDiv .custom-select").html("");
 		var need_handle_yj_measureName = specialRemoveDataTypeHandle(drag_row_column_data["row"]["measure"].concat(drag_row_column_data["column"]["measure"]))	;
@@ -267,39 +273,48 @@ function dahboardSetting_function(){
 		$("#warningPanelSetting").css("z-index","1000").show();
 		$("#warningPanelSetting .warning-body .warning-name-input-div input").val(" ");
 	})
-
-	$("#warningPanelSetting .close").click(function(){
+	$("#warningPanelSetting .close").unbind("click");
+	$("#warningPanelSetting .close").bind("click",function(){
 		$(".maskLayer").hide();
 		$("#warningPanelSetting").hide();
 	})
-	$("#warningPanelSetting .common-filter-footer .cancleBtn").click(function(){
-		// $(".maskLayer").hide();
+
+	$("#warningPanelSetting .common-filter-footer .cancleBtn").unbind("click");
+	$("#warningPanelSetting .common-filter-footer .cancleBtn").bind("click",function(){
+		$(".maskLayer").hide();
 		$("#warningPanelSetting").hide();
 		$("#warningPanel").css("z-index","1000").show();
 	})
-
 	$("#warningPanelSetting .common-filter-footer .confirmBtn").unbind("click");
-	$("#warningPanelSetting .common-filter-footer .confirmBtn").click(function(event){
-		event.stopPropagation();
+	$("#warningPanelSetting .common-filter-footer .confirmBtn").bind("click",function(){
+		$(".maskLayer").hide();
 
-		// $(".maskLayer").hide();
 		var yujingName = $("#warningPanelSetting .warning-body .warning-name-input-div input").val().replace(/\s/g,"");
 
 		
 		yjSaveHandleArr[yujingName] = {"name":yujingName,"colName":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .fieldSelctDiv .combo-select select").val(),"handle":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .conditionSelectDiv .combo-select select").val(),"handleValue":$("#warningPanelSetting .warning-body .warning-setting .warning-setting-area .scrollBody-box .first-line-condition .detailConditionDiv input").val()};
 
-		$("#warningPanelSetting").hide();
-		$("#warningPanel .warning-body .warning-addArea .add-lists").css({"padding":"10px 10px 0px 10px"});
-		$("#warningPanel .warning-body .warning-addArea .add-lists").append("<li>"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></li>");
-		$("#warningPanel").css("z-index","1000").show();
 		$("#yujing-show .yujing-lists").append("<p dataValue="+yujingName+">"+yujingName+"<span class='yj-del'><img src='../static/statements/img/delete.png' title='删除'></span><span class='yj-edit'><img src='../static/statements/img/yj-edit.png' title='编辑'></span></p>");
 
-		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").click(function(){
+
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").unbind("click");
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-edit").bind("click",function(){
 			$("#warningPanelSetting").show();
 		})
-		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").click(function(){
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").unbind("click");
+		$("#warningPanel .warning-body .warning-addArea .add-lists li .yj-del").bind("click",function(){
 			$(this).parent().remove();
+			if($(this).parent().length == 0){
+				$(this).parent().parent().empty();
+				$("#yujing-show .yujing-lists").empty();
+				$(".container .topInfo #loginInfo img.alert").attr("src","../static/statements/img/yujing_icon_03.png");
+				$(".container .topInfo #yujing-bg .msg-lists").empty();
+			}else{
+				$(".container .topInfo #yujing-bg .msg-lists").find("li:last").remove();
+				$("#yujing-show .yujing-lists").find("p:last").remove();
+			}
 		})
+
 
 		$("#yujing-show .yujing-lists .yj-edit img").click(function(){
 			yjInit();
@@ -312,9 +327,19 @@ function dahboardSetting_function(){
 			}
 			$(".warning-setting-area .fieldSelctDiv .custom-select").comboSelect();
 			$("#warningPanelSetting,.maskLayer").show();
+
 		})
-		$("#yujing-show .yujing-lists .yj-del img").click(function(){
+		$("#yujing-show .yujing-lists .yj-del img").unbind("click");
+		$("#yujing-show .yujing-lists .yj-del img").bind("click",function(){
 			$(this).parent().parent().remove();
+			if($("#yujing-show .yujing-lists p").length == 0){
+				$("#warningPanel .warning-body .warning-addArea .add-lists").empty();
+				$(".container .topInfo #loginInfo img.alert").attr("src","../static/statements/img/yujing_icon_03.png");
+				$(".container .topInfo #yujing-bg .msg-lists").empty();
+			}else{
+				$(".container .topInfo #yujing-bg .msg-lists").find("li:last").remove();
+				$("#warningPanel .warning-body .warning-addArea .add-lists").find("li:last").remove();
+			}
 		})
 
 	})

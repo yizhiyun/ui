@@ -1596,22 +1596,45 @@ function hidenSomeElementsWhenChangePage(){
 
 function showyujingCard(){
    if($(".container #baseTopInfo #loginInfo img.alert").attr("src") == '../static/statements/img/yujing_icon_new_03.png'){
+    $("#yujing-bg #yujing-card #yujing-title .all").css("color","#5ea7ff");
     $(".container #baseTopInfo #loginInfo img.alert").mouseenter(function(){
-      $(".container .topInfo #yujing-title .all").css("color","#5ea7ff");
       $(".container .topInfo #yujing-bg").show();
     })
-    $(".container #baseTopInfo #loginInfo img.alert").mouseleave(function(){
+    // $(".container #baseTopInfo #loginInfo img.alert").mouseleave(function(){
+    //   $(".container .topInfo #yujing-bg").hide();
+    // })
+    $("#yujing-bg").mousemove(function(){
+        $(".container .topInfo #yujing-bg .msg-lists li").mouseenter(function(){
+          $(this).css("background","#e7e7e7");
+        })
+        $(".container .topInfo #yujing-bg .msg-lists li").mouseleave(function(){
+          $(this).css("background","");
+        })
+    })
+    $("#yujing-bg").mouseleave(function(){
       $(".container .topInfo #yujing-bg").hide();
     })
   }else{
     $(".container #baseTopInfo #loginInfo img.alert").mouseenter(function(){
       $(".container .topInfo #yujing-bg").show();
     })
-    $(".container #baseTopInfo #loginInfo img.alert").mouseleave(function(){
+    // $(".container #baseTopInfo #loginInfo img.alert").mouseleave(function(){
+    //   $(".container .topInfo #yujing-bg").hide();
+    // })
+    $("#yujing-bg").mousemove(function(){
+         $(".container .topInfo #yujing-bg .msg-lists li").mouseenter(function(){
+          $(this).css("background","#e7e7e7");
+        })
+        $(".container .topInfo #yujing-bg .msg-lists li").mouseleave(function(){
+          $(this).css("background","");
+        })
+    })
+    $("#yujing-bg").mouseleave(function(){
       $(".container .topInfo #yujing-bg").hide();
     })
   }
 }
+
 
 // 进行判断,如果已经显示弹窗并点击的时候隐藏
 // if($(".filter_content_btn").clicked == true && $(this).id == "navDashBoardViewBtn"){
