@@ -18,6 +18,10 @@
 
 
 	function switch_chart_handle_fun(edit_view){
+		$("#text_table_need_show").hide();
+		var target =  $("#view_show_wrap").get(0);
+	    spinner.spin(target);
+	   	$(".maskLayer").show();
 		if(!edit_view){
 			if(drawChartTimer){
 				clearTimeout(drawChartTimer);
@@ -32,9 +36,6 @@
 
 
 	function beginDrawChart(edit_view){
-		var target =  $("#view_show_wrap").get(0);
-	    spinner.spin(target);
-	    $(".maskLayer").show();
 	    $("#yujing-show").hide()
 		if(echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)) && !handleChangeCol){
 				echarts.getInstanceByDom($("#view_show_area #view_show_area_content #view_show_wrap #main").get(0)).clear();
@@ -158,7 +159,7 @@
 		// 维度
 		if((switch_row_me == 0 && switch_col_di > 0 && switch_col_me == 0 && switch_row_di == 0) || (switch_col_me == 0 && switch_col_di == 0 && switch_row_me == 0 && switch_row_di > 0)){
 			view_init();
-			$("#text_table_need_show").show();
+			$("#text_table_need_show,#text_table_need_show .text_table_mydik").show();
 			$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
 			// $("#show_bar,#show_histogram").css("opacity","1");
 				change_view_css("#show_table");
@@ -336,7 +337,8 @@
 			show_btn_change.each(function(index,ele){
 				// show_btn_change.css({"background":"","border":""});
 				$(ele).unbind("click");
-				$(ele).on("click",function(){
+				$(ele).on("click",function(event){
+					event.stopPropagation();
 					show_btn_change.removeClass("clicked");
 					show_btn_change.css({"background":"","border":""});
 					$(".project_icon_hint_wrap").remove();
@@ -347,8 +349,12 @@
 							$(ele).data("if_show","true");
 							click_view_icon = true;
 							save_now_show_view_text = $(ele);
-							if(save_now_show_view_text.attr("id") == "show_table"){
-									
+							var target =  $("#view_show_wrap").get(0);
+							spinner.spin(target);
+							$(".maskLayer").show();
+
+							setTimeout(function(){
+								if(save_now_show_view_text.attr("id") == "show_table"){
 									$("#view_show_area #view_show_area_content #view_show_wrap #main").hide();
 									$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 
@@ -359,13 +365,11 @@
 									$("#view_show_area #view_show_area_content #view_show_wrap #card").hide();
 									$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").hide();
 								}
-							var target =  $("#view_show_wrap").get(0);
-							spinner.spin(target);
-							$(".maskLayer").show();
-	//						console.log(save_now_show_view_text)
+
 							eval(save_now_show_view_text.data("show_view_fun"));
 							readyChangeHandle();
 							view_name = save_now_show_view_text.data("show_view_fun");
+							},300)
 
 							return;
 						}
@@ -398,10 +402,10 @@
 			
 			if(!save_now_show_view_text.hasClass("show_view_success")){
 				if($("#show_histogram").css("opacity") == "1"){
-					$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
+					$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").hide();
 					save_now_show_view_text = $("#show_histogram");
 				}else if($("#show_bar").css("opacity") == "1"){
-					$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").css("display","none");
+					$("#view_show_area #view_show_area_content #view_show_wrap #text_table_need_show").hide();
 					save_now_show_view_text = $("#show_bar");
 				}else{
 					$("#view_show_area #view_show_area_content #view_show_wrap #main").css("display","none");

@@ -31,6 +31,9 @@ html,body{-webkit-user-select: none;overflow: hidden;}
 #cell_wrap,#action_save_view{width: 100px;border-bottom: 1px solid #E1E1E1;margin-top: -5px;display: none;}
 .cell_wrap_content p,#action_save_view p{font-size: 12px;border: 1px solid #E1E1E1;height: 22px;line-height:22px;text-align: center;background: white;border-bottom: none;}
 
+/*#text_table_need_show table th{padding: 5px;border: 1px solid #DEDEDE;background: #EBEBEB;}*/
+/*#text_table_need_show table td{padding: 5px !important;text-align: center;border-left: 1px solid #DEDEDE;}*/
+
 
 /*侧边栏*/
 #pageDashboardModule #dashboard_content #lateral_bar{width:200px;background: white;float: left;}

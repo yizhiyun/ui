@@ -55,6 +55,7 @@
 #dataSet .detailDataSetList .combo-input{padding: 0;height: 100%;user-select: none;cursor: pointer;text-align: left;text-indent: 5px;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables .tablesList .buildTableTitle{color: #808080;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise{height:23px;line-height:23px;cursor: pointer;width:182px;border-radius: 2px;margin-bottom: 2px;text-indent: 5px;position: relative;}
+#analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise span{float: left;width: 80%;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise .datebaseLise_input{height:23px;border:1px solid #505050;display: none;position: absolute;left: 0;top: 0;background: white;box-sizing: border-box;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .datebaseLise:hover{background: #EEEEEE;}
 #analysisContainer .leftSlide #dataSet .detailDataSetList li .didBuildTables ul.tablesList .waringFalse{color: red;}

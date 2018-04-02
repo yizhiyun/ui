@@ -908,7 +908,7 @@ z
 										}
 									}
 
-									if($(".cookie_handle_view").parent().hasClass("state_folder")){
+									if($(".cookie_handle_view").parent().parent().hasClass("state_folder")){
 										//删除记录视图位置信息的cookie
 											if(loc_storage.getItem("view_location_data")){
 												if(JSON.parse(loc_storage.getItem("view_location_data")).length == 1){
@@ -2153,8 +2153,8 @@ z
 							}
 
 
-							$(".view_show_name_save").each(function(index,ele){
-								if($(ele).parent().parent().hasClass("state_folder") || $(ele).parent().parent().parent().hasClass("state_folder")){
+							$(".statement_li_content .view_show_name_save").each(function(index,ele){
+								if($(ele).parents(".statement_li").parent().parent().hasClass("state_folder")){
 										$(ele).css("width","103px");
 									}else{
 										$(ele).css("width","120px");

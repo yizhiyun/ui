@@ -360,7 +360,7 @@
 				// 分层下钻展现样式
 				function peterDrillShowHandle(element,content){
 							onlyGetDrillDown = true;
-							var current_li = $("<div class='list_wrap clear'><li class='drog_row_list' id="+"dimensionality:"+element[0]+"><div class='drop_main clear set_style dimensionality_list_text peterMouse' dataValue='0'><div class='downImgContent'><img src='/static/dashboard/img/dashboard_icon2.png' alt='downup'></div><span class='dimensionality_list_text_left perterHandle' datatype="+element[0]+">"+element[0].split(":")[0]+"</span></div><div class='perterWallContent'></div></li></div>");
+							var current_li = $("<div class='list_wrap clear'><li class='drog_row_list' id="+"dimensionality:"+element[0]+"><div class='drop_main clear set_style dimensionality_list_text peterMouse' dataValue='0'><div class='downImgContent'><img src='/static/dashboard/img/dashboard_icon2.png' alt='downup'></div><span class='dimensionality_list_text_left perterHandle' datatype="+element[0]+" title="+element[0].split(":")[0]+">"+element[0].split(":")[0]+"</span></div><div class='perterWallContent'></div></li></div>");
 							current_li.find(".drop_main").css("border","1px solid #DEDEDE").addClass("clickActive");
 							current_li.unbind("click");
 							for(var i = 1; i < element.length;i++){
@@ -1095,13 +1095,23 @@
 					if_or_load = true;
 					}
 
+
+					//指标修改名字
+					function initIndexChangeName(oldname,name){
+						if($("#dashboard_content .handleAll_wrap #operational_view #drag_wrap_content #drag_zb #drop_zb_view li").length > 0 && $("#dashboard_content .handleAll_wrap #operational_view #drag_wrap_content #drag_zb #drop_zb_view li").attr("title") == oldname){
+							$("#dashboard_content .handleAll_wrap #operational_view #drag_wrap_content #drag_zb #drop_zb_view li").attr("title",name);
+							$("#dashboard_content .handleAll_wrap #operational_view #drag_wrap_content #drag_zb #drop_zb_view li .index_list_text_left").text(name);
+						}
+					}
+				var tempChangeName = "";
 					 // 创建左侧列表一个指标元素
 				 function createAIndexElementToLeftList(indexContent,isnewAdd){
 
-				 	var indexLi = $("<li class='index_li'><div class='index_list_text'><span class='index_list_text_left'>"+indexContent+"</span><div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div></div>"+"<input class='userinput' value="+indexContent+"></li>");
+				 	var indexLi = $("<li class='index_li'><div class='index_list_text'><span class='index_list_text_left'>"+indexContent+"</span><div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div></div>"+"<input class='userinput' placeholder="+indexContent+"></li>");
 
 				 	$("#dashboard_content #lateral_bar #indicator #index_show ul").prepend(indexLi);
-				 	indexLi.find(".userinput").data("originalValue",indexContent).css("textIndent","5px");
+				 	var tempIndexContent = indexContent;
+				 	indexLi.find(".userinput").data("originalValue",tempIndexContent).css("textIndent","5px");
 				 	indexLi.unbind("mouseenter");
 				 	indexLi.on("mouseenter", function(event) {
 				 			event.stopPropagation();
@@ -1141,10 +1151,12 @@
 						showIndexWall.children(".indexChangeName").unbind("click");
 						showIndexWall.children(".indexChangeName").click(function(event){
 							event.stopPropagation();
+							tempChangeName = $(this).parents(".index_li").find(".index_list_text").attr("title");
 							$(this).parents(".index_li").find(".index_list_text").hide();
 				 			$(this).parents(".index_li").find(".index_list_text").siblings(".userinput").show();
 				 			$(this).parents(".index_li").find(".index_list_text").siblings(".userinput").get(0).focus();
 				 			$(this).parent("#indexHandle").remove();
+
 						})
 
 						//移除
@@ -1219,20 +1231,22 @@
 				 		$(this).hide();
 				 		$(this).css("border","0px");
 				 		$(this).siblings(".index_list_text").children("span").text($(this).val());
-				 		$(this).siblings(".index_list_text").show();
+				 		$(this).siblings(".index_list_text").show().attr("title",$(this).val());
 
 				 		//记录当前数据对应的指标
-				 		$("#drag_zb .annotation_text").data("nowShowIndex",$(this).val());
 				 		indexLi.attr("tablename",$('#lateral_title .custom-select').val());
-
+				 		initIndexChangeName(tempChangeName,$(this).val());
 				 	});
 				 	indexLi.find(".userinput").focusin(function(event){
 				 		event.stopPropagation();
 				 		//记录之前的名字
-				 		$(this).data("originalValue",$(this).val());
+				 		if($(this).val() != ""){
+				 			$(this).data("originalValue",$(this).val());
+				 		}
 				 	});
 				 	indexLi.find(".index_list_text").dblclick(function(event){
 				 		event.stopPropagation();
+				 		tempChangeName = $(this).attr("title");
 				 		$(this).hide();
 				 		$(this).siblings(".userinput").show();
 				 		$(this).siblings(".userinput").get(0).focus();
@@ -1283,7 +1297,7 @@
 								$("#drag_zb .annotation_text").css("background", "rgba(0,0,0,0.2)");
 
 								$(this).find(".drag_text").css("display", "none");
-								$(ui.draggable).parent().find(".userinput").remove();
+								$(ui.draggable).parent().find(".userinput").hide();
 								$("<li class='index_row_list' title="+ui.draggable.find("span").text()+"></li>").html($(ui.draggable).parent().html()).appendTo(this);
 
 								$(".index_row_list").each(function(index, ele) {
@@ -1309,6 +1323,8 @@
 												deleteDrillFun();
 												edit_view_show(null,result.data,"noedit",true);
 											//	$(".rightConent #dashboard_content #new_view ul .auto_show .folderview_li_span").text("指标-"+ui.draggable.find("span").text()).attr("title","指标-"+ui.draggable.find("span").text());
+				 								$("#drag_zb .annotation_text").data("nowShowIndex",ui.draggable.find("span").text());
+												
 											}
 										});
 								}
@@ -2022,7 +2038,7 @@
 								var _show_type = column_name_info["coltype"]; // 维度还是度量，返回值是一个字符串
 								var type_indictot_img_path = _data_type.image_Name_Find(_show_type);	 // 数据类型指示图片的路径
 
-					var aLi = $("<li class='" + _show_type+"_li leftNav_list'>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><div class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + " dataType = "+_name+":"+_data_type+">"+_name+"</span></div></div></li>");
+					var aLi = $("<li class='" + _show_type+"_li leftNav_list'>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+type_indictot_img_path+"/></div><div class='drop_list_main " + _show_type + "_list_main'"+"><div class='drop_main clear set_style " + _show_type + "_list_text'><span class=" + _show_type + "_list_text_left" + " dataType = "+_name+":"+_data_type+" title="+_name+">"+_name+"</span></div></div></li>");
 					aLi.find(".set_style").append("<div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div>");
 
 								// 用来记录数据类型
@@ -2036,7 +2052,7 @@
 							// 特殊处理，判断显示筛选器部分还是显示图形部分
 							decideSizeWrapAndProjectShowModuleFunction();
 
-							var specialLi= $("<li class='" + "measure"+"_li leftNav_list'>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+"/static/dataCollection/images/tableDataDetail/Integer.png"+"/></div><div class='drop_list_main " + "measure" + "_list_main'"+"><div class='recordCount drop_main clear set_style " + "measure" + "_list_text'><span class=" + "measure" + "_list_text_left" + " dataType = "+_name+":"+_data_type+">"+"记录数"+"</span></div></div></li>");
+							var specialLi= $("<li class='" + "measure"+"_li leftNav_list'>"+"<div class='dimensionality_datatype'><img alt='datatype' src="+"/static/dataCollection/images/tableDataDetail/Integer.png"+"/></div><div class='drop_list_main " + "measure" + "_list_main'"+"><div class='recordCount drop_main clear set_style " + "measure" + "_list_text'><span class=" + "measure" + "_list_text_left" + " dataType = "+_name+":"+_data_type+" title='记录数'>"+"记录数"+"</span></div></div></li>");
 							specialLi.find(".set_style").append("<div class='moreSelectBtn'><img src='/static/dashboard/img/select_tra.png' alt='dimensionality_list'/></div>");
 							specialLi.find(".drop_main").eq(0).data("type","number");
 							$("#measure_show ul").append(specialLi);
@@ -2832,6 +2848,8 @@
 											}
 
 
+											console.log(drag_row_column_data)
+
 											$(".drog_row_list").each(function(index, ele) {
 												if(!$(ele).parent().hasClass("list_wrap")) {
 													$(ele).wrap("<div class='list_wrap clear'></div>");
@@ -3460,7 +3478,7 @@
 														showTongbiMeasureArray.splice(index2,1);
 													}
 												}
-												showOrHidenSomeMeasureCompareOrLink();
+												showOrHidenSomeMeasureCompareOrLink("delete");
 												// showOrHide();
 													if($(ui.sender).parents(".drag_main").attr("id") == "drag_col"){
 														var clickAreaType = "column";
@@ -3864,7 +3882,7 @@
 										showTongbiMeasureArray.splice(index2,1);
 									}
 								}
-								showOrHidenSomeMeasureCompareOrLink();
+								showOrHidenSomeMeasureCompareOrLink("delete");
 								
 								// showOrHide();
 								$(".annotation_text").eq(index).find(".list_wrap").remove();
@@ -3936,7 +3954,7 @@
 
 				// 保存为指标
 				 $("#dashboard_content #action_box #action_box_ul #action_save #click_save_index").click(function(event){
-
+				 	if($("#dashboard_content #lateral_bar #indicator #index_show ul .index_li .userinput").css("display") != "none" && $("#dashboard_content #lateral_bar #indicator #index_show ul .index_li .userinput").css("display") != undefined) return;
 				 	var nowIndexName = folder_name_sum("新指标",getIndexNameDict[current_cube_name]);
 				 	event.stopPropagation();
 				 	postIndexDic = realSaveData();

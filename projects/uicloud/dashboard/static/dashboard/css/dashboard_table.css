@@ -1,25 +1,37 @@
 #text_table_need_show{min-width: 100%;min-height: 100%;font-size: 12px;position: relative;left: 0;top: 0; overflow: auto;height: 100%;}
 #text_table_need_show .top_column_container{overflow: visible;}
-#text_table_need_show .top_column_container .top_column_name{text-align: center;font-weight: bold}
-#text_table_need_show .top_column_container .column_data_list{border-bottom: 1px solid #dedede;border-left: 1px solid #dedede;}
-#text_table_need_show .top_column_container .column_data_list tr td{border-right: 1px solid #dedede;color: #808080;min-width: 50px;text-align: center;}
+#text_table_need_show .top_column_container .top_column_name{text-align: center;font-weight: bold;background: #E8E8E8;padding: 5px;border-bottom: 1px solid #DEDEDE;width: 100% !important;box-sizing: border-box !important;position: relative;}
+#text_table_need_show .top_column_container .column_data_list tbody tr td{border-bottom: 1px solid #dedede;}
+#text_table_need_show .top_column_container .column_data_list tr td{border-right: 1px solid #dedede;color: #808080;min-width: 50px;text-align: center;padding: 5px;	}
 #text_table_need_show .top_column_container .column_data_list tr:nth-of-type(1) td{color: black;}
 
 
 #text_table_need_show .left_row_container{position: absolute;top: 0;left: 0;}
 #text_table_need_show .left_row_container table{border:0px;border-collapse: collapse;overflow: auto;}
 #text_table_need_show .left_row_container table tr{border-bottom: 1px solid #dedede;}
-#text_table_need_show .left_row_container table tbody tr {border-right: 1px solid #dedede;box-sizing: border-box;}
-#text_table_need_show .left_row_container table tr th{padding-right: 10px;vertical-align: bottom;}
-#text_table_need_show .left_row_container table tr td{color: #808080;height: 18px;}
+#text_table_need_show .left_row_container table tbody tr {border-right: 1px solid #dedede;box-sizing: border-box;border-left: 1px solid #dedede}
+#text_table_need_show .left_row_container table tr th{padding-right: 10px;vertical-align: bottom;padding: 5px;background: #E8E8E8;border: 1px solid #DEDEDE;}
+#text_table_need_show .left_row_container table tr td{color: #808080;height: 18px;padding: 5px !important;text-align: center;border-left: 1px solid #DEDEDE;}
 #text_table_need_show .left_row_container table tr td.firstRow{color: black;}
 #text_table_need_show table tr td{min-width: 50px;}
 
+#text_table_need_show .meaHeader p{color:#202020 !important;font-weight: bold;line-height: 26px !important;}
+
+
 #text_table_need_show .right_module{min-width: 100px;}
 #text_table_need_show .content_body #data_list_for_body{position: relative;}
+#text_table_need_show .content_body #data_list_for_body .everyColumn{position: absolute;width: 100%;top:0px;left: 0px;height: 100%;box-sizing: border-box;border-right: 1px solid #DEDEDE}
 #text_table_need_show .content_body #data_list_for_body .vertical_line{position: absolute;width: 1px;height: 100%;background: #dedede;top: 0;}
 #text_table_need_show .content_body #data_list_for_body li{width: 100%;border-bottom: 1px solid #dedede;}
 #text_table_need_show .content_body #data_list_for_body li:nth-of-type(odd){background: #f5f5f5;}
 #text_table_need_show .content_body #data_list_for_body li:nth-of-type(even){background: white;}
-#text_table_need_show .content_body #data_list_for_body  .measureDiv{position: absolute;}
-#text_table_need_show .content_body #data_list_for_body  .measureDiv p{height: 22px;line-height: 22px;padding-left: 5px;padding-right: 5px;color: #808080;font-size: 12px}
+#text_table_need_show .content_body #data_list_for_body  .measureDiv{position: absolute;width:100%;text-align: center;z-index: 1;}
+#text_table_need_show .content_body #data_list_for_body  .measureDiv p{color: #808080;font-size: 12px}
+
+#text_table_need_show .emptyDiHaveMe{border: 1px solid #DEDEDE;background: #E8E8E8;border-bottom: none}
+#text_table_need_show .emptyData{border: 1px solid #DEDEDE;padding: 5px 0px}
+#text_table_need_show .emptyData p{color:#000;}
+#text_table_need_show .text_table_mydik{width: 100%;height: 100%;position: absolute;top: 0;left: 0;background: white;z-index:66;display: none}
+#text_table_need_show .right_module .allHaveMeDi td{color: #000 !important;}
+#text_table_need_show .noBoder{border-left: none}
+#text_table_need_show .paddingMx{margin-top: 5px}

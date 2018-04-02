@@ -279,12 +279,14 @@ function measure_Hanlde(dimensionality_array,measure_name_arr,needColumns,handle
 		}
 	}
 
-	if((equalCompare(recordConditon,handleDataPost) && preAllData) || (equalCompare(recordConditon,handleDataPost) && preAllData && str != undefined)  || handleChangeCol){
+	if((equalCompare(recordConditon,handleDataPost) && preAllData) || (equalCompare(recordConditon,handleDataPost) && preAllData && str == "graph")  || handleChangeCol){
 
 		if(handleChangeCol){
 			if(equalCompare(recordConditon,handleDataPost)){
-				spinner.stop();
-				$(".maskLayer").hide();
+				if(str != "noStop"){
+					spinner.stop();
+					$(".maskLayer").hide();
+				}
 				return;
 			}
 			commonChangeClickBtn(preAllData);
@@ -493,14 +495,18 @@ function commonChangeClickBtn(data){
 				if($("#pageDashboardModule #dashboard_content .handleAll_wrap #view_show_area .drillDownShow ul li").length > 1 && checkHanleFree != "true" && (onlyClickDrill == null || dirllConditions.length != onlyClickDrill.length)){
 					getFilterAllData(conditions);
 					onlyClickDrill = objectDeepCopy(dirllConditions);
-					spinner.stop();
-					$(".maskLayer").hide();
+					if(str != "noStop"){
+						spinner.stop();
+						$(".maskLayer").hide();
+					}
 					return;
 				}
 
 				rightFilterListDraw();
-				spinner.stop();
-				$(".maskLayer").hide();
+				if(str != "noStop"){
+					spinner.stop();
+					$(".maskLayer").hide();
+				}
 }
 
 
